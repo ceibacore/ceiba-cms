@@ -1,0 +1,28 @@
+<?php
+
+namespace LemurCms\Migrations;
+
+use LemurCms\Migration\CmsBaseMigration;
+use LemurCms\Migration\CmsSchemaBuilder;
+
+class Migration_{{VERSION}}_{{CLASSNAME}} extends CmsBaseMigration
+{
+    public const VERSION     = '{{VERSION}}';
+    public const DESCRIPTION = '{{DESCRIPTION}}';
+
+    public function up(): void
+    {
+        // TODO: implement schema changes
+        // Examples:
+        // $this->schema->addColumn('table_name', 'column_name', 'VARCHAR(100)', ['nullable' => true]);
+        // $this->schema->createTable('new_table', function (CmsSchemaBuilder $t) { ... });
+    }
+
+    public function down(): void
+    {
+        // TODO: reverse of up()
+        // Examples:
+        // $this->schema->dropColumn('table_name', 'column_name');
+        // $this->schema->dropTableIfExists('new_table');
+    }
+}

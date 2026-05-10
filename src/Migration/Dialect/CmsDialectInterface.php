@@ -1,0 +1,27 @@
+<?php
+declare(strict_types=1);
+namespace LemurCms\Migration\Dialect;
+use LemurCms\Migration\CmsColumnDef;
+interface CmsDialectInterface
+{
+    public function jsonType(): string;
+    public function booleanType(): string;
+    public function textType(): string;
+    public function autoIncrementPkDefinition(): string;
+    public function currentTimestamp(): string;
+    public function onUpdateTimestamp(): string;
+    public function createTableSql(string $table, string $columnsSql, string $indexesSql): string;
+    public function addColumnSql(string $table, CmsColumnDef $col): string;
+    public function modifyColumnSql(string $table, CmsColumnDef $col): string;
+    public function dropColumnSql(string $table, string $column): string;
+    public function renameColumnSql(string $table, string $oldName, string $newName, string $colDef): string;
+    public function renameTableSql(string $from, string $to): string;
+    public function dropTableSql(string $table): string;
+    public function dropTableIfExistsSql(string $table): string;
+    public function addIndexSql(string $table, array $columns, string $name, bool $unique): string;
+    public function dropIndexSql(string $table, string $name): string;
+    public function addForeignKeySql(string $table, string $column, string $refTable, string $refColumn, string $onDelete, string $name): string;
+    public function dropForeignKeySql(string $table, string $name): string;
+    public function quoteIdentifier(string $name): string;
+    public function getName(): string;
+}

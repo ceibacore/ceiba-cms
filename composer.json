@@ -1,0 +1,21 @@
+{
+  "name": "lemur/cms",
+  "description": "Lemur CMS — Framework-agnostic PHP 8.x CMS module",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "LemurCms\\": "src/",
+      "LemurCms\\Migrations\\": "migrations/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "LemurCms\\Tests\\": "tests/"
+    }
+  },
+  "minimum_stability": "stable"
+}

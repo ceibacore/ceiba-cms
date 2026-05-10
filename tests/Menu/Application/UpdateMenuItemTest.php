@@ -1,0 +1,19 @@
+<?php
+declare(strict_types=1);
+namespace LemurCms\Tests\Menu\Application;
+
+use LemurCms\Menu\Application\UpdateMenuItem;
+use LemurCms\Menu\Domain\MenuRepositoryInterface;
+use PHPUnit\Framework\TestCase;
+
+class UpdateMenuItemTest extends TestCase
+{
+    public function testExecuteCallsRepository(): void
+    {
+        $repo = $this->createMock(MenuRepositoryInterface::class);
+        $repo->expects($this->once())->method('updateMenuItem')->with(1, ['label' => 'Updated']);
+
+        $useCase = new UpdateMenuItem($repo);
+        $useCase->execute(1, ['label' => 'Updated']);
+    }
+}
