@@ -9,7 +9,7 @@ class CreateUserCommand extends Command
     protected string $signature = 'user:create';
     protected string $description = 'Create a new user';
 
-    public function __construct(private \LemurCms\Auth\Domain\UserRepositoryInterface $userRepository)
+    public function __construct(private \LemurCms\Auth\Domain\Repository\UserRepositoryInterface $userRepository)
     {
     }
 

@@ -8,10 +8,35 @@ abstract class Command
 {
     protected string $signature = '';
     protected string $description = '';
-    protected array $arguments = [];
-    protected array $options = [];
+    protected array $inputArguments = [];
+    protected array $inputOptions = [];
 
     abstract public function handle(): int;
+
+    public function setInput(array $argv): void
+    {
+        // Skip script name and command name
+        $input = array_slice($argv, 2);
+        
+        foreach ($input as $arg) {
+            if (str_starts_with($arg, '--')) {
+                $option = substr($arg, 2);
+                $this->inputOptions[$option] = true;
+            } else {
+                $this->inputArguments[] = $arg;
+            }
+        }
+    }
+
+    protected function option(string $name): bool
+    {
+        return isset($this->inputOptions[$name]);
+    }
+
+    protected function argument(int $index): ?string
+    {
+        return $this->inputArguments[$index] ?? null;
+    }
 
     public function getSignature(): string
     {

@@ -21,6 +21,7 @@ require_once __DIR__ . '/src/Migration/CmsColumnDef.php';
 require_once __DIR__ . '/src/Migration/GeneratorResult.php';
 require_once __DIR__ . '/src/Migration/Dialect/CmsDialectInterface.php';
 require_once __DIR__ . '/src/Migration/Dialect/MySQLDialect.php';
+require_once __DIR__ . '/src/Migration/CmsMigrationRunner.php';
 
 // ── Support Layer (Exceptions, Validators, Helpers, Infrastructure) ──────────
 require_once __DIR__ . '/src/Support/Exceptions/ValidatorException.php';
@@ -51,11 +52,11 @@ require_once __DIR__ . '/database/factories/PageFactory.php';
 require_once __DIR__ . '/database/factories/UserFactory.php';
 
 // ── Domain Ports ─────────────────────────────────────────────────────────────
-require_once __DIR__ . '/src/Menu/Domain/MenuRepositoryInterface.php';
-require_once __DIR__ . '/src/Page/Domain/PageRepositoryInterface.php';
-require_once __DIR__ . '/src/Seo/Domain/SeoRepositoryInterface.php';
-require_once __DIR__ . '/src/Media/Domain/MediaRepositoryInterface.php';
-require_once __DIR__ . '/src/Auth/Domain/UserRepositoryInterface.php';
+require_once __DIR__ . '/src/Menu/Domain/Repository/MenuRepositoryInterface.php';
+require_once __DIR__ . '/src/Page/Domain/Repository/PageRepositoryInterface.php';
+require_once __DIR__ . '/src/Seo/Domain/Repository/SeoRepositoryInterface.php';
+require_once __DIR__ . '/src/Media/Domain/Repository/MediaRepositoryInterface.php';
+require_once __DIR__ . '/src/Auth/Domain/Repository/UserRepositoryInterface.php';
 
 // ── Application Use Cases ────────────────────────────────────────────────────
 require_once __DIR__ . '/src/Menu/Application/GetMainNavbar.php';
@@ -121,7 +122,7 @@ $menuCache             = new \LemurCms\Menu\Presentation\LemurMenuCache(__DIR__)
 $menuRenderer          = new \LemurCms\Menu\Presentation\LemurMenuRenderer();
 $bannerRenderer        = new \LemurCms\Menu\Presentation\BannerRenderer($menuRepository);
 $breadcrumbBuilder     = new \LemurCms\Menu\Presentation\BreadcrumbBuilder();
-$notificationPresenter = new \LemurCms\Menu\Presentation\NotificationPresenter($_SESSION ?? []);
+$notificationPresenter = new \LemurCms\Menu\Presentation\NotificationPresenter();
 
 $getMainNavbar    = new \LemurCms\Menu\Application\GetMainNavbar($menuRepository);
 $getNavbar        = new \LemurCms\Menu\Application\GetNavbar($menuRepository, $menuRenderer, $menuCache);

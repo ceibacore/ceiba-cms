@@ -42,6 +42,10 @@ class CliKernel
             return 1;
         }
 
+        if (method_exists($command, 'setInput')) {
+            $command->setInput($argv);
+        }
+
         return $command->handle();
     }
 

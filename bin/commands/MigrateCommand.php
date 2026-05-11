@@ -6,36 +6,62 @@ namespace LemurCms\Commands;
 
 class MigrateCommand extends Command
 {
-    protected string $signature = 'migrate';
-    protected string $description = 'Run database migrations';
+    protected string $signature = 'migrate {--rollback} {--refresh}';
+    protected string $description = 'Run, rollback or refresh database migrations';
 
-    public function __construct(private \PDO $pdo)
+    public function __construct(private readonly \LemurDB $db)
     {
     }
 
     public function handle(): int
     {
-        $this->info('Running migrations...');
+        $rollback = $this->option('rollback');
+        $refresh  = $this->option('refresh');
+
+        $generator = new \LemurCms\Migration\CmsMigrationGenerator(
+            __DIR__ . '/../../migrations',
+            $this->db->getPrefix()
+        );
+
+        $runner = new \LemurCms\Migration\CmsMigrationRunner(
+            $generator,
+            $this->db,
+            $this->db->getPrefix()
+        );
 
         try {
-            $generator = new \LemurCms\Migration\CmsMigrationGenerator(__DIR__ . '/../../');
-
-            $result = $generator->generate();
-
-            if (!$result->success) {
-                $this->error($result->message);
-                return 1;
+            if ($refresh) {
+                $this->info('Refreshing migrations (rollback all and migrate)...');
+                $result = $runner->refresh();
+                $this->info(sprintf('Rolled back %d migrations.', count($result['rolled_back'])));
+                $this->info(sprintf('Executed %d migrations.', count($result['migrated'])));
+                return 0;
             }
 
-            $this->info($result->message);
-            $this->info(sprintf('Executed %d migrations', count($result->migrations)));
+            if ($rollback) {
+                $this->info('Rolling back last batch of migrations...');
+                $executed = $runner->rollback();
+                if (empty($executed)) {
+                    $this->info('Nothing to rollback.');
+                } else {
+                    $this->info(sprintf('Rolled back %d migrations:', count($executed)));
+                    foreach ($executed as $m) $this->line("  ✓ {$m}");
+                }
+                return 0;
+            }
 
-            foreach ($result->migrations as $migration) {
-                $this->line("  ✓ {$migration}");
+            $this->info('Running pending migrations...');
+            $executed = $runner->up();
+
+            if (empty($executed)) {
+                $this->info('Nothing to migrate.');
+            } else {
+                $this->info(sprintf('Executed %d migrations:', count($executed)));
+                foreach ($executed as $m) $this->line("  ✓ {$m}");
             }
 
             return 0;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->error($e->getMessage());
             return 1;
         }
