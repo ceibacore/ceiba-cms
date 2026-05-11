@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace LemurCms\Menu\Application;
 
-use LemurCms\Menu\Domain\MenuRepositoryInterface;
+use LemurCms\Menu\Domain\Repository\MenuRepositoryInterface;
 use LemurCms\Support\Validators\MenuValidator;
 use LemurCms\Support\Exceptions\InvalidMenuException;
 
@@ -46,7 +46,7 @@ class CreateMenuItemWithValidation
  */
 class CreateUserWithValidation
 {
-    public function __construct(private \LemurCms\Auth\Domain\UserRepositoryInterface $repository)
+    public function __construct(private \LemurCms\Auth\Domain\Repository\UserRepositoryInterface $repository)
     {
     }
 
