@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace LemurCms\Media\Infrastructure;
-use LemurCms\Media\Domain\MediaRepositoryInterface;
+use LemurCms\Media\Domain\Repository\MediaRepositoryInterface;
 use LemurDB;
 /**
  * LemurDB adapter — concrete implementation of MediaRepositoryInterface.

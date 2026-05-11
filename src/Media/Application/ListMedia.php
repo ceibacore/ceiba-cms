@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace LemurCms\Media\Application;
 
-use LemurCms\Media\Domain\MediaRepositoryInterface;
+use LemurCms\Media\Domain\Repository\MediaRepositoryInterface;
 
 final class ListMedia
 {
