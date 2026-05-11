@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace LemurCms\Seo\Application;
 
-use LemurCms\Seo\Domain\SeoRepositoryInterface;
+use LemurCms\Seo\Domain\Repository\SeoRepositoryInterface;
 
 final class UpsertSeo
 {

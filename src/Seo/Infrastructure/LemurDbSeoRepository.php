@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace LemurCms\Seo\Infrastructure;
-use LemurCms\Seo\Domain\SeoRepositoryInterface;
+use LemurCms\Seo\Domain\Repository\SeoRepositoryInterface;
 use LemurDB;
 /**
  * LemurDB adapter — concrete implementation of SeoRepositoryInterface.

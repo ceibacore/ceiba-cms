@@ -143,6 +143,8 @@ final class CmsMigrationGenerator
             'version'     => $m['version'],
             'name'        => $m['name'],
             'file'        => basename($m['file']),
+            'full_path'   => $m['file'],
+            'class'       => $m['class'],
             'description' => $this->resolveDescription($m),
         ], $this->discoverMigrations());
     }
