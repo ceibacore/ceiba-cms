@@ -37,6 +37,7 @@ require_once __DIR__ . '/src/Support/Validators/UserValidator.php';
 require_once __DIR__ . '/src/Support/Helpers/StringHelper.php';
 require_once __DIR__ . '/src/Support/Helpers/DateHelper.php';
 require_once __DIR__ . '/src/Support/Helpers/ArrayHelper.php';
+require_once __DIR__ . '/src/Support/Helpers/UuidHelper.php';
 
 // ── HTTP Layer (Controllers, Router) ──────────────────────────────────────────
 require_once __DIR__ . '/src/Http/Router.php';

@@ -12,7 +12,7 @@ class Migration_20260510000001_CreateMenuTables extends CmsBaseMigration
     public function up(): void
     {
         $this->schema->createTable('menus', function (CmsColumnBlueprint $t) {
-            $t->id();
+            $t->uuidId();
             $t->string('name', 100)->notNull();
             $t->string('slug', 100)->notNull();
             $t->enum('type', ['main','footer','sidebar','mobile'])->notNull()->default('main');
@@ -21,9 +21,9 @@ class Migration_20260510000001_CreateMenuTables extends CmsBaseMigration
             $t->uniqueIndex('slug', 'uq_menus_slug');
         });
         $this->schema->createTable('menu_items', function (CmsColumnBlueprint $t) {
-            $t->id();
-            $t->unsignedInteger('menu_id')->notNull();
-            $t->unsignedInteger('parent_id')->nullable();
+            $t->uuidId();
+            $t->uuid('menu_id')->notNull();
+            $t->uuid('parent_id')->nullable();
             $t->string('label', 200)->notNull();
             $t->string('url', 500)->nullable();
             $t->enum('type', ['link','dropdown','mega','button','divider'])->notNull()->default('link');
@@ -37,7 +37,7 @@ class Migration_20260510000001_CreateMenuTables extends CmsBaseMigration
             $t->index('sort_order', 'idx_menu_items_sort');
         });
         $this->schema->createTable('logos', function (CmsColumnBlueprint $t) {
-            $t->id();
+            $t->uuidId();
             $t->string('site_name', 200)->notNull();
             $t->string('image_url', 500)->nullable();
             $t->string('image_dark_url', 500)->nullable();
@@ -49,8 +49,8 @@ class Migration_20260510000001_CreateMenuTables extends CmsBaseMigration
             $t->tinyInteger('is_active')->notNull()->default(1);
         });
         $this->schema->createTable('banners', function (CmsColumnBlueprint $t) {
-            $t->id();
-            $t->unsignedInteger('menu_id')->nullable();
+            $t->uuidId();
+            $t->uuid('menu_id')->nullable();
             $t->enum('position', ['above','below'])->notNull()->default('above');
             $t->text('content')->notNull();
             $t->string('bg_color', 50)->nullable();
@@ -66,8 +66,8 @@ class Migration_20260510000001_CreateMenuTables extends CmsBaseMigration
             $t->index(['position','status'], 'idx_banners_pos_status');
         });
         $this->schema->createTable('mega_sections', function (CmsColumnBlueprint $t) {
-            $t->id();
-            $t->unsignedInteger('menu_item_id')->notNull();
+            $t->uuidId();
+            $t->uuid('menu_item_id')->notNull();
             $t->string('title', 200)->nullable();
             $t->tinyInteger('col_span')->notNull()->default(1);
             $t->integer('sort_order')->notNull()->default(0);
@@ -75,8 +75,8 @@ class Migration_20260510000001_CreateMenuTables extends CmsBaseMigration
             $t->index('menu_item_id', 'idx_mega_sections_item');
         });
         $this->schema->createTable('mega_links', function (CmsColumnBlueprint $t) {
-            $t->id();
-            $t->unsignedInteger('section_id')->notNull();
+            $t->uuidId();
+            $t->uuid('section_id')->notNull();
             $t->string('label', 200)->notNull();
             $t->string('url', 500)->notNull();
             $t->string('description', 500)->nullable();

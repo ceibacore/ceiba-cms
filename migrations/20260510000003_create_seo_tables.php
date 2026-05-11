@@ -12,9 +12,9 @@ class Migration_20260510000003_CreateSeoTables extends CmsBaseMigration
     public function up(): void
     {
         $this->schema->createTable('seo', function (CmsColumnBlueprint $t) {
-            $t->id();
+            $t->uuidId();
             $t->string('entity_type', 100)->notNull();
-            $t->unsignedInteger('entity_id')->notNull();
+            $t->uuid('entity_id')->notNull();
             $t->string('meta_title', 200)->nullable();
             $t->string('meta_description', 500)->nullable();
             $t->string('canonical_url', 500)->nullable();
@@ -24,7 +24,7 @@ class Migration_20260510000003_CreateSeoTables extends CmsBaseMigration
             $t->string('robots', 100)->nullable()->default('index,follow');
             $t->json('schema_json')->nullable();
             $t->timestamps();
-            $t->uniqueIndex(['entity_type','entity_id'], 'uq_seo_entity');
+            $t->uniqueIndex(['entity_type', 'entity_id'], 'uq_seo_entity');
         });
     }
 

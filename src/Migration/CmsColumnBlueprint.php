@@ -21,6 +21,8 @@ final class CmsColumnBlueprint
     public function datetime(string $name): CmsColumnDef     { return $this->addColumn($name, 'DATETIME'); }
     public function timestamp(string $name): CmsColumnDef    { return $this->addColumn($name, 'TIMESTAMP'); }
     public function decimal(string $name, int $p = 10, int $s = 2): CmsColumnDef { return $this->addColumn($name, "DECIMAL({$p},{$s})"); }
+    public function uuid(string $name = 'uuid'): CmsColumnDef { return $this->addColumn($name, 'CHAR(36)'); }
+    public function uuidId(string $name = 'id'): CmsColumnDef { return $this->uuid($name)->primary(); }
     public function enum(string $name, array $values): CmsColumnDef
     {
         $q = implode(',', array_map(fn($v) => "'{$v}'", $values));

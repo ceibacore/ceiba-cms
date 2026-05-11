@@ -125,11 +125,13 @@ class CmsMigrationRunner
         $allMigrations = $this->generator->list();
         $executed = [];
 
+        $this->db->pdo()->exec('SET FOREIGN_KEY_CHECKS = 0');
         foreach ($toRollback as $row) {
             $version = $row['migration'];
             $meta = array_values(array_filter($allMigrations, fn($m) => $m['version'] === $version))[0] ?? null;
             
             if (!$meta) {
+                $this->db->pdo()->exec('SET FOREIGN_KEY_CHECKS = 1');
                 throw new \RuntimeException("Migration file for version {$version} not found for rollback.");
             }
 
@@ -154,6 +156,7 @@ class CmsMigrationRunner
             
             $executed[] = $version;
         }
+        $this->db->pdo()->exec('SET FOREIGN_KEY_CHECKS = 1');
 
         return $executed;
     }

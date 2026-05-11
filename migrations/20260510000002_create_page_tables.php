@@ -12,7 +12,7 @@ class Migration_20260510000002_CreatePageTables extends CmsBaseMigration
     public function up(): void
     {
         $this->schema->createTable('pages', function (CmsColumnBlueprint $t) {
-            $t->id();
+            $t->uuidId();
             $t->string('title', 300)->notNull();
             $t->string('slug', 300)->notNull();
             $t->json('content')->nullable();

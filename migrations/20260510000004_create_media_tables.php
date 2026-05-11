@@ -12,7 +12,7 @@ class Migration_20260510000004_CreateMediaTables extends CmsBaseMigration
     public function up(): void
     {
         $this->schema->createTable('media', function (CmsColumnBlueprint $t) {
-            $t->id();
+            $t->uuidId();
             $t->string('disk', 50)->notNull()->default('local');
             $t->string('path', 500)->notNull();
             $t->string('filename', 300)->notNull();
