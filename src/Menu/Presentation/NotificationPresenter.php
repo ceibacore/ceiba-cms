@@ -14,9 +14,9 @@ class NotificationPresenter
     private const TYPES = ['success', 'error', 'warning', 'info'];
 
     /**
-     * @param array<string, mixed> $session Referencia a $_SESSION o equivalente
+     * Inicializar presentador de notificaciones
      */
-    public function __construct(private array &$session = [])
+    public function __construct()
     {
         $this->loadFromSession();
     }
@@ -204,7 +204,7 @@ class NotificationPresenter
     public function clear(): self
     {
         $this->notifications = [];
-        $this->session['notifications'] = [];
+        $_SESSION['notifications'] = [];
         return $this;
     }
 
@@ -213,7 +213,7 @@ class NotificationPresenter
      */
     private function loadFromSession(): void
     {
-        $this->notifications = $this->session['notifications'] ?? [];
+        $this->notifications = $_SESSION['notifications'] ?? [];
     }
 
     /**
@@ -221,6 +221,6 @@ class NotificationPresenter
      */
     private function saveToSession(): void
     {
-        $this->session['notifications'] = $this->notifications;
+        $_SESSION['notifications'] = $this->notifications;
     }
 }

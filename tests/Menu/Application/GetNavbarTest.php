@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace LemurCms\Tests\Menu\Application;
 
 use LemurCms\Menu\Application\GetNavbar;
-use LemurCms\Menu\Domain\MenuRepositoryInterface;
+use LemurCms\Menu\Domain\Repository\MenuRepositoryInterface;
 use LemurCms\Menu\Presentation\LemurMenuRenderer;
 use LemurCms\Menu\Presentation\LemurMenuCache;
 use PHPUnit\Framework\TestCase;

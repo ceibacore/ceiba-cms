@@ -15,7 +15,7 @@ class AdditionalPresentationTest extends TestCase
 
     private function createMockBannerRepository()
     {
-        $repo = $this->createMock(\LemurCms\Menu\Domain\MenuRepositoryInterface::class);
+        $repo = $this->createMock(\LemurCms\Menu\Domain\Repository\MenuRepositoryInterface::class);
         $repo->method('getActiveBanners')->willReturn([
             [
                 'id' => 1,
@@ -56,7 +56,7 @@ class AdditionalPresentationTest extends TestCase
 
     public function testBannerRendererEmptyWhenNoBanners(): void
     {
-        $repo = $this->createMock(\LemurCms\Menu\Domain\MenuRepositoryInterface::class);
+        $repo = $this->createMock(\LemurCms\Menu\Domain\Repository\MenuRepositoryInterface::class);
         $repo->method('getActiveBanners')->willReturn([]);
         
         $renderer = new BannerRenderer($repo);
@@ -67,7 +67,7 @@ class AdditionalPresentationTest extends TestCase
 
     public function testBannerRendererScheduledFiltersExpired(): void
     {
-        $repo = $this->createMock(\LemurCms\Menu\Domain\MenuRepositoryInterface::class);
+        $repo = $this->createMock(\LemurCms\Menu\Domain\Repository\MenuRepositoryInterface::class);
         $now = date('Y-m-d H:i:s');
         $tomorrow = date('Y-m-d H:i:s', time() + 86400);
         

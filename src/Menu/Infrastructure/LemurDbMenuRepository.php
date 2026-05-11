@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace LemurCms\Menu\Infrastructure;
-use LemurCms\Menu\Domain\MenuRepositoryInterface;
+use LemurCms\Menu\Domain\Repository\MenuRepositoryInterface;
 use LemurDB;
 /**
  * LemurDB adapter — concrete implementation of MenuRepositoryInterface.

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace LemurCms\Menu\Application;
 
-use LemurCms\Menu\Domain\MenuRepositoryInterface;
+use LemurCms\Menu\Domain\Repository\MenuRepositoryInterface;
 use LemurCms\Menu\Presentation\LemurMenuRenderer;
 use LemurCms\Menu\Presentation\LemurMenuCache;
 
