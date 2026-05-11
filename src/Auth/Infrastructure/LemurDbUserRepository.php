@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace LemurCms\Auth\Infrastructure;
-use LemurCms\Auth\Domain\UserRepositoryInterface;
+use LemurCms\Auth\Domain\Repository\UserRepositoryInterface;
 use LemurDB;
 /**
  * LemurDB adapter — concrete implementation of UserRepositoryInterface.
@@ -52,5 +52,31 @@ final class LemurDbUserRepository implements UserRepositoryInterface
         if (!$exists) {
             $this->db->query('cms_user_roles')->insert(['user_id' => $userId, 'role_id' => $roleId]);
         }
+    }
+
+    public function update(int $id, array $data): void
+    {
+        $this->db->query('cms_users')->where(['id' => $id])->update($data);
+    }
+
+    public function delete(int $id): void
+    {
+        $this->db->query('cms_users')->where(['id' => $id])->delete();
+    }
+
+    public function checkPermission(int $userId, string $permission): bool
+    {
+        $perms = $this->getUserPermissions($userId);
+        foreach ($perms as $perm) {
+            if ($perm['name'] === $permission) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function changePassword(int $userId, string $newPassword): void
+    {
+        $this->db->query('cms_users')->where(['id' => $userId])->update(['password_hash' => password_hash($newPassword, PASSWORD_BCRYPT)]);
     }
 }

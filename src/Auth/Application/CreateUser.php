@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace LemurCms\Auth\Application;
 
-use LemurCms\Auth\Domain\UserRepositoryInterface;
+use LemurCms\Auth\Domain\Repository\UserRepositoryInterface;
 
 final class CreateUser
 {
