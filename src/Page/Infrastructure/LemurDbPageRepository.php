@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace LemurCms\Page\Infrastructure;
-use LemurCms\Page\Domain\PageRepositoryInterface;
+use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
 use LemurDB;
 /**
  * LemurDB adapter — concrete implementation of PageRepositoryInterface.
@@ -44,5 +44,15 @@ final class LemurDbPageRepository implements PageRepositoryInterface
     public function delete(int $id): void
     {
         $this->db->query('cms_pages')->where(['id' => $id])->delete();
+    }
+
+    public function update(int $id, array $data): void
+    {
+        $this->db->query('cms_pages')->where(['id' => $id])->update($data);
+    }
+
+    public function publish(int $id): void
+    {
+        $this->db->query('cms_pages')->where(['id' => $id])->update(['status' => 'published']);
     }
 }

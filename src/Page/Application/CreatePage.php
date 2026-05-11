@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace LemurCms\Page\Application;
 
-use LemurCms\Page\Domain\PageRepositoryInterface;
+use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
 
 final class CreatePage
 {
