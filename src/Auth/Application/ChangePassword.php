@@ -8,7 +8,7 @@ final class ChangePassword
 {
     public function __construct(private UserRepositoryInterface $repo) {}
 
-    public function execute(int $userId, string $newPassword): void
+    public function execute(string $userId, string $newPassword): void
     {
         $user = $this->repo->findById($userId);
         if (!$user) return;

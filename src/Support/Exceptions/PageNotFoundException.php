@@ -8,9 +8,9 @@ use Exception;
 
 class PageNotFoundException extends Exception
 {
-    public static function byId(int $id): self
+    public static function byId(string $id): self
     {
-        return new self(sprintf('Page with ID %d not found', $id));
+        return new self(sprintf('Page with ID %s not found', $id));
     }
 
     public static function bySlug(string $slug): self

@@ -8,7 +8,7 @@ final class UpdateMenuItem
 {
     public function __construct(private MenuRepositoryInterface $repo) {}
 
-    public function execute(int $id, array $data): void
+    public function execute(string $id, array $data): void
     {
         $this->repo->updateMenuItem($id, $data);
     }

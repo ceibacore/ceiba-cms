@@ -8,7 +8,7 @@ final class FindMediaById
 {
     public function __construct(private MediaRepositoryInterface $repo) {}
 
-    public function execute(int $id): ?array
+    public function execute(string $id): ?array
     {
         return $this->repo->findById($id);
     }

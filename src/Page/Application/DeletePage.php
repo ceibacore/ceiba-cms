@@ -8,7 +8,7 @@ final class DeletePage
 {
     public function __construct(private PageRepositoryInterface $repo) {}
 
-    public function execute(int $id): void
+    public function execute(string $id): void
     {
         $this->repo->delete($id);
     }

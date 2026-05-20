@@ -8,7 +8,7 @@ final class CreatePage
 {
     public function __construct(private PageRepositoryInterface $repo) {}
 
-    public function execute(array $data): int
+    public function execute(array $data): string
     {
         return $this->repo->save($data);
     }

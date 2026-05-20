@@ -19,12 +19,14 @@ require_once __DIR__ . '/commands/MigrateCommand.php';
 require_once __DIR__ . '/commands/CacheClearCommand.php';
 require_once __DIR__ . '/commands/CreateUserCommand.php';
 require_once __DIR__ . '/commands/ListMigrationsCommand.php';
+require_once __DIR__ . '/commands/SeedCommand.php';
 
 use LemurCms\CliKernel;
 use LemurCms\Commands\MigrateCommand;
 use LemurCms\Commands\CacheClearCommand;
 use LemurCms\Commands\CreateUserCommand;
 use LemurCms\Commands\ListMigrationsCommand;
+use LemurCms\Commands\SeedCommand;
 
 // Crear kernel
 $kernel = new CliKernel();
@@ -34,6 +36,7 @@ $kernel->registerCommand('migrate', new MigrateCommand($container['db']));
 $kernel->registerCommand('cache:clear', new CacheClearCommand($container['presentation']['menuCache']));
 $kernel->registerCommand('user:create', new CreateUserCommand($container['repositories']['user']));
 $kernel->registerCommand('migrate:list', new ListMigrationsCommand());
+$kernel->registerCommand('db:seed', new SeedCommand($container['db']));
 
 // Ejecutar
 exit($kernel->run($argv));

@@ -36,10 +36,12 @@ class Migration_20260510000005_CreateAccessTables extends CmsBaseMigration
 
         $this->schema->createTable('permissions', function (CmsColumnBlueprint $t) {
             $t->uuidId();
+            $t->uuid('module_id')->notNull();
             $t->string('name', 200)->notNull();
             $t->string('slug', 200)->notNull();
-            $t->string('module', 100)->nullable();
             $t->uniqueIndex('slug', 'uq_permissions_slug');
+            $t->foreignKey('module_id', 'modules', 'id', 'CASCADE');
+            $t->index('module_id', 'idx_permissions_module');
         });
 
         $this->schema->createTable('role_permissions', function (CmsColumnBlueprint $t) {

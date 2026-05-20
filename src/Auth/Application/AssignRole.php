@@ -8,7 +8,7 @@ final class AssignRole
 {
     public function __construct(private UserRepositoryInterface $repo) {}
 
-    public function execute(int $userId, int $roleId): void
+    public function execute(string $userId, string $roleId): void
     {
         $this->repo->assignRole($userId, $roleId);
     }

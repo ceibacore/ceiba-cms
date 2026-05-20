@@ -39,7 +39,7 @@ class PageController extends BaseController
         }
     }
 
-    public function update(int $id): void
+    public function update(string $id): void
     {
         try {
             $data = $this->getRequest();
@@ -50,7 +50,7 @@ class PageController extends BaseController
         }
     }
 
-    public function destroy(int $id): void
+    public function destroy(string $id): void
     {
         try {
             $this->deletePage->execute($id);
@@ -60,7 +60,7 @@ class PageController extends BaseController
         }
     }
 
-    public function publish(int $id): void
+    public function publish(string $id): void
     {
         try {
             $this->publishPage->execute($id);

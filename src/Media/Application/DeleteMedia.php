@@ -8,7 +8,7 @@ final class DeleteMedia
 {
     public function __construct(private MediaRepositoryInterface $repo) {}
 
-    public function execute(int $id): void
+    public function execute(string $id): void
     {
         $this->repo->delete($id);
     }

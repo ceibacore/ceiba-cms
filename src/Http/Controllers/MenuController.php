@@ -35,7 +35,7 @@ class MenuController extends BaseController
         }
     }
 
-    public function update(int $id): void
+    public function update(string $id): void
     {
         try {
             $data = $this->getRequest();
@@ -46,7 +46,7 @@ class MenuController extends BaseController
         }
     }
 
-    public function destroy(int $id): void
+    public function destroy(string $id): void
     {
         try {
             $this->deleteMenuItem->execute($id);

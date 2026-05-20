@@ -22,6 +22,8 @@ require_once __DIR__ . '/src/Migration/GeneratorResult.php';
 require_once __DIR__ . '/src/Migration/Dialect/CmsDialectInterface.php';
 require_once __DIR__ . '/src/Migration/Dialect/MySQLDialect.php';
 require_once __DIR__ . '/src/Migration/CmsMigrationRunner.php';
+require_once __DIR__ . '/src/Seeder/CmsSeeder.php';
+require_once __DIR__ . '/src/Seeder/CmsSeederRunner.php';
 
 // ── Support Layer (Exceptions, Validators, Helpers, Infrastructure) ──────────
 require_once __DIR__ . '/src/Support/Exceptions/ValidatorException.php';
@@ -38,6 +40,12 @@ require_once __DIR__ . '/src/Support/Helpers/StringHelper.php';
 require_once __DIR__ . '/src/Support/Helpers/DateHelper.php';
 require_once __DIR__ . '/src/Support/Helpers/ArrayHelper.php';
 require_once __DIR__ . '/src/Support/Helpers/UuidHelper.php';
+require_once __DIR__ . '/src/Support/Helpers/FakeDataHelper.php';
+
+// ── Auth Layer (Adapter Pattern for CMS Security) ─────────────────────────────
+require_once __DIR__ . '/src/Auth/Contracts/AuthDriverInterface.php';
+require_once __DIR__ . '/src/Auth/Drivers/SessionDriver.php';
+require_once __DIR__ . '/src/Auth/AuthManager.php';
 
 // ── HTTP Layer (Controllers, Router) ──────────────────────────────────────────
 require_once __DIR__ . '/src/Http/Router.php';
@@ -157,6 +165,7 @@ $changePassword   = new \LemurCms\Auth\Application\ChangePassword($userRepositor
 // ── Export container (opcional: devolver un contenedor manual) ───────────────
 return [
     'db'                 => $db,
+    'auth'               => new \LemurCms\Auth\AuthManager(new \LemurCms\Auth\Drivers\SessionDriver($db)),
     'repositories' => [
         'menu'   => $menuRepository,
         'page'   => $pageRepository,

@@ -33,8 +33,8 @@ class InvalidUserException extends Exception
         return new self(sprintf('User with email "%s" already exists', $email));
     }
 
-    public static function notFound(int $id): self
+    public static function notFound(string $id): self
     {
-        return new self(sprintf('User with ID %d not found', $id));
+        return new self(sprintf('User with ID %s not found', $id));
     }
 }

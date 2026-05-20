@@ -8,7 +8,7 @@ final class UpdatePage
 {
     public function __construct(private PageRepositoryInterface $repo) {}
 
-    public function execute(int $id, array $data): void
+    public function execute(string $id, array $data): void
     {
         $page = $this->repo->findById($id);
         if (!$page) return;

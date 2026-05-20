@@ -1,8 +1,11 @@
 <?php
 declare(strict_types=1);
+
 namespace LemurCms\Auth\Infrastructure;
+
 use LemurCms\Auth\Domain\Repository\UserRepositoryInterface;
 use LemurDB;
+
 /**
  * LemurDB adapter — concrete implementation of UserRepositoryInterface.
  * Inject via constructor in your bootstrap.
@@ -13,70 +16,79 @@ final class LemurDbUserRepository implements UserRepositoryInterface
 
     public function findByEmail(string $email): ?array
     {
-        return $this->db->query('cms_users')->where(['email' => $email])->first();
+        return $this->db->query('access')->where(['email' => $email])->first();
     }
 
-    public function findById(int $id): ?array
+    public function findById(string $id): ?array
     {
-        return $this->db->query('cms_users')->where(['id' => $id])->first();
+        return $this->db->query('access')->where(['id' => $id])->first();
     }
 
-    public function save(array $data): int
+    public function save(array $data): string
     {
         $id = $data['id'] ?? null;
         if ($id) {
             unset($data['id']);
-            $this->db->query('cms_users')->where(['id' => $id])->update($data);
+            $this->db->query('access')->where(['id' => $id])->update($data);
             return $id;
         }
-        return $this->db->query('cms_users')->insert($data);
+        
+        // Generate UUID if not present
+        $id = \LemurCms\Support\Helpers\UuidHelper::v4();
+        $data['id'] = $id;
+        $this->db->query('access')->insert($data);
+        return $id;
     }
 
-    public function getUserPermissions(int $userId): array
+    public function getUserPermissions(string $userId): array
     {
-        $roles = $this->db->query('cms_user_roles')->where(['user_id' => $userId])->get();
+        $roles = $this->db->query('access_roles')->where(['access_id' => $userId])->get();
         $permissions = [];
         foreach ($roles as $role) {
-            $perms = $this->db->query('cms_role_permissions')->where(['role_id' => $role['role_id']])->get();
+            $perms = $this->db->query('role_permissions')->where(['role_id' => $role['role_id']])->get();
             foreach ($perms as $perm) {
-                $permData = $this->db->query('cms_permissions')->where(['id' => $perm['permission_id']])->first();
-                if ($permData) $permissions[] = $permData;
+                $permData = $this->db->query('permissions')->where(['id' => $perm['permission_id']])->first();
+                if ($permData) {
+                    $permissions[] = $permData;
+                }
             }
         }
         return $permissions;
     }
 
-    public function assignRole(int $userId, int $roleId): void
+    public function assignRole(string $userId, string $roleId): void
     {
-        $exists = $this->db->query('cms_user_roles')->where(['user_id' => $userId, 'role_id' => $roleId])->first();
+        $exists = $this->db->query('access_roles')->where(['access_id' => $userId, 'role_id' => $roleId])->first();
         if (!$exists) {
-            $this->db->query('cms_user_roles')->insert(['user_id' => $userId, 'role_id' => $roleId]);
+            $this->db->query('access_roles')->insert(['access_id' => $userId, 'role_id' => $roleId]);
         }
     }
 
-    public function update(int $id, array $data): void
+    public function update(string $id, array $data): void
     {
-        $this->db->query('cms_users')->where(['id' => $id])->update($data);
+        $this->db->query('access')->where(['id' => $id])->update($data);
     }
 
-    public function delete(int $id): void
+    public function delete(string $id): void
     {
-        $this->db->query('cms_users')->where(['id' => $id])->delete();
+        $this->db->query('access')->where(['id' => $id])->delete();
     }
 
-    public function checkPermission(int $userId, string $permission): bool
+    public function checkPermission(string $userId, string $permission): bool
     {
         $perms = $this->getUserPermissions($userId);
         foreach ($perms as $perm) {
-            if ($perm['name'] === $permission) {
+            if ($perm['slug'] === $permission || $perm['name'] === $permission) {
                 return true;
             }
         }
         return false;
     }
 
-    public function changePassword(int $userId, string $newPassword): void
+    public function changePassword(string $userId, string $newPassword): void
     {
-        $this->db->query('cms_users')->where(['id' => $userId])->update(['password_hash' => password_hash($newPassword, PASSWORD_BCRYPT)]);
+        $this->db->query('access')->where(['id' => $userId])->update([
+            'password_hash' => password_hash($newPassword, PASSWORD_BCRYPT)
+        ]);
     }
 }

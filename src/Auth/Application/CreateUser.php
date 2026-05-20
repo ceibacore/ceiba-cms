@@ -8,7 +8,7 @@ final class CreateUser
 {
     public function __construct(private UserRepositoryInterface $repo) {}
 
-    public function execute(array $data): int
+    public function execute(array $data): string
     {
         $data['password_hash'] = password_hash($data['password'] ?? '', PASSWORD_BCRYPT);
         unset($data['password']);

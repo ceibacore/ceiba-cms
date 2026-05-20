@@ -8,7 +8,7 @@ final class DeleteMenuItem
 {
     public function __construct(private MenuRepositoryInterface $repo) {}
 
-    public function execute(int $id): void
+    public function execute(string $id): void
     {
         $this->repo->deleteMenuItem($id);
     }
