@@ -21,6 +21,25 @@ final class TreeValidator
     private const ALLOWED_TYPES = [
         'container', 'row', 'col', 'text', 'image',
         'button', 'card', 'divider', 'html',
+        'accordion', 'accordion_item',
+        'button_group', 'breadcrumb',
+        'carousel', 'carousel_item', 'collapse', 'list_group',
+        'tooltip', 'toast', 'scrollspy', 'offcanvas',
+    ];
+
+    /**
+     * Containment rules: parent type => allowed child types.
+     * An empty array means no children allowed.
+     * Null (absent key) means any child type is allowed.
+     */
+    private const CONTAINMENT_RULES = [
+        'accordion' => ['accordion_item'],
+        'button_group' => ['button'],
+        'breadcrumb' => [],
+        'carousel' => ['carousel_item'],
+        'list_group' => [],
+        'tooltip' => [],
+        'toast' => [],
     ];
 
     /** @var string[] */
@@ -101,7 +120,16 @@ final class TreeValidator
             if (!is_array($data['children'])) {
                 $this->errors[] = "Node '" . ($data['id'] ?? '?') . "' children must be an array";
             } else {
+                $parentType = $data['type'] ?? '';
                 foreach ($data['children'] as $child) {
+                    // Validate containment rules
+                    if (isset(self::CONTAINMENT_RULES[$parentType])) {
+                        $childType = $child['type'] ?? '';
+                        $allowed = self::CONTAINMENT_RULES[$parentType];
+                        if (!in_array($childType, $allowed, true)) {
+                            $this->errors[] = "Node '" . ($data['id'] ?? '?') . "' of type '{$parentType}' cannot contain child of type '{$childType}'";
+                        }
+                    }
                     $this->validateNode($child, $depth + 1);
                 }
             }

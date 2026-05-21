@@ -59,16 +59,29 @@ class BladeRenderer implements BladeRendererInterface
         // 3. Render children recursively
         $childrenHtml = '';
         if (isset($node['children']) && is_array($node['children'])) {
-            foreach ($node['children'] as $child) {
+            $children = $node['children'];
+
+            // Special case: accordion injects _parent_id and always_open into its items
+            if (($node['type'] ?? '') === 'accordion') {
+                $accordionId = $interpolatedProps['id'] ?? '';
+                $alwaysOpen = $interpolatedProps['always_open'] ?? false;
+                foreach ($children as &$child) {
+                    $child['props']['_parent_id'] = $accordionId;
+                    $child['props']['always_open'] = $alwaysOpen;
+                }
+                unset($child);
+            }
+
+            foreach ($children as $child) {
                 $childrenHtml .= $this->renderNode($child, $context);
             }
         }
 
         // 4. Render component view template
-        return $this->renderView($node['type'], $interpolatedProps, $childrenHtml);
+        return $this->renderView($node['type'], $interpolatedProps, $childrenHtml, $context);
     }
 
-    private function renderView(string $type, array $props, string $childrenHtml): string
+    private function renderView(string $type, array $props, string $childrenHtml, array $context = []): string
     {
         $file = $this->viewsDir . '/' . $type . '.php';
         if (!file_exists($file)) {
@@ -77,6 +90,9 @@ class BladeRenderer implements BladeRendererInterface
 
         // Prepare variables for clean scope in template file
         $slot = $childrenHtml;
+
+        // Extract context variables so views can access them (e.g. $breadcrumbs)
+        extract($context, EXTR_SKIP);
         
         ob_start();
         try {
