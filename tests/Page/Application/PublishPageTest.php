@@ -3,15 +3,15 @@ declare(strict_types=1);
 namespace LemurCms\Tests\Page\Application;
 
 use LemurCms\Page\Application\PublishPage;
-use LemurCms\Page\Domain\PageRepositoryInterface;
+use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class PublishPageTest extends TestCase
 {
     public function testExecutePublishesPage(): void
     {
-        $page = ['id' => 1, 'title' => 'Test', 'status' => 'draft'];
-        
+        $page = ['id' => 'test-id-1', 'title' => 'Test', 'status' => 'draft'];
+
         $repo = $this->createMock(PageRepositoryInterface::class);
         $repo->method('findById')->willReturn($page);
         $repo->expects($this->once())->method('save')->with(
@@ -19,6 +19,6 @@ class PublishPageTest extends TestCase
         );
 
         $useCase = new PublishPage($repo);
-        $useCase->execute(1);
+        $useCase->execute('test-id-1');
     }
 }

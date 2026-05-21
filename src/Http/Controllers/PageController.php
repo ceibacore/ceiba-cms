@@ -8,6 +8,7 @@ class PageController extends BaseController
 {
     public function __construct(
         private \LemurCms\Page\Application\ListPages $listPages,
+        private \LemurCms\Page\Application\GetPageById $getPageById,
         private \LemurCms\Page\Application\CreatePage $createPage,
         private \LemurCms\Page\Application\UpdatePage $updatePage,
         private \LemurCms\Page\Application\DeletePage $deletePage,
@@ -28,10 +29,25 @@ class PageController extends BaseController
         }
     }
 
+    public function show(string $id): void
+    {
+        try {
+            $page = $this->getPageById->execute($id);
+            if ($page === null) {
+                $this->error('Page not found', 404);
+                return;
+            }
+            $this->success($page, 'Page retrieved');
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
     public function store(): void
     {
         try {
             $data = $this->getRequest();
+            \LemurCms\Support\Validators\PageValidator::validatePage($data);
             $pageId = $this->createPage->execute($data);
             $this->success(['id' => $pageId], 'Page created', 201);
         } catch (\Exception $e) {
@@ -43,6 +59,7 @@ class PageController extends BaseController
     {
         try {
             $data = $this->getRequest();
+            \LemurCms\Support\Validators\PageValidator::validatePage($data);
             $this->updatePage->execute($id, $data);
             $this->success([], 'Page updated');
         } catch (\Exception $e) {

@@ -13,7 +13,7 @@ final class LemurDbSeoRepository implements SeoRepositoryInterface
 
     public function findByEntity(string $entityType, int $entityId): ?array
     {
-        return $this->db->query('cms_seo')->where(['entity_type' => $entityType, 'entity_id' => $entityId])->first();
+        return $this->db->query('seo')->where(['entity_type' => $entityType, 'entity_id' => $entityId])->first();
     }
 
     public function upsert(string $entityType, int $entityId, array $data): void
@@ -21,9 +21,10 @@ final class LemurDbSeoRepository implements SeoRepositoryInterface
         $existing = $this->findByEntity($entityType, $entityId);
         if ($existing) {
             $data['updated_at'] = date('Y-m-d H:i:s');
-            $this->db->query('cms_seo')->where(['id' => $existing['id']])->update($data);
+            $this->db->query('seo')->where(['id' => $existing['id']])->update($data);
         } else {
-            $this->db->query('cms_seo')->insert(array_merge(['entity_type' => $entityType, 'entity_id' => $entityId, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')], $data));
+            $id = \LemurCms\Support\Helpers\UuidHelper::v4();
+            $this->db->query('seo')->insert(array_merge(['id' => $id, 'entity_type' => $entityType, 'entity_id' => $entityId, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')], $data));
         }
     }
 }

@@ -3,58 +3,59 @@ declare(strict_types=1);
 namespace LemurCms\Tests\Seo\Infrastructure;
 
 use LemurCms\Seo\Infrastructure\LemurDbSeoRepository;
-use PHPUnit\Framework\TestCase;
+use LemurCms\Support\Helpers\UuidHelper;
+use LemurCms\Tests\TestCase;
 
 class LemurDbSeoRepositoryTest extends TestCase
 {
-    private \LemurDB $db;
     private LemurDbSeoRepository $repo;
 
     protected function setUp(): void
     {
-        $this->db = new \LemurDB('localhost', 'cms_test', 'root', '', 'cms_');
+        parent::setUp();
         $this->repo = new LemurDbSeoRepository($this->db);
     }
 
     public function testFindByEntityReturnsData(): void
     {
-        $this->db->query('seo')->insert([
-            'entity_type' => 'page',
-            'entity_id' => 1,
-            'meta_title' => 'Test Title',
+        $entityId = rand(1000, 9999);
+        $this->repo->upsert('page', $entityId, [
+            'meta_title'       => 'Test Title',
             'meta_description' => 'Test Description',
         ]);
 
-        $seo = $this->repo->findByEntity('page', 1);
-        
+        $seo = $this->repo->findByEntity('page', $entityId);
+
         $this->assertNotNull($seo);
         $this->assertEquals('Test Title', $seo['meta_title']);
     }
 
     public function testFindByEntityReturnsNullForMissing(): void
     {
-        $seo = $this->repo->findByEntity('page', 999);
+        $seo = $this->repo->findByEntity('page', 99999999);
         $this->assertNull($seo);
     }
 
     public function testUpsertCreatesNewEntry(): void
     {
-        $this->repo->upsert('product', 5, [
+        $entityId = rand(1000, 9999);
+        $this->repo->upsert('product', $entityId, [
             'meta_title' => 'Product Title',
-            'robots' => 'index,follow',
+            'robots'     => 'index,follow',
         ]);
 
-        $seo = $this->repo->findByEntity('product', 5);
+        $seo = $this->repo->findByEntity('product', $entityId);
         $this->assertNotNull($seo);
         $this->assertEquals('Product Title', $seo['meta_title']);
     }
 
     public function testUpsertUpdatesExistingEntry(): void
     {
-        $this->repo->upsert('page', 2, ['meta_title' => 'Old Title']);
-        $this->repo->upsert('page', 2, ['meta_title' => 'New Title']);
+        $entityId = rand(1000, 9999);
+        $this->repo->upsert('page', $entityId, ['meta_title' => 'Old Title']);
+        $this->repo->upsert('page', $entityId, ['meta_title' => 'New Title']);
 
-        $seo = $this->repo->findByEntity('page', 2);
+        $seo = $this->repo->findByEntity('page', $entityId);
         $this->assertEquals('New Title', $seo['meta_title']);
     }
 }

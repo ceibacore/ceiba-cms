@@ -11,9 +11,9 @@ class DeleteMenuItemTest extends TestCase
     public function testExecuteCallsDelete(): void
     {
         $repo = $this->createMock(MenuRepositoryInterface::class);
-        $repo->expects($this->once())->method('deleteMenuItem')->with(1);
+        $repo->expects($this->once())->method('deleteMenuItem')->with('test-id-1');
 
         $useCase = new DeleteMenuItem($repo);
-        $useCase->execute(1);
+        $useCase->execute('test-id-1');
     }
 }

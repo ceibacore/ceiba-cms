@@ -17,25 +17,29 @@ final class LemurDbPageRepository implements PageRepositoryInterface
 
     public function findBySlug(string $slug): ?array
     {
-        return $this->db->query('pages')->where(['slug' => $slug, 'status' => 'published'])->first();
+        $res = $this->db->query('pages')->where(['slug' => $slug, 'status' => 'published'])->first();
+        return $this->decodePage($res);
     }
 
     public function findById(string $id): ?array
     {
-        return $this->db->query('pages')->where(['id' => $id])->first();
+        $res = $this->db->query('pages')->where(['id' => $id])->first();
+        return $this->decodePage($res);
     }
 
     public function findPublished(int $limit, int $offset): array
     {
-        return $this->db->query('pages')
+        $rows = $this->db->query('pages')
             ->where(['status' => 'published'])
             ->orderBy('sort_order', 'ASC')
             ->limit($limit, $offset)
             ->get();
+        return array_map([$this, 'decodePage'], $rows);
     }
 
     public function save(array $data): string
     {
+        $data = $this->encodePage($data);
         $id = $data['id'] ?? null;
         if ($id) {
             unset($data['id']);
@@ -56,11 +60,31 @@ final class LemurDbPageRepository implements PageRepositoryInterface
 
     public function update(string $id, array $data): void
     {
+        $data = $this->encodePage($data);
         $this->db->query('pages')->where(['id' => $id])->update($data);
     }
 
     public function publish(string $id): void
     {
         $this->db->query('pages')->where(['id' => $id])->update(['status' => 'published']);
+    }
+
+    private function decodePage(?array $page): ?array
+    {
+        if ($page === null) {
+            return null;
+        }
+        if (isset($page['content']) && is_string($page['content'])) {
+            $page['content'] = json_decode($page['content'], true) ?? [];
+        }
+        return $page;
+    }
+
+    private function encodePage(array $data): array
+    {
+        if (isset($data['content']) && is_array($data['content'])) {
+            $data['content'] = json_encode($data['content']);
+        }
+        return $data;
     }
 }

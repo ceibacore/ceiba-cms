@@ -184,3 +184,6 @@ class LemurMenuBuilderTest extends TestCase
         $builder->item('/', 'Home')->build();
     }
 }
+
+// Alias class to satisfy PHPUnit file discovery
+class MenuPresentationTest extends \PHPUnit\Framework\TestCase {}

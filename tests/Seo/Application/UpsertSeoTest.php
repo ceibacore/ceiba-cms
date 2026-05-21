@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace LemurCms\Tests\Seo\Application;
 
 use LemurCms\Seo\Application\UpsertSeo;
-use LemurCms\Seo\Domain\SeoRepositoryInterface;
+use LemurCms\Seo\Domain\Repository\SeoRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class UpsertSeoTest extends TestCase

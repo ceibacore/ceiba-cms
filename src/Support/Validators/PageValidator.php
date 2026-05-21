@@ -37,8 +37,36 @@ class PageValidator
         }
 
         // Content es requerido
-        if (!isset($data['content']) || !is_string($data['content'])) {
-            throw new InvalidMenuException('Page content is required and must be a string');
+        if (!isset($data['content'])) {
+            throw new InvalidMenuException('Page content is required');
+        }
+
+        $content = $data['content'];
+        if (is_array($content)) {
+            $validator = new \LemurCms\PageBuilder\Domain\Service\TreeValidator();
+            $errors = $validator->validate($content);
+            if (!empty($errors)) {
+                throw new InvalidMenuException('Invalid page tree: ' . implode('; ', $errors));
+            }
+        } elseif (is_string($content)) {
+            $trimmed = trim($content);
+            $looksLikeJson = ($trimmed !== '' && ($trimmed[0] === '[' || $trimmed[0] === '{'));
+            if ($looksLikeJson) {
+                $decoded = json_decode($content, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new InvalidMenuException('Page content is malformed JSON');
+                }
+                if (!is_array($decoded)) {
+                    throw new InvalidMenuException('Page content JSON must be an array or object');
+                }
+                $validator = new \LemurCms\PageBuilder\Domain\Service\TreeValidator();
+                $errors = $validator->validate($decoded);
+                if (!empty($errors)) {
+                    throw new InvalidMenuException('Invalid page tree: ' . implode('; ', $errors));
+                }
+            }
+        } else {
+            throw new InvalidMenuException('Page content must be a string or array');
         }
 
         // Status debe ser válido si está presente

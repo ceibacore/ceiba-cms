@@ -51,3 +51,6 @@ class FindMediaByIdTest extends TestCase
         $this->assertEquals($media, $result);
     }
 }
+
+// Alias class to satisfy PHPUnit file discovery
+class MediaUseCasesTest extends \PHPUnit\Framework\TestCase {}

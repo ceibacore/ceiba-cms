@@ -11,9 +11,9 @@ class UpdateMenuItemTest extends TestCase
     public function testExecuteCallsRepository(): void
     {
         $repo = $this->createMock(MenuRepositoryInterface::class);
-        $repo->expects($this->once())->method('updateMenuItem')->with(1, ['label' => 'Updated']);
+        $repo->expects($this->once())->method('updateMenuItem')->with('test-id-1', ['label' => 'Updated']);
 
         $useCase = new UpdateMenuItem($repo);
-        $useCase->execute(1, ['label' => 'Updated']);
+        $useCase->execute('test-id-1', ['label' => 'Updated']);
     }
 }

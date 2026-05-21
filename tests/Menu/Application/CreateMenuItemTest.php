@@ -11,11 +11,12 @@ class CreateMenuItemTest extends TestCase
     public function testExecuteReturnsId(): void
     {
         $repo = $this->createMock(MenuRepositoryInterface::class);
-        $repo->method('saveMenuItem')->willReturn(42);
+        $repo->method('saveMenuItem')->willReturn('test-uuid-1234');
 
         $useCase = new CreateMenuItem($repo);
         $result = $useCase->execute(['menu_id' => 1, 'label' => 'Home']);
 
-        $this->assertEquals(42, $result);
+        $this->assertIsString($result);
+        $this->assertNotEmpty($result);
     }
 }

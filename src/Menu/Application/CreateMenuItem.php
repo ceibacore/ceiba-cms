@@ -8,7 +8,7 @@ final class CreateMenuItem
 {
     public function __construct(private MenuRepositoryInterface $repo) {}
 
-    public function execute(array $data): int
+    public function execute(array $data): string
     {
         return $this->repo->saveMenuItem($data);
     }

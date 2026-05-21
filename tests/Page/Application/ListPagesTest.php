@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace LemurCms\Tests\Page\Application;
 
 use LemurCms\Page\Application\ListPages;
-use LemurCms\Page\Domain\PageRepositoryInterface;
+use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class ListPagesTest extends TestCase

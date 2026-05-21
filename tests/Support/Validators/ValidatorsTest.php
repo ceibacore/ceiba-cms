@@ -88,6 +88,39 @@ class ValidatorsTest extends TestCase
         PageValidator::validatePage(['title' => 'About', 'slug' => 'about', 'content' => 'Hello', 'status' => 'invalid']);
     }
 
+    public function testPageValidatorRejectsMalformedJson(): void
+    {
+        $this->expectException(InvalidMenuException::class);
+        PageValidator::validatePage([
+            'title' => 'About',
+            'slug' => 'about',
+            'content' => '[{"id":',
+            'status' => 'draft'
+        ]);
+    }
+
+    public function testPageValidatorRejectsMalformedTree(): void
+    {
+        $this->expectException(InvalidMenuException::class);
+        PageValidator::validatePage([
+            'title' => 'About',
+            'slug' => 'about',
+            'content' => '[{"id": "n1", "type": "invalid-type"}]',
+            'status' => 'draft'
+        ]);
+    }
+
+    public function testPageValidatorAcceptsValidJsonTree(): void
+    {
+        $this->expectNotToThrow();
+        PageValidator::validatePage([
+            'title' => 'About',
+            'slug' => 'about',
+            'content' => '[{"id": "n1", "type": "container"}]',
+            'status' => 'draft'
+        ]);
+    }
+
     public function testPageValidatorValidatesForPublish(): void
     {
         $this->expectException(InvalidMenuException::class);

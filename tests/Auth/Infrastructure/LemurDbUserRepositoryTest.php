@@ -3,93 +3,104 @@ declare(strict_types=1);
 namespace LemurCms\Tests\Auth\Infrastructure;
 
 use LemurCms\Auth\Infrastructure\LemurDbUserRepository;
-use PHPUnit\Framework\TestCase;
+use LemurCms\Support\Helpers\UuidHelper;
+use LemurCms\Tests\TestCase;
 
 class LemurDbUserRepositoryTest extends TestCase
 {
-    private \LemurDB $db;
     private LemurDbUserRepository $repo;
 
     protected function setUp(): void
     {
-        $this->db = new \LemurDB('localhost', 'cms_test', 'root', '', 'cms_');
+        parent::setUp();
         $this->repo = new LemurDbUserRepository($this->db);
     }
 
     public function testFindByEmailReturnsUser(): void
     {
-        $this->db->query('users')->insert([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $id = UuidHelper::v4();
+        $this->db->query('access')->insert([
+            'id'            => $id,
+            'name'          => 'Test User',
+            'email'         => 'test_' . $id . '@example.com',
             'password_hash' => password_hash('password', PASSWORD_BCRYPT),
-            'is_active' => 1,
+            'is_active'     => 1,
         ]);
 
-        $user = $this->repo->findByEmail('test@example.com');
-        
+        $user = $this->repo->findByEmail('test_' . $id . '@example.com');
+
         $this->assertNotNull($user);
         $this->assertEquals('Test User', $user['name']);
     }
 
     public function testFindByIdReturnsUser(): void
     {
-        $id = $this->db->query('users')->insert([
-            'name' => 'User 1',
-            'email' => 'user1@example.com',
+        $id = UuidHelper::v4();
+        $this->db->query('access')->insert([
+            'id'            => $id,
+            'name'          => 'User 1',
+            'email'         => 'user1_' . $id . '@example.com',
             'password_hash' => password_hash('pass', PASSWORD_BCRYPT),
-            'is_active' => 1,
+            'is_active'     => 1,
         ]);
 
         $user = $this->repo->findById($id);
-        
+
         $this->assertNotNull($user);
         $this->assertEquals($id, $user['id']);
     }
 
     public function testSaveCreatesNewUser(): void
     {
+        $uid = UuidHelper::v4();
         $id = $this->repo->save([
-            'name' => 'New User',
-            'email' => 'new@example.com',
+            'name'          => 'New User',
+            'email'         => 'new_' . $uid . '@example.com',
             'password_hash' => password_hash('secure', PASSWORD_BCRYPT),
-            'is_active' => 1,
+            'is_active'     => 1,
         ]);
 
-        $this->assertIsInt($id);
-        $this->assertGreaterThan(0, $id);
+        $this->assertIsString($id);
+        $this->assertNotEmpty($id);
     }
 
     public function testGetUserPermissionsReturnsArray(): void
     {
-        $userId = $this->db->query('users')->insert([
-            'name' => 'Perm User',
-            'email' => 'perm@example.com',
+        $uid = UuidHelper::v4();
+        $userId = $this->repo->save([
+            'name'          => 'Perm User',
+            'email'         => 'perm_' . $uid . '@example.com',
             'password_hash' => password_hash('pass', PASSWORD_BCRYPT),
-            'is_active' => 1,
+            'is_active'     => 1,
         ]);
 
         $perms = $this->repo->getUserPermissions($userId);
-        
+
         $this->assertIsArray($perms);
     }
 
     public function testAssignRoleCreatesAssignment(): void
     {
-        $userId = $this->db->query('users')->insert([
-            'name' => 'Role User',
-            'email' => 'role@example.com',
+        $uid = UuidHelper::v4();
+        $userId = $this->repo->save([
+            'name'          => 'Role User',
+            'email'         => 'role_' . $uid . '@example.com',
             'password_hash' => password_hash('pass', PASSWORD_BCRYPT),
-            'is_active' => 1,
+            'is_active'     => 1,
         ]);
 
-        $roleId = $this->db->query('roles')->insert([
+        $roleId = UuidHelper::v4();
+        $this->db->query('roles')->insert([
+            'id'   => $roleId,
             'name' => 'Admin',
-            'slug' => 'admin',
+            'slug' => 'admin_' . $uid,
         ]);
 
         $this->repo->assignRole($userId, $roleId);
 
-        $assignment = $this->db->query('user_roles')->where(['user_id' => $userId, 'role_id' => $roleId])->first();
+        $assignment = $this->db->query('access_roles')
+            ->where(['access_id' => $userId, 'role_id' => $roleId])
+            ->first();
         $this->assertNotNull($assignment);
     }
 }

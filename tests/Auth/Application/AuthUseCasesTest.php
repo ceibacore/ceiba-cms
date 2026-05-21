@@ -78,3 +78,6 @@ class ChangePasswordTest extends TestCase
         $useCase->execute(1, 'newpass');
     }
 }
+
+// Alias class to satisfy PHPUnit file discovery
+class AuthUseCasesTest extends \PHPUnit\Framework\TestCase {}
