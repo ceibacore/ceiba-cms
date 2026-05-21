@@ -14,13 +14,22 @@ abstract class TestCase extends PHPUnitTestCase
         
         // Initialize test database connection
         // Configure with environment or defaults
-        $host = getenv('DB_HOST') ?: 'localhost';
+        $host = getenv('DB_HOST') ?: '127.0.0.1';
+        $port = (int) (getenv('DB_PORT') ?: 3307);
         $name = getenv('DB_NAME') ?: 'cms_test';
-        $user = getenv('DB_USER') ?: 'root';
-        $pass = getenv('DB_PASS') ?: '';
+        $user = getenv('DB_USER') ?: 'manager';
+        $pass = getenv('DB_PASS') ?: 'Manager2026x';
         $prefix = getenv('DB_PREFIX') ?: 'cms_';
 
-        $this->db = new \LemurDB($host, $name, $user, $pass, $prefix);
+        $this->db = \LemurDB::getInstance([
+            'driver'   => 'mysql',
+            'host'     => $host,
+            'port'     => $port,
+            'db'       => $name,
+            'username' => $user,
+            'password' => $pass,
+            'prefix'   => $prefix,
+        ]);
     }
 
     protected function tearDown(): void

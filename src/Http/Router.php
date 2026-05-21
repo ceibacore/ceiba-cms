@@ -140,7 +140,7 @@ class Router
 
     private function matchRoute(string $route, string $path, array &$params): bool
     {
-        $pattern = preg_replace_callback('/{(\w+)}/', fn($m) => '(?P<' . $m[1] . '>\d+)', $route);
+        $pattern = preg_replace_callback('/{(\w+)}/', fn($m) => '(?P<' . $m[1] . '>[a-zA-Z0-9-_]+)', $route);
         $pattern = '#^' . $pattern . '$#';
 
         if (preg_match($pattern, $path, $matches)) {

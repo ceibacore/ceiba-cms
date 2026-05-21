@@ -17,5 +17,13 @@
       "LemurCms\\Tests\\": "tests/"
     }
   },
-  "minimum_stability": "stable"
+  "minimum_stability": "stable",
+  "config": {
+    "audit": {
+      "block-insecure": false
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "10.5"
+  }
 }
