@@ -61,12 +61,29 @@ class BladeRenderer implements BladeRendererInterface
         if (isset($node['children']) && is_array($node['children'])) {
             $children = $node['children'];
 
-            // Special case: accordion injects _parent_id and always_open into its items
+            // Accordion: the parent id MUST be set so every accordion_item can
+            // reference it via data-bs-parent="#<id>" (Bootstrap collapse wiring).
+            // TreeValidator enforces props.id at save-time; the fallback here is a
+            // last-resort safety net for trees that bypass validation.
             if (($node['type'] ?? '') === 'accordion') {
-                $accordionId = $interpolatedProps['id'] ?? '';
-                $alwaysOpen = $interpolatedProps['always_open'] ?? false;
+                if (empty($interpolatedProps['id'])) {
+                    // Should never happen if TreeValidator ran — log and recover.
+                    trigger_error(
+                        "Accordion node '" . ($node['id'] ?? $node['type'] ?? 'unknown') . "' has no props.id — generating fallback. Run TreeValidator before rendering.",
+                        E_USER_WARNING
+                    );
+                    $interpolatedProps['id'] = 'accordion_' . uniqid();
+                }
+
+                // Guaranteed non-empty from this point on.
+                $accordionId = $interpolatedProps['id'];
+                $alwaysOpen  = $interpolatedProps['always_open'] ?? false;
+
                 foreach ($children as &$child) {
-                    $child['props']['_parent_id'] = $accordionId;
+                    if (!isset($child['props']) || !is_array($child['props'])) {
+                        $child['props'] = [];
+                    }
+                    $child['props']['_parent_id'] = $accordionId;  // required by accordion_item view
                     $child['props']['always_open'] = $alwaysOpen;
                 }
                 unset($child);

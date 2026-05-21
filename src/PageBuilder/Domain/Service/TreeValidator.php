@@ -12,6 +12,7 @@ use LemurCms\PageBuilder\Domain\Entity\Node;
  *  - Max total nodes: 500
  *  - Each node must have: id (non-empty string), type (non-empty string)
  *  - Allowed types: container, row, col, text, image, button, card, divider, html
+ *  - accordion nodes must declare a non-empty props.id so children can wire data-bs-parent
  */
 final class TreeValidator
 {
@@ -26,6 +27,13 @@ final class TreeValidator
         'carousel', 'carousel_item', 'collapse', 'list_group',
         'tooltip', 'toast', 'scrollspy', 'offcanvas',
     ];
+
+    /**
+     * Types whose props.id is mandatory.
+     * The accordion needs a stable HTML id so its items can reference it
+     * via data-bs-parent="#<id>" — without it the collapse behaviour breaks.
+     */
+    private const TYPES_REQUIRING_PROPS_ID = ['accordion'];
 
     /**
      * Containment rules: parent type => allowed child types.
@@ -108,6 +116,15 @@ final class TreeValidator
         // props must be array if present
         if (isset($data['props']) && !is_array($data['props'])) {
             $this->errors[] = "Node '" . ($data['id'] ?? '?') . "' props must be an object";
+        }
+
+        // types that require props.id (e.g. accordion needs it to wire data-bs-parent on children)
+        $type = $data['type'] ?? '';
+        if (in_array($type, self::TYPES_REQUIRING_PROPS_ID, true)) {
+            $propsId = $data['props']['id'] ?? null;
+            if (empty($propsId) || !is_string($propsId)) {
+                $this->errors[] = "Node '" . ($data['id'] ?? '?') . "' of type '{$type}' must have a non-empty string props.id";
+            }
         }
 
         // loop validation

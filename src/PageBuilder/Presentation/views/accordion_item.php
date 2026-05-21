@@ -8,7 +8,7 @@ $parentId = $props['_parent_id'] ?? null;
 $alwaysOpen = $props['always_open'] ?? false;
 
 $parentAttr = '';
-if (!$alwaysOpen && $parentId !== null) {
+if (!$alwaysOpen && !empty($parentId)) {
     $parentAttr = ' data-bs-parent="#' . htmlspecialchars((string) $parentId, ENT_QUOTES, 'UTF-8') . '"';
 }
 
