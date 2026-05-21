@@ -52,6 +52,7 @@ require_once __DIR__ . '/src/Http/Router.php';
 require_once __DIR__ . '/src/Http/Controllers/BaseController.php';
 require_once __DIR__ . '/src/Http/Controllers/MenuController.php';
 require_once __DIR__ . '/src/Http/Controllers/PageController.php';
+require_once __DIR__ . '/src/Http/Controllers/PageRenderController.php';
 require_once __DIR__ . '/src/Http/Controllers/CacheController.php';
 
 // ── Database Factories ───────────────────────────────────────────────────────
@@ -76,6 +77,7 @@ require_once __DIR__ . '/src/Menu/Application/DeleteMenuItem.php';
 require_once __DIR__ . '/src/Menu/Application/SaveBanner.php';
 require_once __DIR__ . '/src/Menu/Application/SaveLogo.php';
 require_once __DIR__ . '/src/Page/Application/GetPageBySlug.php';
+require_once __DIR__ . '/src/Page/Application/GetPageById.php';
 require_once __DIR__ . '/src/Page/Application/CreatePage.php';
 require_once __DIR__ . '/src/Page/Application/UpdatePage.php';
 require_once __DIR__ . '/src/Page/Application/PublishPage.php';
@@ -108,6 +110,30 @@ require_once __DIR__ . '/src/Seo/Infrastructure/LemurDbSeoRepository.php';
 require_once __DIR__ . '/src/Media/Infrastructure/LemurDbMediaRepository.php';
 require_once __DIR__ . '/src/Auth/Infrastructure/LemurDbUserRepository.php';
 
+// ── PageBuilder Layer ────────────────────────────────────────────────────────
+require_once __DIR__ . '/src/PageBuilder/Domain/Entity/LoopConfig.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Entity/Node.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Entity/ComponentDefinition.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Repository/TemplateRepositoryInterface.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Repository/ComponentDefinitionRepositoryInterface.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/TreeValidator.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/VariableInterpolator.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/LoopResolverInterface.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/DataProviderInterface.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/LoopResolver.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/BladeRendererInterface.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/BladeRenderer.php';
+require_once __DIR__ . '/src/PageBuilder/Application/ListTemplates.php';
+require_once __DIR__ . '/src/PageBuilder/Application/GetTemplateById.php';
+require_once __DIR__ . '/src/PageBuilder/Application/CreateTemplate.php';
+require_once __DIR__ . '/src/PageBuilder/Application/DeleteTemplate.php';
+require_once __DIR__ . '/src/PageBuilder/Application/ListComponentDefinitions.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/LemurDbTemplateRepository.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/LemurDbComponentDefinitionRepository.php';
+require_once __DIR__ . '/src/Support/Validators/TemplateValidator.php';
+require_once __DIR__ . '/src/Http/Controllers/TemplateController.php';
+require_once __DIR__ . '/src/Http/Controllers/ComponentDefinitionController.php';
+
 // ── Database Connection ──────────────────────────────────────────────────────
 $db = \LemurDB::getInstance([
     'driver'   => 'mysql',
@@ -125,6 +151,8 @@ $pageRepository  = new \LemurCms\Page\Infrastructure\LemurDbPageRepository($db);
 $seoRepository   = new \LemurCms\Seo\Infrastructure\LemurDbSeoRepository($db);
 $mediaRepository = new \LemurCms\Media\Infrastructure\LemurDbMediaRepository($db);
 $userRepository  = new \LemurCms\Auth\Infrastructure\LemurDbUserRepository($db);
+$templateRepository = new \LemurCms\PageBuilder\Infrastructure\LemurDbTemplateRepository($db);
+$componentDefinitionRepository = new \LemurCms\PageBuilder\Infrastructure\LemurDbComponentDefinitionRepository($db);
 
 // ── Create Use Cases ─────────────────────────────────────────────────────────
 $menuCache             = new \LemurCms\Menu\Presentation\LemurMenuCache(__DIR__);
@@ -142,6 +170,7 @@ $saveBanner       = new \LemurCms\Menu\Application\SaveBanner($menuRepository);
 $saveLogo         = new \LemurCms\Menu\Application\SaveLogo($menuRepository);
 
 $getPageBySlug    = new \LemurCms\Page\Application\GetPageBySlug($pageRepository);
+$getPageById      = new \LemurCms\Page\Application\GetPageById($pageRepository);
 $createPage       = new \LemurCms\Page\Application\CreatePage($pageRepository);
 $updatePage       = new \LemurCms\Page\Application\UpdatePage($pageRepository);
 $publishPage      = new \LemurCms\Page\Application\PublishPage($pageRepository);
@@ -162,16 +191,29 @@ $assignRole       = new \LemurCms\Auth\Application\AssignRole($userRepository);
 $checkPermission  = new \LemurCms\Auth\Application\CheckPermission($userRepository);
 $changePassword   = new \LemurCms\Auth\Application\ChangePassword($userRepository);
 
+$listTemplates            = new \LemurCms\PageBuilder\Application\ListTemplates($templateRepository);
+$getTemplateById          = new \LemurCms\PageBuilder\Application\GetTemplateById($templateRepository);
+$createTemplate           = new \LemurCms\PageBuilder\Application\CreateTemplate($templateRepository);
+$deleteTemplate           = new \LemurCms\PageBuilder\Application\DeleteTemplate($templateRepository);
+$listComponentDefinitions = new \LemurCms\PageBuilder\Application\ListComponentDefinitions($componentDefinitionRepository);
+
+// ── Render Engine services ───────────────────────────────────────────────────
+$loopResolver         = new \LemurCms\PageBuilder\Domain\Service\LoopResolver();
+$variableInterpolator = new \LemurCms\PageBuilder\Domain\Service\VariableInterpolator();
+$bladeRenderer        = new \LemurCms\PageBuilder\Domain\Service\BladeRenderer($loopResolver, $variableInterpolator);
+
 // ── Export container (opcional: devolver un contenedor manual) ───────────────
 return [
     'db'                 => $db,
     'auth'               => new \LemurCms\Auth\AuthManager(new \LemurCms\Auth\Drivers\SessionDriver($db)),
     'repositories' => [
-        'menu'   => $menuRepository,
-        'page'   => $pageRepository,
-        'seo'    => $seoRepository,
-        'media'  => $mediaRepository,
-        'user'   => $userRepository,
+        'menu'                => $menuRepository,
+        'page'                => $pageRepository,
+        'seo'                 => $seoRepository,
+        'media'               => $mediaRepository,
+        'user'                => $userRepository,
+        'template'            => $templateRepository,
+        'componentDefinition' => $componentDefinitionRepository,
     ],
     'presentation' => [
         'menuCache'              => $menuCache,
@@ -180,6 +222,13 @@ return [
         'breadcrumbBuilder'      => $breadcrumbBuilder,
         'notificationPresenter'  => $notificationPresenter,
     ],
+    'services' => [
+        'loopResolver'         => $loopResolver,
+        'variableInterpolator' => $variableInterpolator,
+        'bladeRenderer'        => $bladeRenderer,
+    ],
+    'loopResolver'  => $loopResolver,
+    'bladeRenderer' => $bladeRenderer,
     'useCases' => [
         // Menu
         'getMainNavbar'    => $getMainNavbar,
@@ -191,6 +240,7 @@ return [
         'saveLogo'         => $saveLogo,
         // Page
         'getPageBySlug'    => $getPageBySlug,
+        'getPageById'      => $getPageById,
         'createPage'       => $createPage,
         'updatePage'       => $updatePage,
         'publishPage'      => $publishPage,
@@ -210,5 +260,11 @@ return [
         'assignRole'       => $assignRole,
         'checkPermission'  => $checkPermission,
         'changePassword'   => $changePassword,
+        // PageBuilder
+        'listTemplates'            => $listTemplates,
+        'getTemplateById'          => $getTemplateById,
+        'createTemplate'           => $createTemplate,
+        'deleteTemplate'           => $deleteTemplate,
+        'listComponentDefinitions' => $listComponentDefinitions,
     ],
 ];

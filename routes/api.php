@@ -11,7 +11,10 @@ declare(strict_types=1);
 use LemurCms\Http\Router;
 use LemurCms\Http\Controllers\MenuController;
 use LemurCms\Http\Controllers\PageController;
+use LemurCms\Http\Controllers\PageRenderController;
 use LemurCms\Http\Controllers\CacheController;
+use LemurCms\Http\Controllers\TemplateController;
+use LemurCms\Http\Controllers\ComponentDefinitionController;
 
 $router = new Router();
 
@@ -34,6 +37,7 @@ $router->delete('/api/menus/items/{id}', fn($id) => $menuController->destroy($id
 // ── Page Routes ──────────────────────────────────────────────────────────────
 $pageController = new PageController(
     $container['useCases']['listPages'],
+    $container['useCases']['getPageById'],
     $container['useCases']['createPage'],
     $container['useCases']['updatePage'],
     $container['useCases']['deletePage'],
@@ -42,9 +46,38 @@ $pageController = new PageController(
 
 $router->get('/api/pages', fn() => $pageController->index(), 'page.index');
 $router->post('/api/pages', fn() => $pageController->store(), 'page.store');
+$router->get('/api/pages/{id}', fn($id) => $pageController->show($id), 'page.show');
 $router->put('/api/pages/{id}', fn($id) => $pageController->update($id), 'page.update');
+$router->patch('/api/pages/{id}', fn($id) => $pageController->update($id), 'page.patch');
 $router->delete('/api/pages/{id}', fn($id) => $pageController->destroy($id), 'page.delete');
 $router->post('/api/pages/{id}/publish', fn($id) => $pageController->publish($id), 'page.publish');
+
+$pageRenderController = new PageRenderController(
+    $container['useCases']['getPageBySlug'],
+    $container['bladeRenderer']
+);
+
+$router->get('/pages/{slug}', fn($slug) => $pageRenderController->show($slug), 'page.render');
+
+// ── Template Routes ──────────────────────────────────────────────────────────
+$templateController = new TemplateController(
+    $container['useCases']['listTemplates'],
+    $container['useCases']['getTemplateById'],
+    $container['useCases']['createTemplate'],
+    $container['useCases']['deleteTemplate'],
+);
+
+$router->get('/api/templates', fn() => $templateController->index(), 'template.index');
+$router->post('/api/templates', fn() => $templateController->store(), 'template.store');
+$router->get('/api/templates/{id}', fn($id) => $templateController->show($id), 'template.show');
+$router->delete('/api/templates/{id}', fn($id) => $templateController->destroy($id), 'template.destroy');
+
+// ── Component Routes ─────────────────────────────────────────────────────────
+$componentController = new ComponentDefinitionController(
+    $container['useCases']['listComponentDefinitions'],
+);
+
+$router->get('/api/components', fn() => $componentController->index(), 'component.index');
 
 // ── Cache Routes ─────────────────────────────────────────────────────────────
 $cacheController = new CacheController($container['presentation']['menuCache']);
