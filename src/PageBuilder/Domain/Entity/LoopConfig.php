@@ -13,6 +13,8 @@ final class LoopConfig
         public readonly string  $key      = 'id',
         public readonly ?int    $limit    = null,
         public readonly ?int    $offset   = null,
+        public readonly ?array  $filters  = null,
+        public readonly ?array  $sort     = null,
     ) {}
 
     public static function fromArray(array $data): self
@@ -23,6 +25,8 @@ final class LoopConfig
             key:      $data['key']      ?? 'id',
             limit:    isset($data['limit'])  ? (int) $data['limit']  : null,
             offset:   isset($data['offset']) ? (int) $data['offset'] : null,
+            filters:  isset($data['filters']) && is_array($data['filters']) ? $data['filters'] : null,
+            sort:     isset($data['sort']) && is_array($data['sort']) ? $data['sort'] : null,
         );
     }
 
@@ -34,6 +38,9 @@ final class LoopConfig
             'key'      => $this->key,
             'limit'    => $this->limit,
             'offset'   => $this->offset,
+            'filters'  => $this->filters,
+            'sort'     => $this->sort,
         ];
     }
 }
+

@@ -33,12 +33,21 @@ class BladeRenderer implements BladeRendererInterface
         if (isset($node['loop']) && is_array($node['loop'])) {
             $loop = $node['loop'];
             if (!empty($loop['source']) && !empty($loop['variable'])) {
+                // Interpolate loop options using current context (to resolve e.g. Category ID dynamically)
+                $loop = $this->variableInterpolator->interpolateProps($loop, $context);
+
                 $options = [];
                 if (isset($loop['limit'])) {
                     $options['limit'] = $loop['limit'];
                 }
                 if (isset($loop['offset'])) {
                     $options['offset'] = $loop['offset'];
+                }
+                if (isset($loop['filters']) && is_array($loop['filters'])) {
+                    $options['filters'] = $loop['filters'];
+                }
+                if (isset($loop['sort']) && is_array($loop['sort'])) {
+                    $options['sort'] = $loop['sort'];
                 }
 
                 $items = $this->loopResolver->resolve($loop['source'], $options);

@@ -155,6 +155,24 @@ require_once __DIR__ . '/src/Http/Controllers/LayoutController.php';
 require_once __DIR__ . '/src/Http/Controllers/ReservedPathController.php';
 require_once __DIR__ . '/src/Http/Controllers/HomeController.php';
 
+// ── DynamicModule Layer ──────────────────────────────────────────────────────
+require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleFieldType.php';
+require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleField.php';
+require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleDefinition.php';
+require_once __DIR__ . '/src/DynamicModule/Domain/Repository/ModuleDefinitionRepositoryInterface.php';
+require_once __DIR__ . '/src/DynamicModule/Domain/Repository/GenericModuleRepositoryInterface.php';
+require_once __DIR__ . '/src/DynamicModule/Infrastructure/DynamicTableManager.php';
+require_once __DIR__ . '/src/DynamicModule/Infrastructure/LemurDbModuleDefinitionRepository.php';
+require_once __DIR__ . '/src/DynamicModule/Infrastructure/GenericModuleRepository.php';
+require_once __DIR__ . '/src/DynamicModule/Application/CreateDynamicModule.php';
+require_once __DIR__ . '/src/DynamicModule/Application/UpdateDynamicModule.php';
+require_once __DIR__ . '/src/DynamicModule/Application/DeleteDynamicModule.php';
+require_once __DIR__ . '/src/DynamicModule/Application/GetModuleDefinition.php';
+require_once __DIR__ . '/src/DynamicModule/Application/ListDynamicModules.php';
+require_once __DIR__ . '/src/DynamicModule/Infrastructure/DynamicModuleDataProvider.php';
+require_once __DIR__ . '/src/DynamicModule/Infrastructure/ApiDataProvider.php';
+
+
 // ── Database Connection ──────────────────────────────────────────────────────
 $db = \LemurDB::getInstance([
     'driver'   => 'mysql',
@@ -176,6 +194,10 @@ $templateRepository = new \LemurCms\PageBuilder\Infrastructure\LemurDbTemplateRe
 $componentDefinitionRepository = new \LemurCms\PageBuilder\Infrastructure\LemurDbComponentDefinitionRepository($db);
 $pageLayoutRepository    = new \LemurCms\PageBuilder\Infrastructure\LemurDbPageLayoutRepository($db);
 $reservedPathRepository  = new \LemurCms\Routing\Infrastructure\LemurDbReservedPathRepository($db);
+$moduleDefinitionRepository = new \LemurCms\DynamicModule\Infrastructure\LemurDbModuleDefinitionRepository($db);
+$genericModuleRepository    = new \LemurCms\DynamicModule\Infrastructure\GenericModuleRepository($db);
+$dynamicTableManager        = new \LemurCms\DynamicModule\Infrastructure\DynamicTableManager($db);
+
 
 // ── Create Use Cases ─────────────────────────────────────────────────────────
 $menuCache             = new \LemurCms\Menu\Presentation\LemurMenuCache(__DIR__);
@@ -230,6 +252,24 @@ $deleteLayout     = new \LemurCms\PageBuilder\Application\DeleteLayout($pageLayo
 
 // ── Render Engine services ───────────────────────────────────────────────────
 $loopResolver         = new \LemurCms\PageBuilder\Domain\Service\LoopResolver();
+
+// Register Data Providers
+$loopResolver->register('api', new \LemurCms\DynamicModule\Infrastructure\ApiDataProvider());
+try {
+    $activeModules = $moduleDefinitionRepository->findAll();
+    foreach ($activeModules as $moduleDef) {
+        $loopResolver->register(
+            'module:' . $moduleDef->moduleSlug,
+            new \LemurCms\DynamicModule\Infrastructure\DynamicModuleDataProvider(
+                $moduleDef->tableName(),
+                $genericModuleRepository
+            )
+        );
+    }
+} catch (\Throwable $e) {
+    // Avoid blocking bootstrap if DB is not migrated or connection is pending
+}
+
 $variableInterpolator = new \LemurCms\PageBuilder\Domain\Service\VariableInterpolator();
 $bladeRenderer        = new \LemurCms\PageBuilder\Domain\Service\BladeRenderer($loopResolver, $variableInterpolator);
 $layoutRenderer       = new \LemurCms\PageBuilder\Domain\Service\LayoutRenderer();
@@ -238,6 +278,13 @@ $reservedPathChecker  = new \LemurCms\Routing\Domain\Service\ReservedPathChecker
 $listReservedPaths   = new \LemurCms\Routing\Application\ListReservedPaths($reservedPathRepository);
 $addReservedPath     = new \LemurCms\Routing\Application\AddReservedPath($reservedPathRepository);
 $removeReservedPath  = new \LemurCms\Routing\Application\RemoveReservedPath($reservedPathRepository);
+
+$createDynamicModule = new \LemurCms\DynamicModule\Application\CreateDynamicModule($db, $moduleDefinitionRepository, $dynamicTableManager);
+$updateDynamicModule = new \LemurCms\DynamicModule\Application\UpdateDynamicModule($db, $moduleDefinitionRepository, $dynamicTableManager);
+$deleteDynamicModule = new \LemurCms\DynamicModule\Application\DeleteDynamicModule($db, $moduleDefinitionRepository, $dynamicTableManager);
+$getModuleDefinition = new \LemurCms\DynamicModule\Application\GetModuleDefinition($moduleDefinitionRepository);
+$listDynamicModules  = new \LemurCms\DynamicModule\Application\ListDynamicModules($moduleDefinitionRepository);
+
 
 // ── Export container (opcional: devolver un contenedor manual) ───────────────
 return [
@@ -253,6 +300,8 @@ return [
         'componentDefinition' => $componentDefinitionRepository,
         'pageLayout'          => $pageLayoutRepository,
         'reservedPath'        => $reservedPathRepository,
+        'moduleDefinition'    => $moduleDefinitionRepository,
+        'genericModule'       => $genericModuleRepository,
     ],
     'presentation' => [
         'menuCache'              => $menuCache,
@@ -319,5 +368,11 @@ return [
         'listReservedPaths'  => $listReservedPaths,
         'addReservedPath'    => $addReservedPath,
         'removeReservedPath' => $removeReservedPath,
+        // DynamicModule
+        'createDynamicModule' => $createDynamicModule,
+        'updateDynamicModule' => $updateDynamicModule,
+        'deleteDynamicModule' => $deleteDynamicModule,
+        'getModuleDefinition' => $getModuleDefinition,
+        'listDynamicModules'  => $listDynamicModules,
     ],
 ];

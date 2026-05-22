@@ -15,11 +15,18 @@ class LoopResolver implements LoopResolverInterface
 
     public function resolve(string $source, array $options = []): iterable
     {
-        if (!isset($this->providers[$source])) {
+        $provider = $this->providers[$source] ?? null;
+
+        if ($provider === null && str_starts_with($source, 'api:')) {
+            $provider = $this->providers['api'] ?? null;
+            $options['url'] = substr($source, 4);
+        }
+
+        if ($provider === null) {
             return [];
         }
 
-        $data = $this->providers[$source]->getData($options);
+        $data = $provider->getData($options);
 
         // Convert iterable to array to support offset and limit if needed
         if ($data instanceof \Traversable) {
