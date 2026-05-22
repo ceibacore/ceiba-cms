@@ -10,7 +10,6 @@ final class CheckPermission
 
     public function execute(string $userId, string $permissionSlug): bool
     {
-        $permissions = $this->repo->getUserPermissions($userId);
-        return in_array($permissionSlug, array_column($permissions, 'slug'), true);
+        return $this->repo->checkPermission($userId, $permissionSlug);
     }
 }

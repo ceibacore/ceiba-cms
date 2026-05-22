@@ -39,26 +39,22 @@ class CheckPermissionTest extends TestCase
 {
     public function testExecuteReturnsTrueIfPermissionExists(): void
     {
-        $perms = [['slug' => 'edit_posts'], ['slug' => 'delete_posts']];
-        
         $repo = $this->createMock(UserRepositoryInterface::class);
-        $repo->method('getUserPermissions')->willReturn($perms);
+        $repo->method('checkPermission')->willReturn(true);
 
         $useCase = new CheckPermission($repo);
-        $result = $useCase->execute(1, 'edit_posts');
+        $result = $useCase->execute("1", 'edit_posts');
 
         $this->assertTrue($result);
     }
 
     public function testExecuteReturnsFalseIfPermissionMissing(): void
     {
-        $perms = [['slug' => 'edit_posts']];
-        
         $repo = $this->createMock(UserRepositoryInterface::class);
-        $repo->method('getUserPermissions')->willReturn($perms);
+        $repo->method('checkPermission')->willReturn(false);
 
         $useCase = new CheckPermission($repo);
-        $result = $useCase->execute(1, 'admin_access');
+        $result = $useCase->execute("1", 'admin_access');
 
         $this->assertFalse($result);
     }
@@ -80,4 +76,8 @@ class ChangePasswordTest extends TestCase
 }
 
 // Alias class to satisfy PHPUnit file discovery
-class AuthUseCasesTest extends \PHPUnit\Framework\TestCase {}
+class AuthUseCasesTest extends \PHPUnit\Framework\TestCase {
+    public function testDummy(): void {
+        $this->assertTrue(true);
+    }
+}

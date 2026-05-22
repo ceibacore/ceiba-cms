@@ -76,6 +76,17 @@ final class LemurDbUserRepository implements UserRepositoryInterface
 
     public function checkPermission(string $userId, string $permission): bool
     {
+        // SuperAdmin bypass
+        $superadminRole = $this->db->query('roles')->where(['slug' => 'superadmin'])->first();
+        if ($superadminRole) {
+            $hasSuperadmin = $this->db->query('access_roles')
+                ->where(['access_id' => $userId, 'role_id' => $superadminRole['id']])
+                ->exists();
+            if ($hasSuperadmin) {
+                return true;
+            }
+        }
+
         $perms = $this->getUserPermissions($userId);
         foreach ($perms as $perm) {
             if ($perm['slug'] === $permission || $perm['name'] === $permission) {
