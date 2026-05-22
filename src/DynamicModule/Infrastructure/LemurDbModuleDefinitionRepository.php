@@ -94,6 +94,7 @@ final class LemurDbModuleDefinitionRepository implements ModuleDefinitionReposit
             'module_id'     => $def['module_id'],
             'module_name'   => $module['name'],
             'module_slug'   => $module['slug'],
+            'description'   => $module['description'] ?? null,
             'fields_schema' => $def['fields_schema'],
             'icon'          => $def['icon'],
         ]);

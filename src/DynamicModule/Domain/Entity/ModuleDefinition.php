@@ -15,6 +15,7 @@ final class ModuleDefinition
         public readonly string  $moduleSlug,
         public readonly array   $fields,
         public readonly ?string $icon = null,
+        public readonly ?string $description = null,
     ) {
         foreach ($fields as $field) {
             if (!$field instanceof ModuleField) {
@@ -41,12 +42,13 @@ final class ModuleDefinition
         }
 
         return new self(
-            id:         $data['id'] ?? throw new \InvalidArgumentException('ModuleDefinition missing id'),
-            moduleId:   $data['module_id'] ?? throw new \InvalidArgumentException('ModuleDefinition missing module_id'),
-            moduleName: $data['module_name'] ?? $data['name'] ?? throw new \InvalidArgumentException('ModuleDefinition missing module_name/name'),
-            moduleSlug: $data['module_slug'] ?? $data['slug'] ?? throw new \InvalidArgumentException('ModuleDefinition missing module_slug/slug'),
-            fields:     $fields,
-            icon:       $data['icon'] ?? null,
+            id:          $data['id'] ?? throw new \InvalidArgumentException('ModuleDefinition missing id'),
+            moduleId:    $data['module_id'] ?? throw new \InvalidArgumentException('ModuleDefinition missing module_id'),
+            moduleName:  $data['module_name'] ?? $data['name'] ?? throw new \InvalidArgumentException('ModuleDefinition missing module_name/name'),
+            moduleSlug:  $data['module_slug'] ?? $data['slug'] ?? throw new \InvalidArgumentException('ModuleDefinition missing module_slug/slug'),
+            fields:      $fields,
+            icon:        $data['icon'] ?? null,
+            description: $data['description'] ?? null,
         );
     }
 
@@ -57,6 +59,10 @@ final class ModuleDefinition
             'module_id'   => $this->moduleId,
             'module_name' => $this->moduleName,
             'module_slug' => $this->moduleSlug,
+            // Aliases usados por el frontend
+            'name'        => $this->moduleName,
+            'slug'        => $this->moduleSlug,
+            'description' => $this->description,
             'fields'      => array_map(fn(ModuleField $f) => $f->toArray(), $this->fields),
             'icon'        => $this->icon,
         ];
