@@ -19,7 +19,7 @@ abstract class TestCase extends PHPUnitTestCase
         $name = getenv('DB_NAME') ?: 'cms_test';
         $user = getenv('DB_USER') ?: 'manager';
         $pass = getenv('DB_PASS') ?: 'Manager2026x';
-        $prefix = getenv('DB_PREFIX') ?: 'cms_';
+        $prefix = getenv('DB_PREFIX') ?: 't_';
 
         $this->db = \LemurDB::getInstance([
             'driver'   => 'mysql',

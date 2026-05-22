@@ -27,7 +27,7 @@ final class GenericModuleRepository implements GenericModuleRepositoryInterface
         $defRow = $this->db->query('module_definitions')
             ->join($prefix . 'modules', "`{$prefix}module_definitions`.`module_id` = `{$prefix}modules`.`id`")
             ->select(["`{$prefix}module_definitions`.*", "`{$prefix}modules`.`slug` as module_slug"])
-            ->where(["`{$prefix}modules`.`slug`" => $slug])
+            ->where(["{$prefix}modules.slug" => $slug])
             ->first();
 
         $selects = ["`{$mainTablePrefixed}`.*"];
@@ -52,7 +52,7 @@ final class GenericModuleRepository implements GenericModuleRepositoryInterface
             // Check if target module is dynamic (exists in module_definitions)
             $targetDef = $this->db->query('module_definitions')
                 ->join($prefix . 'modules', "`{$prefix}module_definitions`.`module_id` = `{$prefix}modules`.`id`")
-                ->where(["`{$prefix}modules`.`slug`" => $relationTargetSlug])
+                ->where(["{$prefix}modules.slug" => $relationTargetSlug])
                 ->first();
 
             $targetTable = $targetDef ? "cms_" . $relationTargetSlug : $relationTargetSlug;
@@ -98,7 +98,7 @@ final class GenericModuleRepository implements GenericModuleRepositoryInterface
                 }
             } else {
                 // Exact match
-                $query->where(["`{$mainTablePrefixed}`.`{$col}`" => $val]);
+                $query->where(["{$mainTablePrefixed}.{$col}" => $val]);
             }
         }
 
@@ -124,7 +124,7 @@ final class GenericModuleRepository implements GenericModuleRepositoryInterface
 
         $query = $this->db->query($table);
         $query->whereRaw("`{$mainTablePrefixed}`.`deleted_at` IS NULL");
-        $query->where(["`{$mainTablePrefixed}`.`id`" => $id]);
+        $query->where(["{$mainTablePrefixed}.id" => $id]);
 
         // Parse relations for joins
         $slug = str_starts_with($table, 'cms_') ? substr($table, 4) : $table;
@@ -133,7 +133,7 @@ final class GenericModuleRepository implements GenericModuleRepositoryInterface
         $defRow = $this->db->query('module_definitions')
             ->join($prefix . 'modules', "`{$prefix}module_definitions`.`module_id` = `{$prefix}modules`.`id`")
             ->select(["`{$prefix}module_definitions`.*", "`{$prefix}modules`.`slug` as module_slug"])
-            ->where(["`{$prefix}modules`.`slug`" => $slug])
+            ->where(["{$prefix}modules.slug" => $slug])
             ->first();
 
         $selects = ["`{$mainTablePrefixed}`.*"];
@@ -156,7 +156,7 @@ final class GenericModuleRepository implements GenericModuleRepositoryInterface
             
             $targetDef = $this->db->query('module_definitions')
                 ->join($prefix . 'modules', "`{$prefix}module_definitions`.`module_id` = `{$prefix}modules`.`id`")
-                ->where(["`{$prefix}modules`.`slug`" => $relationTargetSlug])
+                ->where(["{$prefix}modules.slug" => $relationTargetSlug])
                 ->first();
 
             $targetTable = $targetDef ? "cms_" . $relationTargetSlug : $relationTargetSlug;
@@ -227,7 +227,7 @@ final class GenericModuleRepository implements GenericModuleRepositoryInterface
                 $slug = str_starts_with($table, 'cms_') ? substr($table, 4) : $table;
                 $defRow = $this->db->query('module_definitions')
                     ->join($prefix . 'modules', "`{$prefix}module_definitions`.`module_id` = `{$prefix}modules`.`id`")
-                    ->where(["`{$prefix}modules`.`slug`" => $slug])
+                    ->where(["{$prefix}modules.slug" => $slug])
                     ->first();
                 $searchFields = [];
                 if ($defRow && isset($defRow['fields_schema'])) {
@@ -249,7 +249,7 @@ final class GenericModuleRepository implements GenericModuleRepositoryInterface
                     $query->whereRaw("(" . implode(" OR ", $orConditions) . ")", $bindParams);
                 }
             } else {
-                $query->where(["`{$mainTablePrefixed}`.`{$col}`" => $val]);
+                $query->where(["{$mainTablePrefixed}.{$col}" => $val]);
             }
         }
 
@@ -264,7 +264,7 @@ final class GenericModuleRepository implements GenericModuleRepositoryInterface
         $def = $this->db->query('module_definitions')
             ->join($prefix . 'modules', "`{$prefix}module_definitions`.`module_id` = `{$prefix}modules`.`id`")
             ->select(["`{$prefix}module_definitions`.`fields_schema`"])
-            ->where(["`{$prefix}modules`.`slug`" => $slug])
+            ->where(["{$prefix}modules.slug" => $slug])
             ->first();
 
         if ($def && isset($def['fields_schema'])) {

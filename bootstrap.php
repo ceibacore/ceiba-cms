@@ -256,7 +256,7 @@ $loopResolver         = new \LemurCms\PageBuilder\Domain\Service\LoopResolver();
 // Register Data Providers
 $loopResolver->register('api', new \LemurCms\DynamicModule\Infrastructure\ApiDataProvider());
 try {
-    $activeModules = $moduleDefinitionRepository->findAll();
+    $activeModules = $moduleDefinitionRepository->listAll();
     foreach ($activeModules as $moduleDef) {
         $loopResolver->register(
             'module:' . $moduleDef->moduleSlug,
