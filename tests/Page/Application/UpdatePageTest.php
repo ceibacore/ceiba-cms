@@ -14,7 +14,7 @@ class UpdatePageTest extends TestCase
         $repo->method('findById')->willReturn(['id' => 'test-id-1', 'title' => 'Old']);
         $repo->expects($this->once())->method('save');
 
-        $useCase = new UpdatePage($repo);
+        $useCase = new UpdatePage($repo, new \LemurCms\PageBuilder\Domain\Service\TreeNormalizer());
         $useCase->execute('test-id-1', ['title' => 'New']);
     }
 
@@ -24,7 +24,7 @@ class UpdatePageTest extends TestCase
         $repo->method('findById')->willReturn(null);
         $repo->expects($this->never())->method('save');
 
-        $useCase = new UpdatePage($repo);
+        $useCase = new UpdatePage($repo, new \LemurCms\PageBuilder\Domain\Service\TreeNormalizer());
         $useCase->execute('nonexistent-id', ['title' => 'Test']);
     }
 }

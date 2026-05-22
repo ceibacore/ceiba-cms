@@ -13,7 +13,7 @@ class CreatePageTest extends TestCase
         $repo = $this->createMock(PageRepositoryInterface::class);
         $repo->method('save')->willReturn('test-uuid-1234');
 
-        $useCase = new CreatePage($repo);
+        $useCase = new CreatePage($repo, new \LemurCms\PageBuilder\Domain\Service\TreeNormalizer());
         $result = $useCase->execute(['title' => 'Test', 'slug' => 'test']);
 
         $this->assertIsString($result);

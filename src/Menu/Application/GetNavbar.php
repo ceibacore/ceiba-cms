@@ -10,7 +10,7 @@ use LemurCms\Menu\Presentation\LemurMenuCache;
  * Renders navbar HTML with caching.
  * Returns cached HTML if available, otherwise generates and caches.
  */
-final class GetNavbar
+class GetNavbar
 {
     public function __construct(
         private MenuRepositoryInterface $repo,

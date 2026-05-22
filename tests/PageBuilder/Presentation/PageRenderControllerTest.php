@@ -26,9 +26,20 @@ class PageRenderControllerTest extends TestCase
 
         $getPageBySlug = new GetPageBySlug($this->pageRepoMock);
 
+        $getLayoutByIdMock = $this->createMock(\LemurCms\PageBuilder\Application\GetLayoutById::class);
+        $getDefaultLayoutMock = $this->createMock(\LemurCms\PageBuilder\Application\GetDefaultLayout::class);
+        $layoutRendererMock = $this->createMock(\LemurCms\PageBuilder\Domain\Service\LayoutRenderer::class);
+        $getNavbarMock = $this->createMock(\LemurCms\Menu\Application\GetNavbar::class);
+
+        $layoutRendererMock->method('render')->willReturnCallback(fn($contentHtml) => $contentHtml);
+
         $this->controller = new PageRenderController(
             $getPageBySlug,
-            $this->bladeRendererMock
+            $this->bladeRendererMock,
+            $getLayoutByIdMock,
+            $getDefaultLayoutMock,
+            $layoutRendererMock,
+            $getNavbarMock
         );
     }
 

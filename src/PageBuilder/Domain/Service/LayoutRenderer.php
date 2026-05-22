@@ -9,7 +9,7 @@ namespace LemurCms\PageBuilder\Domain\Service;
  * palette keys map to CSS custom properties:
  *   primary, secondary, background, surface, text, border, accent
  */
-final class LayoutRenderer
+class LayoutRenderer
 {
     /**
      * @param string   $contentHtml  Rendered inner content (from BladeRenderer)
