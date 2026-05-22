@@ -131,9 +131,29 @@ require_once __DIR__ . '/src/PageBuilder/Application/DeleteTemplate.php';
 require_once __DIR__ . '/src/PageBuilder/Application/ListComponentDefinitions.php';
 require_once __DIR__ . '/src/PageBuilder/Infrastructure/LemurDbTemplateRepository.php';
 require_once __DIR__ . '/src/PageBuilder/Infrastructure/LemurDbComponentDefinitionRepository.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Entity/PageLayout.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Repository/PageLayoutRepositoryInterface.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/LemurDbPageLayoutRepository.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/LayoutRenderer.php';
+require_once __DIR__ . '/src/PageBuilder/Application/ListLayouts.php';
+require_once __DIR__ . '/src/PageBuilder/Application/GetLayoutById.php';
+require_once __DIR__ . '/src/PageBuilder/Application/GetDefaultLayout.php';
+require_once __DIR__ . '/src/PageBuilder/Application/CreateLayout.php';
+require_once __DIR__ . '/src/PageBuilder/Application/UpdateLayout.php';
+require_once __DIR__ . '/src/PageBuilder/Application/DeleteLayout.php';
 require_once __DIR__ . '/src/Support/Validators/TemplateValidator.php';
+require_once __DIR__ . '/src/Support/Validators/LayoutValidator.php';
+require_once __DIR__ . '/src/Routing/Domain/Repository/ReservedPathRepositoryInterface.php';
+require_once __DIR__ . '/src/Routing/Infrastructure/LemurDbReservedPathRepository.php';
+require_once __DIR__ . '/src/Routing/Domain/Service/ReservedPathChecker.php';
+require_once __DIR__ . '/src/Routing/Application/ListReservedPaths.php';
+require_once __DIR__ . '/src/Routing/Application/AddReservedPath.php';
+require_once __DIR__ . '/src/Routing/Application/RemoveReservedPath.php';
 require_once __DIR__ . '/src/Http/Controllers/TemplateController.php';
 require_once __DIR__ . '/src/Http/Controllers/ComponentDefinitionController.php';
+require_once __DIR__ . '/src/Http/Controllers/LayoutController.php';
+require_once __DIR__ . '/src/Http/Controllers/ReservedPathController.php';
+require_once __DIR__ . '/src/Http/Controllers/HomeController.php';
 
 // ── Database Connection ──────────────────────────────────────────────────────
 $db = \LemurDB::getInstance([
@@ -154,6 +174,8 @@ $mediaRepository = new \LemurCms\Media\Infrastructure\LemurDbMediaRepository($db
 $userRepository  = new \LemurCms\Auth\Infrastructure\LemurDbUserRepository($db);
 $templateRepository = new \LemurCms\PageBuilder\Infrastructure\LemurDbTemplateRepository($db);
 $componentDefinitionRepository = new \LemurCms\PageBuilder\Infrastructure\LemurDbComponentDefinitionRepository($db);
+$pageLayoutRepository    = new \LemurCms\PageBuilder\Infrastructure\LemurDbPageLayoutRepository($db);
+$reservedPathRepository  = new \LemurCms\Routing\Infrastructure\LemurDbReservedPathRepository($db);
 
 // ── Create Use Cases ─────────────────────────────────────────────────────────
 $menuCache             = new \LemurCms\Menu\Presentation\LemurMenuCache(__DIR__);
@@ -199,10 +221,23 @@ $createTemplate           = new \LemurCms\PageBuilder\Application\CreateTemplate
 $deleteTemplate           = new \LemurCms\PageBuilder\Application\DeleteTemplate($templateRepository);
 $listComponentDefinitions = new \LemurCms\PageBuilder\Application\ListComponentDefinitions($componentDefinitionRepository);
 
+$listLayouts      = new \LemurCms\PageBuilder\Application\ListLayouts($pageLayoutRepository);
+$getLayoutById    = new \LemurCms\PageBuilder\Application\GetLayoutById($pageLayoutRepository);
+$getDefaultLayout = new \LemurCms\PageBuilder\Application\GetDefaultLayout($pageLayoutRepository);
+$createLayout     = new \LemurCms\PageBuilder\Application\CreateLayout($pageLayoutRepository);
+$updateLayout     = new \LemurCms\PageBuilder\Application\UpdateLayout($pageLayoutRepository);
+$deleteLayout     = new \LemurCms\PageBuilder\Application\DeleteLayout($pageLayoutRepository);
+
 // ── Render Engine services ───────────────────────────────────────────────────
 $loopResolver         = new \LemurCms\PageBuilder\Domain\Service\LoopResolver();
 $variableInterpolator = new \LemurCms\PageBuilder\Domain\Service\VariableInterpolator();
 $bladeRenderer        = new \LemurCms\PageBuilder\Domain\Service\BladeRenderer($loopResolver, $variableInterpolator);
+$layoutRenderer       = new \LemurCms\PageBuilder\Domain\Service\LayoutRenderer();
+$reservedPathChecker  = new \LemurCms\Routing\Domain\Service\ReservedPathChecker($reservedPathRepository);
+
+$listReservedPaths   = new \LemurCms\Routing\Application\ListReservedPaths($reservedPathRepository);
+$addReservedPath     = new \LemurCms\Routing\Application\AddReservedPath($reservedPathRepository);
+$removeReservedPath  = new \LemurCms\Routing\Application\RemoveReservedPath($reservedPathRepository);
 
 // ── Export container (opcional: devolver un contenedor manual) ───────────────
 return [
@@ -216,6 +251,8 @@ return [
         'user'                => $userRepository,
         'template'            => $templateRepository,
         'componentDefinition' => $componentDefinitionRepository,
+        'pageLayout'          => $pageLayoutRepository,
+        'reservedPath'        => $reservedPathRepository,
     ],
     'presentation' => [
         'menuCache'              => $menuCache,
@@ -228,9 +265,12 @@ return [
         'loopResolver'         => $loopResolver,
         'variableInterpolator' => $variableInterpolator,
         'bladeRenderer'        => $bladeRenderer,
+        'layoutRenderer'       => $layoutRenderer,
     ],
     'loopResolver'  => $loopResolver,
     'bladeRenderer' => $bladeRenderer,
+    'layoutRenderer'      => $layoutRenderer,
+    'reservedPathChecker' => $reservedPathChecker,
     'useCases' => [
         // Menu
         'getMainNavbar'    => $getMainNavbar,
@@ -268,5 +308,16 @@ return [
         'createTemplate'           => $createTemplate,
         'deleteTemplate'           => $deleteTemplate,
         'listComponentDefinitions' => $listComponentDefinitions,
+        // Layout
+        'listLayouts'      => $listLayouts,
+        'getLayoutById'    => $getLayoutById,
+        'getDefaultLayout' => $getDefaultLayout,
+        'createLayout'     => $createLayout,
+        'updateLayout'     => $updateLayout,
+        'deleteLayout'     => $deleteLayout,
+        // Routing
+        'listReservedPaths'  => $listReservedPaths,
+        'addReservedPath'    => $addReservedPath,
+        'removeReservedPath' => $removeReservedPath,
     ],
 ];

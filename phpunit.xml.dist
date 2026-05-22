@@ -29,6 +29,9 @@
         <testsuite name="Support Tests">
             <directory>tests/Support</directory>
         </testsuite>
+        <testsuite name="Routing Tests">
+            <directory>tests/Routing</directory>
+        </testsuite>
     </testsuites>
 
     <source>

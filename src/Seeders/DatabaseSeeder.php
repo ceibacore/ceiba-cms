@@ -13,6 +13,7 @@ require_once __DIR__ . '/SystemRolesSeeder.php';
 require_once __DIR__ . '/SystemMenusSeeder.php';
 require_once __DIR__ . '/ComponentDefinitionsSeeder.php';
 require_once __DIR__ . '/TemplatesSeeder.php';
+require_once __DIR__ . '/PageLayoutsSeeder.php';
 
 class DatabaseSeeder extends CmsSeeder
 {
@@ -27,6 +28,8 @@ class DatabaseSeeder extends CmsSeeder
             $this->truncate('pages');
             $this->truncate('component_definitions');
             $this->truncate('templates');
+            $this->truncate('page_layouts');
+            $this->truncate('cms_reserved_paths');
         }
 
         // 2. System Seeders (Modules, Permissions, Roles, Menus)
@@ -36,6 +39,7 @@ class DatabaseSeeder extends CmsSeeder
         (new SystemMenusSeeder($this->db, $this->prefix))->run();
         (new ComponentDefinitionsSeeder($this->db, $this->prefix))->run();
         (new TemplatesSeeder($this->db, $this->prefix))->run();
+        (new PageLayoutsSeeder($this->db, $this->prefix))->run();
 
         // 3. Create an Admin user and assign the superadmin role
         $superAdminRoleId = $this->db->query('roles')->where(['slug' => 'superadmin'])->first()['id'] ?? null;
