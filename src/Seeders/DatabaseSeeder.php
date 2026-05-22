@@ -97,7 +97,13 @@ class DatabaseSeeder extends CmsSeeder
                     'title' => $title,
                     'slug' => $slug . '-' . $index,
                     'status' => FakeDataHelper::random(['published', 'draft']),
-                    'content' => json_encode(['body' => FakeDataHelper::paragraph()]),
+                    'content' => json_encode([
+                        [
+                            'type'     => 'html',
+                            'props'    => ['content' => FakeDataHelper::paragraph()],
+                            'children' => [],
+                        ],
+                    ]),
                     // 'author_id' => $adminId, // If pages had an author
                 ];
             });

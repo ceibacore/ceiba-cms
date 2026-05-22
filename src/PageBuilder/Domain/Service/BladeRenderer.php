@@ -19,6 +19,9 @@ class BladeRenderer implements BladeRendererInterface
     {
         $html = '';
         foreach ($tree as $node) {
+            if (!is_array($node)) {
+                continue;
+            }
             $html .= $this->renderNode($node, $data);
         }
         return $html;

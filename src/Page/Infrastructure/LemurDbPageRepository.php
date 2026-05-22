@@ -75,7 +75,20 @@ final class LemurDbPageRepository implements PageRepositoryInterface
             return null;
         }
         if (isset($page['content']) && is_string($page['content'])) {
-            $page['content'] = json_decode($page['content'], true) ?? [];
+            $decoded = json_decode($page['content'], true) ?? [];
+
+            // Migrate legacy format {"body": "..."} → node array
+            if (isset($decoded['body']) && is_string($decoded['body'])) {
+                $decoded = [
+                    [
+                        'type'     => 'html',
+                        'props'    => ['content' => $decoded['body']],
+                        'children' => [],
+                    ],
+                ];
+            }
+
+            $page['content'] = $decoded;
         }
         return $page;
     }
