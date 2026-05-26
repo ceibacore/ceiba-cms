@@ -20,6 +20,20 @@ class EnvironmentGuard
      */
     public static function check(): void
     {
+        // Si ya hay configuración de BD seteada en el entorno (estilo CMS o estilo Laravel),
+        // evitamos cargar el archivo .env para no sobreescribirla con valores locales obsoletos.
+        $hasCmsConfig = (isset($_ENV['DB_HOST']) || getenv('DB_HOST')) &&
+            (isset($_ENV['DB_PORT']) || getenv('DB_PORT')) &&
+            ((isset($_ENV['DB_NAME']) || getenv('DB_NAME')) || (isset($_ENV['DB_DATABASE']) || getenv('DB_DATABASE')));
+
+        if (!$hasCmsConfig) {
+            try {
+                self::loadFromEnvFile();
+            } catch (\RuntimeException $e) {
+                // Silently continue to throw missing vars error if loading fails
+            }
+        }
+
         $missing = [];
         foreach (self::$requiredVars as $var) {
             if (!isset($_ENV[$var]) && !getenv($var)) {
@@ -27,19 +41,12 @@ class EnvironmentGuard
             }
         }
 
-        if (!empty($missing)) {
-            try {
-                self::loadFromEnvFile();
-            } catch (\RuntimeException $e) {
-                // Silently continue to throw missing vars error if loading fails
-            }
+        // Si faltan las específicas del CMS, pero tenemos las de Laravel, está bien
+        $hasLaravelDb = (isset($_ENV['DB_DATABASE']) || getenv('DB_DATABASE')) &&
+            (isset($_ENV['DB_USERNAME']) || getenv('DB_USERNAME'));
 
-            $missing = [];
-            foreach (self::$requiredVars as $var) {
-                if (!isset($_ENV[$var]) && !getenv($var)) {
-                    $missing[] = $var;
-                }
-            }
+        if (!empty($missing) && $hasLaravelDb) {
+            $missing = array_diff($missing, ['DB_NAME', 'DB_USER', 'DB_PASS', 'DB_PREFIX']);
         }
 
         if (!empty($missing)) {
