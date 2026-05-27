@@ -154,6 +154,44 @@ require_once __DIR__ . '/src/Http/Controllers/ComponentDefinitionController.php'
 require_once __DIR__ . '/src/Http/Controllers/LayoutController.php';
 require_once __DIR__ . '/src/Http/Controllers/ReservedPathController.php';
 require_once __DIR__ . '/src/Http/Controllers/HomeController.php';
+require_once __DIR__ . '/src/Http/Controllers/ImportController.php';
+
+// ── Import Module ────────────────────────────────────────────────────────────
+require_once __DIR__ . '/src/PageBuilder/Import/Contract/RuleInterface.php';
+require_once __DIR__ . '/src/PageBuilder/Import/ImportWarning.php';
+require_once __DIR__ . '/src/PageBuilder/Import/ImportResult.php';
+require_once __DIR__ . '/src/PageBuilder/Import/ClassHelper.php';
+require_once __DIR__ . '/src/PageBuilder/Import/RuleRegistry.php';
+require_once __DIR__ . '/src/PageBuilder/Import/RuleEngine.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/FallbackRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/ContainerRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/RowRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/ColRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/CardRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/ButtonRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/ButtonGroupRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/ListGroupRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/AccordionRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/CarouselRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/CollapseRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/OffcanvasRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/ToastRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/TooltipRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/BreadcrumbRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Bootstrap/ScrollspyRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/SemanticSectionRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/HeadingRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/ParagraphRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/ImageRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/PictureRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/FigureRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/DetailsRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/InlineTextRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/DividerRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/AnchorRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Generic/GenericDivRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Generic/SpanRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/HtmlImporter.php';
 
 // ── DynamicModule Layer ──────────────────────────────────────────────────────
 require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleFieldType.php';

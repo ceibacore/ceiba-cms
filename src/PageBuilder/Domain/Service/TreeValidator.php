@@ -21,7 +21,7 @@ final class TreeValidator
 
     private const ALLOWED_TYPES = [
         'container', 'row', 'col', 'text', 'image',
-        'button', 'card', 'divider', 'html',
+        'button', 'card', 'divider', 'html', 'section',
         'accordion', 'accordion_item',
         'button_group', 'breadcrumb',
         'carousel', 'carousel_item', 'collapse', 'list_group',

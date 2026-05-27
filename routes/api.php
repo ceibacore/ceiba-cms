@@ -101,6 +101,11 @@ $cacheController = new CacheController($container['presentation']['menuCache']);
 $router->post('/api/cache/clear', fn() => $cacheController->clear(), 'cache.clear');
 $router->post('/api/cache/menus/{slug}/clear', fn($slug) => $cacheController->clearMenu($slug), 'cache.menu.clear');
 
+// ── Import Routes ─────────────────────────────────────────────────────────────
+$importController = new \LemurCms\Http\Controllers\ImportController();
+$router->post('/api/import/html', fn() => $importController->importHtml(), 'import.html');
+$router->post('/api/import/html/preview', fn() => $importController->previewHtml(), 'import.html.preview');
+
 // ── Public Routing — Home ────────────────────────────────────────────────────
 $pageRenderController = new PageRenderController(
     $container['useCases']['getPageBySlug'],
