@@ -32,6 +32,9 @@
         <testsuite name="Routing Tests">
             <directory>tests/Routing</directory>
         </testsuite>
+        <testsuite name="Import Tests">
+            <directory>tests/PageBuilder/Import</directory>
+        </testsuite>
     </testsuites>
 
     <source>
