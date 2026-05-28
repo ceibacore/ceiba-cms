@@ -18,16 +18,30 @@ if (!class_exists('LemurDB')) {
 class LemurDB
 {
     /**
-     * Singleton instance.
+     * Array of singleton instances keyed by prefix/config hash.
+     *
+     * @var array
+     */
+    private static $instances = [];
+
+    /**
+     * Singleton instance (fallback/default for setInstance compatibility).
      *
      * @var LemurDB|null
      */
     private static $instance = null;
 
     /**
+     * Flag indicating if a manual mock/setInstance was applied.
+     *
+     * @var bool
+     */
+    private static $isMocked = false;
+
+    /**
      * Active PDO connection.
      *
-     * @var PDO
+     * @var PDO|callable
      */
     private $pdo;
 
@@ -56,7 +70,7 @@ class LemurDB
         $dsn = $this->buildDsn($config);
 
         try {
-            $this->pdo = new PDO($dsn, $config['username'], $config['password'], [
+            $this->pdo = new PDO($dsn, $config['username'] ?? '', $config['password'] ?? '', [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
@@ -74,10 +88,41 @@ class LemurDB
      */
     public static function getInstance(array $config = []): self
     {
-        if (self::$instance === null) {
-            self::$instance = new self($config);
+        // If a manual mock has been set (typically in SQLite tests), always return it.
+        // Also fallback to it if called with empty config.
+        if (self::$instance !== null && (self::$isMocked || empty($config))) {
+            return self::$instance;
         }
-        return self::$instance;
+
+        $key = md5(serialize($config));
+        if (!isset(self::$instances[$key])) {
+            $db = new self($config);
+            self::$instances[$key] = $db;
+            if (self::$instance === null) {
+                self::$instance = $db;
+            }
+        }
+        return self::$instances[$key];
+    }
+
+    /**
+     * Manually set the LemurDB singleton instance with an existing PDO connection or a callable that resolves to one.
+     * Useful for running unit tests on shared SQLite in-memory connections.
+     */
+    public static function setInstance(\PDO|callable $pdo, array $config = []): void
+    {
+        $db = new self(array_merge([
+            'driver'   => 'sqlite',
+            'host'     => 'localhost',
+            'port'     => 3306,
+            'db'       => ':memory:',
+            'username' => '',
+            'password' => '',
+            'prefix'   => 'ase_',
+        ], $config));
+        $db->pdo = $pdo;
+        self::$instance = $db;
+        self::$isMocked = true; // Mark as mocked to skip multi-instance resolution in tests
     }
 
     /**
@@ -102,7 +147,7 @@ class LemurDB
      */
     public function query(string $table): LemurQuery
     {
-        return new LemurQuery($this->pdo, $table, $this->getPrefix());
+        return new LemurQuery($this->pdo(), $table, $this->getPrefix());
     }
 
     /**
@@ -133,13 +178,14 @@ class LemurDB
      */
     public function transaction(callable $callback): mixed
     {
-        $this->pdo->beginTransaction();
+        $pdo = $this->pdo();
+        $pdo->beginTransaction();
         try {
             $result = $callback($this);
-            $this->pdo->commit();
+            $pdo->commit();
             return $result;
         } catch (\Throwable $e) {
-            $this->pdo->rollBack();
+            $pdo->rollBack();
             throw $e;
         }
     }
@@ -154,6 +200,13 @@ class LemurDB
      */
     public function pdo(): PDO
     {
+        if (is_callable($this->pdo)) {
+            $resolved = ($this->pdo)();
+            if (!$resolved instanceof \PDO) {
+                throw new \RuntimeException("PDO resolver did not return a PDO instance.");
+            }
+            return $resolved;
+        }
         return $this->pdo;
     }
 }
