@@ -11,10 +11,10 @@ Since this package is typically integrated into a host Laravel application (e.g.
 
 ### 1. Registering the Package
 
-In your Laravel `AppServiceProvider` or a dedicated `LemurCmsServiceProvider`, bootstrap the CMS container and bind the use cases as singletons:
+In your Laravel `AppServiceProvider` or a dedicated `CmsServiceProvider`, bootstrap the CMS container and bind the use cases as singletons:
 
 ```php
-// app/Providers/LemurCmsServiceProvider.php
+// app/Providers/CmsServiceProvider.php
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -25,7 +25,7 @@ use LemurCms\Menu\Application\GetNavbar;
 use LemurCms\Page\Infrastructure\LemurDbPageRepository;
 use LemurCms\Menu\Infrastructure\LemurDbMenuRepository;
 
-class LemurCmsServiceProvider extends ServiceProvider
+class CmsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
@@ -68,7 +68,7 @@ Register it in `bootstrap/providers.php` (Laravel 11+) or `config/app.php`:
 ```php
 // bootstrap/providers.php
 return [
-    App\Providers\LemurCmsServiceProvider::class,
+    App\Providers\CmsServiceProvider::class,
 ];
 ```
 

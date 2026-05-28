@@ -25,6 +25,8 @@ final class LemurCms
 {
     private function __construct() {}
 
+    private static ?array $container = null;
+
     /**
      * Configure CMS from a key-value array instead of relying solely on environment variables.
      * Writes values to both $_ENV and putenv() for maximum compatibility.
@@ -38,5 +40,16 @@ final class LemurCms
             putenv("{$key}={$value}");
             $_ENV[$key] = $value;
         }
+    }
+
+    /**
+     * Get the CMS dependency injection container.
+     */
+    public static function container(): array
+    {
+        if (self::$container === null) {
+            self::$container = require __DIR__ . '/../bootstrap.php';
+        }
+        return self::$container;
     }
 }
