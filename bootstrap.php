@@ -220,9 +220,9 @@ $db = \LemurDB::getInstance([
     'driver'   => $driver,
     'host'     => \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_HOST', 'localhost'),
     'port'     => (int) \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_PORT', 3306),
-    'db'       => \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_DATABASE', \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_NAME', 'lemur_cms')),
-    'username' => \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_USERNAME', \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_USER', 'root')),
-    'password' => \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_PASSWORD', \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_PASS', '')),
+    'db'       => \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_NAME', \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_DATABASE', 'lemur_cms')),
+    'username' => \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_USER', \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_USERNAME', 'root')),
+    'password' => \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_PASS', \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_PASSWORD', '')),
     'prefix'   => \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_PREFIX', 'cms_'),
 ]);
 
