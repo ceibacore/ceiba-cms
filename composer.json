@@ -6,12 +6,14 @@
   "require": {
     "php": "^8.1"
   },
-  "autoload": {
+"autoload": {
     "psr-4": {
-      "LemurCms\\": "src/",
-      "LemurCms\\Migrations\\": "migrations/"
-    }
-  },
+        "LemurCms\\": "src/"
+    },
+    "classmap": [
+        "migrations/"
+    ]
+},
   "autoload-dev": {
     "psr-4": {
       "LemurCms\\Tests\\": "tests/"
