@@ -113,17 +113,19 @@ class IndexHtmlImportEndToEndTest extends TestCase
      */
     public function testTreeContainsExpectedBootstrapComponents(array $tree): array
     {
-        $flat = $this->flattenTree($tree);
+        $flat  = $this->flattenTree($tree);
         $types = array_column($flat, 'type');
+        $names = array_column($flat, 'name');
 
-        // The page has Bootstrap containers, rows, cols
-        $this->assertContains('container', $types, 'Expected container nodes in index.html');
-        $this->assertContains('row',       $types, 'Expected row nodes in index.html');
-        $this->assertContains('col',       $types, 'Expected col nodes in index.html');
+        // The page has Bootstrap containers, rows, cols — now identified by `name`
+        $this->assertContains('container', $names, 'Expected container nodes in index.html');
+        $this->assertContains('row',       $names, 'Expected row nodes in index.html');
+        $this->assertContains('col',       $names, 'Expected col nodes in index.html');
 
-        // Text/heading elements
-        $textOrHeadings = array_filter($types, fn($t) => in_array($t, ['text', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']));
-        $this->assertNotEmpty($textOrHeadings, 'Expected heading/text nodes');
+        // Headings now use real HTML tags as type
+        $headingTypes = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+        $textOrHeadings = array_filter($types, fn($t) => in_array($t, $headingTypes));
+        $this->assertNotEmpty($textOrHeadings, 'Expected heading nodes');
 
         return $tree;
     }
@@ -175,14 +177,14 @@ class IndexHtmlImportEndToEndTest extends TestCase
 
         // ── Step 2: Apply bindings to text nodes to make it a template ───────
         $componentTree = $this->applyComponentBindings($aboutNode, [
-            // Map heading content → template variable (heading may be 'text' or 'node' type)
-            'heading_title'      => fn($node) => in_array($node['type'], ['text', 'node'])
+            // Map heading content → template variable (heading may be h1-h6 tags)
+            'heading_title'      => fn($node) => in_array($node['type'], ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
                 && str_contains((string) ($node['props']['class'] ?? ''), 'display-5'),
             // Map first lead paragraph → template variable
-            'about_lead_text'    => fn($node) => $node['type'] === 'text'
+            'about_lead_text'    => fn($node) => $node['type'] === 'p'
                 && str_contains((string) ($node['props']['class'] ?? ''), 'lead'),
             // Map body paragraph → template variable
-            'about_body_text'    => fn($node) => $node['type'] === 'text'
+            'about_body_text'    => fn($node) => $node['type'] === 'p'
                 && str_contains((string) ($node['props']['class'] ?? ''), 'text-muted'),
         ]);
 

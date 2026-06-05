@@ -46,7 +46,8 @@ class HtmlImporterAgnosticTest extends TestCase
         $result   = $importer->import('<div class="container"></div>');
         $tree     = $result->toArray()['tree'];
 
-        $this->assertSame('container', $tree[0]['type']);
+        $this->assertSame('div', $tree[0]['type']);
+        $this->assertSame('container', $tree[0]['name']);
     }
 
     public function testExplicitModuleRecognizesBootstrapComponents(): void
@@ -55,8 +56,10 @@ class HtmlImporterAgnosticTest extends TestCase
         $result   = $importer->import('<div class="row"><div class="col-md-6"></div></div>');
         $tree     = $result->toArray()['tree'];
 
-        $this->assertSame('row', $tree[0]['type']);
-        $this->assertSame('col', $tree[0]['children'][0]['type']);
+        $this->assertSame('div', $tree[0]['type']);
+        $this->assertSame('row', $tree[0]['name']);
+        $this->assertSame('div', $tree[0]['children'][0]['type']);
+        $this->assertSame('col', $tree[0]['children'][0]['name']);
     }
 
     // ── With registry ─────────────────────────────────────────────────────────
@@ -71,7 +74,8 @@ class HtmlImporterAgnosticTest extends TestCase
         $result   = $importer->import('<div class="container"></div>');
         $tree     = $result->toArray()['tree'];
 
-        $this->assertSame('container', $tree[0]['type']);
+        $this->assertSame('div', $tree[0]['type']);
+        $this->assertSame('container', $tree[0]['name']);
     }
 
     public function testRegistryAutoSelectsWhenSingleModule(): void
@@ -84,7 +88,8 @@ class HtmlImporterAgnosticTest extends TestCase
         $result   = $importer->import('<div class="card"><div class="card-body"></div></div>');
         $tree     = $result->toArray()['tree'];
 
-        $this->assertSame('card', $tree[0]['type']);
+        $this->assertSame('div', $tree[0]['type']);
+        $this->assertSame('card', $tree[0]['name']);
     }
 
     public function testRegistryWithNoActiveModuleUsesOnlyFallback(): void
@@ -117,7 +122,8 @@ class HtmlImporterAgnosticTest extends TestCase
         $result   = $importer->import('<div class="container"></div>');
         $tree     = $result->toArray()['tree'];
 
-        $this->assertSame('container', $tree[0]['type']);
+        $this->assertSame('div', $tree[0]['type']);
+        $this->assertSame('container', $tree[0]['name']);
     }
 
     // ── FallbackRule always present ────────────────────────────────────────────

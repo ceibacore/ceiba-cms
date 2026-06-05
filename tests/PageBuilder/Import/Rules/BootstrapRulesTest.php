@@ -53,7 +53,8 @@ class BootstrapRulesTest extends TestCase
     {
         $rule   = new ContainerRule();
         $result = $rule->extract($this->el('<div class="container-fluid"></div>'), $this->noop());
-        $this->assertSame('container', $result['type']);
+        $this->assertSame('div', $result['type']);
+        $this->assertSame('container', $result['name']);
         $this->assertTrue($result['props']['fluid']);
     }
 
@@ -78,7 +79,8 @@ class BootstrapRulesTest extends TestCase
     {
         $rule   = new RowRule();
         $result = $rule->extract($this->el('<div class="row g-3 align-items-center justify-content-end"></div>'), $this->noop());
-        $this->assertSame('row', $result['type']);
+        $this->assertSame('div', $result['type']);
+        $this->assertSame('row', $result['name']);
         $this->assertSame('g-3', $result['props']['gutter']);
         $this->assertSame('center', $result['props']['align']);
         $this->assertSame('end', $result['props']['justify']);
@@ -99,7 +101,8 @@ class BootstrapRulesTest extends TestCase
     {
         $rule   = new ColRule();
         $result = $rule->extract($this->el('<div class="col-sm-4 col-lg-8"></div>'), $this->noop());
-        $this->assertSame('col', $result['type']);
+        $this->assertSame('div', $result['type']);
+        $this->assertSame('col', $result['name']);
         $this->assertSame(4, $result['props']['sm']);
         $this->assertSame(8, $result['props']['lg']);
     }
@@ -118,7 +121,8 @@ class BootstrapRulesTest extends TestCase
     {
         $rule   = new ButtonRule();
         $result = $rule->extract($this->el('<a class="btn btn-danger" href="/go" target="_blank">Go</a>'), $this->noop());
-        $this->assertSame('button', $result['type']);
+        $this->assertSame('a', $result['type']);
+        $this->assertSame('button', $result['name']);
         $this->assertSame('Go', $result['props']['label']);
         $this->assertSame('danger', $result['props']['variant']);
         $this->assertSame('/go', $result['props']['href']);
@@ -148,7 +152,8 @@ class BootstrapRulesTest extends TestCase
     {
         $rule   = new ButtonGroupRule();
         $result = $rule->extract($this->el('<div class="btn-group-vertical"></div>'), $this->noop());
-        $this->assertSame('button_group', $result['type']);
+        $this->assertSame('div', $result['type']);
+        $this->assertSame('button-group', $result['name']);
         $this->assertTrue($result['props']['vertical']);
         $this->assertFalse($result['consumes']);
     }
@@ -173,7 +178,8 @@ class BootstrapRulesTest extends TestCase
                     <div class="card-footer">Pie</div>
                  </div>';
         $result = $rule->extract($this->el($html), $this->noop());
-        $this->assertSame('card', $result['type']);
+        $this->assertSame('div', $result['type']);
+        $this->assertSame('card', $result['name']);
         $this->assertSame('Mi Titulo', $result['props']['title']);
         $this->assertSame('Descripcion', $result['props']['text']);
         $this->assertSame('Pie', $result['props']['footer']);
@@ -197,7 +203,8 @@ class BootstrapRulesTest extends TestCase
                     <li class="list-group-item">Segundo</li>
                  </ul>';
         $result = $rule->extract($this->el($html), $this->noop());
-        $this->assertSame('list_group', $result['type']);
+        $this->assertSame('ul', $result['type']);
+        $this->assertSame('list-group', $result['name']);
         $this->assertCount(2, $result['props']['items']);
         $this->assertTrue($result['props']['items'][0]['active']);
         $this->assertSame('Primero', $result['props']['items'][0]['label']);
@@ -231,9 +238,11 @@ class BootstrapRulesTest extends TestCase
                     </div>
                  </div>';
         $result = $rule->extract($this->el($html), $this->noop());
-        $this->assertSame('accordion', $result['type']);
+        $this->assertSame('div', $result['type']);
+        $this->assertSame('accordion', $result['name']);
         $this->assertCount(2, $result['children']);
-        $this->assertSame('accordion_item', $result['children'][0]['type']);
+        $this->assertSame('div', $result['children'][0]['type']);
+        $this->assertSame('accordion-item', $result['children'][0]['name']);
         $this->assertSame('Pregunta 1', $result['children'][0]['props']['title']);
         $this->assertTrue($result['children'][0]['props']['open']);
         $this->assertFalse($result['children'][1]['props']['open']);
@@ -256,7 +265,8 @@ class BootstrapRulesTest extends TestCase
                     <li class="breadcrumb-item active">Página</li>
                  </ol>';
         $result = $rule->extract($this->el($html), $this->noop());
-        $this->assertSame('breadcrumb', $result['type']);
+        $this->assertSame('ol', $result['type']);
+        $this->assertSame('breadcrumb', $result['name']);
         $this->assertCount(2, $result['props']['items']);
         $this->assertSame('Inicio', $result['props']['items'][0]['label']);
         $this->assertSame('/', $result['props']['items'][0]['href']);
@@ -276,7 +286,8 @@ class BootstrapRulesTest extends TestCase
     {
         $rule   = new CollapseRule();
         $result = $rule->extract($this->el('<div class="collapse" id="collapseDemo"></div>'), $this->noop());
-        $this->assertSame('collapse', $result['type']);
+        $this->assertSame('div', $result['type']);
+        $this->assertSame('collapse', $result['name']);
         $this->assertSame('collapseDemo', $result['props']['id']);
         $this->assertFalse($result['consumes']);
     }
@@ -294,7 +305,8 @@ class BootstrapRulesTest extends TestCase
     {
         $rule   = new TooltipRule();
         $result = $rule->extract($this->el('<button data-bs-toggle="tooltip" data-bs-title="Ayuda" data-bs-placement="bottom">?</button>'), $this->noop());
-        $this->assertSame('tooltip', $result['type']);
+        $this->assertSame('button', $result['type']);
+        $this->assertSame('tooltip', $result['name']);
         $this->assertSame('Ayuda', $result['props']['text']);
         $this->assertSame('bottom', $result['props']['placement']);
         $this->assertSame('?', $result['props']['trigger_label']);
@@ -317,7 +329,8 @@ class BootstrapRulesTest extends TestCase
                     <div class="toast-body">Operación completada</div>
                  </div>';
         $result = $rule->extract($this->el($html), $this->noop());
-        $this->assertSame('toast', $result['type']);
+        $this->assertSame('div', $result['type']);
+        $this->assertSame('toast', $result['name']);
         $this->assertSame('Éxito', $result['props']['title']);
         $this->assertSame('Operación completada', $result['props']['body']);
         $this->assertSame('success', $result['props']['variant']);
@@ -342,10 +355,12 @@ class BootstrapRulesTest extends TestCase
                     </div>
                  </div>';
         $result = $rule->extract($this->el($html), $this->noop());
-        $this->assertSame('carousel', $result['type']);
+        $this->assertSame('div', $result['type']);
+        $this->assertSame('carousel', $result['name']);
         $this->assertTrue($result['props']['autoplay']);
         $this->assertCount(2, $result['children']);
-        $this->assertSame('carousel_item', $result['children'][0]['type']);
+        $this->assertSame('div', $result['children'][0]['type']);
+        $this->assertSame('carousel-item', $result['children'][0]['name']);
         $this->assertSame('/img1.jpg', $result['children'][0]['props']['image_src']);
         $this->assertTrue($result['children'][0]['props']['active']);
         $this->assertFalse($result['children'][1]['props']['active']);
@@ -364,7 +379,8 @@ class BootstrapRulesTest extends TestCase
     {
         $rule   = new ScrollspyRule();
         $result = $rule->extract($this->el('<div data-bs-spy="scroll" data-bs-target="#mainNav" data-bs-offset="70"></div>'), $this->noop());
-        $this->assertSame('scrollspy', $result['type']);
+        $this->assertSame('div', $result['type']);
+        $this->assertSame('scrollspy', $result['name']);
         $this->assertSame('mainNav', $result['props']['nav_target_id']);
         $this->assertSame('70', $result['props']['offset']);
     }

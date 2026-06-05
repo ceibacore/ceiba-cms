@@ -43,6 +43,7 @@ class HtmlImporterTest extends TestCase
         foreach ($tree as $node) {
             $this->assertArrayHasKey('id', $node);
             $this->assertArrayHasKey('type', $node);
+            $this->assertArrayHasKey('name', $node);
             $this->assertArrayHasKey('props', $node);
             $this->assertArrayHasKey('loop', $node);
             $this->assertArrayHasKey('children', $node);
@@ -68,14 +69,18 @@ class HtmlImporterTest extends TestCase
         $tree   = $result->toArray()['tree'];
 
         $this->assertCount(1, $tree);
-        $this->assertSame('container', $tree[0]['type']);
+        $this->assertSame('div', $tree[0]['type']);
+        $this->assertSame('container', $tree[0]['name']);
         $this->assertCount(1, $tree[0]['children']);
-        $this->assertSame('row', $tree[0]['children'][0]['type']);
+        $this->assertSame('div', $tree[0]['children'][0]['type']);
+        $this->assertSame('row', $tree[0]['children'][0]['name']);
         $cols = $tree[0]['children'][0]['children'];
         $this->assertCount(2, $cols);
-        $this->assertSame('col', $cols[0]['type']);
+        $this->assertSame('div', $cols[0]['type']);
+        $this->assertSame('col', $cols[0]['name']);
         $this->assertSame(8, $cols[0]['props']['md']);
-        $this->assertSame('text', $cols[0]['children'][0]['type']);
+        $this->assertSame('h1', $cols[0]['children'][0]['type']);
+        $this->assertNull($cols[0]['children'][0]['name']);
     }
 
     // ── Semantic elements ─────────────────────────────────────────────────────
@@ -86,7 +91,8 @@ class HtmlImporterTest extends TestCase
         $result = $this->importer->import($html);
         $tree   = $result->toArray()['tree'];
 
-        $this->assertSame('node', $tree[0]['type']);
+        $this->assertSame('header', $tree[0]['type']);
+        $this->assertNull($tree[0]['name']);
         $this->assertStringContainsString('pb-semantic-header', $tree[0]['props']['class']);
         $this->assertSame('banner', $tree[0]['props']['role']);
     }
@@ -98,16 +104,18 @@ class HtmlImporterTest extends TestCase
         $tree   = $result->toArray()['tree'];
 
         $this->assertCount(3, $tree);
-        $this->assertSame('h1', $tree[0]['props']['tag']);
-        $this->assertSame('h2', $tree[1]['props']['tag']);
-        $this->assertSame('h3', $tree[2]['props']['tag']);
+        $this->assertSame('h1', $tree[0]['type']);
+        $this->assertNull($tree[0]['name']);
+        $this->assertSame('h2', $tree[1]['type']);
+        $this->assertSame('h3', $tree[2]['type']);
     }
 
     public function testHorizontalRuleBecomeDivider(): void
     {
         $result = $this->importer->import('<hr class="my-3">');
         $tree   = $result->toArray()['tree'];
-        $this->assertSame('divider', $tree[0]['type']);
+        $this->assertSame('hr', $tree[0]['type']);
+        $this->assertSame('divider', $tree[0]['name']);
     }
 
     // ── Bootstrap components ──────────────────────────────────────────────────
@@ -124,11 +132,13 @@ class HtmlImporterTest extends TestCase
         $result = $this->importer->import($html);
         $tree   = $result->toArray()['tree'];
 
-        $this->assertSame('card', $tree[0]['type']);
+        $this->assertSame('div', $tree[0]['type']);
+        $this->assertSame('card', $tree[0]['name']);
         $this->assertSame('Card Title', $tree[0]['props']['title']);
         // The btn inside card-body is extracted as a child
         $this->assertNotEmpty($tree[0]['children']);
-        $this->assertSame('button', $tree[0]['children'][0]['type']);
+        $this->assertSame('a', $tree[0]['children'][0]['type']);
+        $this->assertSame('button', $tree[0]['children'][0]['name']);
     }
 
     public function testAccordionWithTwoItems(): void
@@ -149,9 +159,11 @@ class HtmlImporterTest extends TestCase
                  </div>';
         $result = $this->importer->import($html);
         $tree   = $result->toArray()['tree'];
-        $this->assertSame('accordion', $tree[0]['type']);
+        $this->assertSame('div', $tree[0]['type']);
+        $this->assertSame('accordion', $tree[0]['name']);
         $this->assertCount(2, $tree[0]['children']);
-        $this->assertSame('accordion_item', $tree[0]['children'][0]['type']);
+        $this->assertSame('div', $tree[0]['children'][0]['type']);
+        $this->assertSame('accordion-item', $tree[0]['children'][0]['name']);
     }
 
     public function testBreadcrumbExtracted(): void
@@ -159,7 +171,8 @@ class HtmlImporterTest extends TestCase
         $html   = '<ol class="breadcrumb"><li class="breadcrumb-item"><a href="/">Inicio</a></li><li class="breadcrumb-item active">Página</li></ol>';
         $result = $this->importer->import($html);
         $tree   = $result->toArray()['tree'];
-        $this->assertSame('breadcrumb', $tree[0]['type']);
+        $this->assertSame('ol', $tree[0]['type']);
+        $this->assertSame('breadcrumb', $tree[0]['name']);
         $this->assertCount(2, $tree[0]['props']['items']);
     }
 
@@ -264,7 +277,9 @@ class HtmlImporterTest extends TestCase
         $result = $this->importer->import($html);
         $tree   = $result->toArray()['tree'];
         $this->assertCount(1, $tree);
-        $this->assertSame('html', $tree[0]['type']);
+        $this->assertSame('video', $tree[0]['type']);
+        $this->assertNull($tree[0]['name']);
+        $this->assertArrayHasKey('_raw_html', $tree[0]['props']);
     }
 
     // ── Fragment vs full document ─────────────────────────────────────────────
@@ -274,7 +289,8 @@ class HtmlImporterTest extends TestCase
         $result = $this->importer->import('<section><h1>Hi</h1></section>');
         $tree   = $result->toArray()['tree'];
         $this->assertNotEmpty($tree);
-        $this->assertSame('node', $tree[0]['type']); // SemanticSectionRule outputs 'node'
+        $this->assertSame('section', $tree[0]['type']);
+        $this->assertNull($tree[0]['name']);
     }
 
     public function testFullDocumentImportExtractsBody(): void
@@ -283,8 +299,8 @@ class HtmlImporterTest extends TestCase
         $result = $this->importer->import($html);
         $tree   = $result->toArray()['tree'];
         $this->assertCount(1, $tree);
-        $this->assertSame('text', $tree[0]['type']);
-        $this->assertSame('h1', $tree[0]['props']['tag']);
+        $this->assertSame('h1', $tree[0]['type']);
+        $this->assertNull($tree[0]['name']);
     }
 
     public function testEmptyHtmlReturnsEmptyTree(): void

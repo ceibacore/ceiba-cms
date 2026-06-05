@@ -54,11 +54,13 @@ class UiFrameworkPipelineIntegrationTest extends TestCase
 
         // Root: container
         $this->assertCount(1, $tree);
-        $this->assertSame('container', $tree[0]['type']);
+        $this->assertSame('div', $tree[0]['type']);
+        $this->assertSame('container', $tree[0]['name']);
 
         // Row inside container
         $row = $tree[0]['children'][0];
-        $this->assertSame('row', $row['type']);
+        $this->assertSame('div', $row['type']);
+        $this->assertSame('row', $row['name']);
         // Gutter is stored as the raw CSS class suffix string extracted by RowRule
         $this->assertNotEmpty($row['props']['gutter']);
 
@@ -66,24 +68,28 @@ class UiFrameworkPipelineIntegrationTest extends TestCase
         $this->assertCount(2, $row['children']);
         $col1 = $row['children'][0];
         $col2 = $row['children'][1];
-        $this->assertSame('col', $col1['type']);
+        $this->assertSame('div', $col1['type']);
+        $this->assertSame('col', $col1['name']);
         $this->assertSame(8, $col1['props']['md']);
-        $this->assertSame('col', $col2['type']);
+        $this->assertSame('div', $col2['type']);
+        $this->assertSame('col', $col2['name']);
         $this->assertSame(4, $col2['props']['md']);
 
         // Heading inside first column
         $heading = $col1['children'][0];
-        $this->assertSame('text', $heading['type']);
-        $this->assertSame('h1', $heading['props']['tag']);
+        $this->assertSame('h1', $heading['type']);
+        $this->assertNull($heading['name']);
 
         // Button inside first column
         $button = $col1['children'][2];
-        $this->assertSame('button', $button['type']);
+        $this->assertSame('a', $button['type']);
+        $this->assertSame('button', $button['name']);
         $this->assertSame('/inicio', $button['props']['href']);
 
         // Image inside second column
         $img = $col2['children'][0];
-        $this->assertSame('image', $img['type']);
+        $this->assertSame('img', $img['type']);
+        $this->assertNull($img['name']);
         $this->assertSame('/img/hero.png', $img['props']['src']);
 
         // Conversion rate should be high
@@ -123,15 +129,18 @@ class UiFrameworkPipelineIntegrationTest extends TestCase
         $tree   = $result->toArray()['tree'];
         $row    = $tree[0];
 
-        $this->assertSame('row', $row['type']);
+        $this->assertSame('div', $row['type']);
+        $this->assertSame('row', $row['name']);
         $this->assertCount(2, $row['children']);
 
         $card1 = $row['children'][0]['children'][0];
-        $this->assertSame('card', $card1['type']);
+        $this->assertSame('div', $card1['type']);
+        $this->assertSame('card', $card1['name']);
         $this->assertSame('Producto 1', $card1['props']['title']);
 
         $card2 = $row['children'][1]['children'][0];
-        $this->assertSame('card', $card2['type']);
+        $this->assertSame('div', $card2['type']);
+        $this->assertSame('card', $card2['name']);
         $this->assertSame('Producto 2', $card2['props']['title']);
     }
 
@@ -160,10 +169,13 @@ class UiFrameworkPipelineIntegrationTest extends TestCase
         $tree   = $result->toArray()['tree'];
 
         $accordion = $tree[0];
-        $this->assertSame('accordion', $accordion['type']);
+        $this->assertSame('div', $accordion['type']);
+        $this->assertSame('accordion', $accordion['name']);
         $this->assertCount(2, $accordion['children']);
-        $this->assertSame('accordion_item', $accordion['children'][0]['type']);
-        $this->assertSame('accordion_item', $accordion['children'][1]['type']);
+        $this->assertSame('div', $accordion['children'][0]['type']);
+        $this->assertSame('accordion-item', $accordion['children'][0]['name']);
+        $this->assertSame('div', $accordion['children'][1]['type']);
+        $this->assertSame('accordion-item', $accordion['children'][1]['name']);
         $this->assertTrue($accordion['children'][0]['props']['open']);
         $this->assertFalse($accordion['children'][1]['props']['open']);
     }
@@ -176,7 +188,8 @@ class UiFrameworkPipelineIntegrationTest extends TestCase
 
         // With Bootstrap5 active
         $withBootstrap = $this->importer->import($html)->toArray()['tree'];
-        $this->assertSame('container', $withBootstrap[0]['type']);
+        $this->assertSame('div', $withBootstrap[0]['type']);
+        $this->assertSame('container', $withBootstrap[0]['name']);
 
         // Register a no-rules module and switch to it
         $noRulesModule = $this->createMock(UiFrameworkModuleInterface::class);
@@ -289,7 +302,8 @@ class UiFrameworkPipelineIntegrationTest extends TestCase
 
         // Structured components should still be recognized
         $tree = $result->toArray()['tree'];
-        $this->assertSame('node', $tree[0]['type']); // SemanticSectionRule → 'node'
+        $this->assertSame('section', $tree[0]['type']); // SemanticSectionRule → real HTML tag
+        $this->assertNull($tree[0]['name']);
     }
 
     // ── Security ─────────────────────────────────────────────────────────────
@@ -302,6 +316,7 @@ class UiFrameworkPipelineIntegrationTest extends TestCase
 
         $this->assertStringNotContainsString('alert', $json);
         $this->assertStringNotContainsString('<script', $json);
-        $this->assertSame('container', $result->toArray()['tree'][0]['type']);
+        $this->assertSame('div', $result->toArray()['tree'][0]['type']);
+        $this->assertSame('container', $result->toArray()['tree'][0]['name']);
     }
 }

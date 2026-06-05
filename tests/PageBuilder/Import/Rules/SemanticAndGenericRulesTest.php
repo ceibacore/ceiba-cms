@@ -52,7 +52,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new SemanticSectionRule();
         $result = $rule->extract($this->el('<header class="sticky-top"></header>'), $this->noop());
-        $this->assertSame('node', $result['type']);
+        $this->assertSame('header', $result['type']);
+        $this->assertNull($result['name']);
         $this->assertStringContainsString('pb-semantic-header', $result['props']['class']);
         $this->assertStringContainsString('sticky-top', $result['props']['class']);
         $this->assertSame('banner', $result['props']['role']);
@@ -81,8 +82,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new HeadingRule();
         $result = $rule->extract($this->el('<h2 class="fw-bold">Mi Heading</h2>'), $this->noop());
-        $this->assertSame('text', $result['type']);
-        $this->assertSame('h2', $result['props']['tag']);
+        $this->assertSame('h2', $result['type']);
+        $this->assertNull($result['name']);
         $this->assertSame('Mi Heading', $result['props']['content']);
         $this->assertSame('fw-bold', $result['props']['class']);
         $this->assertTrue($result['consumes']);
@@ -101,8 +102,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new ParagraphRule();
         $result = $rule->extract($this->el('<p class="lead">Párrafo simple</p>'), $this->noop());
-        $this->assertSame('text', $result['type']);
-        $this->assertSame('p', $result['props']['tag']);
+        $this->assertSame('p', $result['type']);
+        $this->assertNull($result['name']);
         $this->assertSame('Párrafo simple', $result['props']['content']);
     }
 
@@ -110,8 +111,10 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new ParagraphRule();
         $result = $rule->extract($this->el('<p>Texto con <strong>negrita</strong> y más</p>'), $this->noop());
-        $this->assertSame('html', $result['type']);
-        $this->assertStringContainsString('<strong>', $result['props']['content']);
+        $this->assertSame('p', $result['type']);
+        $this->assertNull($result['name']);
+        // Children are recursed, not serialized to _raw_html
+        $this->assertFalse($result['consumes']);
     }
 
     // ── ImageRule ─────────────────────────────────────────────────────────────
@@ -127,7 +130,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new ImageRule();
         $result = $rule->extract($this->el('<img src="/img.jpg" alt="Alt text" class="img-fluid rounded" width="200" height="100">'), $this->noop());
-        $this->assertSame('image', $result['type']);
+        $this->assertSame('img', $result['type']);
+        $this->assertNull($result['name']);
         $this->assertSame('/img.jpg', $result['props']['src']);
         $this->assertSame('Alt text', $result['props']['alt']);
         $this->assertStringContainsString('img-fluid', $result['props']['class']);
@@ -164,7 +168,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new PictureRule();
         $result = $rule->extract($this->el('<picture><source srcset="/sm.jpg" media="(max-width:600px)"><img src="/lg.jpg" alt="Hero"></picture>'), $this->noop());
-        $this->assertSame('image', $result['type']);
+        $this->assertSame('img', $result['type']);
+        $this->assertNull($result['name']);
         $this->assertSame('/lg.jpg', $result['props']['src']);
         $this->assertSame('Hero', $result['props']['alt']);
         $this->assertTrue($result['props']['fluid']);
@@ -183,7 +188,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new FigureRule();
         $result = $rule->extract($this->el('<figure><img src="/photo.jpg" alt="Foto"><figcaption>Leyenda</figcaption></figure>'), $this->noop());
-        $this->assertSame('image', $result['type']);
+        $this->assertSame('img', $result['type']);
+        $this->assertNull($result['name']);
         $this->assertSame('/photo.jpg', $result['props']['src']);
         $this->assertSame('Leyenda', $result['props']['caption']);
     }
@@ -192,7 +198,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new FigureRule();
         $result = $rule->extract($this->el('<figure class="highlight"><pre><code>echo 1;</code></pre></figure>'), $this->noop());
-        $this->assertSame('node', $result['type']); // FigureRule returns 'node' when no inner <img>
+        $this->assertSame('figure', $result['type']); // FigureRule returns real HTML tag when no inner <img>
+        $this->assertNull($result['name']);
         $this->assertStringContainsString('pb-semantic-figure', $result['props']['class']);
     }
 
@@ -209,7 +216,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new DetailsRule();
         $result = $rule->extract($this->el('<details open><summary>¿Qué es esto?</summary><p>Es una cosa</p></details>'), $this->noop());
-        $this->assertSame('collapse', $result['type']);
+        $this->assertSame('details', $result['type']);
+        $this->assertSame('collapse', $result['name']);
         $this->assertSame('¿Qué es esto?', $result['props']['trigger_label']);
         $this->assertTrue($result['props']['open']);
     }
@@ -229,8 +237,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new InlineTextRule();
         $result = $rule->extract($this->el('<strong>Negrita</strong>'), $this->noop());
-        $this->assertSame('text', $result['type']);
-        $this->assertSame('strong', $result['props']['tag']); // preserves original tag
+        $this->assertSame('strong', $result['type']);
+        $this->assertNull($result['name']);
         $this->assertSame('Negrita', $result['props']['content']);
     }
 
@@ -238,7 +246,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new InlineTextRule();
         $result = $rule->extract($this->el('<abbr title="HyperText Markup Language">HTML</abbr>'), $this->noop());
-        $this->assertSame('tooltip', $result['type']);
+        $this->assertSame('abbr', $result['type']);
+        $this->assertSame('tooltip', $result['name']);
         $this->assertSame('HyperText Markup Language', $result['props']['text']);
         $this->assertSame('HTML', $result['props']['trigger_label']);
     }
@@ -247,7 +256,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new InlineTextRule();
         $result = $rule->extract($this->el('<blockquote class="blockquote">Una cita</blockquote>'), $this->noop());
-        $this->assertSame('blockquote', $result['props']['tag']); // preserves original tag
+        $this->assertSame('blockquote', $result['type']);
+        $this->assertNull($result['name']);
         $this->assertStringContainsString('blockquote', $result['props']['class'] ?? '');
     }
 
@@ -264,7 +274,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new DividerRule();
         $result = $rule->extract($this->el('<hr class="my-4">'), $this->noop());
-        $this->assertSame('divider', $result['type']);
+        $this->assertSame('hr', $result['type']);
+        $this->assertSame('divider', $result['name']);
         $this->assertSame('4', $result['props']['spacing']);
     }
 
@@ -281,8 +292,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new AnchorRule();
         $result = $rule->extract($this->el('<a href="/about" target="_blank" class="text-primary">Nosotros</a>'), $this->noop());
-        $this->assertSame('text', $result['type']);
-        $this->assertSame('a', $result['props']['tag']); // preserves original <a> tag
+        $this->assertSame('a', $result['type']);
+        $this->assertNull($result['name']);
         $this->assertSame('Nosotros', $result['props']['content']);
         $this->assertSame('/about', $result['props']['href']);
         $this->assertSame('_blank', $result['props']['target']);
@@ -301,8 +312,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new GenericDivRule();
         $result = $rule->extract($this->el('<div class="hero-wrapper"></div>'), $this->noop());
-        $this->assertSame('section', $result['type']);
-        $this->assertSame('div', $result['props']['tag']);
+        $this->assertSame('div', $result['type']);
+        $this->assertNull($result['name']);
         $this->assertSame('hero-wrapper', $result['props']['class']);
         $this->assertFalse($result['consumes']);
         $this->assertEmpty($result['warnings']);
@@ -321,8 +332,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new SpanRule();
         $result = $rule->extract($this->el('<span class="text-muted">Secundario</span>'), $this->noop());
-        $this->assertSame('text', $result['type']);
-        $this->assertSame('span', $result['props']['tag']);
+        $this->assertSame('span', $result['type']);
+        $this->assertNull($result['name']);
         $this->assertSame('Secundario', $result['props']['content']);
         $this->assertSame('text-muted', $result['props']['class']);
     }
@@ -349,7 +360,8 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new FallbackRule();
         $result = $rule->extract($this->el('<video src="/v.mp4" controls></video>'), $this->noop());
-        $this->assertSame('html', $result['type']);
+        $this->assertSame('video', $result['type']);
+        $this->assertNull($result['name']);
         $this->assertFalse($result['ignored']);
         $this->assertNotEmpty($result['warnings']);
         $this->assertSame('warning', $result['warnings'][0]->severity);
@@ -359,8 +371,10 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new FallbackRule();
         $result = $rule->extract($this->el('<canvas id="myCanvas" width="200" height="100"></canvas>'), $this->noop());
-        $this->assertSame('html', $result['type']);
-        $this->assertStringContainsString('<canvas', $result['props']['content']);
+        $this->assertSame('canvas', $result['type']);
+        $this->assertNull($result['name']);
+        $this->assertArrayHasKey('_raw_html', $result['props']);
+        $this->assertStringContainsString('<canvas', $result['props']['_raw_html']);
     }
 
     public function testFallbackRulePriorityIsZero(): void
