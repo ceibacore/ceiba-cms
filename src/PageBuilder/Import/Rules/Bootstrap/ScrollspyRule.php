@@ -21,7 +21,8 @@ final class ScrollspyRule implements RuleInterface
         $navTarget = ltrim($rawTarget, '#');
 
         return [
-            'type'     => 'scrollspy',
+            'type'     => strtolower($el->tagName),
+            'name'     => 'scrollspy',
             'props'    => [
                 'id'            => $el->getAttribute('id'),
                 'nav_target_id' => $navTarget,

@@ -18,11 +18,11 @@ final class SpanRule implements RuleInterface
     public function extract(\DOMElement $el, callable $recurse): array
     {
         $attrs            = AttrExtractor::all($el);
-        $attrs['tag']     = 'span';
         $attrs['content'] = trim($el->textContent);
 
         return [
-            'type'     => 'text',
+            'type'     => 'span',
+            'name'     => null,
             'props'    => $attrs,
             'consumes' => true,
             'children' => [],

@@ -32,7 +32,8 @@ final class ColRule implements RuleInterface
         }
 
         return [
-            'type'     => 'col',
+            'type'     => strtolower($el->tagName),
+            'name'     => 'col',
             'props'    => array_merge($bp, ['class' => ClassHelper::extraClasses($el, $excludes)]),
             'consumes' => false,
             'children' => null,

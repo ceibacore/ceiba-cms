@@ -6,6 +6,11 @@ namespace LemurCms\PageBuilder\Import\Rules\Semantic;
 use LemurCms\PageBuilder\Import\AttrExtractor;
 use LemurCms\PageBuilder\Import\Contract\RuleInterface;
 
+/**
+ * Converts h1–h6 into a node with type = real HTML tag, name = null.
+ * If the heading contains child elements (e.g. <span class="gradient">),
+ * it recurses into children. Otherwise captures the text content.
+ */
 final class HeadingRule implements RuleInterface
 {
     public function matches(\DOMElement $el): bool
@@ -17,14 +22,15 @@ final class HeadingRule implements RuleInterface
 
     public function extract(\DOMElement $el, callable $recurse): array
     {
-        $attrs        = AttrExtractor::all($el);
-        $attrs['tag'] = strtolower($el->tagName);
+        $tag   = strtolower($el->tagName);
+        $attrs = AttrExtractor::all($el);
 
-        // If heading contains child elements (e.g. <span class="gradient">), recurse as node
+        // If heading contains child elements (e.g. <span class="gradient">), recurse
         foreach ($el->childNodes as $child) {
             if ($child instanceof \DOMElement) {
                 return [
-                    'type'     => 'node',
+                    'type'     => $tag,
+                    'name'     => null,
                     'props'    => $attrs,
                     'consumes' => false,
                     'children' => null,
@@ -36,7 +42,8 @@ final class HeadingRule implements RuleInterface
 
         $attrs['content'] = trim($el->textContent);
         return [
-            'type'     => 'text',
+            'type'     => $tag,
+            'name'     => null,
             'props'    => $attrs,
             'consumes' => true,
             'children' => [],

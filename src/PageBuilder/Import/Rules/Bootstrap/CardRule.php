@@ -68,7 +68,8 @@ final class CardRule implements RuleInterface
         }
 
         return [
-            'type'     => 'card',
+            'type'     => 'div',
+            'name'     => 'card',
             'props'    => $props,
             'consumes' => true,
             'children' => $children,

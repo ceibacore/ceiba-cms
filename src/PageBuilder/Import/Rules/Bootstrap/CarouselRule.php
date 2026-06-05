@@ -72,7 +72,8 @@ final class CarouselRule implements RuleInterface
 
                 $children[] = [
                     'id'       => UuidHelper::v4(),
-                    'type'     => 'carousel_item',
+                    'type'     => 'div',
+                    'name'     => 'carousel-item',
                     'props'    => ['image_src' => $imgSrc, 'caption' => $caption, 'active' => $active],
                     'loop'     => null,
                     'children' => [],
@@ -81,7 +82,8 @@ final class CarouselRule implements RuleInterface
         }
 
         return [
-            'type'     => 'carousel',
+            'type'     => 'div',
+            'name'     => 'carousel',
             'props'    => [
                 'id'         => $id,
                 'controls'   => $controls,

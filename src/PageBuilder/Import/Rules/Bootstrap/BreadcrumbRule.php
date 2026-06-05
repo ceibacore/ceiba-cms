@@ -45,7 +45,8 @@ final class BreadcrumbRule implements RuleInterface
         }
 
         return [
-            'type'     => 'breadcrumb',
+            'type'     => strtolower($el->tagName),
+            'name'     => 'breadcrumb',
             'props'    => [
                 'items' => $items,
                 'class' => ClassHelper::extraClasses($el, ['breadcrumb']),

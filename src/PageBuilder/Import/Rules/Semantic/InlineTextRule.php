@@ -31,9 +31,10 @@ final class InlineTextRule implements RuleInterface
         $attrs = AttrExtractor::all($el);
 
         if ($tag === 'abbr') {
-            // <abbr title="..."> → tooltip node (title already in $attrs)
+            // <abbr title="..."> → abbr element with tooltip semantics
             return [
-                'type'     => 'tooltip',
+                'type'     => 'abbr',
+                'name'     => 'tooltip',
                 'props'    => [
                     'text'          => $attrs['title'] ?? '',
                     'trigger_label' => trim($el->textContent),
@@ -47,10 +48,10 @@ final class InlineTextRule implements RuleInterface
             ];
         }
 
-        $attrs['tag']     = $tag;
         $attrs['content'] = trim($el->textContent);
         return [
-            'type'     => 'text',
+            'type'     => $tag,
+            'name'     => null,
             'props'    => $attrs,
             'consumes' => true,
             'children' => [],

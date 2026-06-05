@@ -73,15 +73,16 @@ class BladeRenderer implements BladeRendererInterface
         if (isset($node['children']) && is_array($node['children'])) {
             $children = $node['children'];
 
-            // Accordion: the parent id MUST be set so every accordion_item can
+            // Accordion: the parent id MUST be set so every accordion-item can
             // reference it via data-bs-parent="#<id>" (Bootstrap collapse wiring).
             // TreeValidator enforces props.id at save-time; the fallback here is a
             // last-resort safety net for trees that bypass validation.
-            if (($node['type'] ?? '') === 'accordion') {
+            $compName = str_replace('-', '_', $node['name'] ?? $node['type'] ?? '');
+            if ($compName === 'accordion') {
                 if (empty($interpolatedProps['id'])) {
                     // Should never happen if TreeValidator ran — log and recover.
                     trigger_error(
-                        "Accordion node '" . ($node['id'] ?? $node['type'] ?? 'unknown') . "' has no props.id — generating fallback. Run TreeValidator before rendering.",
+                        "Accordion node '" . ($node['id'] ?? 'unknown') . "' has no props.id — generating fallback. Run TreeValidator before rendering.",
                         E_USER_WARNING
                     );
                     $interpolatedProps['id'] = 'accordion_' . uniqid();
@@ -95,7 +96,7 @@ class BladeRenderer implements BladeRendererInterface
                     if (!isset($child['props']) || !is_array($child['props'])) {
                         $child['props'] = [];
                     }
-                    $child['props']['_parent_id'] = $accordionId;  // required by accordion_item view
+                    $child['props']['_parent_id'] = $accordionId;  // required by accordion-item view
                     $child['props']['always_open'] = $alwaysOpen;
                 }
                 unset($child);
@@ -107,7 +108,11 @@ class BladeRenderer implements BladeRendererInterface
         }
 
         // 4. Render component view template
-        return $this->renderView($node['type'], $interpolatedProps, $childrenHtml, $context);
+        // Use `name` to find the component template (e.g. views/card.php).
+        // If `name` is null or no template exists, renderView falls back gracefully to $childrenHtml.
+        $viewName = $node['name'] ?? $node['type'];
+        $viewName = str_replace('-', '_', $viewName);
+        return $this->renderView($viewName, $interpolatedProps, $childrenHtml, $context);
     }
 
     private function renderView(string $type, array $props, string $childrenHtml, array $context = []): string
@@ -131,5 +136,44 @@ class BladeRenderer implements BladeRendererInterface
             throw $e;
         }
         return ob_get_clean();
+    }
+
+    public function mergeTemplateAndPage(array $templateTree, array $pageContent): array
+    {
+        $merged = [];
+        foreach ($templateTree as $node) {
+            if (!is_array($node)) {
+                continue;
+            }
+
+            if (($node['type'] ?? '') === 'slot') {
+                $slotName = $node['props']['name'] ?? 'main';
+                
+                $slotNodes = [];
+                if (isset($pageContent[$slotName]) && is_array($pageContent[$slotName])) {
+                    $slotNodes = $pageContent[$slotName];
+                } elseif ($slotName === 'main' && $this->isList($pageContent)) {
+                    $slotNodes = $pageContent;
+                }
+
+                foreach ($this->mergeTemplateAndPage($slotNodes, $pageContent) as $n) {
+                    $merged[] = $n;
+                }
+            } else {
+                if (isset($node['children']) && is_array($node['children'])) {
+                    $node['children'] = $this->mergeTemplateAndPage($node['children'], $pageContent);
+                }
+                $merged[] = $node;
+            }
+        }
+        return $merged;
+    }
+
+    private function isList(array $arr): bool
+    {
+        if (empty($arr)) {
+            return true;
+        }
+        return array_keys($arr) === range(0, count($arr) - 1);
     }
 }

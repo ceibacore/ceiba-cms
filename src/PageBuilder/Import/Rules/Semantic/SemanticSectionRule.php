@@ -51,7 +51,8 @@ final class SemanticSectionRule implements RuleInterface
         $attrs['tag'] = $tag; // system key — tells the view which HTML tag to emit
 
         return [
-            'type'     => 'node',
+            'type'     => $tag,
+            'name'     => null,
             'props'    => $attrs,
             'consumes' => false,
             'children' => null,

@@ -28,7 +28,8 @@ final class PictureRule implements RuleInterface
         }
 
         return [
-            'type'     => 'image',
+            'type'     => 'img',
+            'name'     => null,
             'props'    => ['src' => $src, 'alt' => $alt, 'fluid' => true],
             'consumes' => true,
             'children' => [],

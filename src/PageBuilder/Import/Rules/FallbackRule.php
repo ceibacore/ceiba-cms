@@ -7,20 +7,22 @@ use LemurCms\PageBuilder\Import\Contract\RuleInterface;
 use LemurCms\PageBuilder\Import\ImportWarning;
 
 /**
- * Last-resort rule. Always matches. Converts anything unrecognised to html node.
+ * Last-resort rule. Always matches.
+ * Produces a node with type = real HTML tag and name = null.
+ * For complex/unknown elements, preserves the raw HTML in props._raw_html.
  */
 final class FallbackRule implements RuleInterface
 {
     private const IGNORED_TAGS = ['script', 'style', 'meta', 'link', 'head', 'noscript', 'title'];
 
     private const WARNED_TAGS = [
-        'video'  => ['Videos no tienen tipo nativo. Convertido a HTML.',             'Considera un componente de embed externo.'],
-        'audio'  => ['Audio no tiene tipo nativo. Convertido a HTML.',               'Agrega el audio como nodo HTML.'],
-        'iframe' => ['iframes no tienen tipo nativo. Convertido a HTML.',             'Revisa el contenido del iframe manualmente.'],
-        'table'  => ['Tablas no tienen tipo nativo en esta versión.',                 'Usa nodo HTML para tablas. Candidato para v2.'],
-        'form'   => ['Formularios requieren nodo HTML.',                              'Los campos de formulario se preservan como HTML.'],
-        'svg'    => ['SVG preservado como HTML.',                                    'Considera usar <img> con el SVG como archivo externo.'],
-        'canvas' => ['<canvas> preservado como HTML.',                               'No hay tipo nativo para canvas.'],
+        'video'  => ['Videos no tienen tipo nativo. Preservado como HTML.',             'Considera un componente de embed externo.'],
+        'audio'  => ['Audio no tiene tipo nativo. Preservado como HTML.',               'Agrega el audio como nodo HTML.'],
+        'iframe' => ['iframes no tienen tipo nativo. Preservado como HTML.',             'Revisa el contenido del iframe manualmente.'],
+        'table'  => ['Tablas preservadas como HTML en esta versión.',                 'Candidato para componente nativo en v2.'],
+        'form'   => ['Formularios preservados como HTML.',                              'Los campos de formulario se preservan con fidelidad.'],
+        'svg'    => ['SVG preservado como HTML.',                                       'Considera usar <img> con el SVG como archivo externo.'],
+        'canvas' => ['<canvas> preservado como HTML.',                                  'No hay tipo nativo para canvas.'],
     ];
 
     public function matches(\DOMElement $el): bool
@@ -48,7 +50,7 @@ final class FallbackRule implements RuleInterface
                     suggestion: '',
                 );
             }
-            return ['type' => '', 'props' => [], 'consumes' => true, 'children' => [], 'warnings' => $warnings, 'ignored' => true];
+            return ['type' => $tag, 'name' => null, 'props' => [], 'consumes' => true, 'children' => [], 'warnings' => $warnings, 'ignored' => true];
         }
 
         // Tags with specific warnings
@@ -63,8 +65,12 @@ final class FallbackRule implements RuleInterface
         }
 
         return [
-            'type'     => 'html',
-            'props'    => ['content' => $el->ownerDocument->saveHTML($el)],
+            'type'     => $tag,
+            'name'     => null,
+            'props'    => [
+                'class'     => $el->getAttribute('class') ?: null,
+                '_raw_html' => $el->ownerDocument->saveHTML($el),
+            ],
             'consumes' => true,
             'children' => [],
             'warnings' => $warnings,

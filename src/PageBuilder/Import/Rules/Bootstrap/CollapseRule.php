@@ -20,7 +20,8 @@ final class CollapseRule implements RuleInterface
     public function extract(\DOMElement $el, callable $recurse): array
     {
         return [
-            'type'     => 'collapse',
+            'type'     => strtolower($el->tagName),
+            'name'     => 'collapse',
             'props'    => [
                 'id'    => $el->getAttribute('id'),
                 'open'  => !ClassHelper::hasClass($el, 'd-none'),

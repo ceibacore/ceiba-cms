@@ -23,7 +23,8 @@ final class TooltipRule implements RuleInterface
         $placement = $el->getAttribute('data-bs-placement') ?: 'top';
 
         return [
-            'type'     => 'tooltip',
+            'type'     => strtolower($el->tagName),
+            'name'     => 'tooltip',
             'props'    => [
                 'text'          => $text,
                 'placement'     => $placement,

@@ -8,9 +8,9 @@ use LemurCms\PageBuilder\Import\Contract\RuleInterface;
 use LemurCms\PageBuilder\Import\ClassHelper;
 
 /**
- * Converts <a> (not .btn) into a node or text node preserving ALL attributes.
- * - With child elements: type 'node', tag 'a', recurses into children.
- * - Text-only anchor: type 'text', tag 'a', content = textContent.
+ * Converts <a> (not .btn) into an anchor node preserving ALL attributes.
+ * - With child elements: recurses into children.
+ * - Text-only anchor: captures text content in props.content.
  */
 final class AnchorRule implements RuleInterface
 {
@@ -24,32 +24,27 @@ final class AnchorRule implements RuleInterface
 
     public function extract(\DOMElement $el, callable $recurse): array
     {
-        $attrs        = AttrExtractor::all($el);
-        $attrs['tag'] = 'a';
+        $attrs = AttrExtractor::all($el);
 
         // Check for child DOMElement nodes
-        $hasChildren = false;
         foreach ($el->childNodes as $child) {
             if ($child instanceof \DOMElement) {
-                $hasChildren = true;
-                break;
+                return [
+                    'type'     => 'a',
+                    'name'     => null,
+                    'props'    => $attrs,
+                    'consumes' => false,
+                    'children' => null,
+                    'warnings' => [],
+                    'ignored'  => false,
+                ];
             }
-        }
-
-        if ($hasChildren) {
-            return [
-                'type'     => 'node',
-                'props'    => $attrs,
-                'consumes' => false,
-                'children' => null,
-                'warnings' => [],
-                'ignored'  => false,
-            ];
         }
 
         $attrs['content'] = trim($el->textContent);
         return [
-            'type'     => 'text',
+            'type'     => 'a',
+            'name'     => null,
             'props'    => $attrs,
             'consumes' => true,
             'children' => [],

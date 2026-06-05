@@ -37,7 +37,8 @@ final class ListGroupRule implements RuleInterface
         }
 
         return [
-            'type'     => 'list_group',
+            'type'     => strtolower($el->tagName),
+            'name'     => 'list-group',
             'props'    => [
                 'items' => $items,
                 'class' => ClassHelper::extraClasses($el, ['list-group']),

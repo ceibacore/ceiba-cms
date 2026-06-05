@@ -22,10 +22,10 @@ final class GenericDivRule implements RuleInterface
     public function extract(\DOMElement $el, callable $recurse): array
     {
         $attrs        = AttrExtractor::all($el);
-        $attrs['tag'] = 'div';
 
         return [
-            'type'     => 'section',
+            'type'     => 'div',
+            'name'     => null,
             'props'    => $attrs,
             'consumes' => false,
             'children' => null,

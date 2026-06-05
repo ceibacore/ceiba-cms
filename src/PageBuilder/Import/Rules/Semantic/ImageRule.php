@@ -33,7 +33,8 @@ final class ImageRule implements RuleInterface
         }
 
         return [
-            'type'     => 'image',
+            'type'     => 'img',
+            'name'     => null,
             'props'    => $attrs, // ALL original attributes preserved
             'consumes' => true,
             'children' => [],

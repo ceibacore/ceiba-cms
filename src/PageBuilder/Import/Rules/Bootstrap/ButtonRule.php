@@ -30,7 +30,8 @@ final class ButtonRule implements RuleInterface
         }
 
         return [
-            'type'     => 'button',
+            'type'     => $tag,
+            'name'     => 'button',
             'props'    => [
                 'label'   => $label,
                 'href'    => $el->getAttribute('href') ?: null,

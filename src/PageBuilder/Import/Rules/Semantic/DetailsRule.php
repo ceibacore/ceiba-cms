@@ -29,7 +29,8 @@ final class DetailsRule implements RuleInterface
         }
 
         return [
-            'type'     => 'collapse',
+            'type'     => 'details',
+            'name'     => 'collapse',
             'props'    => [
                 'trigger_label' => $label,
                 'open'          => $el->hasAttribute('open'),

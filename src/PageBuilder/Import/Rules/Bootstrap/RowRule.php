@@ -36,7 +36,8 @@ final class RowRule implements RuleInterface
         }
 
         return [
-            'type'     => 'row',
+            'type'     => strtolower($el->tagName),
+            'name'     => 'row',
             'props'    => [
                 'gutter'  => $gutter,
                 'align'   => $align,

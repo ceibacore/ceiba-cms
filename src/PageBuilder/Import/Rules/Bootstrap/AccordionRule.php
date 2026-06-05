@@ -59,7 +59,8 @@ final class AccordionRule implements RuleInterface
 
             $children[] = [
                 'id'       => UuidHelper::v4(),
-                'type'     => 'accordion_item',
+                'type'     => 'div',
+                'name'     => 'accordion-item',
                 'props'    => ['title' => $title, 'content' => $content, 'open' => $open],
                 'loop'     => null,
                 'children' => [],
@@ -67,7 +68,8 @@ final class AccordionRule implements RuleInterface
         }
 
         return [
-            'type'     => 'accordion',
+            'type'     => 'div',
+            'name'     => 'accordion',
             'props'    => [
                 'id'          => $id,
                 'flush'       => $flush,

@@ -40,7 +40,8 @@ final class FigureRule implements RuleInterface
 
         if ($imgSrc !== null) {
             return [
-                'type'     => 'image',
+                'type'     => 'img',
+                'name'     => null,
                 'props'    => ['src' => $imgSrc, 'alt' => $imgAlt, 'fluid' => true, 'caption' => $caption],
                 'consumes' => true,
                 'children' => [],
@@ -49,9 +50,10 @@ final class FigureRule implements RuleInterface
             ];
         }
 
-        // No image — treat as section wrapper
+        // No image — treat as figure container
         return [
-            'type'     => 'node',
+            'type'     => 'figure',
+            'name'     => null,
             'props'    => [
                 'class' => 'pb-semantic-figure ' . trim($el->getAttribute('class')),
                 'role'  => '',

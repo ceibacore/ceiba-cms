@@ -59,7 +59,8 @@ final class RuleEngine
             return null;
         }
 
-        $type = $result['type'] ?? 'html';
+        $type = $result['type'] ?? 'div';
+        $name = $result['name'] ?? null;
 
         // Build children
         if (!($result['consumes'] ?? false)) {
@@ -70,7 +71,8 @@ final class RuleEngine
             $children = $result['children'] ?? [];
         }
 
-        if ($type === 'html') {
+        // Count fallback nodes (name=null + _raw_html) vs fully mapped nodes
+        if ($name === null && isset($result['props']['_raw_html'])) {
             $this->fallbackCount++;
         } else {
             $this->mappedCount++;
@@ -79,10 +81,12 @@ final class RuleEngine
         return [
             'id'       => UuidHelper::v4(),
             'type'     => $type,
+            'name'     => $name,
             'props'    => $result['props'] ?? [],
             'loop'     => null,
             'children' => $children,
         ];
+
     }
 
     /**

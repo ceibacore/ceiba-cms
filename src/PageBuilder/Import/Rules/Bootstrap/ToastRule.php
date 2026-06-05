@@ -52,7 +52,8 @@ final class ToastRule implements RuleInterface
         }
 
         return [
-            'type'     => 'toast',
+            'type'     => strtolower($el->tagName),
+            'name'     => 'toast',
             'props'    => [
                 'id'      => $el->getAttribute('id'),
                 'title'   => $title,

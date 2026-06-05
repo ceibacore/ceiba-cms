@@ -43,7 +43,8 @@ final class OffcanvasRule implements RuleInterface
         }
 
         return [
-            'type'     => 'offcanvas',
+            'type'     => strtolower($el->tagName),
+            'name'     => 'offcanvas',
             'props'    => [
                 'id'        => $el->getAttribute('id'),
                 'title'     => $title,

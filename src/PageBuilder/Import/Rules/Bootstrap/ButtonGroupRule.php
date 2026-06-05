@@ -29,7 +29,8 @@ final class ButtonGroupRule implements RuleInterface
         }
 
         return [
-            'type'     => 'button_group',
+            'type'     => strtolower($el->tagName),
+            'name'     => 'button-group',
             'props'    => [
                 'vertical' => $vertical,
                 'size'     => $size,

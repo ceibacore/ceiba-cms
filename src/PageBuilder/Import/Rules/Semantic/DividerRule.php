@@ -26,7 +26,8 @@ final class DividerRule implements RuleInterface
         }
 
         return [
-            'type'     => 'divider',
+            'type'     => 'hr',
+            'name'     => 'divider',
             'props'    => [
                 'class'   => $el->getAttribute('class'),
                 'spacing' => $spacing,

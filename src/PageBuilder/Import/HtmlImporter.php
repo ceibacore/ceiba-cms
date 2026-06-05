@@ -131,9 +131,10 @@ final class HtmlImporter
         $pending = null;
 
         foreach ($nodes as $node) {
-            if ($node['type'] === 'html' && empty($node['children'])) {
+            // Merge adjacent fallback nodes (name=null, has _raw_html) to reduce noise
+            if (($node['name'] ?? null) === null && isset($node['props']['_raw_html']) && empty($node['children'])) {
                 if ($pending !== null) {
-                    $pending['props']['content'] .= "\n" . ($node['props']['content'] ?? '');
+                    $pending['props']['_raw_html'] .= "\n" . ($node['props']['_raw_html'] ?? '');
                 } else {
                     $pending = $node;
                 }

@@ -28,7 +28,8 @@ final class ContainerRule implements RuleInterface
         }
 
         return [
-            'type'     => 'container',
+            'type'     => strtolower($el->tagName),
+            'name'     => 'container',
             'props'    => ['fluid' => $fluid, 'class' => ClassHelper::extraClasses($el, $excludes)],
             'consumes' => false,
             'children' => null,

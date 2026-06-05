@@ -7,7 +7,9 @@ use LemurCms\PageBuilder\Import\AttrExtractor;
 use LemurCms\PageBuilder\Import\Contract\RuleInterface;
 
 /**
- * Converts <p> into text node (plain) or html node (if it contains child elements).
+ * Converts <p> into a p node.
+ * If it contains child elements, recurses into them.
+ * Otherwise captures the text content in props.content.
  */
 final class ParagraphRule implements RuleInterface
 {
@@ -20,30 +22,27 @@ final class ParagraphRule implements RuleInterface
 
     public function extract(\DOMElement $el, callable $recurse): array
     {
-        $hasChildElements = false;
+        $attrs = AttrExtractor::all($el);
+
+        // Check for child elements (inline formatting, links, etc.)
         foreach ($el->childNodes as $child) {
             if ($child instanceof \DOMElement) {
-                $hasChildElements = true;
-                break;
+                return [
+                    'type'     => 'p',
+                    'name'     => null,
+                    'props'    => $attrs,
+                    'consumes' => false,
+                    'children' => null,
+                    'warnings' => [],
+                    'ignored'  => false,
+                ];
             }
         }
 
-        if ($hasChildElements) {
-            return [
-                'type'     => 'html',
-                'props'    => ['content' => $el->ownerDocument->saveHTML($el)],
-                'consumes' => true,
-                'children' => [],
-                'warnings' => [],
-                'ignored'  => false,
-            ];
-        }
-
-        $attrs            = AttrExtractor::all($el);
-        $attrs['tag']     = 'p';
         $attrs['content'] = trim($el->textContent);
         return [
-            'type'     => 'text',
+            'type'     => 'p',
+            'name'     => null,
             'props'    => $attrs,
             'consumes' => true,
             'children' => [],
