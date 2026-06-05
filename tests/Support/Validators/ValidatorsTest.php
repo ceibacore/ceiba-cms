@@ -116,7 +116,7 @@ class ValidatorsTest extends TestCase
         PageValidator::validatePage([
             'title' => 'About',
             'slug' => 'about',
-            'content' => '[{"id": "n1", "type": "container"}]',
+            'content' => '[{"id": "n1", "type": "div", "name": "container"}]',
             'status' => 'draft'
         ]);
     }

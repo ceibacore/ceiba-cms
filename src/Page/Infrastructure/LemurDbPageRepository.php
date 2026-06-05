@@ -90,6 +90,14 @@ final class LemurDbPageRepository implements PageRepositoryInterface
 
             $page['content'] = $decoded;
         }
+
+        if (isset($page['query_config']) && is_string($page['query_config'])) {
+            $page['query_config'] = json_decode($page['query_config'], true) ?? [];
+        }
+        if (isset($page['conditions']) && is_string($page['conditions'])) {
+            $page['conditions'] = json_decode($page['conditions'], true) ?? [];
+        }
+
         return $page;
     }
 
@@ -97,6 +105,12 @@ final class LemurDbPageRepository implements PageRepositoryInterface
     {
         if (isset($data['content']) && is_array($data['content'])) {
             $data['content'] = json_encode($data['content']);
+        }
+        if (isset($data['query_config']) && is_array($data['query_config'])) {
+            $data['query_config'] = json_encode($data['query_config']);
+        }
+        if (isset($data['conditions']) && is_array($data['conditions'])) {
+            $data['conditions'] = json_encode($data['conditions']);
         }
         return $data;
     }

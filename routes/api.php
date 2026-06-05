@@ -114,6 +114,9 @@ $pageRenderController = new PageRenderController(
     $container['useCases']['getDefaultLayout'],
     $container['layoutRenderer'],
     $container['useCases']['getNavbar'],
+    $container['useCases']['getPageTemplateById'],
+    $container['conditionEngine'],
+    $container['queryEngine'],
 );
 
 $homeController = new HomeController(
@@ -171,7 +174,14 @@ $router->post('/api/pages/{id}/publish', fn($id) => $pageController->publish($id
 
 $pageRenderController = new PageRenderController(
     $container['useCases']['getPageBySlug'],
-    $container['bladeRenderer']
+    $container['bladeRenderer'],
+    null,
+    null,
+    null,
+    null,
+    $container['useCases']['getPageTemplateById'],
+    $container['conditionEngine'],
+    $container['queryEngine'],
 );
 
 $router->get('/pages/{slug}', fn($slug) => $pageRenderController->show($slug), 'page.render');

@@ -23,7 +23,7 @@ class LayoutValidatorTest extends TestCase
             'name'               => 'Full Layout',
             'description'        => 'Desc',
             'menu_slug'          => 'main-nav',
-            'footer_tree'        => [['id' => 'node-1', 'type' => 'text', 'children' => []]],
+            'footer_tree'        => [['id' => 'node-1', 'type' => 'div', 'name' => 'text', 'children' => []]],
             'palette'            => ['--bs-primary' => '#000'],
             'use_system_palette' => false,
             'is_active'          => true,
@@ -44,7 +44,7 @@ class LayoutValidatorTest extends TestCase
     {
         LayoutValidator::validate([
             'name'        => 'Footer JSON',
-            'footer_tree' => json_encode([['id' => 'node-1', 'type' => 'container', 'children' => []]]),
+            'footer_tree' => json_encode([['id' => 'node-1', 'type' => 'div', 'name' => 'container', 'children' => []]]),
         ]);
         $this->addToAssertionCount(1);
     }

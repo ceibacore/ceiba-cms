@@ -134,6 +134,23 @@ require_once __DIR__ . '/src/PageBuilder/Infrastructure/LemurDbComponentDefiniti
 require_once __DIR__ . '/src/PageBuilder/Domain/Entity/PageLayout.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Repository/PageLayoutRepositoryInterface.php';
 require_once __DIR__ . '/src/PageBuilder/Infrastructure/LemurDbPageLayoutRepository.php';
+
+// V2 Page Template & Engine Entities/Contracts
+require_once __DIR__ . '/src/PageBuilder/Domain/Entity/PageTemplate.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Entity/QueryConfig.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Entity/RenderCondition.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Repository/PageTemplateRepositoryInterface.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/LemurDbPageTemplateRepository.php';
+require_once __DIR__ . '/src/PageBuilder/Application/GetPageTemplateById.php';
+require_once __DIR__ . '/src/Support/Exceptions/SecurityException.php';
+
+// V2 Engine Services
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/ConditionEngine.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/ContextResolver.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/QueryEngine.php';
+require_once __DIR__ . '/src/Http/Middleware/MiddlewareInterface.php';
+require_once __DIR__ . '/src/Http/Middleware/EvaluatePageConditions.php';
+
 require_once __DIR__ . '/src/PageBuilder/Domain/Service/LayoutRenderer.php';
 require_once __DIR__ . '/src/PageBuilder/Application/ListLayouts.php';
 require_once __DIR__ . '/src/PageBuilder/Application/GetLayoutById.php';
@@ -290,6 +307,16 @@ $createTemplate           = new \LemurCms\PageBuilder\Application\CreateTemplate
 $deleteTemplate           = new \LemurCms\PageBuilder\Application\DeleteTemplate($templateRepository);
 $listComponentDefinitions = new \LemurCms\PageBuilder\Application\ListComponentDefinitions($componentDefinitionRepository);
 
+// V2 Page Templates
+$pageTemplateRepository   = new \LemurCms\PageBuilder\Infrastructure\LemurDbPageTemplateRepository($db);
+$getPageTemplateById      = new \LemurCms\PageBuilder\Application\GetPageTemplateById($pageTemplateRepository);
+
+// V2 Engine Services
+$authManager              = new \LemurCms\Auth\AuthManager(new \LemurCms\Auth\Drivers\SessionDriver($db));
+$conditionEngine          = new \LemurCms\PageBuilder\Domain\Service\ConditionEngine($authManager, $db);
+$contextResolver          = new \LemurCms\PageBuilder\Domain\Service\ContextResolver($authManager);
+$queryEngine              = new \LemurCms\PageBuilder\Domain\Service\QueryEngine($db, $contextResolver);
+
 $listLayouts      = new \LemurCms\PageBuilder\Application\ListLayouts($pageLayoutRepository);
 $getLayoutById    = new \LemurCms\PageBuilder\Application\GetLayoutById($pageLayoutRepository);
 $getDefaultLayout = new \LemurCms\PageBuilder\Application\GetDefaultLayout($pageLayoutRepository);
@@ -341,7 +368,7 @@ $listDynamicModules  = new \LemurCms\DynamicModule\Application\ListDynamicModule
 // ── Export container (opcional: devolver un contenedor manual) ───────────────
 return [
     'db'                 => $db,
-    'auth'               => new \LemurCms\Auth\AuthManager(new \LemurCms\Auth\Drivers\SessionDriver($db)),
+    'auth'               => $authManager,
     'repositories' => [
         'menu'                => $menuRepository,
         'page'                => $pageRepository,
@@ -349,6 +376,7 @@ return [
         'media'               => $mediaRepository,
         'user'                => $userRepository,
         'template'            => $templateRepository,
+        'pageTemplate'        => $pageTemplateRepository,
         'componentDefinition' => $componentDefinitionRepository,
         'pageLayout'          => $pageLayoutRepository,
         'reservedPath'        => $reservedPathRepository,
@@ -367,12 +395,17 @@ return [
         'variableInterpolator' => $variableInterpolator,
         'bladeRenderer'        => $bladeRenderer,
         'layoutRenderer'       => $layoutRenderer,
+        'conditionEngine'      => $conditionEngine,
+        'contextResolver'      => $contextResolver,
+        'queryEngine'          => $queryEngine,
     ],
     'loopResolver'        => $loopResolver,
     'bladeRenderer'       => $bladeRenderer,
     'layoutRenderer'      => $layoutRenderer,
     'uiFrameworkRegistry' => $uiFrameworkRegistry,
     'reservedPathChecker' => $reservedPathChecker,
+    'conditionEngine'     => $conditionEngine,
+    'queryEngine'         => $queryEngine,
     'useCases' => [
         // Menu
         'getMainNavbar'    => $getMainNavbar,
@@ -407,6 +440,7 @@ return [
         // PageBuilder
         'listTemplates'            => $listTemplates,
         'getTemplateById'          => $getTemplateById,
+        'getPageTemplateById'      => $getPageTemplateById,
         'createTemplate'           => $createTemplate,
         'deleteTemplate'           => $deleteTemplate,
         'listComponentDefinitions' => $listComponentDefinitions,

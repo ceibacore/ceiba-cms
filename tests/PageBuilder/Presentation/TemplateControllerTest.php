@@ -109,7 +109,7 @@ class TemplateControllerTest extends TestCase
         $validData = [
             'name' => 'New Template',
             'tree' => [
-                ['id' => 'node-1', 'type' => 'container']
+                ['id' => 'node-1', 'type' => 'div', 'name' => 'container']
             ]
         ];
 
