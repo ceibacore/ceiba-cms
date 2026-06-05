@@ -289,7 +289,7 @@ class UiFrameworkPipelineIntegrationTest extends TestCase
 
         // Structured components should still be recognized
         $tree = $result->toArray()['tree'];
-        $this->assertSame('section', $tree[0]['type']);
+        $this->assertSame('node', $tree[0]['type']); // SemanticSectionRule → 'node'
     }
 
     // ── Security ─────────────────────────────────────────────────────────────

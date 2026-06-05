@@ -6,6 +6,18 @@ namespace LemurCms\PageBuilder\Import;
 use LemurCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
 use LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
 use LemurCms\PageBuilder\Import\Rules\FallbackRule;
+use LemurCms\PageBuilder\Import\Rules\Generic\GenericDivRule;
+use LemurCms\PageBuilder\Import\Rules\Generic\SpanRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\AnchorRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\DetailsRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\DividerRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\FigureRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\HeadingRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\ImageRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\InlineTextRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\ParagraphRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\PictureRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\SemanticSectionRule;
 
 /**
  * Converts an HTML string into a PageBuilder VDOM node tree.
@@ -144,14 +156,16 @@ final class HtmlImporter
 
     private function buildRegistry(): void
     {
-        // Resolve the active module: explicit module > registry > none
-        $activeModule = $this->module;
+        // Core rules are always active — HTML semantics without any framework
+        foreach ($this->getCoreRules() as $rule) {
+            $this->registry->register($rule);
+        }
 
+        // Framework-specific rules only fire when a module is active
+        $activeModule = $this->module;
         if ($activeModule === null && $this->uiRegistry !== null && $this->uiRegistry->hasActive()) {
             $activeModule = $this->uiRegistry->getActiveModule();
         }
-
-        // Register framework-specific rules first (higher priority wins)
         if ($activeModule !== null) {
             foreach ($activeModule->getImportRules() as $rule) {
                 $this->registry->register($rule);
@@ -160,5 +174,31 @@ final class HtmlImporter
 
         // FallbackRule is always last (priority 0) — never framework-specific
         $this->registry->register(new FallbackRule());
+    }
+
+    /**
+     * Core rules: always active regardless of active UI framework module.
+     * Generic + Semantic HTML rules that preserve full attribute fidelity.
+     *
+     * @return \LemurCms\PageBuilder\Import\Contract\RuleInterface[]
+     */
+    private function getCoreRules(): array
+    {
+        return [
+            // Priority 100 — Generic elements
+            new GenericDivRule(),
+            new SpanRule(),
+            // Priority 200 — Semantic HTML5
+            new SemanticSectionRule(),
+            new HeadingRule(),
+            new ParagraphRule(),
+            new ImageRule(),
+            new PictureRule(),
+            new FigureRule(),
+            new DetailsRule(),
+            new InlineTextRule(),
+            new DividerRule(),
+            new AnchorRule(),
+        ];
     }
 }

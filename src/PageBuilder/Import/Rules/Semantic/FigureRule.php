@@ -51,7 +51,7 @@ final class FigureRule implements RuleInterface
 
         // No image — treat as section wrapper
         return [
-            'type'     => 'section',
+            'type'     => 'node',
             'props'    => [
                 'class' => 'pb-semantic-figure ' . trim($el->getAttribute('class')),
                 'role'  => '',

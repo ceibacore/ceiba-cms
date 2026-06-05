@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace LemurCms\PageBuilder\Import\Rules\Semantic;
 
+use LemurCms\PageBuilder\Import\AttrExtractor;
 use LemurCms\PageBuilder\Import\Contract\RuleInterface;
 
 /**
- * Maps inline/phrasing content elements to text or tooltip nodes.
+ * Maps inline/phrasing content elements to text nodes.
+ * Agnostic: keeps original tag and ALL attributes without framework-specific additions.
  */
 final class InlineTextRule implements RuleInterface
 {
@@ -25,97 +27,35 @@ final class InlineTextRule implements RuleInterface
 
     public function extract(\DOMElement $el, callable $recurse): array
     {
-        $tag     = strtolower($el->tagName);
-        $content = trim($el->textContent);
-        $class   = $el->getAttribute('class');
+        $tag   = strtolower($el->tagName);
+        $attrs = AttrExtractor::all($el);
 
-        switch ($tag) {
-            case 'abbr':
-                return [
-                    'type'     => 'tooltip',
-                    'props'    => [
-                        'text'          => $el->getAttribute('title'),
-                        'trigger_label' => $content,
-                        'placement'     => 'top',
-                    ],
-                    'consumes' => true,
-                    'children' => [],
-                    'warnings' => [],
-                    'ignored'  => false,
-                ];
-
-            case 'blockquote':
-                return [
-                    'type'     => 'text',
-                    'props'    => ['tag' => 'p', 'content' => $content, 'class' => trim('blockquote ' . $class)],
-                    'consumes' => true,
-                    'children' => [],
-                    'warnings' => [],
-                    'ignored'  => false,
-                ];
-
-            case 'cite':
-                return [
-                    'type'     => 'text',
-                    'props'    => ['tag' => 'span', 'content' => $content, 'class' => trim('blockquote-footer ' . $class)],
-                    'consumes' => true,
-                    'children' => [],
-                    'warnings' => [],
-                    'ignored'  => false,
-                ];
-
-            case 'strong':
-                return [
-                    'type'     => 'text',
-                    'props'    => ['tag' => 'span', 'content' => $content, 'class' => trim('fw-bold ' . $class)],
-                    'consumes' => true,
-                    'children' => [],
-                    'warnings' => [],
-                    'ignored'  => false,
-                ];
-
-            case 'em':
-                return [
-                    'type'     => 'text',
-                    'props'    => ['tag' => 'span', 'content' => $content, 'class' => trim('fst-italic ' . $class)],
-                    'consumes' => true,
-                    'children' => [],
-                    'warnings' => [],
-                    'ignored'  => false,
-                ];
-
-            case 'mark':
-                return [
-                    'type'     => 'text',
-                    'props'    => ['tag' => 'span', 'content' => $content, 'class' => trim('mark ' . $class)],
-                    'consumes' => true,
-                    'children' => [],
-                    'warnings' => [],
-                    'ignored'  => false,
-                ];
-
-            case 'time':
-                $datetime = $el->getAttribute('datetime');
-                $display  = $datetime ? "{$content} ({$datetime})" : $content;
-                return [
-                    'type'     => 'text',
-                    'props'    => ['tag' => 'span', 'content' => $display, 'class' => $class],
-                    'consumes' => true,
-                    'children' => [],
-                    'warnings' => [],
-                    'ignored'  => false,
-                ];
-
-            default:
-                // kbd, samp, var, dfn, q, ins, del, s, u, sub, sup, small
-                return [
-                    'type'     => 'text',
-                    'props'    => ['tag' => $tag, 'content' => $content, 'class' => $class],
-                    'consumes' => true,
-                    'children' => [],
-                    'warnings' => [],
-                    'ignored'  => false,
-                ];
+        if ($tag === 'abbr') {
+            // <abbr title="..."> → tooltip node (title already in $attrs)
+            return [
+                'type'     => 'tooltip',
+                'props'    => [
+                    'text'          => $attrs['title'] ?? '',
+                    'trigger_label' => trim($el->textContent),
+                    'placement'     => 'top',
+                    'class'         => $attrs['class'] ?? '',
+                ],
+                'consumes' => true,
+                'children' => [],
+                'warnings' => [],
+                'ignored'  => false,
+            ];
         }
+
+        $attrs['tag']     = $tag;
+        $attrs['content'] = trim($el->textContent);
+        return [
+            'type'     => 'text',
+            'props'    => $attrs,
+            'consumes' => true,
+            'children' => [],
+            'warnings' => [],
+            'ignored'  => false,
+        ];
     }
 }

@@ -52,7 +52,7 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new SemanticSectionRule();
         $result = $rule->extract($this->el('<header class="sticky-top"></header>'), $this->noop());
-        $this->assertSame('section', $result['type']);
+        $this->assertSame('node', $result['type']);
         $this->assertStringContainsString('pb-semantic-header', $result['props']['class']);
         $this->assertStringContainsString('sticky-top', $result['props']['class']);
         $this->assertSame('banner', $result['props']['role']);
@@ -130,8 +130,8 @@ class SemanticAndGenericRulesTest extends TestCase
         $this->assertSame('image', $result['type']);
         $this->assertSame('/img.jpg', $result['props']['src']);
         $this->assertSame('Alt text', $result['props']['alt']);
-        $this->assertTrue($result['props']['fluid']);
-        $this->assertTrue($result['props']['rounded']);
+        $this->assertStringContainsString('img-fluid', $result['props']['class']);
+        $this->assertStringContainsString('rounded', $result['props']['class']);
         $this->assertSame('200', $result['props']['width']);
         $this->assertSame('100', $result['props']['height']);
     }
@@ -192,7 +192,7 @@ class SemanticAndGenericRulesTest extends TestCase
     {
         $rule   = new FigureRule();
         $result = $rule->extract($this->el('<figure class="highlight"><pre><code>echo 1;</code></pre></figure>'), $this->noop());
-        $this->assertSame('section', $result['type']);
+        $this->assertSame('node', $result['type']); // FigureRule returns 'node' when no inner <img>
         $this->assertStringContainsString('pb-semantic-figure', $result['props']['class']);
     }
 
@@ -230,8 +230,8 @@ class SemanticAndGenericRulesTest extends TestCase
         $rule   = new InlineTextRule();
         $result = $rule->extract($this->el('<strong>Negrita</strong>'), $this->noop());
         $this->assertSame('text', $result['type']);
-        $this->assertSame('span', $result['props']['tag']);
-        $this->assertStringContainsString('fw-bold', $result['props']['class']);
+        $this->assertSame('strong', $result['props']['tag']); // preserves original tag
+        $this->assertSame('Negrita', $result['props']['content']);
     }
 
     public function testInlineTextRuleAbbrBecomesTooltip(): void
@@ -246,8 +246,9 @@ class SemanticAndGenericRulesTest extends TestCase
     public function testInlineTextRuleBlockquoteGetsClass(): void
     {
         $rule   = new InlineTextRule();
-        $result = $rule->extract($this->el('<blockquote>Una cita</blockquote>'), $this->noop());
-        $this->assertStringContainsString('blockquote', $result['props']['class']);
+        $result = $rule->extract($this->el('<blockquote class="blockquote">Una cita</blockquote>'), $this->noop());
+        $this->assertSame('blockquote', $result['props']['tag']); // preserves original tag
+        $this->assertStringContainsString('blockquote', $result['props']['class'] ?? '');
     }
 
     // ── DividerRule ───────────────────────────────────────────────────────────
@@ -281,7 +282,7 @@ class SemanticAndGenericRulesTest extends TestCase
         $rule   = new AnchorRule();
         $result = $rule->extract($this->el('<a href="/about" target="_blank" class="text-primary">Nosotros</a>'), $this->noop());
         $this->assertSame('text', $result['type']);
-        $this->assertSame('span', $result['props']['tag']);
+        $this->assertSame('a', $result['props']['tag']); // preserves original <a> tag
         $this->assertSame('Nosotros', $result['props']['content']);
         $this->assertSame('/about', $result['props']['href']);
         $this->assertSame('_blank', $result['props']['target']);

@@ -3,11 +3,14 @@ declare(strict_types=1);
 
 namespace LemurCms\PageBuilder\Import\Rules\Semantic;
 
+use LemurCms\PageBuilder\Import\AttrExtractor;
 use LemurCms\PageBuilder\Import\Contract\RuleInterface;
 use LemurCms\PageBuilder\Import\ClassHelper;
 
 /**
- * Converts <a> (not .btn) into an inline text/span node.
+ * Converts <a> (not .btn) into a node or text node preserving ALL attributes.
+ * - With child elements: type 'node', tag 'a', recurses into children.
+ * - Text-only anchor: type 'text', tag 'a', content = textContent.
  */
 final class AnchorRule implements RuleInterface
 {
@@ -21,15 +24,33 @@ final class AnchorRule implements RuleInterface
 
     public function extract(\DOMElement $el, callable $recurse): array
     {
+        $attrs        = AttrExtractor::all($el);
+        $attrs['tag'] = 'a';
+
+        // Check for child DOMElement nodes
+        $hasChildren = false;
+        foreach ($el->childNodes as $child) {
+            if ($child instanceof \DOMElement) {
+                $hasChildren = true;
+                break;
+            }
+        }
+
+        if ($hasChildren) {
+            return [
+                'type'     => 'node',
+                'props'    => $attrs,
+                'consumes' => false,
+                'children' => null,
+                'warnings' => [],
+                'ignored'  => false,
+            ];
+        }
+
+        $attrs['content'] = trim($el->textContent);
         return [
             'type'     => 'text',
-            'props'    => [
-                'tag'     => 'span',
-                'content' => trim($el->textContent),
-                'href'    => $el->getAttribute('href') ?: null,
-                'target'  => $el->getAttribute('target') ?: null,
-                'class'   => $el->getAttribute('class'),
-            ],
+            'props'    => $attrs,
             'consumes' => true,
             'children' => [],
             'warnings' => [],

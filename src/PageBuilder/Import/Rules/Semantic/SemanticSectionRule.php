@@ -3,24 +3,23 @@ declare(strict_types=1);
 
 namespace LemurCms\PageBuilder\Import\Rules\Semantic;
 
+use LemurCms\PageBuilder\Import\AttrExtractor;
 use LemurCms\PageBuilder\Import\Contract\RuleInterface;
-use LemurCms\PageBuilder\Import\ClassHelper;
 
 /**
- * Maps HTML5 semantic block elements to PB 'section' type.
+ * Maps HTML5 semantic block elements to PB 'node' type.
+ * Preserves ALL original attributes. Adds pb-semantic-{tag} class prefix for PageBuilder identification.
  */
 final class SemanticSectionRule implements RuleInterface
 {
     private const SEMANTIC_TAGS = ['header', 'footer', 'nav', 'main', 'aside', 'section', 'article'];
 
-    private const ARIA_ROLES = [
+    private const IMPLICIT_ROLES = [
         'header'  => 'banner',
         'footer'  => 'contentinfo',
         'nav'     => 'navigation',
         'main'    => 'main',
         'aside'   => 'complementary',
-        'section' => '',
-        'article' => '',
     ];
 
     public function matches(\DOMElement $el): bool
@@ -32,19 +31,28 @@ final class SemanticSectionRule implements RuleInterface
 
     public function extract(\DOMElement $el, callable $recurse): array
     {
-        $tag        = strtolower($el->tagName);
-        $role       = self::ARIA_ROLES[$tag] ?? '';
-        $baseClass  = 'pb-semantic-' . $tag;
-        $origClass  = $el->getAttribute('class');
-        $finalClass = $origClass ? $baseClass . ' ' . $origClass : $baseClass;
+        $tag   = strtolower($el->tagName);
+        $attrs = AttrExtractor::all($el);
+
+        // Add pb-semantic prefix so PageBuilder can identify semantic regions
+        $baseClass     = 'pb-semantic-' . $tag;
+        $attrs['class'] = isset($attrs['class']) && $attrs['class'] !== ''
+            ? $baseClass . ' ' . $attrs['class']
+            : $baseClass;
+
+        // Set implicit ARIA role if the HTML didn't specify one
+        if (!isset($attrs['role']) || $attrs['role'] === '') {
+            $implicit = self::IMPLICIT_ROLES[$tag] ?? '';
+            if ($implicit !== '') {
+                $attrs['role'] = $implicit;
+            }
+        }
+
+        $attrs['tag'] = $tag; // system key — tells the view which HTML tag to emit
 
         return [
-            'type'     => 'section',
-            'props'    => [
-                'tag'   => $tag,
-                'class' => $finalClass,
-                'role'  => $role,
-            ],
+            'type'     => 'node',
+            'props'    => $attrs,
             'consumes' => false,
             'children' => null,
             'warnings' => [],

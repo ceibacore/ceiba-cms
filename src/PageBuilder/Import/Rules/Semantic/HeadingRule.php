@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace LemurCms\PageBuilder\Import\Rules\Semantic;
 
+use LemurCms\PageBuilder\Import\AttrExtractor;
 use LemurCms\PageBuilder\Import\Contract\RuleInterface;
-use LemurCms\PageBuilder\Import\ClassHelper;
 
 final class HeadingRule implements RuleInterface
 {
@@ -17,13 +17,27 @@ final class HeadingRule implements RuleInterface
 
     public function extract(\DOMElement $el, callable $recurse): array
     {
+        $attrs        = AttrExtractor::all($el);
+        $attrs['tag'] = strtolower($el->tagName);
+
+        // If heading contains child elements (e.g. <span class="gradient">), recurse as node
+        foreach ($el->childNodes as $child) {
+            if ($child instanceof \DOMElement) {
+                return [
+                    'type'     => 'node',
+                    'props'    => $attrs,
+                    'consumes' => false,
+                    'children' => null,
+                    'warnings' => [],
+                    'ignored'  => false,
+                ];
+            }
+        }
+
+        $attrs['content'] = trim($el->textContent);
         return [
             'type'     => 'text',
-            'props'    => [
-                'tag'     => strtolower($el->tagName),
-                'content' => trim($el->textContent),
-                'class'   => $el->getAttribute('class'),
-            ],
+            'props'    => $attrs,
             'consumes' => true,
             'children' => [],
             'warnings' => [],

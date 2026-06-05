@@ -57,6 +57,8 @@ class Bootstrap5ModuleTest extends TestCase
 
     public function testImportRulesContainBootstrapComponents(): void
     {
+        // Semantic/generic rules are now CORE (in HtmlImporter), not in the module.
+        // Bootstrap5Module only provides Bootstrap-specific component rules.
         $classes = array_map('get_class', $this->module->getImportRules());
 
         $expected = [
@@ -65,28 +67,18 @@ class Bootstrap5ModuleTest extends TestCase
             \LemurCms\PageBuilder\Import\Rules\Bootstrap\ColRule::class,
             \LemurCms\PageBuilder\Import\Rules\Bootstrap\CardRule::class,
             \LemurCms\PageBuilder\Import\Rules\Bootstrap\ButtonRule::class,
-            \LemurCms\PageBuilder\Import\Rules\Bootstrap\AccordionRule::class,
         ];
 
         foreach ($expected as $class) {
-            $this->assertContains($class, $classes, "Missing rule: {$class}");
+            $this->assertContains($class, $classes, "Missing Bootstrap rule: {$class}");
         }
-    }
 
-    public function testImportRulesContainSemanticRules(): void
-    {
-        $classes = array_map('get_class', $this->module->getImportRules());
-
-        $expected = [
+        // Semantic rules must NOT be in the module anymore
+        $this->assertNotContains(
             \LemurCms\PageBuilder\Import\Rules\Semantic\HeadingRule::class,
-            \LemurCms\PageBuilder\Import\Rules\Semantic\ParagraphRule::class,
-            \LemurCms\PageBuilder\Import\Rules\Semantic\ImageRule::class,
-            \LemurCms\PageBuilder\Import\Rules\Semantic\SemanticSectionRule::class,
-        ];
-
-        foreach ($expected as $class) {
-            $this->assertContains($class, $classes, "Missing rule: {$class}");
-        }
+            $classes,
+            'HeadingRule is a core rule, not a module rule'
+        );
     }
 
     public function testFallbackRuleIsNotInModuleRules(): void

@@ -19,18 +19,7 @@ use LemurCms\PageBuilder\Import\Rules\Bootstrap\RowRule;
 use LemurCms\PageBuilder\Import\Rules\Bootstrap\ScrollspyRule;
 use LemurCms\PageBuilder\Import\Rules\Bootstrap\ToastRule;
 use LemurCms\PageBuilder\Import\Rules\Bootstrap\TooltipRule;
-use LemurCms\PageBuilder\Import\Rules\Generic\GenericDivRule;
-use LemurCms\PageBuilder\Import\Rules\Generic\SpanRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\AnchorRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\DetailsRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\DividerRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\FigureRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\HeadingRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\ImageRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\InlineTextRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\ParagraphRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\PictureRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\SemanticSectionRule;
+
 
 /**
  * Bootstrap 5 UI Framework Module.
@@ -68,23 +57,7 @@ final class Bootstrap5Module implements UiFrameworkModuleInterface
     public function getImportRules(): array
     {
         return [
-            // Priority 100 — Generic elements
-            new GenericDivRule(),
-            new SpanRule(),
-
-            // Priority 200 — Semantic HTML5
-            new SemanticSectionRule(),
-            new HeadingRule(),
-            new ParagraphRule(),
-            new ImageRule(),
-            new PictureRule(),
-            new FigureRule(),
-            new DetailsRule(),
-            new InlineTextRule(),
-            new DividerRule(),
-            new AnchorRule(),
-
-            // Priority 300 — Bootstrap 5 components
+            // Priority 300 — Bootstrap 5 components (override core rules when BS5 is active)
             new ContainerRule(),
             new RowRule(),
             new ColRule(),

@@ -1,7 +1,11 @@
 <?php
 /**
- * Renders a generic HTML container (div) preserving ALL props as HTML attributes.
- * Also used by SemanticSectionRule nodes until the type is migrated to 'node'.
+ * Renders a generic HTML node preserving ALL props as HTML attributes.
+ * Props with key 'tag' are system keys (not emitted as HTML attributes).
+ *
+ * Used by: SemanticSectionRule (main, nav, header, footer, section, aside, article)
+ *          HeadingRule with child elements (h1-h6 with inner markup)
+ *          AnchorRule with child elements (<a> containing child elements)
  */
 $tag  = $props['tag'] ?? 'div';
 $skip = ['tag'];

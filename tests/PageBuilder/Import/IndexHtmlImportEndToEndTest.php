@@ -175,8 +175,8 @@ class IndexHtmlImportEndToEndTest extends TestCase
 
         // ── Step 2: Apply bindings to text nodes to make it a template ───────
         $componentTree = $this->applyComponentBindings($aboutNode, [
-            // Map heading content → template variable
-            'heading_title'      => fn($node) => $node['type'] === 'text'
+            // Map heading content → template variable (heading may be 'text' or 'node' type)
+            'heading_title'      => fn($node) => in_array($node['type'], ['text', 'node'])
                 && str_contains((string) ($node['props']['class'] ?? ''), 'display-5'),
             // Map first lead paragraph → template variable
             'about_lead_text'    => fn($node) => $node['type'] === 'text'

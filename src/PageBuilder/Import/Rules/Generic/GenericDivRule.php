@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace LemurCms\PageBuilder\Import\Rules\Generic;
 
+use LemurCms\PageBuilder\Import\AttrExtractor;
 use LemurCms\PageBuilder\Import\Contract\RuleInterface;
-use LemurCms\PageBuilder\Import\ImportWarning;
 
 /**
- * Maps unclassified <div> elements to section nodes.
- * Engine will recurse into children.
+ * Maps <div> elements to a 'section' node type, preserving ALL attributes.
+ * Recurses into children.
  */
 final class GenericDivRule implements RuleInterface
 {
@@ -21,11 +21,12 @@ final class GenericDivRule implements RuleInterface
 
     public function extract(\DOMElement $el, callable $recurse): array
     {
-        $class = $el->getAttribute('class');
+        $attrs        = AttrExtractor::all($el);
+        $attrs['tag'] = 'div';
 
         return [
             'type'     => 'section',
-            'props'    => ['tag' => 'div', 'class' => $class],
+            'props'    => $attrs,
             'consumes' => false,
             'children' => null,
             'warnings' => [],

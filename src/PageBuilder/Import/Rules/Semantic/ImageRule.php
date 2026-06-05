@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace LemurCms\PageBuilder\Import\Rules\Semantic;
 
+use LemurCms\PageBuilder\Import\AttrExtractor;
 use LemurCms\PageBuilder\Import\Contract\RuleInterface;
-use LemurCms\PageBuilder\Import\ClassHelper;
 use LemurCms\PageBuilder\Import\ImportWarning;
 
 final class ImageRule implements RuleInterface
@@ -18,7 +18,8 @@ final class ImageRule implements RuleInterface
 
     public function extract(\DOMElement $el, callable $recurse): array
     {
-        $src      = $el->getAttribute('src');
+        $attrs    = AttrExtractor::all($el);
+        $src      = $attrs['src'] ?? '';
         $warnings = [];
 
         // Warn for relative paths that might break in PB context
@@ -33,15 +34,7 @@ final class ImageRule implements RuleInterface
 
         return [
             'type'     => 'image',
-            'props'    => [
-                'src'     => $src,
-                'alt'     => $el->getAttribute('alt'),
-                'fluid'   => ClassHelper::hasClass($el, 'img-fluid'),
-                'rounded' => ClassHelper::hasClass($el, 'rounded'),
-                'class'   => ClassHelper::extraClasses($el, ['img-fluid', 'rounded']),
-                'width'   => $el->getAttribute('width') ?: null,
-                'height'  => $el->getAttribute('height') ?: null,
-            ],
+            'props'    => $attrs, // ALL original attributes preserved
             'consumes' => true,
             'children' => [],
             'warnings' => $warnings,

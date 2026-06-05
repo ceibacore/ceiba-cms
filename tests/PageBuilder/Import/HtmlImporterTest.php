@@ -86,7 +86,7 @@ class HtmlImporterTest extends TestCase
         $result = $this->importer->import($html);
         $tree   = $result->toArray()['tree'];
 
-        $this->assertSame('section', $tree[0]['type']);
+        $this->assertSame('node', $tree[0]['type']);
         $this->assertStringContainsString('pb-semantic-header', $tree[0]['props']['class']);
         $this->assertSame('banner', $tree[0]['props']['role']);
     }
@@ -274,7 +274,7 @@ class HtmlImporterTest extends TestCase
         $result = $this->importer->import('<section><h1>Hi</h1></section>');
         $tree   = $result->toArray()['tree'];
         $this->assertNotEmpty($tree);
-        $this->assertSame('section', $tree[0]['type']);
+        $this->assertSame('node', $tree[0]['type']); // SemanticSectionRule outputs 'node'
     }
 
     public function testFullDocumentImportExtractsBody(): void

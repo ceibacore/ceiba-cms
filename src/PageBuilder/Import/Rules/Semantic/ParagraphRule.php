@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace LemurCms\PageBuilder\Import\Rules\Semantic;
 
+use LemurCms\PageBuilder\Import\AttrExtractor;
 use LemurCms\PageBuilder\Import\Contract\RuleInterface;
 
 /**
@@ -19,7 +20,6 @@ final class ParagraphRule implements RuleInterface
 
     public function extract(\DOMElement $el, callable $recurse): array
     {
-        // Check for child elements (inline markup like <strong>, <a>, etc.)
         $hasChildElements = false;
         foreach ($el->childNodes as $child) {
             if ($child instanceof \DOMElement) {
@@ -29,7 +29,6 @@ final class ParagraphRule implements RuleInterface
         }
 
         if ($hasChildElements) {
-            // Preserve rich markup
             return [
                 'type'     => 'html',
                 'props'    => ['content' => $el->ownerDocument->saveHTML($el)],
@@ -40,13 +39,12 @@ final class ParagraphRule implements RuleInterface
             ];
         }
 
+        $attrs            = AttrExtractor::all($el);
+        $attrs['tag']     = 'p';
+        $attrs['content'] = trim($el->textContent);
         return [
             'type'     => 'text',
-            'props'    => [
-                'tag'     => 'p',
-                'content' => trim($el->textContent),
-                'class'   => $el->getAttribute('class'),
-            ],
+            'props'    => $attrs,
             'consumes' => true,
             'children' => [],
             'warnings' => [],

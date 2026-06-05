@@ -320,7 +320,7 @@ try {
 // ── UI Framework Registry ────────────────────────────────────────────────────
 $uiFrameworkRegistry = new \LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry();
 $uiFrameworkRegistry->register(new \LemurCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module());
-$uiFrameworkRegistry->setActive('bootstrap5');
+// No default active module — activate explicitly per app: $uiFrameworkRegistry->setActive('bootstrap5');
 
 $variableInterpolator = new \LemurCms\PageBuilder\Domain\Service\VariableInterpolator();
 $bladeRenderer        = new \LemurCms\PageBuilder\Domain\Service\BladeRenderer($loopResolver, $variableInterpolator);

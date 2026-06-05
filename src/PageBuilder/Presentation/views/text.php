@@ -1,25 +1,36 @@
 <?php
-$tag = $props['tag'] ?? 'p';
-$content = $props['content'] ?? 'Texto aquí';
-$align = $props['align'] ?? '';
-$class = $props['class'] ?? '';
+/**
+ * Renders a leaf text element. Preserves ALL props as HTML attributes.
+ * 'tag' and 'content' are system keys — not emitted as attributes.
+ * 'align' is a PageBuilder layout helper — appended to class.
+ */
+$tag     = $props['tag']     ?? 'p';
+$content = $props['content'] ?? '';
+$align   = $props['align']   ?? '';
+$class   = $props['class']   ?? '';
 
-$allowedTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'small'];
-if (!in_array($tag, $allowedTags, true)) {
-    $tag = 'p';
-}
-
-$textClasses = [];
+// Merge align utility into class
 if ($align !== '') {
-    $textClasses[] = $align;
-}
-if ($class !== '') {
-    $textClasses[] = $class;
+    $class = trim($align . ' ' . $class);
 }
 
-$classAttr = '';
-if (!empty($textClasses)) {
-    $classAttr = ' class="' . implode(' ', array_map(fn($c) => htmlspecialchars((string) $c, ENT_QUOTES, 'UTF-8'), $textClasses)) . '"';
+$skip = ['tag', 'content', 'align'];
+
+$attrStr = '';
+// class first for readability
+if ($class !== '') {
+    $attrStr .= ' class="' . htmlspecialchars($class, ENT_QUOTES, 'UTF-8') . '"';
+}
+foreach ($props as $key => $value) {
+    if (in_array($key, array_merge($skip, ['class']), true) || $value === null || $value === '') {
+        continue;
+    }
+    $attrStr .= ' '
+        . htmlspecialchars((string) $key, ENT_QUOTES, 'UTF-8')
+        . '="'
+        . htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8')
+        . '"';
 }
 ?>
-<<?php echo $tag; ?><?php echo $classAttr; ?>><?php echo htmlspecialchars((string) $content, ENT_QUOTES, 'UTF-8'); ?></<?php echo $tag; ?>>
+<<?php echo $tag; ?><?php echo $attrStr; ?>><?php echo htmlspecialchars((string) $content, ENT_QUOTES, 'UTF-8'); ?></<?php echo $tag; ?>>
+
