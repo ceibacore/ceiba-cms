@@ -3,45 +3,38 @@ declare(strict_types=1);
 
 namespace LemurCms\PageBuilder\Import;
 
+use LemurCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
+use LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
 use LemurCms\PageBuilder\Import\Rules\FallbackRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\AccordionRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\BreadcrumbRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ButtonGroupRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ButtonRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\CardRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\CarouselRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\CollapseRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ColRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ContainerRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ListGroupRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\OffcanvasRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\RowRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ScrollspyRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ToastRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\TooltipRule;
-use LemurCms\PageBuilder\Import\Rules\Generic\GenericDivRule;
-use LemurCms\PageBuilder\Import\Rules\Generic\SpanRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\AnchorRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\DetailsRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\DividerRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\FigureRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\HeadingRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\ImageRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\InlineTextRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\ParagraphRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\PictureRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\SemanticSectionRule;
 
+/**
+ * Converts an HTML string into a PageBuilder VDOM node tree.
+ *
+ * The importer is UI-framework agnostic: it only contains FallbackRule in its
+ * core. All framework-specific rules (Bootstrap 5, Tailwind, etc.) are
+ * injected via UiFrameworkRegistry or a UiFrameworkModuleInterface instance.
+ *
+ * Usage with registry (recommended):
+ *   $importer = new HtmlImporter($uiFrameworkRegistry);
+ *
+ * Usage with a specific module (testing / embedding):
+ *   $importer = new HtmlImporter(module: new Bootstrap5Module());
+ *
+ * Usage without any framework (legacy / fallback-only):
+ *   $importer = new HtmlImporter();
+ */
 final class HtmlImporter
 {
     private const MAX_HTML_SIZE = 524288; // 512 KB
 
     private RuleRegistry $registry;
 
-    public function __construct()
-    {
+    public function __construct(
+        private readonly ?UiFrameworkRegistry $uiRegistry = null,
+        private readonly ?UiFrameworkModuleInterface $module = null,
+    ) {
         $this->registry = new RuleRegistry();
-        $this->registerDefaultRules();
+        $this->buildRegistry();
     }
 
     /**
@@ -149,42 +142,23 @@ final class HtmlImporter
         return $result;
     }
 
-    private function registerDefaultRules(): void
+    private function buildRegistry(): void
     {
-        // Priority 0 — Fallback (must be last in priority, always matches)
+        // Resolve the active module: explicit module > registry > none
+        $activeModule = $this->module;
+
+        if ($activeModule === null && $this->uiRegistry !== null && $this->uiRegistry->hasActive()) {
+            $activeModule = $this->uiRegistry->getActiveModule();
+        }
+
+        // Register framework-specific rules first (higher priority wins)
+        if ($activeModule !== null) {
+            foreach ($activeModule->getImportRules() as $rule) {
+                $this->registry->register($rule);
+            }
+        }
+
+        // FallbackRule is always last (priority 0) — never framework-specific
         $this->registry->register(new FallbackRule());
-
-        // Priority 100 — Generic
-        $this->registry->register(new GenericDivRule());
-        $this->registry->register(new SpanRule());
-
-        // Priority 200 — Semantic HTML5
-        $this->registry->register(new SemanticSectionRule());
-        $this->registry->register(new HeadingRule());
-        $this->registry->register(new ParagraphRule());
-        $this->registry->register(new ImageRule());
-        $this->registry->register(new PictureRule());
-        $this->registry->register(new FigureRule());
-        $this->registry->register(new DetailsRule());
-        $this->registry->register(new InlineTextRule());
-        $this->registry->register(new DividerRule());
-        $this->registry->register(new AnchorRule());
-
-        // Priority 300 — Bootstrap components
-        $this->registry->register(new ContainerRule());
-        $this->registry->register(new RowRule());
-        $this->registry->register(new ColRule());
-        $this->registry->register(new CardRule());
-        $this->registry->register(new ButtonRule());
-        $this->registry->register(new ButtonGroupRule());
-        $this->registry->register(new ListGroupRule());
-        $this->registry->register(new AccordionRule());
-        $this->registry->register(new CarouselRule());
-        $this->registry->register(new CollapseRule());
-        $this->registry->register(new OffcanvasRule());
-        $this->registry->register(new ToastRule());
-        $this->registry->register(new TooltipRule());
-        $this->registry->register(new BreadcrumbRule());
-        $this->registry->register(new ScrollspyRule());
     }
 }

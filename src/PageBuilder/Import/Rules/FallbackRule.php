@@ -60,14 +60,6 @@ final class FallbackRule implements RuleInterface
                 severity:   'warning',
                 suggestion: $suggestion,
             );
-        } elseif (!empty($el->getAttribute('class'))) {
-            $cls = $el->getAttribute('class');
-            $warnings[] = new ImportWarning(
-                element:    '<' . $tag . ' class="' . $cls . '">',
-                reason:     "Elemento <{$tag}> con clase no reconocida. Convertido a bloque HTML.",
-                severity:   'warning',
-                suggestion: 'Revisar en el editor o crear una Rule personalizada.',
-            );
         }
 
         return [

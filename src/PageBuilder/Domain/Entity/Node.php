@@ -62,3 +62,4 @@ final class Node
         return new self($this->id, $this->type, $this->props, $loop, $this->children);
     }
 }
+

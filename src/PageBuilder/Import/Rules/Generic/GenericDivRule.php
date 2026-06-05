@@ -21,24 +21,14 @@ final class GenericDivRule implements RuleInterface
 
     public function extract(\DOMElement $el, callable $recurse): array
     {
-        $class    = $el->getAttribute('class');
-        $warnings = [];
-
-        if ($class !== '') {
-            $warnings[] = new ImportWarning(
-                element:    '<div class="' . $class . '">',
-                reason:     'Clase de div no reconocida. Mapeado a sección genérica.',
-                severity:   'info',
-                suggestion: 'Verifica si corresponde a un componente Bootstrap conocido.',
-            );
-        }
+        $class = $el->getAttribute('class');
 
         return [
             'type'     => 'section',
-            'props'    => ['class' => $class],
+            'props'    => ['tag' => 'div', 'class' => $class],
             'consumes' => false,
             'children' => null,
-            'warnings' => $warnings,
+            'warnings' => [],
             'ignored'  => false,
         ];
     }

@@ -102,7 +102,7 @@ $router->post('/api/cache/clear', fn() => $cacheController->clear(), 'cache.clea
 $router->post('/api/cache/menus/{slug}/clear', fn($slug) => $cacheController->clearMenu($slug), 'cache.menu.clear');
 
 // ── Import Routes ─────────────────────────────────────────────────────────────
-$importController = new \LemurCms\Http\Controllers\ImportController();
+$importController = new \LemurCms\Http\Controllers\ImportController($container['uiFrameworkRegistry'] ?? null);
 $router->post('/api/import/html', fn() => $importController->importHtml(), 'import.html');
 $router->post('/api/import/html/preview', fn() => $importController->previewHtml(), 'import.html.preview');
 

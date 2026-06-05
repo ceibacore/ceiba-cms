@@ -301,9 +301,10 @@ class SemanticAndGenericRulesTest extends TestCase
         $rule   = new GenericDivRule();
         $result = $rule->extract($this->el('<div class="hero-wrapper"></div>'), $this->noop());
         $this->assertSame('section', $result['type']);
+        $this->assertSame('div', $result['props']['tag']);
         $this->assertSame('hero-wrapper', $result['props']['class']);
         $this->assertFalse($result['consumes']);
-        $this->assertNotEmpty($result['warnings']);
+        $this->assertEmpty($result['warnings']);
     }
 
     // ── SpanRule ──────────────────────────────────────────────────────────────

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace LemurCms\Tests\PageBuilder\Import;
 
+use LemurCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
 use LemurCms\PageBuilder\Import\HtmlImporter;
 use LemurCms\PageBuilder\Import\ImportResult;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +15,7 @@ class HtmlImporterTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importer = new HtmlImporter();
+        $this->importer = new HtmlImporter(module: new Bootstrap5Module());
     }
 
     // ── Output structure ──────────────────────────────────────────────────────

@@ -193,6 +193,11 @@ require_once __DIR__ . '/src/PageBuilder/Import/Rules/Generic/GenericDivRule.php
 require_once __DIR__ . '/src/PageBuilder/Import/Rules/Generic/SpanRule.php';
 require_once __DIR__ . '/src/PageBuilder/Import/HtmlImporter.php';
 
+// ── UI Framework Module System ────────────────────────────────────────────────
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/UiFrameworkModuleInterface.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/UiFrameworkRegistry.php';
+require_once __DIR__ . '/src/PageBuilder/Frameworks/Bootstrap5/Bootstrap5Module.php';
+
 // ── DynamicModule Layer ──────────────────────────────────────────────────────
 require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleFieldType.php';
 require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleField.php';
@@ -312,6 +317,11 @@ try {
     // Avoid blocking bootstrap if DB is not migrated or connection is pending
 }
 
+// ── UI Framework Registry ────────────────────────────────────────────────────
+$uiFrameworkRegistry = new \LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry();
+$uiFrameworkRegistry->register(new \LemurCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module());
+$uiFrameworkRegistry->setActive('bootstrap5');
+
 $variableInterpolator = new \LemurCms\PageBuilder\Domain\Service\VariableInterpolator();
 $bladeRenderer        = new \LemurCms\PageBuilder\Domain\Service\BladeRenderer($loopResolver, $variableInterpolator);
 $layoutRenderer       = new \LemurCms\PageBuilder\Domain\Service\LayoutRenderer();
@@ -358,9 +368,10 @@ return [
         'bladeRenderer'        => $bladeRenderer,
         'layoutRenderer'       => $layoutRenderer,
     ],
-    'loopResolver'  => $loopResolver,
-    'bladeRenderer' => $bladeRenderer,
+    'loopResolver'        => $loopResolver,
+    'bladeRenderer'       => $bladeRenderer,
     'layoutRenderer'      => $layoutRenderer,
+    'uiFrameworkRegistry' => $uiFrameworkRegistry,
     'reservedPathChecker' => $reservedPathChecker,
     'useCases' => [
         // Menu

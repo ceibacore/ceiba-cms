@@ -41,6 +41,7 @@ final class SemanticSectionRule implements RuleInterface
         return [
             'type'     => 'section',
             'props'    => [
+                'tag'   => $tag,
                 'class' => $finalClass,
                 'role'  => $role,
             ],

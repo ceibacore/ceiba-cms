@@ -3,10 +3,15 @@ declare(strict_types=1);
 
 namespace LemurCms\Http\Controllers;
 
+use LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
 use LemurCms\PageBuilder\Import\HtmlImporter;
 
 final class ImportController extends BaseController
 {
+    public function __construct(
+        private readonly ?UiFrameworkRegistry $uiRegistry = null,
+    ) {}
+
     public function importHtml(): void
     {
         try {
@@ -23,7 +28,7 @@ final class ImportController extends BaseController
                 return;
             }
 
-            $importer = new HtmlImporter();
+            $importer = new HtmlImporter($this->uiRegistry);
             $result   = $importer->import($html, $data['options'] ?? []);
 
             $this->success($result->toArray(), 'HTML importado correctamente.');
