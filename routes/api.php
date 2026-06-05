@@ -12,6 +12,7 @@ use LemurCms\Http\Controllers\ReservedPathController;
 use LemurCms\Http\Controllers\CacheController;
 use LemurCms\Http\Controllers\TemplateController;
 use LemurCms\Http\Controllers\ComponentDefinitionController;
+use LemurCms\Http\Controllers\PageBuilderMetadataController;
 
 $router = new Router();
 
@@ -67,6 +68,13 @@ $componentController = new ComponentDefinitionController(
 );
 
 $router->get('/api/components', fn() => $componentController->index(), 'component.index');
+
+// ── PageBuilder Metadata / Rules Routes ──────────────────────────────────────
+$pageBuilderMetadataController = new PageBuilderMetadataController(
+    $container['pageBuilderMetadataService']
+);
+
+$router->get('/api/pagebuilder/rules', fn() => $pageBuilderMetadataController->rules(), 'pagebuilder.rules');
 
 // ── Layout Routes ─────────────────────────────────────────────────────────────
 $layoutController = new LayoutController(

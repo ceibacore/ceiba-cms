@@ -11,6 +11,20 @@ final class LemurDbPageTemplateRepository implements PageTemplateRepositoryInter
 {
     public function __construct(private readonly LemurDB $db) {}
 
+    public function findAll(): array
+    {
+        $rows = $this->db->query('page_templates')->orderBy('name', 'ASC')->get();
+        return array_map(function (array $res) {
+            if (isset($res['tree']) && is_string($res['tree'])) {
+                $res['tree'] = json_decode($res['tree'], true) ?? [];
+            }
+            if (isset($res['slots_definition']) && is_string($res['slots_definition'])) {
+                $res['slots_definition'] = json_decode($res['slots_definition'], true) ?? [];
+            }
+            return $res;
+        }, $rows);
+    }
+
     public function findById(string $id): ?array
     {
         $res = $this->db->query('page_templates')->where(['id' => $id])->first();

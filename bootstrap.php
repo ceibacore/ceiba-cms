@@ -142,6 +142,10 @@ require_once __DIR__ . '/src/PageBuilder/Domain/Entity/RenderCondition.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Repository/PageTemplateRepositoryInterface.php';
 require_once __DIR__ . '/src/PageBuilder/Infrastructure/LemurDbPageTemplateRepository.php';
 require_once __DIR__ . '/src/PageBuilder/Application/GetPageTemplateById.php';
+require_once __DIR__ . '/src/PageBuilder/Application/ListPageTemplates.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/HtmlSemanticRulesProvider.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Service/PageBuilderMetadataService.php';
+require_once __DIR__ . '/src/Http/Controllers/PageBuilderMetadataController.php';
 require_once __DIR__ . '/src/Support/Exceptions/SecurityException.php';
 
 // V2 Engine Services
@@ -310,6 +314,9 @@ $listComponentDefinitions = new \LemurCms\PageBuilder\Application\ListComponentD
 // V2 Page Templates
 $pageTemplateRepository   = new \LemurCms\PageBuilder\Infrastructure\LemurDbPageTemplateRepository($db);
 $getPageTemplateById      = new \LemurCms\PageBuilder\Application\GetPageTemplateById($pageTemplateRepository);
+$listPageTemplates        = new \LemurCms\PageBuilder\Application\ListPageTemplates($pageTemplateRepository);
+
+$htmlSemanticRulesProvider = new \LemurCms\PageBuilder\Domain\Service\HtmlSemanticRulesProvider();
 
 // V2 Engine Services
 $authManager              = new \LemurCms\Auth\AuthManager(new \LemurCms\Auth\Drivers\SessionDriver($db));
@@ -348,6 +355,13 @@ try {
 $uiFrameworkRegistry = new \LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry();
 $uiFrameworkRegistry->register(new \LemurCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module());
 // No default active module — activate explicitly per app: $uiFrameworkRegistry->setActive('bootstrap5');
+
+$pageBuilderMetadataService = new \LemurCms\PageBuilder\Domain\Service\PageBuilderMetadataService(
+    $uiFrameworkRegistry,
+    $templateRepository,
+    $pageTemplateRepository,
+    $htmlSemanticRulesProvider
+);
 
 $variableInterpolator = new \LemurCms\PageBuilder\Domain\Service\VariableInterpolator();
 $bladeRenderer        = new \LemurCms\PageBuilder\Domain\Service\BladeRenderer($loopResolver, $variableInterpolator);
@@ -398,6 +412,7 @@ return [
         'conditionEngine'      => $conditionEngine,
         'contextResolver'      => $contextResolver,
         'queryEngine'          => $queryEngine,
+        'pageBuilderMetadata'  => $pageBuilderMetadataService,
     ],
     'loopResolver'        => $loopResolver,
     'bladeRenderer'       => $bladeRenderer,
@@ -406,6 +421,7 @@ return [
     'reservedPathChecker' => $reservedPathChecker,
     'conditionEngine'     => $conditionEngine,
     'queryEngine'         => $queryEngine,
+    'pageBuilderMetadataService' => $pageBuilderMetadataService,
     'useCases' => [
         // Menu
         'getMainNavbar'    => $getMainNavbar,
@@ -441,6 +457,7 @@ return [
         'listTemplates'            => $listTemplates,
         'getTemplateById'          => $getTemplateById,
         'getPageTemplateById'      => $getPageTemplateById,
+        'listPageTemplates'        => $listPageTemplates,
         'createTemplate'           => $createTemplate,
         'deleteTemplate'           => $deleteTemplate,
         'listComponentDefinitions' => $listComponentDefinitions,
