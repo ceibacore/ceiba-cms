@@ -115,7 +115,10 @@ final class HtmlImporter
             $html = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>' . $html . '</body></html>';
         }
 
-        $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_NOERROR);
+        // Force UTF-8 parsing in DOMDocument by converting to HTML-ENTITIES first
+        $encodedHtml = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+
+        $dom->loadHTML($encodedHtml, LIBXML_HTML_NOIMPLIED | LIBXML_NOERROR);
         libxml_clear_errors();
         libxml_use_internal_errors(false);
 
