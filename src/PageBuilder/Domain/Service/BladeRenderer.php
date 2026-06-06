@@ -10,9 +10,10 @@ class BladeRenderer implements BladeRendererInterface
     public function __construct(
         private readonly LoopResolverInterface $loopResolver,
         private readonly VariableInterpolator $variableInterpolator,
+        private readonly ?UiFrameworkRegistry $uiRegistry = null,
         string $viewsDir = ''
     ) {
-        $this->viewsDir = $viewsDir !== '' ? $viewsDir : dirname(__DIR__, 2) . '/Presentation/views';
+        $this->viewsDir = $viewsDir;
     }
 
     public function renderPage(array $tree, array $data = []): string
@@ -112,30 +113,84 @@ class BladeRenderer implements BladeRendererInterface
         // If `name` is null or no template exists, renderView falls back gracefully to $childrenHtml.
         $viewName = $node['name'] ?? $node['type'];
         $viewName = str_replace('-', '_', $viewName);
-        return $this->renderView($viewName, $interpolatedProps, $childrenHtml, $context);
+        return $this->renderView($viewName, $node['type'] ?? '', $interpolatedProps, $childrenHtml, $context);
     }
 
-    private function renderView(string $type, array $props, string $childrenHtml, array $context = []): string
+    private function getViewsDir(): string
     {
-        $file = $this->viewsDir . '/' . $type . '.php';
-        if (!file_exists($file)) {
-            return $childrenHtml;
+        if ($this->uiRegistry !== null && $this->uiRegistry->hasActive()) {
+            return $this->uiRegistry->getActiveModule()->getViewsDirectoryPath();
+        }
+        return $this->viewsDir;
+    }
+
+    private function renderView(string $type, string $originalType, array $props, string $childrenHtml, array $context = []): string
+    {
+        $viewsDir = $this->getViewsDir();
+        $file = $viewsDir !== '' ? $viewsDir . '/' . $type . '.php' : '';
+        if ($file !== '' && file_exists($file)) {
+            // Prepare variables for clean scope in template file
+            $slot = $childrenHtml;
+
+            // Extract context variables so views can access them (e.g. $breadcrumbs)
+            extract($context, EXTR_SKIP);
+            
+            ob_start();
+            try {
+                include $file;
+            } catch (\Throwable $e) {
+                ob_end_clean();
+                throw $e;
+            }
+            return ob_get_clean();
         }
 
-        // Prepare variables for clean scope in template file
-        $slot = $childrenHtml;
-
-        // Extract context variables so views can access them (e.g. $breadcrumbs)
-        extract($context, EXTR_SKIP);
-        
-        ob_start();
-        try {
-            include $file;
-        } catch (\Throwable $e) {
-            ob_end_clean();
-            throw $e;
+        // 1. Fallback to raw HTML if _raw_html prop is defined.
+        if (isset($props['_raw_html'])) {
+            return (string) $props['_raw_html'];
         }
-        return ob_get_clean();
+
+        // 2. Fallback to rendering a dynamic HTML tag if type is a valid tag name.
+        $tag = !empty($props['tag']) ? $props['tag'] : ($originalType === 'text' ? 'p' : $originalType);
+
+        if ($tag === 'html') {
+            return $props['content'] ?? '';
+        }
+
+        if (preg_match('/^[a-zA-Z0-9\-_:]+$/', $tag)) {
+            $content = $props['content'] ?? '';
+            $skip = ['tag', 'content', 'children', 'bindings', 'loop', '_raw_html'];
+            
+            $attrStr = '';
+            // Render class first for clean output
+            if (!empty($props['class'])) {
+                $attrStr .= ' class="' . htmlspecialchars((string) $props['class'], ENT_QUOTES, 'UTF-8') . '"';
+            }
+            
+            foreach ($props as $key => $value) {
+                if (in_array($key, $skip, true) || $key === 'class' || $value === null || str_starts_with($key, '_')) {
+                    continue;
+                }
+                
+                if (is_bool($value)) {
+                    if ($value) {
+                        $attrStr .= ' ' . htmlspecialchars((string) $key, ENT_QUOTES, 'UTF-8');
+                    }
+                } else {
+                    $attrStr .= ' ' . htmlspecialchars((string) $key, ENT_QUOTES, 'UTF-8') . '="' . htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8') . '"';
+                }
+            }
+
+            $selfClosing = ['img', 'hr', 'br', 'input', 'meta', 'link', 'source', 'embed', 'param', 'track', 'area', 'col'];
+            if (in_array(strtolower($tag), $selfClosing, true)) {
+                return "<{$tag}{$attrStr}>";
+            }
+            
+            $inner = htmlspecialchars((string) $content, ENT_QUOTES, 'UTF-8') . $childrenHtml;
+            return "<{$tag}{$attrStr}>{$inner}</{$tag}>";
+        }
+
+        return $childrenHtml;
     }
 
     public function mergeTemplateAndPage(array $templateTree, array $pageContent): array

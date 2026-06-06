@@ -20,7 +20,7 @@ class Migration_20260522000013_CreateModuleDefinitionsTable extends CmsBaseMigra
             $t->string('icon', 50)->nullable();
             $t->timestamps();
             $t->uniqueIndex('module_id', 'uq_module_definitions_module_id');
-            $t->foreignKey('module_id', 'modules', 'id', 'CASCADE', 'fk_module_definitions_module');
+            $t->foreignKey('module_id', 'modules', 'id', 'CASCADE', 'fk_cms_module_definitions_module');
         });
     }
 

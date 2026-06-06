@@ -35,6 +35,9 @@
         <testsuite name="Import Tests">
             <directory>tests/PageBuilder/Import</directory>
         </testsuite>
+        <testsuite name="HTTP Tests">
+            <directory>tests/Http</directory>
+        </testsuite>
     </testsuites>
 
     <source>

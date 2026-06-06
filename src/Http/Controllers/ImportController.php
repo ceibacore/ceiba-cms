@@ -6,7 +6,7 @@ namespace LemurCms\Http\Controllers;
 use LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
 use LemurCms\PageBuilder\Import\HtmlImporter;
 
-final class ImportController extends BaseController
+class ImportController extends BaseController
 {
     public function __construct(
         private readonly ?UiFrameworkRegistry $uiRegistry = null,

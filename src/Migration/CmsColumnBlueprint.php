@@ -6,7 +6,9 @@ final class CmsColumnBlueprint
 {
     private array $columns = [];
     private array $indexes = [];
+    private string $tablePrefix = '';
     public function __construct(private readonly string $tableName = '') {}
+    public function setTablePrefix(string $prefix): void { $this->tablePrefix = $prefix; }
     public function id(string $name = 'id'): CmsColumnDef { return $this->addColumn($name,'INT')->unsigned()->autoIncrement()->primary(); }
     public function string(string $name, int $length = 255): CmsColumnDef { return $this->addColumn($name, "VARCHAR({$length})"); }
     public function char(string $name, int $length = 36): CmsColumnDef   { return $this->addColumn($name, "CHAR({$length})"); }
@@ -44,7 +46,9 @@ final class CmsColumnBlueprint
     }
     public function foreignKey(string $col, string $refTable, string $refColumn = 'id', string $onDelete = 'CASCADE', string $name = ''): void
     {
-        $n = $name ?: ($this->tableName ? "fk_{$this->tableName}_{$col}" : "fk_{$col}");
+        // Use the prefixed table name in the constraint name so it is globally unique in InnoDB.
+        $fullTable = $this->tablePrefix . $this->tableName;
+        $n = $name ?: ($fullTable ? "fk_{$fullTable}_{$col}" : "fk_{$col}");
         $this->indexes[] = ['type'=>'fk','columns'=>[$col],'name'=>$n,'refTable'=>$refTable,'refColumn'=>$refColumn,'onDelete'=>$onDelete];
     }
     public function toCreateSql(string $prefixedTable, CmsDialectInterface $dialect, string $prefix = ''): string

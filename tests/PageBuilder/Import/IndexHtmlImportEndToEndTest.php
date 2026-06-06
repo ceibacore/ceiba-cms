@@ -61,7 +61,7 @@ class IndexHtmlImportEndToEndTest extends TestCase
         $registry->setActive('bootstrap5');
 
         $this->importer = new HtmlImporter($registry);
-        $this->renderer = new BladeRenderer(new LoopResolver(), new VariableInterpolator());
+        $this->renderer = new BladeRenderer(new LoopResolver(), new VariableInterpolator(), $registry);
     }
 
     // ─────────────────────────────────────────────────────────────────────────

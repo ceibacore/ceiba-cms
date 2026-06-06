@@ -6,6 +6,8 @@ namespace LemurCms\Tests\PageBuilder\Domain\Service;
 use LemurCms\PageBuilder\Domain\Service\BladeRenderer;
 use LemurCms\PageBuilder\Domain\Service\LoopResolverInterface;
 use LemurCms\PageBuilder\Domain\Service\VariableInterpolator;
+use LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
+use LemurCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
 use PHPUnit\Framework\TestCase;
 
 class BladeRendererTest extends TestCase
@@ -18,7 +20,12 @@ class BladeRendererTest extends TestCase
         parent::setUp();
         $this->mockLoopResolver = $this->createMock(LoopResolverInterface::class);
         $interpolator = new VariableInterpolator();
-        $this->renderer = new BladeRenderer($this->mockLoopResolver, $interpolator);
+
+        $registry = new UiFrameworkRegistry();
+        $registry->register(new Bootstrap5Module());
+        $registry->setActive('bootstrap5');
+
+        $this->renderer = new BladeRenderer($this->mockLoopResolver, $interpolator, $registry);
     }
 
     public function testRenderSimpleNodeWithoutChildren(): void
@@ -667,4 +674,91 @@ class BladeRendererTest extends TestCase
         $this->assertStringContainsString('<p>Body info</p>', $html);
         $this->assertStringContainsString('<p>Child content</p>', $html);
     }
+
+    public function testRenderAgnosticFallbackTag(): void
+    {
+        $node = [
+            'type' => 'div',
+            'props' => [
+                'class' => 'container-fluid',
+                'id' => 'main-div',
+                'data-test' => 'yes',
+                'content' => 'Div content'
+            ],
+            'loop' => null,
+            'children' => []
+        ];
+
+        $html = $this->renderer->renderNode($node);
+        $this->assertStringContainsString('<div class="container-fluid" id="main-div" data-test="yes">Div content</div>', $html);
+    }
+
+    public function testRenderAgnosticBooleanAttributes(): void
+    {
+        $node = [
+            'type' => 'input',
+            'props' => [
+                'type' => 'checkbox',
+                'checked' => true,
+                'disabled' => false,
+                'required' => true,
+            ],
+            'loop' => null,
+            'children' => []
+        ];
+
+        $html = $this->renderer->renderNode($node);
+        $this->assertStringContainsString('<input type="checkbox" checked required>', $html);
+        $this->assertStringNotContainsString('disabled', $html);
+    }
+
+    public function testRenderAgnosticSelfClosingTags(): void
+    {
+        $node = [
+            'type' => 'hr',
+            'props' => [
+                'class' => 'my-hr',
+            ],
+            'loop' => null,
+            'children' => []
+        ];
+
+        $html = $this->renderer->renderNode($node);
+        $this->assertSame('<hr class="my-hr">', trim($html));
+    }
+
+    public function testRenderAgnosticRawHtmlFallback(): void
+    {
+        $node = [
+            'type' => 'svg',
+            'props' => [
+                '_raw_html' => '<svg><circle cx="50" cy="50" r="40" /></svg>'
+            ],
+            'loop' => null,
+            'children' => []
+        ];
+
+        $html = $this->renderer->renderNode($node);
+        $this->assertSame('<svg><circle cx="50" cy="50" r="40" /></svg>', $html);
+    }
+
+    public function testRenderAgnosticSkipsInternalProps(): void
+    {
+        $node = [
+            'type' => 'span',
+            'props' => [
+                'class' => 'badge',
+                '_internal' => 'skip-me',
+                '_parent_id' => '123'
+            ],
+            'loop' => null,
+            'children' => []
+        ];
+
+        $html = $this->renderer->renderNode($node);
+        $this->assertStringContainsString('<span class="badge"></span>', $html);
+        $this->assertStringNotContainsString('_internal', $html);
+        $this->assertStringNotContainsString('_parent_id', $html);
+    }
 }
+

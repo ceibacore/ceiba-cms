@@ -9,15 +9,18 @@ use LemurCms\PageBuilder\Import\Rules\FallbackRule;
 use LemurCms\PageBuilder\Import\Rules\Generic\GenericDivRule;
 use LemurCms\PageBuilder\Import\Rules\Generic\SpanRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\AnchorRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\BlockquoteRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\DetailsRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\DividerRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\FigureRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\HeadingRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\ImageRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\InlineTextRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\ListRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\ParagraphRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\PictureRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\SemanticSectionRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\TableRule;
 
 /**
  * Converts an HTML string into a PageBuilder VDOM node tree.
@@ -200,6 +203,9 @@ final class HtmlImporter
             new InlineTextRule(),
             new DividerRule(),
             new AnchorRule(),
+            new BlockquoteRule(),
+            new TableRule(),
+            new ListRule(),
         ];
     }
 }

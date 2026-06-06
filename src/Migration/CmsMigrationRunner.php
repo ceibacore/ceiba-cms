@@ -86,8 +86,13 @@ class CmsMigrationRunner
                 $migration->up();
                 
                 $statements = $builder->getSqlLog();
-                foreach ($statements as $sql) {
-                    $this->db->pdo()->exec($sql);
+                $this->db->pdo()->exec('SET FOREIGN_KEY_CHECKS=0');
+                try {
+                    foreach ($statements as $sql) {
+                        $this->db->pdo()->exec($sql);
+                    }
+                } finally {
+                    $this->db->pdo()->exec('SET FOREIGN_KEY_CHECKS=1');
                 }
                 
                 // Record in migrations table

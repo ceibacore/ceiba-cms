@@ -176,6 +176,9 @@ require_once __DIR__ . '/src/Http/Controllers/LayoutController.php';
 require_once __DIR__ . '/src/Http/Controllers/ReservedPathController.php';
 require_once __DIR__ . '/src/Http/Controllers/HomeController.php';
 require_once __DIR__ . '/src/Http/Controllers/ImportController.php';
+require_once __DIR__ . '/src/Settings/Domain/Repository/SettingsRepositoryInterface.php';
+require_once __DIR__ . '/src/Settings/Infrastructure/LemurDbSettingsRepository.php';
+require_once __DIR__ . '/src/Http/Controllers/SettingsController.php';
 
 // ── Import Module ────────────────────────────────────────────────────────────
 require_once __DIR__ . '/src/PageBuilder/Import/Contract/RuleInterface.php';
@@ -212,6 +215,10 @@ require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/DividerRule.php';
 require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/AnchorRule.php';
 require_once __DIR__ . '/src/PageBuilder/Import/Rules/Generic/GenericDivRule.php';
 require_once __DIR__ . '/src/PageBuilder/Import/Rules/Generic/SpanRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/DomHelper.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/BlockquoteRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/TableRule.php';
+require_once __DIR__ . '/src/PageBuilder/Import/Rules/Semantic/ListRule.php';
 require_once __DIR__ . '/src/PageBuilder/Import/HtmlImporter.php';
 
 // ── UI Framework Module System ────────────────────────────────────────────────
@@ -265,6 +272,7 @@ $reservedPathRepository  = new \LemurCms\Routing\Infrastructure\LemurDbReservedP
 $moduleDefinitionRepository = new \LemurCms\DynamicModule\Infrastructure\LemurDbModuleDefinitionRepository($db);
 $genericModuleRepository    = new \LemurCms\DynamicModule\Infrastructure\GenericModuleRepository($db);
 $dynamicTableManager        = new \LemurCms\DynamicModule\Infrastructure\DynamicTableManager($db);
+$settingsRepository         = new \LemurCms\Settings\Infrastructure\LemurDbSettingsRepository($db);
 
 
 // ── Create Use Cases ─────────────────────────────────────────────────────────
@@ -364,7 +372,7 @@ $pageBuilderMetadataService = new \LemurCms\PageBuilder\Domain\Service\PageBuild
 );
 
 $variableInterpolator = new \LemurCms\PageBuilder\Domain\Service\VariableInterpolator();
-$bladeRenderer        = new \LemurCms\PageBuilder\Domain\Service\BladeRenderer($loopResolver, $variableInterpolator);
+$bladeRenderer        = new \LemurCms\PageBuilder\Domain\Service\BladeRenderer($loopResolver, $variableInterpolator, $uiFrameworkRegistry);
 $layoutRenderer       = new \LemurCms\PageBuilder\Domain\Service\LayoutRenderer();
 $reservedPathChecker  = new \LemurCms\Routing\Domain\Service\ReservedPathChecker($reservedPathRepository);
 
@@ -396,6 +404,7 @@ return [
         'reservedPath'        => $reservedPathRepository,
         'moduleDefinition'    => $moduleDefinitionRepository,
         'genericModule'       => $genericModuleRepository,
+        'settings'            => $settingsRepository,
     ],
     'presentation' => [
         'menuCache'              => $menuCache,

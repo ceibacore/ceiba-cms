@@ -13,7 +13,7 @@ use LemurCms\PageBuilder\Import\Contract\RuleInterface;
 final class InlineTextRule implements RuleInterface
 {
     private const MATCHED_TAGS = [
-        'mark', 'time', 'small', 'strong', 'em', 'blockquote',
+        'mark', 'small', 'strong', 'em',
         'cite', 'abbr', 'q', 'kbd', 'samp', 'var', 'dfn',
         'ins', 'del', 's', 'u', 'sub', 'sup',
     ];

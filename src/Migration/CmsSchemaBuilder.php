@@ -24,6 +24,7 @@ final class CmsSchemaBuilder
     public function createTable(string $table, callable $definition): void
     {
         $blueprint = new CmsColumnBlueprint($table);
+        $blueprint->setTablePrefix($this->prefix);
         $definition($blueprint);
         $sql = $blueprint->toCreateSql($this->prefix($table), $this->dialect, $this->prefix);
         $this->log($sql);

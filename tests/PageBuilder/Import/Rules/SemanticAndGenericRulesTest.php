@@ -227,7 +227,7 @@ class SemanticAndGenericRulesTest extends TestCase
     public function testInlineTextRuleMatchesTargetTags(): void
     {
         $rule = new InlineTextRule();
-        foreach (['strong', 'em', 'mark', 'blockquote', 'abbr', 'small', 'kbd', 'ins', 'del'] as $tag) {
+        foreach (['strong', 'em', 'mark', 'abbr', 'small', 'kbd', 'ins', 'del'] as $tag) {
             $this->assertTrue($rule->matches($this->el("<{$tag}>texto</{$tag}>")), "Should match <{$tag}>");
         }
         $this->assertFalse($rule->matches($this->el('<p>texto</p>')));
@@ -252,14 +252,6 @@ class SemanticAndGenericRulesTest extends TestCase
         $this->assertSame('HTML', $result['props']['trigger_label']);
     }
 
-    public function testInlineTextRuleBlockquoteGetsClass(): void
-    {
-        $rule   = new InlineTextRule();
-        $result = $rule->extract($this->el('<blockquote class="blockquote">Una cita</blockquote>'), $this->noop());
-        $this->assertSame('blockquote', $result['type']);
-        $this->assertNull($result['name']);
-        $this->assertStringContainsString('blockquote', $result['props']['class'] ?? '');
-    }
 
     // ── DividerRule ───────────────────────────────────────────────────────────
 

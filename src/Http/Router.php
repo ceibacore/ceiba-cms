@@ -100,6 +100,7 @@ class Router
         }
 
         foreach ($this->routes[$method] as $route => $routeData) {
+            $params = [];
             if ($this->matchRoute($route, $path, $params)) {
                 $this->runPipeline($routeData['middlewares'], $routeData['handler'], $params);
                 return;

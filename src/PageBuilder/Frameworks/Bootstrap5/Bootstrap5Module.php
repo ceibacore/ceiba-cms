@@ -106,8 +106,6 @@ final class Bootstrap5Module implements UiFrameworkModuleInterface
      */
     public function getViewsDirectoryPath(): string
     {
-        // __DIR__ = src/PageBuilder/Frameworks/Bootstrap5
-        // dirname 2 levels up → src/PageBuilder
-        return dirname(__DIR__, 2) . '/Presentation/views';
+        return __DIR__ . '/views';
     }
 }

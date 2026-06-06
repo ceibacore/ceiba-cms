@@ -40,13 +40,13 @@ class RouterTest extends TestCase
 
     public function testRouterMatchesPathParameter(): void
     {
-        $id = null;
-        $this->router->get('/items/{id}', function ($itemId) use (&$id) {
-            $id = $itemId;
+        $matchedId = null;
+        $this->router->get('/items/{id}', function ($id) use (&$matchedId) {
+            $matchedId = $id;
         });
 
         $this->router->dispatch('GET', '/items/123');
-        $this->assertEquals('123', $id);
+        $this->assertEquals('123', $matchedId);
     }
 
     public function testRouterReturns404ForNotFound(): void
