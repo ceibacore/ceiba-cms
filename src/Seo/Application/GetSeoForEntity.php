@@ -5,7 +5,7 @@ use LemurCms\Seo\Domain\Repository\SeoRepositoryInterface;
 final class GetSeoForEntity
 {
     public function __construct(private readonly SeoRepositoryInterface $repo) {}
-    public function execute(string $entityType, int $entityId): ?array
+    public function execute(string $entityType, string|int $entityId): ?array
     {
         return $this->repo->findByEntity($entityType, $entityId);
     }

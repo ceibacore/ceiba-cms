@@ -11,12 +11,12 @@ final class LemurDbSeoRepository implements SeoRepositoryInterface
 {
     public function __construct(private readonly \LemurDB $db) {}
 
-    public function findByEntity(string $entityType, int $entityId): ?array
+    public function findByEntity(string $entityType, string|int $entityId): ?array
     {
         return $this->db->query('seo')->where(['entity_type' => $entityType, 'entity_id' => $entityId])->first();
     }
 
-    public function upsert(string $entityType, int $entityId, array $data): void
+    public function upsert(string $entityType, string|int $entityId, array $data): void
     {
         $existing = $this->findByEntity($entityType, $entityId);
         if ($existing) {

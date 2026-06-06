@@ -9,6 +9,9 @@ use LemurCms\PageBuilder\Application\GetDefaultLayout;
 use LemurCms\PageBuilder\Domain\Service\BladeRendererInterface;
 use LemurCms\PageBuilder\Domain\Service\LayoutRenderer;
 use LemurCms\Menu\Application\GetNavbar;
+use LemurCms\Auth\AuthManager;
+use LemurCms\Settings\Domain\Repository\SettingsRepositoryInterface;
+use LemurCms\Seo\Domain\Repository\SeoRepositoryInterface;
 
 class PageRenderController extends BaseController
 {
@@ -22,6 +25,9 @@ class PageRenderController extends BaseController
         private readonly ?GetPageTemplateById $getPageTemplateById = null,
         private readonly ?\LemurCms\PageBuilder\Domain\Service\ConditionEngine $conditionEngine = null,
         private readonly ?\LemurCms\PageBuilder\Domain\Service\QueryEngine $queryEngine = null,
+        private readonly ?AuthManager                     $authManager        = null,
+        private readonly ?SettingsRepositoryInterface     $settingsRepository = null,
+        private readonly ?SeoRepositoryInterface          $seoRepository      = null,
     ) {}
 
     public function show(string $slug): void
@@ -91,11 +97,36 @@ class PageRenderController extends BaseController
             $palette          = $layout?->palette ?? [];
             $useSystemPalette = $layout?->useSystemPalette ?? true;
 
+            // Resolve SEO Metadata from polymorphic table
+            $seoData = null;
+            if ($this->seoRepository !== null && isset($page['id'])) {
+                $seoData = $this->seoRepository->findByEntity('page', (string)$page['id']);
+            }
+
             $pageMeta = [
-                'title'       => $page['title'] ?? '',
-                'description' => $page['meta_description'] ?? '',
-                'slug'        => $page['slug'] ?? $slug,
+                'title'            => $seoData['meta_title']       ?? $page['title']            ?? '',
+                'description'      => $seoData['meta_description'] ?? $page['meta_description']   ?? '',
+                'slug'             => $page['slug']                ?? $slug,
+                'canonical_url'    => $seoData['canonical_url']    ?? null,
+                'robots'           => $seoData['robots']           ?? 'index,follow',
+                'og_title'         => $seoData['og_title']         ?? null,
+                'og_description'   => $seoData['og_description']   ?? null,
+                'og_image'         => $seoData['og_image']         ?? null,
+                'schema_json'      => $seoData['schema_json']      ?? null,
             ];
+
+            // Resolve Language from Settings
+            $lang = 'es';
+            if ($this->settingsRepository !== null) {
+                $lang = $this->settingsRepository->get('site_language', 'es') ?? 'es';
+            }
+
+            // Resolve CDN Assets from Layout
+            $headCdn = $layout?->headCdn ?? null;
+            $bodyCdn = $layout?->bodyCdn ?? null;
+
+            // 4. Resolve Custom CSS/JS (session-aware, global + page-level)
+            [$customCss, $customJs] = $this->resolveCustomCode($page);
 
             if ($this->layoutRenderer !== null) {
                 $fullHtml = $this->layoutRenderer->render(
@@ -105,6 +136,11 @@ class PageRenderController extends BaseController
                     $palette,
                     $pageMeta,
                     $useSystemPalette,
+                    $customCss,
+                    $customJs,
+                    $lang,
+                    $headCdn,
+                    $bodyCdn,
                 );
             } else {
                 $fullHtml = $contentHtml;
@@ -118,6 +154,49 @@ class PageRenderController extends BaseController
             header('Content-Type: text/html; charset=UTF-8');
             echo "<h1>Error rendering page</h1><p>" . htmlspecialchars($e->getMessage()) . "</p>";
         }
+    }
+
+    /**
+     * Resolve and merge custom CSS/JS for the current request.
+     *
+     * Priority order (all appended, later overrides earlier):
+     *   1. Global CSS/JS (no-session or with-session depending on visitor state)
+     *   2. Page-level CSS/JS (no-session or with-session depending on visitor state)
+     *
+     * @param array $page The page record from the database.
+     * @return array{0: string, 1: string} [$css, $js]
+     */
+    private function resolveCustomCode(array $page): array
+    {
+        if ($this->settingsRepository === null) {
+            return ['', ''];
+        }
+
+        $hasSession = $this->authManager !== null && $this->authManager->check();
+
+        // ── Global custom code ──────────────────────────────────────────────
+        if ($hasSession) {
+            $globalCss = $this->settingsRepository->get('custom_css_global_session', '');
+            $globalJs  = $this->settingsRepository->get('custom_js_global_session', '');
+        } else {
+            $globalCss = $this->settingsRepository->get('custom_css_global_no_session', '');
+            $globalJs  = $this->settingsRepository->get('custom_js_global_no_session', '');
+        }
+
+        // ── Page-level custom code ──────────────────────────────────────────
+        if ($hasSession) {
+            $pageCss = $page['custom_css_session']    ?? '';
+            $pageJs  = $page['custom_js_session']     ?? '';
+        } else {
+            $pageCss = $page['custom_css_no_session'] ?? '';
+            $pageJs  = $page['custom_js_no_session']  ?? '';
+        }
+
+        // Merge: global first, then page-level so page styles can override
+        $mergedCss = trim(($globalCss ?? '') . "\n" . ($pageCss ?? ''));
+        $mergedJs  = trim(($globalJs  ?? '') . "\n" . ($pageJs  ?? ''));
+
+        return [$mergedCss, $mergedJs];
     }
 
     private function handleFallback(array $fallback): void

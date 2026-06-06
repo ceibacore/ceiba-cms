@@ -14,6 +14,8 @@ final class PageLayout
         public readonly array   $palette,
         public readonly bool    $useSystemPalette,
         public readonly bool    $isActive,
+        public readonly ?string $headCdn = null,
+        public readonly ?string $bodyCdn = null,
     ) {}
 
     public static function fromArray(array $data): self
@@ -31,6 +33,8 @@ final class PageLayout
                                   : ($data['palette'] ?? []),
             useSystemPalette: (bool) ($data['use_system_palette'] ?? true),
             isActive:         (bool) ($data['is_active'] ?? true),
+            headCdn:          $data['head_cdn']          ?? null,
+            bodyCdn:          $data['body_cdn']          ?? null,
         );
     }
 
@@ -45,6 +49,8 @@ final class PageLayout
             'palette'             => $this->palette,
             'use_system_palette'  => $this->useSystemPalette,
             'is_active'           => $this->isActive,
+            'head_cdn'            => $this->headCdn,
+            'body_cdn'            => $this->bodyCdn,
         ];
     }
 }

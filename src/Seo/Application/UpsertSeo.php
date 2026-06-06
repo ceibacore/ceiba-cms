@@ -8,7 +8,7 @@ final class UpsertSeo
 {
     public function __construct(private SeoRepositoryInterface $repo) {}
 
-    public function execute(string $entityType, int $entityId, array $data): void
+    public function execute(string $entityType, string|int $entityId, array $data): void
     {
         $this->repo->upsert($entityType, $entityId, $data);
     }
