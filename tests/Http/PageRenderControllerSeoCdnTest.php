@@ -84,7 +84,12 @@ class PageRenderControllerSeoCdnTest extends TestCase
         $this->pageRepo->method('findBySlug')->willReturn($page);
         $this->getLayoutById->method('execute')->willReturn($layout);
         $this->bladeRenderer->method('renderPage')->willReturn('<div>Page Content</div>');
-        $this->settingsRepo->method('get')->willReturn('es'); // site_language
+        $this->settingsRepo->method('get')->willReturnCallback(function($key, $default = null) {
+            if ($key === 'site_language') {
+                return 'es';
+            }
+            return $default;
+        });
 
         $controller = new PageRenderController(
             getPageBySlug:      new GetPageBySlug($this->pageRepo),
@@ -136,7 +141,12 @@ class PageRenderControllerSeoCdnTest extends TestCase
         $this->pageRepo->method('findBySlug')->willReturn($page);
         $this->getLayoutById->method('execute')->willReturn($layout);
         $this->bladeRenderer->method('renderPage')->willReturn('<div>Tailwind Page</div>');
-        $this->settingsRepo->method('get')->willReturn('en'); // site_language = en
+        $this->settingsRepo->method('get')->willReturnCallback(function($key, $default = null) {
+            if ($key === 'site_language') {
+                return 'en';
+            }
+            return $default;
+        });
 
         $controller = new PageRenderController(
             getPageBySlug:      new GetPageBySlug($this->pageRepo),
@@ -207,7 +217,12 @@ class PageRenderControllerSeoCdnTest extends TestCase
         $this->getLayoutById->method('execute')->willReturn($layout);
         $this->bladeRenderer->method('renderPage')->willReturn('<div>Page SEO Content</div>');
         $this->seoRepo->method('findByEntity')->willReturn($seoRecord);
-        $this->settingsRepo->method('get')->willReturn('es');
+        $this->settingsRepo->method('get')->willReturnCallback(function($key, $default = null) {
+            if ($key === 'site_language') {
+                return 'es';
+            }
+            return $default;
+        });
 
         $controller = new PageRenderController(
             getPageBySlug:      new GetPageBySlug($this->pageRepo),
@@ -240,5 +255,62 @@ class PageRenderControllerSeoCdnTest extends TestCase
         $this->assertStringContainsString('<script type="application/ld+json">', $output);
         $this->assertStringContainsString('"@context":"https:\/\/schema.org"', $output);
         $this->assertStringContainsString('"@type":"WebPage"', $output);
+    }
+
+    public function testShowRendersGlobalSettingsCdnWhenLayoutHasNoCdns(): void
+    {
+        $page = [
+            'id'               => 'test-page-id-4',
+            'title'            => 'Page Title',
+            'meta_description' => 'Page Description',
+            'slug'             => 'test-slug',
+            'status'           => 'published',
+            'content'          => [],
+            'layout_id'        => 'layout-4',
+        ];
+
+        $layout = PageLayout::fromArray([
+            'id'                 => 'layout-4',
+            'name'               => 'SEO Test Layout',
+            'menu_slug'          => 'main-menu',
+            'footer_tree'        => [],
+            'palette'            => [],
+            'use_system_palette' => true,
+            'is_active'          => true,
+            'head_cdn'           => null,
+            'body_cdn'           => null,
+        ]);
+
+        $this->pageRepo->method('findBySlug')->willReturn($page);
+        $this->getLayoutById->method('execute')->willReturn($layout);
+        $this->bladeRenderer->method('renderPage')->willReturn('<div>Page Content</div>');
+
+        // settingsRepo mock needs to return custom global CDNs
+        $this->settingsRepo->method('get')->willReturnMap([
+            ['site_language', 'es', 'es'],
+            ['global_head_cdn', null, '<link rel="stylesheet" href="https://example.com/global-styles.css">'],
+            ['global_body_cdn', null, '<script src="https://example.com/global-scripts.js"></script>'],
+        ]);
+
+        $controller = new PageRenderController(
+            getPageBySlug:      new GetPageBySlug($this->pageRepo),
+            bladeRenderer:      $this->bladeRenderer,
+            getLayoutById:      $this->getLayoutById,
+            getDefaultLayout:   $this->getDefaultLayout,
+            layoutRenderer:      $this->layoutRenderer,
+            getNavbar:          $this->getNavbar,
+            settingsRepository: $this->settingsRepo,
+            seoRepository:      $this->seoRepo
+        );
+
+        ob_start();
+        $controller->show('test-slug');
+        $output = ob_get_clean();
+
+        // Should contain global settings CDNs
+        $this->assertStringContainsString('<link rel="stylesheet" href="https://example.com/global-styles.css">', $output);
+        $this->assertStringContainsString('<script src="https://example.com/global-scripts.js"></script>', $output);
+        // Should NOT contain default Bootstrap CDN stylesheet
+        $this->assertStringNotContainsString('cdn.jsdelivr.net/npm/bootstrap', $output);
     }
 }

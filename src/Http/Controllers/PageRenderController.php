@@ -121,9 +121,19 @@ class PageRenderController extends BaseController
                 $lang = $this->settingsRepository->get('site_language', 'es') ?? 'es';
             }
 
-            // Resolve CDN Assets from Layout
-            $headCdn = $layout?->headCdn ?? null;
-            $bodyCdn = $layout?->bodyCdn ?? null;
+            // Resolve CDN Assets from Layout (with Global Fallbacks)
+            $layoutHeadCdn = $layout?->headCdn ?? null;
+            $layoutBodyCdn = $layout?->bodyCdn ?? null;
+
+            $globalHeadCdn = null;
+            $globalBodyCdn = null;
+            if ($this->settingsRepository !== null) {
+                $globalHeadCdn = $this->settingsRepository->get('global_head_cdn', null);
+                $globalBodyCdn = $this->settingsRepository->get('global_body_cdn', null);
+            }
+
+            $headCdn = ($layoutHeadCdn !== null && trim($layoutHeadCdn) !== '') ? $layoutHeadCdn : $globalHeadCdn;
+            $bodyCdn = ($layoutBodyCdn !== null && trim($layoutBodyCdn) !== '') ? $layoutBodyCdn : $globalBodyCdn;
 
             // 4. Resolve Custom CSS/JS (session-aware, global + page-level)
             [$customCss, $customJs] = $this->resolveCustomCode($page);
