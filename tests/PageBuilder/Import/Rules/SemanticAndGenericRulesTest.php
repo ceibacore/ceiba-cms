@@ -16,6 +16,7 @@ use LemurCms\PageBuilder\Import\Rules\Semantic\InlineTextRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\ParagraphRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\PictureRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\SemanticSectionRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\FormRule;
 use PHPUnit\Framework\TestCase;
 
 class SemanticAndGenericRulesTest extends TestCase
@@ -273,11 +274,11 @@ class SemanticAndGenericRulesTest extends TestCase
 
     // ── AnchorRule ────────────────────────────────────────────────────────────
 
-    public function testAnchorRuleMatchesAnchorWithoutBtn(): void
+    public function testAnchorRuleMatchesAnchor(): void
     {
         $rule = new AnchorRule();
         $this->assertTrue($rule->matches($this->el('<a href="/page">Link</a>')));
-        $this->assertFalse($rule->matches($this->el('<a class="btn btn-primary" href="/page">Button</a>')));
+        $this->assertTrue($rule->matches($this->el('<a class="btn btn-primary" href="/page">Button</a>')));
     }
 
     public function testAnchorRuleExtractsProps(): void
@@ -328,6 +329,28 @@ class SemanticAndGenericRulesTest extends TestCase
         $this->assertNull($result['name']);
         $this->assertSame('Secundario', $result['props']['content']);
         $this->assertSame('text-muted', $result['props']['class']);
+    }
+
+    // ── FormRule ──────────────────────────────────────────────────────────────
+
+    public function testFormRuleMatchesForm(): void
+    {
+        $rule = new FormRule();
+        $this->assertTrue($rule->matches($this->el('<form action="/submit" method="post"></form>')));
+        $this->assertFalse($rule->matches($this->el('<div></div>')));
+    }
+
+    public function testFormRuleExtractsProps(): void
+    {
+        $rule = new FormRule();
+        $result = $rule->extract($this->el('<form action="/submit" method="POST" class="form-horizontal" id="myForm"></form>'), $this->noop());
+        $this->assertSame('form', $result['type']);
+        $this->assertNull($result['name']);
+        $this->assertFalse($result['consumes']);
+        $this->assertSame('/submit', $result['props']['action']);
+        $this->assertSame('POST', $result['props']['method']);
+        $this->assertSame('form-horizontal', $result['props']['class']);
+        $this->assertSame('myForm', $result['props']['id']);
     }
 
     // ── FallbackRule ──────────────────────────────────────────────────────────

@@ -16,8 +16,7 @@ final class AnchorRule implements RuleInterface
 {
     public function matches(\DOMElement $el): bool
     {
-        return strtolower($el->tagName) === 'a'
-            && !ClassHelper::hasClass($el, 'btn');
+        return strtolower($el->tagName) === 'a';
     }
 
     public function priority(): int { return 200; }

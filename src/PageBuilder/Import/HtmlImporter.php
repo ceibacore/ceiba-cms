@@ -21,6 +21,7 @@ use LemurCms\PageBuilder\Import\Rules\Semantic\ParagraphRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\PictureRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\SemanticSectionRule;
 use LemurCms\PageBuilder\Import\Rules\Semantic\TableRule;
+use LemurCms\PageBuilder\Import\Rules\Semantic\FormRule;
 
 /**
  * Converts an HTML string into a PageBuilder VDOM node tree.
@@ -209,6 +210,7 @@ final class HtmlImporter
             new BlockquoteRule(),
             new TableRule(),
             new ListRule(),
+            new FormRule(),
         ];
     }
 }

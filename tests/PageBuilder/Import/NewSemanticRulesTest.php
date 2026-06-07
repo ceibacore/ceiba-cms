@@ -96,4 +96,44 @@ class NewSemanticRulesTest extends TestCase
         $th = $trHead['children'][0];
         $this->assertEquals('th', $th['type']);
     }
+
+    public function testFormRuleImportsFormsCorrectly(): void
+    {
+        $html = '<form class="my-form" action="/contact" method="post"><input type="text" name="name" class="form-control"></form>';
+        $result = $this->importer->import($html);
+        $tree = $result->toArray()['tree'];
+
+        $this->assertCount(1, $tree);
+
+        $form = $tree[0];
+        $this->assertEquals('form', $form['type']);
+        $this->assertNull($form['name']);
+        $this->assertEquals('my-form', $form['props']['class'] ?? '');
+        $this->assertEquals('/contact', $form['props']['action'] ?? '');
+        $this->assertEquals('post', $form['props']['method'] ?? '');
+
+        // Children of the form should be parsed recursively
+        $this->assertCount(1, $form['children']);
+        $input = $form['children'][0];
+        $this->assertEquals('input', $input['type']);
+        $this->assertEquals('form-control', $input['props']['class'] ?? '');
+        $this->assertArrayHasKey('_raw_html', $input['props']);
+        $this->assertStringContainsString('<input', $input['props']['_raw_html']);
+    }
+
+    public function testAnchorRuleImportsAnchorsCorrectly(): void
+    {
+        $html = '<a class="btn btn-primary" href="/about">About Us</a>';
+        $result = $this->importer->import($html);
+        $tree = $result->toArray()['tree'];
+
+        $this->assertCount(1, $tree);
+
+        $anchor = $tree[0];
+        $this->assertEquals('a', $anchor['type']);
+        $this->assertNull($anchor['name']);
+        $this->assertEquals('btn btn-primary', $anchor['props']['class'] ?? '');
+        $this->assertEquals('/about', $anchor['props']['href'] ?? '');
+        $this->assertEquals('About Us', $anchor['props']['content'] ?? '');
+    }
 }

@@ -20,7 +20,6 @@ final class FallbackRule implements RuleInterface
         'audio'  => ['Audio no tiene tipo nativo. Preservado como HTML.',               'Agrega el audio como nodo HTML.'],
         'iframe' => ['iframes no tienen tipo nativo. Preservado como HTML.',             'Revisa el contenido del iframe manualmente.'],
         'table'  => ['Tablas preservadas como HTML en esta versión.',                 'Candidato para componente nativo en v2.'],
-        'form'   => ['Formularios preservados como HTML.',                              'Los campos de formulario se preservan con fidelidad.'],
         'svg'    => ['SVG preservado como HTML.',                                       'Considera usar <img> con el SVG como archivo externo.'],
         'canvas' => ['<canvas> preservado como HTML.',                                  'No hay tipo nativo para canvas.'],
     ];
