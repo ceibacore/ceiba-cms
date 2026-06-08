@@ -12,6 +12,7 @@ use LemurCms\Menu\Application\GetNavbar;
 use LemurCms\Auth\AuthManager;
 use LemurCms\Settings\Domain\Repository\SettingsRepositoryInterface;
 use LemurCms\Seo\Domain\Repository\SeoRepositoryInterface;
+use LemurCms\PageBuilder\Application\GetPageTemplateById;
 
 class PageRenderController extends BaseController
 {

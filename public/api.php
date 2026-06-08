@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Cargar router
-$router = require __DIR__ . '/routes/api.php';
+$router = require __DIR__ . '/../routes/api.php';
 
 // Despachar request
 $router->dispatch();

@@ -15,9 +15,9 @@ use LemurCms\Http\Controllers\ComponentDefinitionController;
 use LemurCms\Http\Controllers\PageBuilderMetadataController;
 use LemurCms\Http\Controllers\SettingsController;
 
-$router = new Router();
-
 $container = require __DIR__ . '/../bootstrap.php';
+
+$router = new Router();
 
 // ── Menu Routes ──────────────────────────────────────────────────────────────
 $menuController = new MenuController(
