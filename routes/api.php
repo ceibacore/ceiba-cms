@@ -14,6 +14,7 @@ use LemurCms\Http\Controllers\TemplateController;
 use LemurCms\Http\Controllers\ComponentDefinitionController;
 use LemurCms\Http\Controllers\PageBuilderMetadataController;
 use LemurCms\Http\Controllers\SettingsController;
+use LemurCms\Http\Controllers\LanguageController;
 
 $container = require __DIR__ . '/../bootstrap.php';
 
@@ -122,6 +123,23 @@ $settingsController = new SettingsController(
 
 $router->get('/api/settings', fn() => $settingsController->index(), 'settings.index');
 $router->put('/api/settings', fn() => $settingsController->update(), 'settings.update');
+
+// ── Language & Translation Routes ─────────────────────────────────────────────
+$languageController = new LanguageController(
+    $container['useCases']['listLanguages'],
+    $container['useCases']['createLanguage'],
+    $container['useCases']['updateLanguage'],
+    $container['useCases']['deleteLanguage'],
+    $container['useCases']['listTranslations'],
+    $container['useCases']['updateTranslations'],
+);
+
+$router->get('/api/languages', fn() => $languageController->index(), 'languages.index');
+$router->post('/api/languages', fn() => $languageController->store(), 'languages.store');
+$router->put('/api/languages/{id}', fn($id) => $languageController->update($id), 'languages.update');
+$router->delete('/api/languages/{id}', fn($id) => $languageController->destroy($id), 'languages.delete');
+$router->get('/api/languages/{id}/translations', fn($id) => $languageController->showTranslations($id), 'languages.translations.show');
+$router->put('/api/languages/{id}/translations', fn($id) => $languageController->saveTranslations($id), 'languages.translations.save');
 
 // ── Public Routing — Home ────────────────────────────────────────────────────
 $pageRenderController = new PageRenderController(

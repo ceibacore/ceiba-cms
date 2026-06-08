@@ -54,6 +54,7 @@ require_once __DIR__ . '/src/Http/Controllers/MenuController.php';
 require_once __DIR__ . '/src/Http/Controllers/PageController.php';
 require_once __DIR__ . '/src/Http/Controllers/PageRenderController.php';
 require_once __DIR__ . '/src/Http/Controllers/CacheController.php';
+require_once __DIR__ . '/src/Http/Controllers/LanguageController.php';
 
 // ── Database Factories ───────────────────────────────────────────────────────
 require_once __DIR__ . '/database/factories/Factory.php';
@@ -67,6 +68,8 @@ require_once __DIR__ . '/src/Page/Domain/Repository/PageRepositoryInterface.php'
 require_once __DIR__ . '/src/Seo/Domain/Repository/SeoRepositoryInterface.php';
 require_once __DIR__ . '/src/Media/Domain/Repository/MediaRepositoryInterface.php';
 require_once __DIR__ . '/src/Auth/Domain/Repository/UserRepositoryInterface.php';
+require_once __DIR__ . '/src/Localization/Domain/Repository/LanguageRepositoryInterface.php';
+require_once __DIR__ . '/src/Localization/Domain/Repository/TranslationRepositoryInterface.php';
 
 // ── Application Use Cases ────────────────────────────────────────────────────
 require_once __DIR__ . '/src/Menu/Application/GetMainNavbar.php';
@@ -94,6 +97,12 @@ require_once __DIR__ . '/src/Auth/Application/CreateUser.php';
 require_once __DIR__ . '/src/Auth/Application/AssignRole.php';
 require_once __DIR__ . '/src/Auth/Application/CheckPermission.php';
 require_once __DIR__ . '/src/Auth/Application/ChangePassword.php';
+require_once __DIR__ . '/src/Localization/Application/ListLanguages.php';
+require_once __DIR__ . '/src/Localization/Application/CreateLanguage.php';
+require_once __DIR__ . '/src/Localization/Application/UpdateLanguage.php';
+require_once __DIR__ . '/src/Localization/Application/DeleteLanguage.php';
+require_once __DIR__ . '/src/Localization/Application/ListTranslations.php';
+require_once __DIR__ . '/src/Localization/Application/UpdateTranslations.php';
 
 // ── Presentation Layer ───────────────────────────────────────────────────────
 require_once __DIR__ . '/src/Menu/Presentation/LemurMenuRenderer.php';
@@ -109,6 +118,8 @@ require_once __DIR__ . '/src/Page/Infrastructure/LemurDbPageRepository.php';
 require_once __DIR__ . '/src/Seo/Infrastructure/LemurDbSeoRepository.php';
 require_once __DIR__ . '/src/Media/Infrastructure/LemurDbMediaRepository.php';
 require_once __DIR__ . '/src/Auth/Infrastructure/LemurDbUserRepository.php';
+require_once __DIR__ . '/src/Localization/Infrastructure/LemurDbLanguageRepository.php';
+require_once __DIR__ . '/src/Localization/Infrastructure/LemurDbTranslationRepository.php';
 
 // ── PageBuilder Layer ────────────────────────────────────────────────────────
 require_once __DIR__ . '/src/PageBuilder/Domain/Entity/LoopConfig.php';
@@ -273,6 +284,8 @@ $moduleDefinitionRepository = new \LemurCms\DynamicModule\Infrastructure\LemurDb
 $genericModuleRepository    = new \LemurCms\DynamicModule\Infrastructure\GenericModuleRepository($db);
 $dynamicTableManager        = new \LemurCms\DynamicModule\Infrastructure\DynamicTableManager($db);
 $settingsRepository         = new \LemurCms\Settings\Infrastructure\LemurDbSettingsRepository($db);
+$languageRepository         = new \LemurCms\Localization\Infrastructure\LemurDbLanguageRepository($db);
+$translationRepository      = new \LemurCms\Localization\Infrastructure\LemurDbTranslationRepository($db);
 
 
 // ── Create Use Cases ─────────────────────────────────────────────────────────
@@ -386,6 +399,13 @@ $deleteDynamicModule = new \LemurCms\DynamicModule\Application\DeleteDynamicModu
 $getModuleDefinition = new \LemurCms\DynamicModule\Application\GetModuleDefinition($moduleDefinitionRepository);
 $listDynamicModules  = new \LemurCms\DynamicModule\Application\ListDynamicModules($moduleDefinitionRepository);
 
+$listLanguages      = new \LemurCms\Localization\Application\ListLanguages($languageRepository);
+$createLanguage     = new \LemurCms\Localization\Application\CreateLanguage($db, $languageRepository, $translationRepository);
+$updateLanguage     = new \LemurCms\Localization\Application\UpdateLanguage($db, $languageRepository);
+$deleteLanguage     = new \LemurCms\Localization\Application\DeleteLanguage($db, $languageRepository, $translationRepository);
+$listTranslations   = new \LemurCms\Localization\Application\ListTranslations($translationRepository);
+$updateTranslations = new \LemurCms\Localization\Application\UpdateTranslations($translationRepository);
+
 
 // ── Export container (opcional: devolver un contenedor manual) ───────────────
 return [
@@ -405,6 +425,8 @@ return [
         'moduleDefinition'    => $moduleDefinitionRepository,
         'genericModule'       => $genericModuleRepository,
         'settings'            => $settingsRepository,
+        'language'            => $languageRepository,
+        'translation'         => $translationRepository,
     ],
     'presentation' => [
         'menuCache'              => $menuCache,
@@ -487,5 +509,12 @@ return [
         'deleteDynamicModule' => $deleteDynamicModule,
         'getModuleDefinition' => $getModuleDefinition,
         'listDynamicModules'  => $listDynamicModules,
+        // Localization
+        'listLanguages'       => $listLanguages,
+        'createLanguage'      => $createLanguage,
+        'updateLanguage'      => $updateLanguage,
+        'deleteLanguage'      => $deleteLanguage,
+        'listTranslations'    => $listTranslations,
+        'updateTranslations'  => $updateTranslations,
     ],
 ];
