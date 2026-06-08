@@ -14,6 +14,7 @@ require_once __DIR__ . '/SystemMenusSeeder.php';
 require_once __DIR__ . '/ComponentDefinitionsSeeder.php';
 require_once __DIR__ . '/TemplatesSeeder.php';
 require_once __DIR__ . '/PageLayoutsSeeder.php';
+require_once __DIR__ . '/SystemTranslationsSeeder.php';
 
 class DatabaseSeeder extends CmsSeeder
 {
@@ -40,6 +41,7 @@ class DatabaseSeeder extends CmsSeeder
         (new ComponentDefinitionsSeeder($this->db, $this->prefix))->run();
         (new TemplatesSeeder($this->db, $this->prefix))->run();
         (new PageLayoutsSeeder($this->db, $this->prefix))->run();
+        (new SystemTranslationsSeeder($this->db, $this->prefix))->run();
 
         // 3. Create an Admin user and assign the superadmin role
         $superAdminRoleId = $this->db->query('roles')->where(['slug' => 'superadmin'])->first()['id'] ?? null;
