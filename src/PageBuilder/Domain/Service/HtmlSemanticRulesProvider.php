@@ -509,38 +509,47 @@ final class HtmlSemanticRulesProvider
 
 class HTMLTags 
 {
-    public static function structure(): array 
-    {
+    public static function structure() {
         return [
             [
                 'type' => 'div',
                 'label' => 'label_div',
+                'allows_children' => true,
+                'allowed_children' => ['*'],
                 'props' => [],
                 'recommended_props' => ['class', 'id', 'style'],
             ],
             [
                 'type' => 'section',
                 'label' => 'label_section',
+                'allows_children' => true,
+                'allowed_children' => ['*'],
                 'props' => ['class' => 'py-5'],
                 'recommended_props' => ['class', 'id', 'style'],
             ],
             [
                 'type' => 'header',
                 'label' => 'label_header',
+                'allows_children' => true,
+                'allowed_children' => ['*'],
                 'props' => [],
                 'recommended_props' => ['class', 'id', 'style'],
             ],
             [
                 'type' => 'footer',
                 'label' => 'label_footer',
+                'allows_children' => true,
+                'allowed_children' => ['*'],
                 'props' => [],
                 'recommended_props' => ['class', 'id', 'style'],
             ],
         ];
     }
 
-    public static function text(): array 
-    {
+    public static function text() {
+        // Corregido y reutilizado de forma segura con el '$' correspondiente
+        $allowed_children = ['span', 'strong', 'em', 'a', 'code', 'kbd', 'sub', 'sup', 'mark', 'cite', 'abbr', 'time'];
+        
         $headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
         $structure = [];
 
@@ -548,6 +557,8 @@ class HTMLTags
             $structure[] = [
                 'type' => $h,
                 'label' => "label_{$h}",
+                'allows_children' => true,
+                'allowed_children' => $allowed_children,
                 'props' => [
                     'content' => "text_{$h}",
                 ],
@@ -558,6 +569,8 @@ class HTMLTags
         $structure[] = [
             'type' => 'p',
             'label' => 'label_p',
+            'allows_children' => true,
+            'allowed_children' => $allowed_children,
             'props' => [
                 'content' => 'text_p',
             ],
@@ -567,6 +580,8 @@ class HTMLTags
         $structure[] = [
             'type' => 'blockquote',
             'label' => 'label_blockquote',
+            'allows_children' => true,
+            'allowed_children' => $allowed_children,
             'props' => [
                 'content' => 'text_blockquote',
             ],
@@ -576,24 +591,29 @@ class HTMLTags
         return $structure;
     }
 
-    public static function list(): array 
-    {
+    public static function list() {
         return [
             [
                 'type' => 'ul',
                 'label' => 'label_ul',
+                'allows_children' => true,
+                'allowed_children' => ['li'],
                 'props' => [],
                 'recommended_props' => ['class'],
             ],
             [
                 'type' => 'ol',
                 'label' => 'label_ol',
+                'allows_children' => true,
+                'allowed_children' => ['li'],
                 'props' => [],
                 'recommended_props' => ['class'],
             ],
             [
                 'type' => 'li',
                 'label' => 'label_li',
+                'allows_children' => true,
+                'allowed_children' => ['span', 'strong', 'a', 'ol', 'ul', 'div'],
                 'props' => [
                     'content' => 'text_li',
                 ],
@@ -602,12 +622,13 @@ class HTMLTags
         ];
     }
 
-    public static function media(): array 
-    {
+    public static function media() {
         return [
             [
                 'type' => 'img',
                 'label' => 'label_img',
+                'allows_children' => false,
+                'allowed_children' => [],
                 'props' => [
                     'src' => 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=600&auto=format&fit=crop',
                     'alt' => 'Imagen',
@@ -618,6 +639,8 @@ class HTMLTags
             [
                 'type' => 'video',
                 'label' => 'label_video',
+                'allows_children' => false,
+                'allowed_children' => [],
                 'props' => [
                     'src' => '',
                     'controls' => 'true',
@@ -628,6 +651,8 @@ class HTMLTags
             [
                 'type' => 'audio',
                 'label' => 'label_audio',
+                'allows_children' => false,
+                'allowed_children' => [],
                 'props' => [
                     'src' => '',
                     'controls' => 'true',
@@ -638,6 +663,8 @@ class HTMLTags
             [
                 'type' => 'iframe',
                 'label' => 'label_iframe',
+                'allows_children' => false,
+                'allowed_children' => [],
                 'props' => [
                     'src' => 'https://maps.google.com',
                     'class' => 'w-100 border-0',
@@ -648,12 +675,13 @@ class HTMLTags
         ];
     }
 
-    public static function form(): array 
-    {
+    public static function form() {
         return [
             [
                 'type' => 'form',
                 'label' => 'label_form',
+                'allows_children' => true,
+                'allowed_children' => ['input', 'textarea', 'select', 'label', 'button', 'div'], // Corregido: Ahora sí acepta elementos del formulario
                 'props' => [
                     'method' => 'POST',
                     'action' => '#',
@@ -663,6 +691,8 @@ class HTMLTags
             [
                 'type' => 'input',
                 'label' => 'label_input',
+                'allows_children' => false,
+                'allowed_children' => [],
                 'props' => [
                     'type' => 'text',
                     'class' => 'form-control',
@@ -673,6 +703,8 @@ class HTMLTags
             [
                 'type' => 'textarea',
                 'label' => 'label_textarea',
+                'allows_children' => false,
+                'allowed_children' => [],
                 'props' => [
                     'class' => 'form-control',
                     'rows' => '3',
@@ -682,6 +714,8 @@ class HTMLTags
             [
                 'type' => 'select',
                 'label' => 'label_select',
+                'allows_children' => true,
+                'allowed_children' => ['option'],
                 'props' => [
                     'class' => 'form-select',
                 ],
@@ -690,157 +724,183 @@ class HTMLTags
             [
                 'type' => 'label',
                 'label' => 'label',
+                'allows_children' => true,
+                'allowed_children' => ['*'], 
                 'props' => [
-                    'content' => 'text_label',
+                    'content' => 'Etiqueta:',
                 ],
                 'recommended_props' => ['for', 'class'],
             ],
             [
                 'type' => 'button',
                 'label' => 'label_submit',
+                'allows_children' => true,
+                'allowed_children' => ['span', 'i'], // Permite iconos internos por ejemplo
                 'props' => [
                     'type' => 'submit',
                     'class' => 'btn btn-primary',
-                    'content' => 'text_send',
+                    'content' => 'Enviar',
                 ],
                 'recommended_props' => ['type', 'class', 'disabled'],
             ],
         ];
     }
 
-    public static function advancedStructure(): array 
-    {
+    public static function advancedStructure() {
         return [
             [
                 'type' => 'main',
                 'label' => 'label_main',
+                'allows_children' => true,
+                'allowed_children' => ['section', 'div', 'article'],
                 'props' => [],
                 'recommended_props' => ['id', 'class'],
             ],
             [
                 'type' => 'article',
                 'label' => 'label_article',
+                'allows_children' => true,
+                'allowed_children' => ['*'],
                 'props' => [],
                 'recommended_props' => ['class', 'id'],
             ],
             [
                 'type' => 'aside',
                 'label' => 'label_aside',
+                'allows_children' => true,
+                'allowed_children' => ['*'],
                 'props' => [],
                 'recommended_props' => ['class', 'id'],
             ],
             [
                 'type' => 'nav',
                 'label' => 'label_nav',
+                'allows_children' => true,
+                'allowed_children' => ['ul', 'ol', 'div', 'a'],
                 'props' => [],
                 'recommended_props' => ['class', 'id', 'aria-label'],
             ],
         ];
     }
 
-    public static function tables(): array 
-    {
+    public static function tables() {
         return [
             [
                 'type' => 'table',
                 'label' => 'label_table',
-                'props' => ['class' => 'table table-striped table-hover'],
+                'allows_children' => true,
+                'allowed_children' => ['thead', 'tbody', 'tfoot', 'tr'],
+                'props' => ['class' => 'table table-striped table-hover'], // Clases Bootstrap por defecto
                 'recommended_props' => ['class', 'id'],
             ],
             [
                 'type' => 'thead',
                 'label' => 'label_thead',
+                'allows_children' => true,
+                'allowed_children' => ['tr'],
                 'props' => [],
                 'recommended_props' => ['class'],
             ],
             [
                 'type' => 'tbody',
                 'label' => 'label_tbody',
+                'allows_children' => true,
+                'allowed_children' => ['tr'],
                 'props' => [],
                 'recommended_props' => ['class'],
             ],
             [
                 'type' => 'tr',
                 'label' => 'label_tr',
+                'allows_children' => true,
+                'allowed_children' => ['th', 'td'],
                 'props' => [],
                 'recommended_props' => ['class'],
             ],
             [
                 'type' => 'th',
                 'label' => 'label_th',
-                'props' => [
-                    'content' => 'text_th',
-                ],
+                'allows_children' => true,
+                'allowed_children' => ['span', 'strong', 'a'],
+                'props' => [],
+                'content' => 'Encabezado',
                 'recommended_props' => ['scope', 'class', 'colspan', 'rowspan'],
             ],
             [
                 'type' => 'td',
                 'label' => 'label_td',
-                'props' => [
-                    'content' => 'text_td',
-                ],
+                'allows_children' => true,
+                'allowed_children' => ['*'], // Las celdas pueden contener texto, botones, imágenes, etc.
+                'props' => [],
+                'content' => 'Dato',
                 'recommended_props' => ['class', 'colspan', 'rowspan'],
             ],
         ];
     }
 
-    public static function advancedForm(): array 
-    {
+    public static function advancedForm() {
         return [
             [
                 'type' => 'option',
                 'label' => 'label_option',
-                'props' => [
-                    'value' => '',
-                    'content' => 'text_option',
-                ],
+                'allows_children' => false,
+                'allowed_children' => [],
+                'props' => ['value' => ''],
+                'content' => 'Opción',
                 'recommended_props' => ['value', 'selected', 'disabled'],
             ],
             [
                 'type' => 'optgroup',
                 'label' => 'label_optgroup',
+                'allows_children' => true,
+                'allowed_children' => ['option'],
                 'props' => ['label' => 'Grupo de Opciones'],
                 'recommended_props' => ['label', 'disabled'],
             ],
             [
                 'type' => 'fieldset',
                 'label' => 'label_fieldset',
+                'allows_children' => true,
+                'allowed_children' => ['legend', 'input', 'select', 'textarea', 'div'],
                 'props' => ['class' => 'border p-3 mb-3'],
                 'recommended_props' => ['class', 'disabled', 'form'],
             ],
             [
                 'type' => 'legend',
                 'label' => 'label_legend',
-                'props' => [
-                    'class' => 'w-auto px-2',
-                    'content' => 'text_group_title',
-                ],
+                'allows_children' => true,
+                'allowed_children' => ['span', 'strong'],
+                'props' => ['class' => 'w-auto px-2'],
+                'content' => 'Título del Grupo',
                 'recommended_props' => ['class'],
             ],
         ];
     }
 
-    public static function interactive(): array 
-    {
+    public static function interactive() {
         return [
             [
                 'type' => 'details',
                 'label' => 'label_details',
+                'allows_children' => true,
+                'allowed_children' => ['summary', 'p', 'div', 'ul'],
                 'props' => ['class' => 'mb-2'],
                 'recommended_props' => ['open', 'class'],
             ],
             [
                 'type' => 'summary',
                 'label' => 'label_summary',
-                'props' => [
-                    'class' => 'fw-bold cursor-pointer',
-                    'content' => 'text_summary',
-                ],
+                'allows_children' => true,
+                'allowed_children' => ['span', 'strong', 'i'], // Permite texto e iconos de Bootstrap
+                'props' => ['class' => 'fw-bold cursor-pointer'],
+                'content' => 'Haga clic para expandir',
                 'recommended_props' => ['class'],
             ],
             [
                 'type' => 'dialog',
                 'label' => 'label_dialog',
+                'allows_children' => true,
+                'allowed_children' => ['*'],
                 'props' => ['class' => 'modal-dialog p-4 rounded shadow'],
                 'recommended_props' => ['open', 'class', 'id'],
             ],
@@ -853,30 +913,34 @@ class HTMLTags
             [
                 'type' => 'a',
                 'label' => 'label_link',
-                'props' => [
-                    'href' => '#',
-                    'class' => 'text-primary text-decoration-none',
-                    'content' => 'text_link',
-                ],
+                'allows_children' => true,
+                'allowed_children' => ['span', 'strong', 'i'],
+                'props' => ['href' => '#', 'class' => 'text-primary text-decoration-none'],
+                'content' => 'Enlace',
                 'recommended_props' => ['href', 'target', 'class', 'id', 'rel'],
             ],
             [
                 'type' => 'span',
                 'label' => 'label_span',
-                'props' => [
-                    'content' => 'text_span',
-                ],
+                'allows_children' => true,
+                'allowed_children' => ['i', 'strong', 'em', 'a', 'code', 'kbd', 'sub', 'sup', 'mark', 'cite', 'abbr', 'time'],
+                'props' => [],
+                'content' => 'Texto span',
                 'recommended_props' => ['class', 'id', 'style'],
             ],
             [
                 'type' => 'i',
                 'label' => 'label_icon',
+                'allows_children' => false,
+                'allowed_children' => [],
                 'props' => ['class' => 'bi bi-info-circle'],
                 'recommended_props' => ['class', 'style', 'aria-hidden'],
             ],
             [
                 'type' => 'hr',
                 'label' => 'label_hr',
+                'allows_children' => false,
+                'allowed_children' => [],
                 'props' => [
                     'class' => 'my-4',
                 ],

@@ -45,16 +45,16 @@ class PageBuilderMetadataTest extends TestCase
         $this->assertIsArray($catalog);
         $this->assertNotEmpty($catalog);
 
-        // Verify Estructura & Rejilla category
-        $this->assertSame('Estructura & Rejilla', $catalog[0]['category']);
+        // Verify structure category
+        $this->assertSame('structure', $catalog[0]['category']);
         $div = $catalog[0]['items'][0];
         $this->assertSame('div', $div['type']);
-        $this->assertSame('Caja (Div)', $div['label']);
+        $this->assertSame('label_div', $div['label']);
         $this->assertTrue($div['allows_children']);
         $this->assertContains('class', $div['recommended_props']);
 
         // Verify image void tag behavior
-        $multimedia = array_values(array_filter($catalog, fn($cat) => $cat['category'] === 'Multimedia'))[0];
+        $multimedia = array_values(array_filter($catalog, fn($cat) => $cat['category'] === 'media'))[0];
         $img = array_values(array_filter($multimedia['items'], fn($item) => $item['type'] === 'img'))[0];
         $this->assertFalse($img['allows_children']);
         $this->assertContains('src', $img['recommended_props']);
