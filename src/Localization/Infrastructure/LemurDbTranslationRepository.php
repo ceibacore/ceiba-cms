@@ -15,8 +15,8 @@ final class LemurDbTranslationRepository implements TranslationRepositoryInterfa
     {
         return $this->db->query('cms_translations')
             ->where(['language_id' => $languageId])
-            ->orderBy('group', 'ASC')
-            ->orderBy('key', 'ASC')
+            ->orderBy('`group`', 'ASC')
+            ->orderBy('`key`', 'ASC')
             ->get();
     }
 
