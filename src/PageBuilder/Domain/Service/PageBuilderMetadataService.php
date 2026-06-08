@@ -52,6 +52,14 @@ final class PageBuilderMetadataService
     }
 
     /**
+     * Get categorized native elements catalog.
+     */
+    public function getNativeElementsCatalog(): array
+    {
+        return $this->rulesProvider->getNativeElementsCatalog();
+    }
+
+    /**
      * Get all metadata in one call.
      */
     public function getAllMetadata(): array
@@ -61,6 +69,7 @@ final class PageBuilderMetadataService
             'templates' => $this->getTemplates(),
             'page_templates' => $this->getPageTemplates(),
             'html_tags' => $this->getHtmlTagRules(),
+            'native_elements' => $this->getNativeElementsCatalog(),
         ];
     }
 }

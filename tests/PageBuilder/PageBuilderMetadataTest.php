@@ -39,6 +39,27 @@ class PageBuilderMetadataTest extends TestCase
         $this->assertContains('*', $rules['allowed_children']);
     }
 
+    public function testGetNativeElementsCatalog(): void
+    {
+        $catalog = $this->rulesProvider->getNativeElementsCatalog();
+        $this->assertIsArray($catalog);
+        $this->assertNotEmpty($catalog);
+
+        // Verify Estructura & Rejilla category
+        $this->assertSame('Estructura & Rejilla', $catalog[0]['category']);
+        $div = $catalog[0]['items'][0];
+        $this->assertSame('div', $div['type']);
+        $this->assertSame('Caja (Div)', $div['label']);
+        $this->assertTrue($div['allows_children']);
+        $this->assertContains('class', $div['recommended_props']);
+
+        // Verify image void tag behavior
+        $multimedia = array_values(array_filter($catalog, fn($cat) => $cat['category'] === 'Multimedia'))[0];
+        $img = array_values(array_filter($multimedia['items'], fn($item) => $item['type'] === 'img'))[0];
+        $this->assertFalse($img['allows_children']);
+        $this->assertContains('src', $img['recommended_props']);
+    }
+
     public function testMetadataServiceRetrievesAllMetadata(): void
     {
         $uiRegistry = new UiFrameworkRegistry();
@@ -66,6 +87,7 @@ class PageBuilderMetadataTest extends TestCase
         $this->assertArrayHasKey('templates', $metadata);
         $this->assertArrayHasKey('page_templates', $metadata);
         $this->assertArrayHasKey('html_tags', $metadata);
+        $this->assertArrayHasKey('native_elements', $metadata);
 
         $this->assertSame('Custom Card', $metadata['templates'][0]['name']);
         $this->assertSame('t_article', $metadata['page_templates'][0]['name']);
@@ -100,6 +122,7 @@ class PageBuilderMetadataTest extends TestCase
         $this->assertSame('PageBuilder metadata, templates, and rules retrieved', $response['message']);
         $this->assertArrayHasKey('components', $response['data']);
         $this->assertArrayHasKey('html_tags', $response['data']);
+        $this->assertArrayHasKey('native_elements', $response['data']);
         $this->assertSame('p', $response['data']['html_tags']['p']['tag']);
     }
 }

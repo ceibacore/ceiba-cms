@@ -169,4 +169,279 @@ final class HtmlSemanticRulesProvider
 
         return $rules;
     }
+
+    /**
+     * Get the native HTML standard elements catalog categorized for the UI.
+     *
+     * @return array[]
+     */
+    public function getNativeElementsCatalog(): array
+    {
+        return [
+            [
+                'category' => 'Estructura & Rejilla',
+                'items' => [
+                    [
+                        'type' => 'div',
+                        'label' => 'Caja (Div)',
+                        'allows_children' => true,
+                        'props' => new \stdClass(),
+                        'recommended_props' => ['class', 'id', 'style'],
+                    ],
+                    [
+                        'type' => 'div',
+                        'label' => 'Contenedor',
+                        'allows_children' => true,
+                        'props' => ['class' => 'container'],
+                        'recommended_props' => ['class', 'id'],
+                    ],
+                    [
+                        'type' => 'div',
+                        'label' => 'Fila (Row)',
+                        'allows_children' => true,
+                        'props' => ['class' => 'row'],
+                        'recommended_props' => ['class', 'id'],
+                    ],
+                    [
+                        'type' => 'div',
+                        'label' => 'Columna (Col)',
+                        'allows_children' => true,
+                        'props' => ['class' => 'col'],
+                        'recommended_props' => ['class', 'id'],
+                    ],
+                    [
+                        'type' => 'section',
+                        'label' => 'Sección',
+                        'allows_children' => true,
+                        'props' => ['class' => 'py-5'],
+                        'recommended_props' => ['class', 'id', 'style'],
+                    ],
+                    [
+                        'type' => 'header',
+                        'label' => 'Header',
+                        'allows_children' => true,
+                        'props' => new \stdClass(),
+                        'recommended_props' => ['class', 'id'],
+                    ],
+                    [
+                        'type' => 'footer',
+                        'label' => 'Footer',
+                        'allows_children' => true,
+                        'props' => new \stdClass(),
+                        'recommended_props' => ['class', 'id'],
+                    ],
+                ],
+            ],
+            [
+                'category' => 'Texto',
+                'items' => [
+                    [
+                        'type' => 'h1',
+                        'label' => 'Título H1',
+                        'allows_children' => true,
+                        'props' => ['text' => 'Título Principal'],
+                        'recommended_props' => ['class', 'id'],
+                    ],
+                    [
+                        'type' => 'h2',
+                        'label' => 'Título H2',
+                        'allows_children' => true,
+                        'props' => ['text' => 'Subtítulo'],
+                        'recommended_props' => ['class', 'id'],
+                    ],
+                    [
+                        'type' => 'h3',
+                        'label' => 'Título H3',
+                        'allows_children' => true,
+                        'props' => ['text' => 'Sección Secundaria'],
+                        'recommended_props' => ['class', 'id'],
+                    ],
+                    [
+                        'type' => 'p',
+                        'label' => 'Párrafo',
+                        'allows_children' => true,
+                        'props' => ['text' => 'Este es un párrafo de texto para rellenar tu diseño.'],
+                        'recommended_props' => ['class'],
+                    ],
+                    [
+                        'type' => 'span',
+                        'label' => 'Texto Inline (Span)',
+                        'allows_children' => true,
+                        'props' => ['text' => 'Texto'],
+                        'recommended_props' => ['class'],
+                    ],
+                    [
+                        'type' => 'blockquote',
+                        'label' => 'Cita',
+                        'allows_children' => true,
+                        'props' => [
+                            'class' => 'blockquote border-start ps-3',
+                            'text' => 'Cita o frase célebre.',
+                        ],
+                        'recommended_props' => ['class'],
+                    ],
+                    [
+                        'type' => 'ul',
+                        'label' => 'Lista Desordenada',
+                        'allows_children' => true,
+                        'props' => new \stdClass(),
+                        'recommended_props' => ['class'],
+                    ],
+                    [
+                        'type' => 'ol',
+                        'label' => 'Lista Ordenada',
+                        'allows_children' => true,
+                        'props' => new \stdClass(),
+                        'recommended_props' => ['class'],
+                    ],
+                    [
+                        'type' => 'li',
+                        'label' => 'Elemento de Lista',
+                        'allows_children' => true,
+                        'props' => ['text' => 'Elemento'],
+                        'recommended_props' => ['class'],
+                    ],
+                ],
+            ],
+            [
+                'category' => 'Multimedia',
+                'items' => [
+                    [
+                        'type' => 'img',
+                        'label' => 'Imagen',
+                        'allows_children' => false,
+                        'props' => [
+                            'src' => 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=600&auto=format&fit=crop',
+                            'alt' => 'Imagen',
+                            'class' => 'img-fluid rounded',
+                        ],
+                        'recommended_props' => ['src', 'alt', 'class', 'width', 'height'],
+                    ],
+                    [
+                        'type' => 'video',
+                        'label' => 'Video player',
+                        'allows_children' => false,
+                        'props' => [
+                            'src' => '',
+                            'controls' => 'true',
+                            'class' => 'w-100',
+                        ],
+                        'recommended_props' => ['src', 'controls', 'class', 'autoplay', 'muted', 'loop'],
+                    ],
+                    [
+                        'type' => 'iframe',
+                        'label' => 'Iframe embed',
+                        'allows_children' => false,
+                        'props' => [
+                            'src' => 'https://maps.google.com',
+                            'class' => 'w-100 border-0',
+                            'height' => '300',
+                        ],
+                        'recommended_props' => ['src', 'class', 'height', 'width', 'frameborder'],
+                    ],
+                ],
+            ],
+            [
+                'category' => 'Formularios',
+                'items' => [
+                    [
+                        'type' => 'form',
+                        'label' => 'Formulario',
+                        'allows_children' => true,
+                        'props' => [
+                            'method' => 'POST',
+                            'action' => '#',
+                        ],
+                        'recommended_props' => ['method', 'action', 'class', 'id', 'enctype'],
+                    ],
+                    [
+                        'type' => 'input',
+                        'label' => 'Campo de Entrada',
+                        'allows_children' => false,
+                        'props' => [
+                            'type' => 'text',
+                            'class' => 'form-control',
+                            'placeholder' => 'Escribe aquí...',
+                        ],
+                        'recommended_props' => ['type', 'name', 'value', 'class', 'placeholder', 'required', 'disabled'],
+                    ],
+                    [
+                        'type' => 'textarea',
+                        'label' => 'Área de Texto',
+                        'allows_children' => false,
+                        'props' => [
+                            'class' => 'form-control',
+                            'rows' => '3',
+                        ],
+                        'recommended_props' => ['name', 'class', 'rows', 'placeholder', 'required', 'disabled'],
+                    ],
+                    [
+                        'type' => 'select',
+                        'label' => 'Selector Dropdown',
+                        'allows_children' => true,
+                        'props' => [
+                            'class' => 'form-select',
+                        ],
+                        'recommended_props' => ['name', 'class', 'required', 'disabled', 'multiple'],
+                    ],
+                    [
+                        'type' => 'label',
+                        'label' => 'Etiqueta (Label)',
+                        'allows_children' => true,
+                        'props' => [
+                            'text' => 'Etiqueta:',
+                        ],
+                        'recommended_props' => ['for', 'class'],
+                    ],
+                    [
+                        'type' => 'button',
+                        'label' => 'Botón Form',
+                        'allows_children' => true,
+                        'props' => [
+                            'type' => 'submit',
+                            'class' => 'btn btn-primary',
+                            'text' => 'Enviar',
+                        ],
+                        'recommended_props' => ['type', 'class', 'disabled'],
+                    ],
+                ],
+            ],
+            [
+                'category' => 'Otros',
+                'items' => [
+                    [
+                        'type' => 'a',
+                        'label' => 'Enlace (Link)',
+                        'allows_children' => true,
+                        'props' => [
+                            'href' => '#',
+                            'class' => 'text-primary',
+                            'text' => 'Enlace',
+                        ],
+                        'recommended_props' => ['href', 'target', 'class'],
+                    ],
+                    [
+                        'type' => 'button',
+                        'label' => 'Botón Enlace',
+                        'allows_children' => true,
+                        'props' => [
+                            'type' => 'button',
+                            'class' => 'btn btn-primary',
+                            'text' => 'Haga Clic',
+                        ],
+                        'recommended_props' => ['class', 'disabled', 'onclick'],
+                    ],
+                    [
+                        'type' => 'hr',
+                        'label' => 'Línea de División',
+                        'allows_children' => false,
+                        'props' => [
+                            'class' => 'my-4',
+                        ],
+                        'recommended_props' => ['class'],
+                    ],
+                ],
+            ],
+        ];
+    }
 }
