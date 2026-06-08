@@ -433,7 +433,7 @@ final class HtmlSemanticRulesProvider
 
         if ($tag !== null) {
             $tag = strtolower($tag);
-            return $rules[$tag] ?? [
+            $rule = $rules[$tag] ?? [
                 'tag' => $tag,
                 'meaning' => 'Etiqueta HTML estándar.',
                 'category' => 'generic',
@@ -443,9 +443,31 @@ final class HtmlSemanticRulesProvider
                 'recommended_children' => [],
                 'best_practices' => 'Usa el elemento semántico más específico posible según los estándares de HTML5.'
             ];
+            if (!isset($rule['label'])) {
+                $rule['label'] = $this->resolveLabelForTag($tag);
+            }
+            return $rule;
         }
 
+        foreach ($rules as $t => &$r) {
+            if (!isset($r['label'])) {
+                $r['label'] = $this->resolveLabelForTag($t);
+            }
+        }
+        unset($r);
+
         return $rules;
+    }
+
+    private function resolveLabelForTag(string $tag): string
+    {
+        $custom = [
+            'a' => 'label_link',
+            'i' => 'label_icon',
+            'button' => 'label_submit',
+            'label' => 'label',
+        ];
+        return $custom[$tag] ?? 'label_' . $tag;
     }
 
     /**
