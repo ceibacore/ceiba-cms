@@ -11,7 +11,7 @@ class SystemTranslationsSeeder extends CmsSeeder
     public function run(): void
     {
         // 1. Create Default Languages
-        $englishId = $this->firstOrCreate('cms_languages',
+        $englishId = $this->firstOrCreate('languages',
             ['code' => 'en'],
             [
                 'id' => UuidHelper::v4(),
@@ -23,7 +23,7 @@ class SystemTranslationsSeeder extends CmsSeeder
             ]
         );
 
-        $spanishId = $this->firstOrCreate('cms_languages',
+        $spanishId = $this->firstOrCreate('languages',
             ['code' => 'es'],
             [
                 'id' => UuidHelper::v4(),
@@ -2041,7 +2041,7 @@ class SystemTranslationsSeeder extends CmsSeeder
             foreach ($categories as $category => $items) {
                 foreach ($items as $key => $value) {
                     $compositeKey = "{$category}.{$key}";
-                    $this->firstOrCreate('cms_translations',
+                    $this->firstOrCreate('translations',
                         [
                             'language_id' => $englishId,
                             'group' => $group,
@@ -2063,7 +2063,7 @@ class SystemTranslationsSeeder extends CmsSeeder
             foreach ($categories as $category => $items) {
                 foreach ($items as $key => $value) {
                     $compositeKey = "{$category}.{$key}";
-                    $this->firstOrCreate('cms_translations',
+                    $this->firstOrCreate('translations',
                         [
                             'language_id' => $spanishId,
                             'group' => $group,

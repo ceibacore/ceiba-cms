@@ -6,9 +6,9 @@ Este módulo implementa el soporte para Localization (idiomas) y Traducciones Di
 
 ### 1. Modelo de Datos y Migraciones
 
-El módulo utiliza dos tablas principales creadas por la migración `20260608000000_create_cms_translations_tables.php`:
+El módulo utiliza dos tablas principales creadas por la migración `20260608000000_create_translations_tables.php`:
 
-#### Tabla `cms_languages`
+#### Tabla `languages`
 Almacena los lenguajes configurados en la plataforma:
 - `id` (CHAR(36)/UUID) - Llave primaria.
 - `code` (VARCHAR(10)) - Código ISO del idioma (ej: `es`, `en`). Único.
@@ -18,15 +18,15 @@ Almacena los lenguajes configurados en la plataforma:
 - `is_default` (TINYINT(1)) - Define si es el idioma por defecto del sitio.
 - `created_at` y `updated_at` (TIMESTAMP).
 
-#### Tabla `cms_translations`
+#### Tabla `translations`
 Almacena los textos traducidos:
 - `id` (CHAR(36)/UUID) - Llave primaria.
-- `language_id` (CHAR(36)/UUID) - Llave foránea hacia `cms_languages.id` en cascada.
+- `language_id` (CHAR(36)/UUID) - Llave foránea hacia `languages.id` en cascada.
 - `group` (VARCHAR(100)) - El grupo o archivo de traducción de Laravel (ej: `messages`, `validation`, `*` para raíz).
 - `key` (VARCHAR(255)) - La clave de traducción dentro del grupo.
 - `value` (TEXT) - El texto traducido.
 - `created_at` y `updated_at` (TIMESTAMP).
-- **Index Único**: `uq_cms_translations_key` compuesto por `(language_id, group, key)`.
+- **Index Único**: `uq_translations_key` compuesto por `(language_id, group, key)`.
 
 ---
 
@@ -65,7 +65,7 @@ interface TranslationRepositoryInterface
 
 Implementa la persistencia utilizando `LemurDB` e integra la invalidación de caché si Laravel está disponible.
 
-- **[`LemurDbLanguageRepository`](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Localization/Infrastructure/LemurDbLanguageRepository.php)**: Administra el guardado y actualización de idiomas en la tabla `cms_languages`.
+- **[`LemurDbLanguageRepository`](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Localization/Infrastructure/LemurDbLanguageRepository.php)**: Administra el guardado y actualización de idiomas en la tabla `languages`.
 - **[`LemurDbTranslationRepository`](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Localization/Infrastructure/LemurDbTranslationRepository.php)**: Guarda traducciones masivas dentro de una transacción de base de datos.
   - **Invalidación Proactiva de Caché**: En cada actualización o eliminación de traducciones, se calculan las claves de caché afectadas `"locale.translations.{$locale}.{$group}"` y se limpian proactivamente usando `Illuminate\Support\Facades\Cache::forget()`.
 

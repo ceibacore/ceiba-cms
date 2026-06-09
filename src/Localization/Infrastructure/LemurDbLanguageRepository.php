@@ -13,7 +13,7 @@ final class LemurDbLanguageRepository implements LanguageRepositoryInterface
 
     public function all(): array
     {
-        return $this->db->query('cms_languages')
+        return $this->db->query('languages')
             ->orderBy('is_default', 'DESC')
             ->orderBy('label', 'ASC')
             ->get();
@@ -21,12 +21,12 @@ final class LemurDbLanguageRepository implements LanguageRepositoryInterface
 
     public function find(string $id): ?array
     {
-        return $this->db->query('cms_languages')->where(['id' => $id])->first();
+        return $this->db->query('languages')->where(['id' => $id])->first();
     }
 
     public function findByCode(string $code): ?array
     {
-        return $this->db->query('cms_languages')->where(['code' => $code])->first();
+        return $this->db->query('languages')->where(['code' => $code])->first();
     }
 
     public function create(array $data): string
@@ -50,7 +50,7 @@ final class LemurDbLanguageRepository implements LanguageRepositoryInterface
         $data['created_at'] = $now;
         $data['updated_at'] = $now;
 
-        $this->db->query('cms_languages')->insert($data);
+        $this->db->query('languages')->insert($data);
 
         return $id;
     }
@@ -70,11 +70,11 @@ final class LemurDbLanguageRepository implements LanguageRepositoryInterface
 
         $data['updated_at'] = date('Y-m-d H:i:s');
 
-        $this->db->query('cms_languages')->where(['id' => $id])->update($data);
+        $this->db->query('languages')->where(['id' => $id])->update($data);
     }
 
     public function delete(string $id): void
     {
-        $this->db->query('cms_languages')->where(['id' => $id])->delete();
+        $this->db->query('languages')->where(['id' => $id])->delete();
     }
 }

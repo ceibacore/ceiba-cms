@@ -30,7 +30,7 @@ class DatabaseSeeder extends CmsSeeder
             $this->truncate('component_definitions');
             $this->truncate('templates');
             $this->truncate('page_layouts');
-            $this->truncate('cms_reserved_paths');
+            $this->truncate('reserved_paths');
         }
 
         // 2. System Seeders (Modules, Permissions, Roles, Menus)

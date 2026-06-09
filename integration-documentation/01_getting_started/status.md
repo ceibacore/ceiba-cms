@@ -118,7 +118,7 @@
   - Total: 83 requires (Migration + Domain + Application + Infrastructure + Presentation + Support + HTTP)
 
 ### Localización y Traducciones Dinámicas ✅
-- ✅ Migración de base de datos (`cms_languages` y `cms_translations`)
+- ✅ Migración de base de datos (`languages` y `translations`)
 - ✅ Repositorios `LanguageRepository` y `TranslationRepository` utilizando LemurDB
 - ✅ Casos de uso: ListLanguages, CreateLanguage, UpdateLanguage, DeleteLanguage, ListTranslations, UpdateTranslations
 - ✅ LanguageController y endpoints API mapeados en `routes/api.php`

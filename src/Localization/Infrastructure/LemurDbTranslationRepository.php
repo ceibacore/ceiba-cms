@@ -13,7 +13,7 @@ final class LemurDbTranslationRepository implements TranslationRepositoryInterfa
 
     public function getTranslationsForLanguage(string $languageId): array
     {
-        return $this->db->query('cms_translations')
+        return $this->db->query('translations')
             ->where(['language_id' => $languageId])
             ->orderBy('`group`', 'ASC')
             ->orderBy('`key`', 'ASC')
@@ -22,7 +22,7 @@ final class LemurDbTranslationRepository implements TranslationRepositoryInterfa
 
     public function updateTranslationsForLanguage(string $languageId, array $translations): void
     {
-        $language = $this->db->query('cms_languages')->where(['id' => $languageId])->first();
+        $language = $this->db->query('languages')->where(['id' => $languageId])->first();
         if (!$language) {
             return;
         }
@@ -36,16 +36,16 @@ final class LemurDbTranslationRepository implements TranslationRepositoryInterfa
                 $key = $item['key'];
                 $value = $item['value'];
 
-                $existing = $db->query('cms_translations')
+                $existing = $db->query('translations')
                     ->where(['language_id' => $languageId, 'group' => $group, 'key' => $key])
                     ->first();
 
                 if ($existing) {
-                    $db->query('cms_translations')
+                    $db->query('translations')
                         ->where(['id' => $existing['id']])
                         ->update(['value' => $value, 'updated_at' => $now]);
                 } else {
-                    $db->query('cms_translations')->insert([
+                    $db->query('translations')->insert([
                         'id' => UuidHelper::v4(),
                         'language_id' => $languageId,
                         'group' => $group,
@@ -70,12 +70,12 @@ final class LemurDbTranslationRepository implements TranslationRepositoryInterfa
 
     public function getTranslation(string $locale, string $group, string $key): ?string
     {
-        $language = $this->db->query('cms_languages')->where(['code' => $locale])->first();
+        $language = $this->db->query('languages')->where(['code' => $locale])->first();
         if (!$language) {
             return null;
         }
 
-        $row = $this->db->query('cms_translations')
+        $row = $this->db->query('translations')
             ->where(['language_id' => $language['id'], 'group' => $group, 'key' => $key])
             ->first();
 
@@ -84,12 +84,12 @@ final class LemurDbTranslationRepository implements TranslationRepositoryInterfa
 
     public function getTranslationsByLocaleAndGroup(string $locale, string $group): array
     {
-        $language = $this->db->query('cms_languages')->where(['code' => $locale])->first();
+        $language = $this->db->query('languages')->where(['code' => $locale])->first();
         if (!$language) {
             return [];
         }
 
-        $rows = $this->db->query('cms_translations')
+        $rows = $this->db->query('translations')
             ->where(['language_id' => $language['id'], 'group' => $group])
             ->get();
 
@@ -102,13 +102,13 @@ final class LemurDbTranslationRepository implements TranslationRepositoryInterfa
 
     public function deleteTranslationsForLanguage(string $languageId): void
     {
-        $language = $this->db->query('cms_languages')->where(['id' => $languageId])->first();
+        $language = $this->db->query('languages')->where(['id' => $languageId])->first();
         if ($language) {
             $locale = $language['code'];
-            $rows = $this->db->query('cms_translations')->where(['language_id' => $languageId])->get();
+            $rows = $this->db->query('translations')->where(['language_id' => $languageId])->get();
             $groups = array_unique(array_column($rows, 'group'));
 
-            $this->db->query('cms_translations')->where(['language_id' => $languageId])->delete();
+            $this->db->query('translations')->where(['language_id' => $languageId])->delete();
 
             foreach ($groups as $group) {
                 $cacheKey = "locale.translations.{$locale}.{$group}";
