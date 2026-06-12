@@ -34,7 +34,7 @@ Almacena los textos traducidos:
 
 Las interfaces especifican los contratos para gestionar e interactuar con la base de datos de idiomas y traducciones:
 
-#### [`LanguageRepositoryInterface`](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Localization/Domain/Repository/LanguageRepositoryInterface.php)
+#### [`LanguageRepositoryInterface`](../../src/Localization/Domain/Repository/LanguageRepositoryInterface.php)
 ```php
 interface LanguageRepositoryInterface
 {
@@ -47,7 +47,7 @@ interface LanguageRepositoryInterface
 }
 ```
 
-#### [`TranslationRepositoryInterface`](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Localization/Domain/Repository/TranslationRepositoryInterface.php)
+#### [`TranslationRepositoryInterface`](../../src/Localization/Domain/Repository/TranslationRepositoryInterface.php)
 ```php
 interface TranslationRepositoryInterface
 {
@@ -65,8 +65,8 @@ interface TranslationRepositoryInterface
 
 Implementa la persistencia utilizando `LemurDB` e integra la invalidación de caché si Laravel está disponible.
 
-- **[`LemurDbLanguageRepository`](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Localization/Infrastructure/LemurDbLanguageRepository.php)**: Administra el guardado y actualización de idiomas en la tabla `languages`.
-- **[`LemurDbTranslationRepository`](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Localization/Infrastructure/LemurDbTranslationRepository.php)**: Guarda traducciones masivas dentro de una transacción de base de datos.
+- **[`LemurDbLanguageRepository`](../../src/Localization/Infrastructure/LemurDbLanguageRepository.php)**: Administra el guardado y actualización de idiomas en la tabla `languages`.
+- **[`LemurDbTranslationRepository`](../../src/Localization/Infrastructure/LemurDbTranslationRepository.php)**: Guarda traducciones masivas dentro de una transacción de base de datos.
   - **Invalidación Proactiva de Caché**: En cada actualización o eliminación de traducciones, se calculan las claves de caché afectadas `"locale.translations.{$locale}.{$group}"` y se limpian proactivamente usando `Illuminate\Support\Facades\Cache::forget()`.
 
 ---
@@ -86,7 +86,7 @@ Los casos de uso encapsulan la lógica de negocio del módulo de localización b
 
 ### 5. API RESTful y HTTP Layer
 
-#### Controlador [`LanguageController`](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Http/Controllers/LanguageController.php)
+#### Controlador [`LanguageController`](../../src/Http/Controllers/LanguageController.php)
 Expone las APIs para la gestión en la UI:
 
 - **Listar Idiomas**: `GET /api/languages`
@@ -105,7 +105,7 @@ Se añadieron a `routes/api.php` y se inyectaron todas las dependencias y clases
 
 Para asegurar que Laravel consuma estas traducciones sin degradar el rendimiento, se crearon adaptadores específicos que interceptan las llamadas al traductor de Laravel:
 
-#### [`DatabaseTranslationLoader`](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Support/Translation/DatabaseTranslationLoader.php)
+#### [`DatabaseTranslationLoader`](../../src/Support/Translation/DatabaseTranslationLoader.php)
 - Extiende `Illuminate\Translation\FileLoader`.
 - Sobrescribe el método `load($locale, $group, $namespace)`.
 - **Flujo de Carga**:
@@ -113,7 +113,7 @@ Para asegurar que Laravel consuma estas traducciones sin degradar el rendimiento
   2. Si es una traducción de la aplicación base (`namespace === null`), realiza una consulta optimizada a través del repositorio usando `Cache::rememberForever(...)`.
   3. Ejecuta un `array_merge` donde las traducciones dinámicas guardadas en base de datos sobrescriben a las traducciones físicas estáticas del disco.
 
-#### [`TranslationServiceProvider`](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Support/Translation/TranslationServiceProvider.php)
+#### [`TranslationServiceProvider`](../../src/Support/Translation/TranslationServiceProvider.php)
 - Extiende `Illuminate\Translation\TranslationServiceProvider`.
 - Sobrescribe la instanciación de `translation.loader` en el contenedor para utilizar el `DatabaseTranslationLoader` e inyectar el repositorio correspondiente recuperado dinámicamente de `\LemurCms\LemurCms::container()`.
 

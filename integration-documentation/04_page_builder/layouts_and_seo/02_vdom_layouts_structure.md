@@ -122,7 +122,7 @@ Rather than declaring navbar nodes directly in the VDOM of the layout, layouts l
 The VDOM compiler (`BladeRenderer`) compiles the layout nodes recursively in PHP.
 
 ### 4.1 Recursive Rendering Sequence
-Located in [BladeRenderer.php](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/PageBuilder/Domain/Service/BladeRenderer.php):
+Located in [BladeRenderer.php](../../../src/PageBuilder/Domain/Service/BladeRenderer.php):
 
 1. **Loop Processing**: If a node has a `loop` definition (e.g., query lists, menu loops), the compiler queries its data source and iterates over the node.
 2. **Prop Interpolation**: Dynamic variables (e.g., `{{ user.name }}` or context queries) are resolved.
@@ -133,7 +133,7 @@ Located in [BladeRenderer.php](file:///d:/repositories/lemur-books-lms-2/lemur-c
    - If no template exists, it falls back to rendering a standard HTML tag or custom attributes as defined.
 
 ### 4.2 Layout Rendering Code in Controller
-Located in [PageRenderController.php](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Http/Controllers/PageRenderController.php#L79-L93):
+Located in [PageRenderController.php](../../../src/Http/Controllers/PageRenderController.php#L79-L93):
 
 ```php
 $footerHtml = '';

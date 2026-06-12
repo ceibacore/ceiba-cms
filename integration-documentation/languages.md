@@ -1,6 +1,6 @@
 # English Translations Catalog
 
-This document lists all the English translations defined in the CMS seeder file: [SystemTranslationsSeeder.php](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Seeders/SystemTranslationsSeeder.php).
+This document lists all the English translations defined in the CMS seeder file: [SystemTranslationsSeeder.php](../src/Seeders/SystemTranslationsSeeder.php).
 
 ## Group: `errors`
 

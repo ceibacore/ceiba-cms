@@ -117,7 +117,7 @@ sequenceDiagram
 ## 4. Code Implementation Highlights
 
 ### 4.1 Layout Resolution in Controller
-Located in [PageRenderController.php](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Http/Controllers/PageRenderController.php):
+Located in [PageRenderController.php](../../../src/Http/Controllers/PageRenderController.php):
 
 ```php
 // Resolve layout
@@ -130,7 +130,7 @@ if ($this->getLayoutById !== null && $this->getDefaultLayout !== null) {
 ```
 
 ### 4.2 HTML Wrapping in Layout Renderer
-Located in [LayoutRenderer.php](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/PageBuilder/Domain/Service/LayoutRenderer.php):
+Located in [LayoutRenderer.php](../../../src/PageBuilder/Domain/Service/LayoutRenderer.php):
 
 ```php
 public function render(

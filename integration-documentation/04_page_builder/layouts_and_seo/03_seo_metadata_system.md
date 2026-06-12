@@ -33,7 +33,7 @@ Defined in migration `20260510000003_create_seo_tables.php`:
 ## 2. Code Architecture
 
 ### 2.1 Domain Layer Interface
-Located in [SeoRepositoryInterface.php](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Seo/Domain/Repository/SeoRepositoryInterface.php):
+Located in [SeoRepositoryInterface.php](../../../src/Seo/Domain/Repository/SeoRepositoryInterface.php):
 
 ```php
 namespace LemurCms\Seo\Domain\Repository;
@@ -47,7 +47,7 @@ interface SeoRepositoryInterface
 *(Note: Although entity IDs in migrations are UUID CHAR(36), the interface specifies type limits or formats depending on the database adapter. The concrete adapter supports string/UUID parameters).*
 
 ### 2.2 Infrastructure Implementation
-Located in [LemurDbSeoRepository.php](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Seo/Infrastructure/LemurDbSeoRepository.php):
+Located in [LemurDbSeoRepository.php](../../../src/Seo/Infrastructure/LemurDbSeoRepository.php):
 Implements the interface by querying the `seo` table using the custom `LemurDB` query builder.
 
 ---
@@ -57,7 +57,7 @@ Implements the interface by querying the `seo` table using the custom `LemurDB` 
 While the database structure and repositories for SEO exist and are tested, **the SEO metadata system is currently disconnected from the frontend page rendering pipeline.**
 
 ### Gap 1: PageRenderController Does Not Query SEO Table
-During page load, [PageRenderController.php](file:///d:/repositories/lemur-books-lms-2/lemur-cms/src/Http/Controllers/PageRenderController.php#L98-L102) resolves metadata properties by reading directly from the `pages` table fields:
+During page load, [PageRenderController.php](../../../src/Http/Controllers/PageRenderController.php#L98-L102) resolves metadata properties by reading directly from the `pages` table fields:
 ```php
 $pageMeta = [
     'title'       => $page['title'] ?? '',
