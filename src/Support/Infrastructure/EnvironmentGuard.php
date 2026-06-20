@@ -119,6 +119,7 @@ class EnvironmentGuard
      */
     public static function get(string $key, $default = null)
     {
-        return $_ENV[$key] ?? getenv($key) ?: $default;
+        $val = $_ENV[$key] ?? getenv($key);
+        return ($val !== false && $val !== null) ? $val : $default;
     }
 }

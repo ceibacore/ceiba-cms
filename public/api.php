@@ -15,7 +15,21 @@ declare(strict_types=1);
  */
 
 // Configurar headers CORS y seguridad
-header('Access-Control-Allow-Origin: *');
+$allowedOrigin = '*';
+if (isset($_SERVER['HTTP_ORIGIN'])) {
+    $origin = $_SERVER['HTTP_ORIGIN'];
+    // Validar origen: permitir solo localhost, dominios autorizados en variables de entorno, o el host actual
+    $parsedOrigin = parse_url($origin, PHP_URL_HOST);
+    $currentHost = $_SERVER['HTTP_HOST'] ?? '';
+    
+    // Si coincide con localhost, 127.0.0.1, o el host de la petición actual, permitirlo
+    if ($parsedOrigin === 'localhost' || $parsedOrigin === '127.0.0.1' || str_ends_with($currentHost, $parsedOrigin ?? '')) {
+        $allowedOrigin = $origin;
+    }
+}
+
+header('Access-Control-Allow-Origin: ' . $allowedOrigin);
+header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('X-Content-Type-Options: nosniff');
