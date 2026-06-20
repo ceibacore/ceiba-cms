@@ -164,6 +164,7 @@ require_once __DIR__ . '/src/PageBuilder/Domain/Service/ConditionEngine.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Service/ContextResolver.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Service/QueryEngine.php';
 require_once __DIR__ . '/src/Http/Middleware/MiddlewareInterface.php';
+require_once __DIR__ . '/src/Http/Middleware/AuthMiddleware.php';
 require_once __DIR__ . '/src/Http/Middleware/EvaluatePageConditions.php';
 
 require_once __DIR__ . '/src/PageBuilder/Domain/Service/LayoutRenderer.php';

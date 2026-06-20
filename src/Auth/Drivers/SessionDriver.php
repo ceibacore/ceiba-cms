@@ -33,6 +33,9 @@ class SessionDriver implements AuthDriverInterface
             ->first();
 
         if ($user && password_verify($password, $user['password_hash'] ?? '')) {
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_regenerate_id(true);
+            }
             $_SESSION[self::SESSION_KEY] = $user['id'];
             
             // Update last login

@@ -50,7 +50,21 @@ final class QueryEngine
 
         // 1. Select
         if (!empty($config['select'])) {
-            $query->select($config['select']);
+            $selectFields = $config['select'];
+            if (is_string($selectFields)) {
+                // Verificar que solo contenga caracteres alfanuméricos, guiones bajos, comas y espacios (evitar inyección SQL)
+                if (!preg_match('/^[a-z0-9_,\s\.\*]+$/i', $selectFields)) {
+                    throw new SecurityException("Invalid select format in query configuration.");
+                }
+                $query->select($selectFields);
+            } elseif (is_array($selectFields)) {
+                foreach ($selectFields as $field) {
+                    if (!preg_match('/^[a-z0-9_\s\.]+$/i', (string)$field)) {
+                        throw new SecurityException("Invalid field name in select query configuration.");
+                    }
+                }
+                $query->select($selectFields);
+            }
         }
 
         // 2. Filters
@@ -60,7 +74,7 @@ final class QueryEngine
                 $operator = $filter['operator'] ?? 'equals';
                 $value    = $filter['value'] ?? null;
 
-                if ($field === null) {
+                if ($field === null || !preg_match('/^[a-z0-9_\s\.]+$/i', (string)$field)) {
                     continue;
                 }
 
@@ -76,8 +90,8 @@ final class QueryEngine
             foreach ($config['sort'] as $sortOption) {
                 $field     = $sortOption['field'] ?? null;
                 $direction = $sortOption['direction'] ?? 'asc';
-                if ($field !== null) {
-                    $query->orderBy($field, $direction);
+                if ($field !== null && preg_match('/^[a-z0-9_\s\.]+$/i', (string)$field)) {
+                    $query->orderBy((string)$field, $direction);
                 }
             }
         }
