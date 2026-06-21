@@ -264,6 +264,7 @@ return [
     'menuitems' => [
         'editar_item' => 'Editar item',
         'eliminar_item' => 'Eliminar item',
+        'confirm_delete' => '¿Eliminar el item "{label}"?',
         'etiqueta' => 'Etiqueta',
         'inicio' => 'Inicio',
         'item_eliminado_correctamente' => 'Item eliminado correctamente',
@@ -391,6 +392,9 @@ return [
         'todos_los_estados' => 'Todos los estados',
         'eliminar_esta_pgina' => '¿Eliminar esta página? Esta acción es irreversible.',
         'publicar_esta_pgina' => '¿Publicar esta página?',
+        'central_title' => 'Páginas CMS Centrales',
+        'central_subtitle' => 'Administra los contenidos, páginas estáticas y layouts de la landing page central.',
+        'no_central_pages' => 'No hay páginas CMS creadas para el dominio central.',
     ],
     'reservedpaths' => [
         'accin' => 'Acción',

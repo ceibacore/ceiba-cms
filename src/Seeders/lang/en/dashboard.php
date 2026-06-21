@@ -264,6 +264,7 @@ return [
     'menuitems' => [
         'editar_item' => 'Edit item',
         'eliminar_item' => 'Delete item',
+        'confirm_delete' => 'Delete menu item "{label}"?',
         'etiqueta' => 'Label',
         'inicio' => 'Home',
         'item_eliminado_correctamente' => 'Item deleted successfully',
@@ -391,6 +392,9 @@ return [
         'todos_los_estados' => 'All statuses',
         'eliminar_esta_pgina' => 'Delete this page? This action is irreversible.',
         'publicar_esta_pgina' => 'Publish this page?',
+        'central_title' => 'Central CMS Pages',
+        'central_subtitle' => 'Manage the content, static pages, and layouts of the central landing page.',
+        'no_central_pages' => 'No CMS pages created for the central domain.',
     ],
     'reservedpaths' => [
         'accin' => 'Action',
