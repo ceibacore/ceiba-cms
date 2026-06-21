@@ -53,4 +53,9 @@ class FindMediaByIdTest extends TestCase
 }
 
 // Alias class to satisfy PHPUnit file discovery
-class MediaUseCasesTest extends \PHPUnit\Framework\TestCase {}
+class MediaUseCasesTest extends \PHPUnit\Framework\TestCase {
+    public function test_dummy(): void
+    {
+        $this->assertTrue(true);
+    }
+}

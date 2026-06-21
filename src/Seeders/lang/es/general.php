@@ -1,0 +1,48 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'actions' => [
+        'add' => 'Agregar',
+        'delete' => 'Delete',
+        'update' => 'Actualizar',
+        'back' => 'Volver',
+        'cancel' => 'Cancelar',
+        'save' => 'Guardar',
+        'edit' => 'Edit',
+        'create' => 'Crear',
+        'search' => 'Buscar',
+        'confirm' => 'Confirm',
+        'accept' => 'Aceptar',
+        'close' => 'Cerrar',
+        'next' => 'Siguiente',
+        'previous' => 'Anterior',
+        'yes' => 'Sí',
+        'no' => 'No',
+        'clear' => 'Limpiar',
+        'filter' => 'Filtrar',
+        'upload' => 'Subir',
+        'download' => 'Descargar',
+        'show' => 'Mostrar',
+        'hide' => 'Ocultar',
+    ],
+    'labels' => [
+        'name' => 'Nombre',
+        'description' => 'Descripción',
+        'status' => 'Estado',
+        'active' => 'Active',
+        'inactive' => 'Inactive',
+        'date' => 'Fecha',
+        'all' => 'Todos',
+        'filters' => 'Filtros',
+        'success' => 'Éxito',
+        'error' => 'Error',
+        'warning' => 'Advertencia',
+        'info' => 'Información',
+        'loading' => 'Cargando...',
+        'saving' => 'Guardando...',
+        'sending' => 'Enviando...',
+        'actions' => 'Acciones',
+    ],
+];

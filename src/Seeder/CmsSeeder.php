@@ -24,6 +24,16 @@ abstract class CmsSeeder
     protected function checkTableExists(string $tableName): bool
     {
         $prefixed = $this->prefix . $tableName;
+        try {
+            $driver = $this->db->pdo()->getAttribute(\PDO::ATTR_DRIVER_NAME);
+        } catch (\Throwable) {
+            $driver = 'mysql';
+        }
+        if ($driver === 'sqlite') {
+            $sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='{$prefixed}'";
+            $stmt = $this->db->pdo()->query($sql);
+            return count($stmt->fetchAll()) > 0;
+        }
         $sql = "SHOW TABLES LIKE '{$prefixed}'";
         $stmt = $this->db->pdo()->query($sql);
         return $stmt->rowCount() > 0;
