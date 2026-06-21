@@ -393,7 +393,13 @@ if (!class_exists('LemurQuery')) {
         {
             $dir = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
             $quoted = $this->quoteIdentifier($column);
-            $this->clauses['order'] = " ORDER BY {$quoted} {$dir}";
+
+            if ($this->clauses['order'] === '') {
+                $this->clauses['order'] = " ORDER BY {$quoted} {$dir}";
+            } else {
+                $this->clauses['order'] .= ", {$quoted} {$dir}";
+            }
+
             return $this;
         }
 
