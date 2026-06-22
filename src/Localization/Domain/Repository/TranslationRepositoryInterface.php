@@ -36,4 +36,17 @@ interface TranslationRepositoryInterface
      * Delete all translations for a language ID.
      */
     public function deleteTranslationsForLanguage(string $languageId): void;
+
+    /**
+     * Get ALL translations for a locale code as flat key=>value pairs.
+     * Returns merged result across all groups.
+     *
+     * @return array<string, string>
+     */
+    public function getAllTranslationsByLocale(string $locale): array;
+
+    /**
+     * Get the default language code from cms_languages.
+     */
+    public function getDefaultLocale(): ?string;
 }

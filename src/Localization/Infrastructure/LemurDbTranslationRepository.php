@@ -118,4 +118,47 @@ final class LemurDbTranslationRepository implements TranslationRepositoryInterfa
             }
         }
     }
+
+    public function getAllTranslationsByLocale(string $locale): array
+    {
+        $language = $this->db->query('languages')->where(['code' => $locale])->first();
+        if (!$language) {
+            return [];
+        }
+
+        $cacheKey = "locale.translations.{$locale}.all";
+
+        if (class_exists(\Illuminate\Support\Facades\Cache::class)) {
+            return \Illuminate\Support\Facades\Cache::remember($cacheKey, 3600, function () use ($language) {
+                return $this->flattenTranslations($language['id']);
+            });
+        }
+
+        return $this->flattenTranslations($language['id']);
+    }
+
+    public function getDefaultLocale(): ?string
+    {
+        $language = $this->db->query('languages')->where(['is_default' => 1])->first();
+        return $language ? $language['code'] : null;
+    }
+
+    private function flattenTranslations(string $languageId): array
+    {
+        $rows = $this->db->query('translations')
+            ->where(['language_id' => $languageId])
+            ->get();
+
+        $translations = [];
+        foreach ($rows as $row) {
+            $group = $row['group'] ?? '*';
+            $key   = $row['key'];
+            $value = $row['value'];
+
+            // Store as both "group.key" and bare "key" for compatibility
+            $translations["{$group}.{$key}"] = $value;
+            $translations[$key]              = $value;
+        }
+        return $translations;
+    }
 }
