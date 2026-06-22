@@ -87,7 +87,7 @@ return [
         'billing' => 'Facturación',
         'profile' => 'Perfil',
         'notifications' => 'Notificaciones',
-        'marketplace_config' => 'Monetización / Marketplace',
+        'marketplace_config' => 'Marketplace',
         'zoom_config' => 'Configuración Zoom',
         'zoom_sessions' => 'Sesiones en Vivo',
         'subscription' => 'Suscripción',
