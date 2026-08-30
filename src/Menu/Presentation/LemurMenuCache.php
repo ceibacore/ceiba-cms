@@ -40,7 +40,18 @@ final class LemurMenuCache
             'expires' => time() + $this->ttl,
             'created_at' => date('Y-m-d H:i:s'),
         ];
-        file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        
+        $tmpFile = tempnam(dirname($file), '.tmp_');
+        if ($tmpFile) {
+            try {
+                file_put_contents($tmpFile, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
+                rename($tmpFile, $file);
+            } catch (\Exception $e) {
+                if (file_exists($tmpFile)) {
+                    @unlink($tmpFile);
+                }
+            }
+        }
     }
 
     public function getRendered(string $key): ?string
@@ -65,7 +76,18 @@ final class LemurMenuCache
             'expires' => time() + $this->ttl,
             'created_at' => date('Y-m-d H:i:s'),
         ];
-        file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        
+        $tmpFile = tempnam(dirname($file), '.tmp_');
+        if ($tmpFile) {
+            try {
+                file_put_contents($tmpFile, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
+                rename($tmpFile, $file);
+            } catch (\Exception $e) {
+                if (file_exists($tmpFile)) {
+                    @unlink($tmpFile);
+                }
+            }
+        }
     }
 
     public function forget(string $key): void
