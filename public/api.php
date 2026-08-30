@@ -15,21 +15,31 @@ declare(strict_types=1);
  */
 
 // Configurar headers CORS y seguridad
-$allowedOrigin = '*';
+$allowedOrigin = '';
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     $origin = $_SERVER['HTTP_ORIGIN'];
-    // Validar origen: permitir solo localhost, dominios autorizados en variables de entorno, o el host actual
     $parsedOrigin = parse_url($origin, PHP_URL_HOST);
     $currentHost = $_SERVER['HTTP_HOST'] ?? '';
     
-    // Si coincide con localhost, 127.0.0.1, o el host de la petición actual, permitirlo
-    if ($parsedOrigin === 'localhost' || $parsedOrigin === '127.0.0.1' || str_ends_with($currentHost, $parsedOrigin ?? '')) {
+    // Validar origen: permitir solo localhost, dominios autorizados o el host actual.
+    // Usar comparación exacta en vez de str_ends_with
+    if ($parsedOrigin === 'localhost' || $parsedOrigin === '127.0.0.1' || $currentHost === $parsedOrigin) {
         $allowedOrigin = $origin;
     }
 }
 
-header('Access-Control-Allow-Origin: ' . $allowedOrigin);
-header('Access-Control-Allow-Credentials: true');
+if ($allowedOrigin !== '') {
+    header('Access-Control-Allow-Origin: ' . $allowedOrigin);
+    header('Access-Control-Allow-Credentials: true');
+} else {
+    // Si no coincide o no es confiable, y necesitamos que funcione para públicos:
+    // Solo podemos enviar * si no enviamos credenciales.
+    if (!isset($_SERVER['HTTP_ORIGIN'])) {
+        header('Access-Control-Allow-Origin: *');
+    }
+}
+
+header('Vary: Origin');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('X-Content-Type-Options: nosniff');
