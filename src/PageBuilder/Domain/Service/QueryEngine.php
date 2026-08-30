@@ -25,7 +25,7 @@ final class QueryEngine
      * Executes queries defined in page query config.
      * Returns an array mapping contextKey => resolvedData.
      */
-    public function executeQueries(array $queryConfigs, array $routeParams = []): array
+    public function executeQueries(array $queryConfigs, array $routeParams = [], array $queryParams = []): array
     {
         $context = [];
         foreach ($queryConfigs as $config) {
@@ -33,12 +33,12 @@ final class QueryEngine
             if ($contextKey === null) {
                 continue;
             }
-            $context[$contextKey] = $this->executeQuery($config, $routeParams);
+            $context[$contextKey] = $this->executeQuery($config, $routeParams, $queryParams);
         }
         return $context;
     }
 
-    public function executeQuery(array $config, array $routeParams = []): array
+    public function executeQuery(array $config, array $routeParams = [], array $queryParams = []): array
     {
         $model = $config['model'] ?? '';
         if (!isset($this->allowedModels[$model])) {
@@ -52,7 +52,6 @@ final class QueryEngine
         if (!empty($config['select'])) {
             $selectFields = $config['select'];
             if (is_string($selectFields)) {
-                // Verificar que solo contenga caracteres alfanuméricos, guiones bajos, comas y espacios (evitar inyección SQL)
                 if (!preg_match('/^[a-z0-9_,\s\.\*]+$/i', $selectFields)) {
                     throw new SecurityException("Invalid select format in query configuration.");
                 }
@@ -96,12 +95,13 @@ final class QueryEngine
             }
         }
 
-        // 4. Pagination / Limit
+        // 4. Pagination / Limit (use injected $queryParams or fallback to $_GET safely)
+        $effectiveQueryParams = !empty($queryParams) ? $queryParams : ($_GET ?? []);
         $paginate = $config['paginate'] ?? [];
         if (isset($paginate['enabled']) && $paginate['enabled']) {
             $perPage = (int) ($paginate['per_page'] ?? 15);
             $param   = $paginate['param'] ?? 'page';
-            $page    = (int) ($_GET[$param] ?? 1);
+            $page    = (int) ($effectiveQueryParams[$param] ?? 1);
             if ($page < 1) {
                 $page = 1;
             }
