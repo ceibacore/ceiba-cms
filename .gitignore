@@ -5,6 +5,7 @@ lemurdb/lemurdb_debug_examples.php
 lemurdb/tests/test.php
 .phpunit.cache/
 .agents/
+.ia/
 tests/_output/
 scripts/
 vendor/
