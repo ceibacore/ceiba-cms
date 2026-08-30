@@ -18,10 +18,10 @@ final class ApiDataProvider implements DataProviderInterface
 
         $cacheDir = sys_get_temp_dir() . '/lemur_cms_cache';
         if (!is_dir($cacheDir)) {
-            @mkdir($cacheDir, 0777, true);
+            @mkdir($cacheDir, 0700, true);
         }
 
-        $cacheFile = $cacheDir . '/' . md5($url) . '.json';
+        $cacheFile = $cacheDir . '/' . md5($url . ($_SERVER['HTTP_SUBDOMAIN'] ?? '')) . '.json';
 
         // Check cache validity
         if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < self::CACHE_TTL) {
@@ -50,6 +50,7 @@ final class ApiDataProvider implements DataProviderInterface
             $data = json_decode($response, true);
             if (is_array($data)) {
                 @file_put_contents($cacheFile, $response);
+                @chmod($cacheFile, 0600);
                 return $data;
             }
         }
