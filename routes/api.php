@@ -20,6 +20,8 @@ $container = require __DIR__ . '/../bootstrap.php';
 
 $router = new Router();
 $router->aliasMiddleware('auth', fn() => new \LemurCms\Http\Middleware\AuthMiddleware($container['auth']));
+$router->aliasMiddleware('csrf', fn() => new \LemurCms\Http\Middleware\CsrfMiddleware());
+$router->aliasMiddleware('permission', fn() => new \LemurCms\Http\Middleware\PermissionMiddleware($container['auth'], $container['db']));
 
 // ── Menu Routes ──────────────────────────────────────────────────────────────
 $menuController = new MenuController(
