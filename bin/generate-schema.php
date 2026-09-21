@@ -7,7 +7,7 @@ declare(strict_types=1);
  * php bin/generate-schema.php
  */
 
-require_once __DIR__ . '/../lemurdb/lemurdb.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../src/Migration/CmsMigrationGenerator.php';
 require_once __DIR__ . '/../src/Migration/CmsSchemaBuilder.php';
 require_once __DIR__ . '/../src/Migration/CmsBaseMigration.php';

@@ -8,7 +8,6 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load LemurDB
-require_once __DIR__ . '/../lemurdb/lemurdb.php';
 
 // Load project PSR-4 autoloader if needed
 $loader = new \Composer\Autoload\ClassLoader();

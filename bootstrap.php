@@ -12,7 +12,6 @@ declare(strict_types=1);
 require_once __DIR__ . '/src/Support/Infrastructure/EnvironmentGuard.php';
 \LemurCms\Support\Infrastructure\EnvironmentGuard::check();
 
-require_once __DIR__ . '/lemurdb/lemurdb.php';
 require_once __DIR__ . '/src/Migration/CmsMigrationGenerator.php';
 require_once __DIR__ . '/src/Migration/CmsSchemaBuilder.php';
 require_once __DIR__ . '/src/Migration/CmsBaseMigration.php';
