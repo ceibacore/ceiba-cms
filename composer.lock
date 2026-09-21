@@ -4,15 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "37db2cdeeb38eb6152d42181bc535949",
+    "content-hash": "f3a384c138d6487c6a079cea82095eb3",
     "packages": [
         {
             "name": "ceibacore/ceiba-db",
-            "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../ceiba-db",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ceibacore/ceiba-db.git",
                 "reference": "4dcb73121a8452533a5e7fd9de8b2c737fdb80cc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ceibacore/ceiba-db/zipball/4dcb73121a8452533a5e7fd9de8b2c737fdb80cc",
+                "reference": "4dcb73121a8452533a5e7fd9de8b2c737fdb80cc",
+                "shasum": ""
             },
             "require": {
                 "ext-pdo": "*",
@@ -27,11 +33,7 @@
                     "ceibadb.php"
                 ]
             },
-            "scripts": {
-                "test": [
-                    "vendor/bin/phpunit"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -42,10 +44,11 @@
                 }
             ],
             "description": "CeibaDB — Lightweight PDO query builder and database abstraction layer for Ceiba Core ecosystem",
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "support": {
+                "issues": "https://github.com/ceibacore/ceiba-db/issues",
+                "source": "https://github.com/ceibacore/ceiba-db/tree/v1.0.0"
+            },
+            "time": "2026-09-21T03:28:18+00:00"
         }
     ],
     "packages-dev": [
@@ -1704,9 +1707,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "ceibacore/ceiba-db": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
