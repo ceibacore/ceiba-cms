@@ -84,20 +84,24 @@ final class LemurDbTranslationRepository implements TranslationRepositoryInterfa
 
     public function getTranslationsByLocaleAndGroup(string $locale, string $group): array
     {
-        $language = $this->db->query('languages')->where(['code' => $locale])->first();
-        if (!$language) {
+        try {
+            $language = $this->db->query('languages')->where(['code' => $locale])->first();
+            if (!$language) {
+                return [];
+            }
+
+            $rows = $this->db->query('translations')
+                ->where(['language_id' => $language['id'], 'group' => $group])
+                ->get();
+
+            $translations = [];
+            foreach ($rows as $row) {
+                $translations[$row['key']] = $row['value'];
+            }
+            return $translations;
+        } catch (\Throwable) {
             return [];
         }
-
-        $rows = $this->db->query('translations')
-            ->where(['language_id' => $language['id'], 'group' => $group])
-            ->get();
-
-        $translations = [];
-        foreach ($rows as $row) {
-            $translations[$row['key']] = $row['value'];
-        }
-        return $translations;
     }
 
     public function deleteTranslationsForLanguage(string $languageId): void

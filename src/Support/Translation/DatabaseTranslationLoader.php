@@ -45,11 +45,15 @@ class DatabaseTranslationLoader extends FileLoader
         // 2. Fetch from DB (cached indefinitely)
         $cacheKey = "locale.translations.{$locale}.{$group}";
 
-        $dbTranslations = Cache::rememberForever($cacheKey, function () use ($locale, $group) {
-            return $this->translationRepo->getTranslationsByLocaleAndGroup($locale, $group);
-        });
+        try {
+            $dbTranslations = Cache::rememberForever($cacheKey, function () use ($locale, $group) {
+                return $this->translationRepo->getTranslationsByLocaleAndGroup($locale, $group);
+            });
+        } catch (\Throwable) {
+            return $fileTranslations;
+        }
 
         // 3. Merge (DB values override static file values)
-        return array_merge($fileTranslations, $dbTranslations);
+        return array_merge($fileTranslations, is_array($dbTranslations) ? $dbTranslations : []);
     }
 }
