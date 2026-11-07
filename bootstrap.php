@@ -241,6 +241,9 @@ require_once __DIR__ . '/src/PageBuilder/Frameworks/Bootstrap5/Bootstrap5Module.
 require_once __DIR__ . '/src/PageBuilder/Domain/Document/HostContext.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Document/DocumentEnvelope.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Document/DocumentWriteValidator.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Document/MigrationIncompatibility.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Document/MigrationReport.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Document/DocumentMigrator.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Contract/Clock.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Contract/DocumentAuthorization.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Contract/JobDispatcher.php';
@@ -254,6 +257,7 @@ require_once __DIR__ . '/src/PageBuilder/Infrastructure/LocalMediaStorage.php';
 require_once __DIR__ . '/src/PageBuilder/Infrastructure/SyncJobDispatcher.php';
 require_once __DIR__ . '/src/PageBuilder/Infrastructure/NullMailDelivery.php';
 require_once __DIR__ . '/src/PageBuilder/Application/ValidatePageDocument.php';
+require_once __DIR__ . '/src/PageBuilder/Application/MigratePageDocument.php';
 
 // ── DynamicModule Layer ──────────────────────────────────────────────────────
 require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleFieldType.php';
@@ -437,11 +441,18 @@ $localMediaStorage         = new \LemurCms\PageBuilder\Infrastructure\LocalMedia
 );
 $syncJobDispatcher         = new \LemurCms\PageBuilder\Infrastructure\SyncJobDispatcher();
 $nullMailDelivery          = new \LemurCms\PageBuilder\Infrastructure\NullMailDelivery();
+$documentMigrator          = new \LemurCms\PageBuilder\Domain\Document\DocumentMigrator();
 $validatePageDocument      = new \LemurCms\PageBuilder\Application\ValidatePageDocument(
     $siteId,
     $pageRepository,
     $mediaRepository,
     $cmsDocumentAuthorization
+);
+$migratePageDocument       = new \LemurCms\PageBuilder\Application\MigratePageDocument(
+    $siteId,
+    $pageRepository,
+    $cmsDocumentAuthorization,
+    $documentMigrator
 );
 
 
@@ -488,6 +499,7 @@ return [
         'mediaStorage'         => $localMediaStorage,
         'jobDispatcher'        => $syncJobDispatcher,
         'mailDelivery'         => $nullMailDelivery,
+        'documentMigrator'     => $documentMigrator,
     ],
     'ports' => [
         'clock'         => $systemClock,
@@ -569,5 +581,6 @@ return [
         'listTranslations'    => $listTranslations,
         'updateTranslations'  => $updateTranslations,
         'validatePageDocument' => $validatePageDocument,
+        'migratePageDocument'  => $migratePageDocument,
     ],
 ];
