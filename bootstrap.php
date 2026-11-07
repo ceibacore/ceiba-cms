@@ -86,6 +86,7 @@ require_once __DIR__ . '/src/Page/Application/InitializePageRevisions.php';
 require_once __DIR__ . '/src/Page/Application/PublishPage.php';
 require_once __DIR__ . '/src/Page/Application/DeletePage.php';
 require_once __DIR__ . '/src/Page/Application/ListPages.php';
+require_once __DIR__ . '/src/Page/Application/ListAdministrativePages.php';
 require_once __DIR__ . '/src/Seo/Application/GetSeoForEntity.php';
 require_once __DIR__ . '/src/Seo/Application/UpsertSeo.php';
 require_once __DIR__ . '/src/Media/Application/StoreMedia.php';
@@ -570,6 +571,7 @@ return [
         'publishPage'      => $publishPage,
         'deletePage'       => $deletePage,
         'listPages'        => $listPages,
+        'listAdministrativePages' => new \LemurCms\Page\Application\ListAdministrativePages($pageRepository),
         // Seo
         'getSeoForEntity'  => $getSeoForEntity,
         'upsertSeo'        => $upsertSeo,

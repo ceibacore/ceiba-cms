@@ -37,6 +37,19 @@ final class LemurDbPageRepository implements PageRepositoryInterface
         return array_map([$this, 'decodePage'], $rows);
     }
 
+    public function findAdministrative(?string $status, ?string $search, int $limit, int $offset): array
+    {
+        $query = $this->db->query('pages');
+        if ($status !== null) {
+            $query->where(['status' => $status]);
+        }
+        if ($search !== null && $search !== '') {
+            $query->whereRaw('(title LIKE ? OR slug LIKE ?)', ['%' . $search . '%', '%' . $search . '%']);
+        }
+        $rows = $query->orderBy('sort_order', 'ASC')->orderBy('id', 'ASC')->limit($limit, $offset)->get();
+        return array_map([$this, 'decodePage'], $rows);
+    }
+
     public function save(array $data): string
     {
         $data = $this->encodePage($data);
