@@ -1,0 +1,11 @@
+{
+    "source": "src/Page/Infrastructure/LemurDbPageRepository.php:decodePage; ceiba-campus/admin-panel/app/Http/Controllers/Admin/CmsPageController.php:store",
+    "kind": "synthetic-legacy-shape",
+    "tree": [
+        {
+            "type": "html",
+            "props": {"content": "<p>Contenido anterior</p>"},
+            "children": []
+        }
+    ]
+}

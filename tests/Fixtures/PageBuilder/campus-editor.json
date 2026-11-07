@@ -1,0 +1,19 @@
+{
+    "source": "ceiba-campus/admin-panel/resources/js/components/CmsPageBuilder/CmsPageBuilder.svelte:addNode",
+    "kind": "synthetic-host-shape",
+    "tree": [
+        {
+            "_id": "campus001",
+            "type": "div",
+            "props": {"class": "container"},
+            "children": [
+                {
+                    "_id": "campus002",
+                    "type": "p",
+                    "props": {"content": "Contenido de ejemplo"},
+                    "children": []
+                }
+            ]
+        }
+    ]
+}
