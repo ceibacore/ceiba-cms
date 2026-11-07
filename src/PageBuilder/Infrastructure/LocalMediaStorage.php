@@ -51,7 +51,10 @@ final class LocalMediaStorage implements MediaStorage
     private function resolveSiteDirectory(string $siteId): string
     {
         $safeSiteId = preg_replace('/[^a-zA-Z0-9_-]/', '_', $siteId);
-        return rtrim($this->baseDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $safeSiteId;
+        $siteKey = $safeSiteId === $siteId
+            ? $safeSiteId
+            : $safeSiteId . '-' . substr(hash('sha256', $siteId), 0, 16);
+        return rtrim($this->baseDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $siteKey;
     }
 
     private function guessExtension(string $mimeType): string

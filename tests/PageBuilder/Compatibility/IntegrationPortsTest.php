@@ -143,6 +143,31 @@ final class IntegrationPortsTest extends TestCase
         @rmdir($tempDir);
     }
 
+    public function testLocalMediaStorageSeparatesSiteIdsThatNormalizeToTheSameName(): void
+    {
+        $tempDir = sys_get_temp_dir() . '/cms_test_media_' . bin2hex(random_bytes(6));
+        $storage = new LocalMediaStorage($tempDir);
+        $first = new HostContext('a.b', 'actor-1', 'es', []);
+        $second = new HostContext('a_b', 'actor-2', 'es', []);
+        foreach ([$first, $second] as $context) {
+            $stream = fopen('php://memory', 'r+');
+            fwrite($stream, $context->siteId);
+            rewind($stream);
+            $key = $storage->write($context, $stream, 'text/plain');
+            fclose($stream);
+            self::assertSame($context->siteId, file_get_contents($tempDir . '/' . $this->siteDirectory($context->siteId) . '/' . $key));
+            $storage->delete($context, $key);
+            @rmdir($tempDir . '/' . $this->siteDirectory($context->siteId));
+        }
+        @rmdir($tempDir);
+    }
+
+    private function siteDirectory(string $siteId): string
+    {
+        $safe = preg_replace('/[^a-zA-Z0-9_-]/', '_', $siteId);
+        return $safe === $siteId ? $safe : $safe . '-' . substr(hash('sha256', $siteId), 0, 16);
+    }
+
     public function testLocalMediaStoragePreventsPathTraversal(): void
     {
         $tempDir = sys_get_temp_dir() . '/cms_test_media_' . bin2hex(random_bytes(6));
