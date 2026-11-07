@@ -81,6 +81,58 @@ $pageBuilderMetadataController = new PageBuilderMetadataController(
 
 $router->get('/api/pagebuilder/rules', fn() => $pageBuilderMetadataController->rules(), 'pagebuilder.rules')->middleware('auth');
 
+// ── Visual Builder V1 API Routes ─────────────────────────────────────────────
+/** @var \LemurCms\PageBuilder\Presentation\Api\EditorApiController $editorApiController */
+$editorApiController = $container['presentation']['editorApiController'] ?? $container['services']['editorApiController'];
+$builderPrefix = $editorApiController->prefix;
+
+$router->get("{$builderPrefix}/capabilities", function () use ($editorApiController) {
+    header('Content-Type: application/json');
+    $headers = function_exists('getallheaders') ? (getallheaders() ?: []) : [];
+    echo json_encode($editorApiController->capabilities($headers), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}, 'builder.capabilities')->middleware('auth');
+
+$router->get("{$builderPrefix}/components", function () use ($editorApiController) {
+    header('Content-Type: application/json');
+    echo json_encode($editorApiController->components(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}, 'builder.components')->middleware('auth');
+
+$router->get("{$builderPrefix}/components/{name}/diagnose", function (string $name) use ($editorApiController) {
+    header('Content-Type: application/json');
+    echo json_encode($editorApiController->diagnoseComponent($name), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}, 'builder.components.diagnose')->middleware('auth');
+
+$router->get("{$builderPrefix}/pages/{id}", function (string $id) use ($editorApiController) {
+    header('Content-Type: application/json');
+    $headers = function_exists('getallheaders') ? (getallheaders() ?: []) : [];
+    $res = $editorApiController->showPage($id, $headers);
+    if (isset($res['status'])) {
+        http_response_code($res['status']);
+    }
+    echo json_encode($res, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}, 'builder.pages.show')->middleware('auth');
+
+$router->post("{$builderPrefix}/pages/{id}/validate", function (string $id) use ($editorApiController) {
+    header('Content-Type: application/json');
+    $body = json_decode(file_get_contents('php://input'), true) ?? [];
+    $headers = function_exists('getallheaders') ? (getallheaders() ?: []) : [];
+    $res = $editorApiController->validatePage($id, $body, $headers);
+    if (isset($res['status'])) {
+        http_response_code($res['status']);
+    }
+    echo json_encode($res, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}, 'builder.pages.validate')->middleware('auth');
+
+$router->post("{$builderPrefix}/pages/{id}/migrate", function (string $id) use ($editorApiController) {
+    header('Content-Type: application/json');
+    $headers = function_exists('getallheaders') ? (getallheaders() ?: []) : [];
+    $res = $editorApiController->migratePage($id, $headers);
+    if (isset($res['status'])) {
+        http_response_code($res['status']);
+    }
+    echo json_encode($res, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}, 'builder.pages.migrate')->middleware('auth');
+
 // ── Layout Routes ─────────────────────────────────────────────────────────────
 $layoutController = new LayoutController(
     $container['useCases']['listLayouts'],

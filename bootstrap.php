@@ -258,6 +258,11 @@ require_once __DIR__ . '/src/PageBuilder/Infrastructure/SyncJobDispatcher.php';
 require_once __DIR__ . '/src/PageBuilder/Infrastructure/NullMailDelivery.php';
 require_once __DIR__ . '/src/PageBuilder/Application/ValidatePageDocument.php';
 require_once __DIR__ . '/src/PageBuilder/Application/MigratePageDocument.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Catalogue/ComponentDescriptor.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Catalogue/ComponentCatalogue.php';
+require_once __DIR__ . '/src/PageBuilder/Presentation/Api/EditorError.php';
+require_once __DIR__ . '/src/PageBuilder/Presentation/Api/NegotiatedCapabilities.php';
+require_once __DIR__ . '/src/PageBuilder/Presentation/Api/EditorApiController.php';
 
 // ── DynamicModule Layer ──────────────────────────────────────────────────────
 require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleFieldType.php';
@@ -454,6 +459,18 @@ $migratePageDocument       = new \LemurCms\PageBuilder\Application\MigratePageDo
     $cmsDocumentAuthorization,
     $documentMigrator
 );
+$componentCatalogue        = \LemurCms\PageBuilder\Domain\Catalogue\ComponentCatalogue::createDefault();
+$builderApiPrefix          = (string) \LemurCms\Support\Infrastructure\EnvironmentGuard::get('BUILDER_API_PREFIX', '/api/builder/v1');
+$editorApiController       = new \LemurCms\PageBuilder\Presentation\Api\EditorApiController(
+    $builderApiPrefix,
+    $siteId,
+    $pageRepository,
+    $mediaRepository,
+    $cmsDocumentAuthorization,
+    $documentMigrator,
+    $validatePageDocument,
+    $componentCatalogue
+);
 
 
 // ── Export container (opcional: devolver un contenedor manual) ───────────────
@@ -483,6 +500,7 @@ return [
         'bannerRenderer'         => $bannerRenderer,
         'breadcrumbBuilder'      => $breadcrumbBuilder,
         'notificationPresenter'  => $notificationPresenter,
+        'editorApiController'    => $editorApiController,
     ],
     'services' => [
         'loopResolver'         => $loopResolver,
@@ -500,6 +518,8 @@ return [
         'jobDispatcher'        => $syncJobDispatcher,
         'mailDelivery'         => $nullMailDelivery,
         'documentMigrator'     => $documentMigrator,
+        'componentCatalogue'   => $componentCatalogue,
+        'editorApiController'  => $editorApiController,
     ],
     'ports' => [
         'clock'         => $systemClock,
