@@ -35,3 +35,7 @@ Dos envíos con la misma clave no crean dos registros. Un fallo del correo no pi
 ## Despliegue
 
 Migraciones aditivas, worker monitorizado y límites configurados antes de publicar el primer formulario. Activar por sitio. Revertir deshabilita nuevos envíos y acciones sin borrar los existentes; conservar capacidad administrativa de exportación y eliminación según retención.
+
+## Integración obligatoria con el host
+
+Correo, jobs, identidad, almacenamiento y secretos los proporciona el host mediante adaptadores. Las rutas indicadas son ejemplos configurables y pueden implementarse en los controladores existentes. Véase [00: integración en sistemas existentes](00-integracion-en-sistemas-existentes.md).

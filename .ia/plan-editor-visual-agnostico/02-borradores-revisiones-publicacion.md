@@ -42,3 +42,7 @@ Dos sesiones cargan revisión 4: la primera guarda 5; la segunda recibe 412 y co
 ## Operación y reversión
 
 Medir conflictos, latencia de guardado, errores de autosave y retraso de outbox. Probar recuperación desde respaldo en staging. Desactivar edición nueva por feature flag sin borrar historial. Rollback de aplicación exige compatibilidad con punteros nuevos; no revertir destructivamente tablas con contenido creado por clientes.
+
+## Integración obligatoria con el host
+
+Integrar revisiones mediante los controladores y permisos del host. El editor Svelte actual debe poder seguir leyendo documentos; negociar capacidades antes de activar escritura del nuevo formato. Véase [00: integración en sistemas existentes](00-integracion-en-sistemas-existentes.md).

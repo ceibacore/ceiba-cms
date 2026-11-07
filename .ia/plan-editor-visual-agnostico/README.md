@@ -6,9 +6,13 @@ Fecha: 2026-11-06. Estado: planificación; ninguna funcionalidad descrita queda 
 
 Ampliar ceiba-cms con capacidades comparables a un constructor visual como Elementor, manteniendo independencia del framework anfitrión. La referencia es funcional; no se copiarán código, marca ni recursos de Elementor. La paridad completa requiere una matriz de requisitos acordada y evidencia de aceptación; este plan no certifica equivalencia con todos sus productos o extensiones.
 
+## Requisito transversal de integración
+
+Leer primero [00: integración en sistemas existentes](00-integracion-en-sistemas-existentes.md). Campus es el consumidor de referencia: integra el núcleo en Laravel y ya dispone de editor Svelte. El módulo debe soportar interfaces y rutas del host; el editor empaquetado es opcional.
+
 ## Base auditada y limitaciones
 
-El repositorio contiene un núcleo PHP, árboles de nodos, catálogo de componentes, plantillas, layouts, consultas dinámicas y renderizado servidor. El catálogo y modelo existentes son puntos de extensión. La auditoría previa no identificó un editor visual frontend ni un sistema completo de revisiones, estilos adaptables, formularios o popups. Esto es inspección estática, no certificación de comportamiento mediante pruebas.
+El repositorio contiene un núcleo PHP, árboles de nodos, catálogo de componentes, plantillas, layouts, consultas dinámicas y renderizado servidor. El catálogo y modelo existentes son puntos de extensión. En el repositorio del módulo, la auditoría previa no identificó un editor visual frontend ni un sistema completo de revisiones, estilos adaptables, formularios o popups. Esto es inspección estática, no certificación de comportamiento mediante pruebas.
 
 Referencias locales: `composer.json`, `routes/api.php`, `src/PageBuilder/Domain/Entity/Node.php`, `src/PageBuilder/Domain/Entity/ComponentDefinition.php` y `src/Page/Application/ListPages.php`.
 

@@ -58,3 +58,7 @@ Ejecutar fixtures de inyección CSS, URLs peligrosas y valores excesivamente gra
 ## Compatibilidad y recuperación
 
 No convertir automáticamente clases Bootstrap en estilos canónicos: su semántica depende del adaptador. Ofrecer migración optativa con informe de equivalencias y reglas sin equivalencia. Conservar snapshot previo y diseño global asociado. Una versión antigua que no comprenda los nuevos estilos no debe reescribir el documento descartándolos.
+
+## Integración obligatoria con el host
+
+Permitir al editor Svelte consumir los contratos de estilos mediante su transporte actual. Aislar CSS de documentos sin alterar los estilos administrativos del host. Véase [00: integración en sistemas existentes](00-integracion-en-sistemas-existentes.md).

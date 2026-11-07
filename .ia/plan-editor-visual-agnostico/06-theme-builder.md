@@ -48,3 +48,7 @@ El servidor deriva el sitio de la sesión/contexto autorizado. La caché incluye
 ## Despliegue y reversión
 
 Habilitar por sitio después de validar rutas de referencia. Guardar la asignación anterior antes de activar. Revertir el puntero de revisión y la selección del resolver; invalidar caché. No borrar layouts antiguos hasta completar una migración independiente y respaldada.
+
+## Integración obligatoria con el host
+
+Resolver partes dentro del renderizado y router del host; no registrar un catch-all obligatorio ni interceptar rutas ajenas al CMS. Véase [00: integración en sistemas existentes](00-integracion-en-sistemas-existentes.md).

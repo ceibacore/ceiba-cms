@@ -4,11 +4,11 @@ Estado: propuesta pendiente de implementación. Dependencias: 01 (contratos) y 0
 
 ## Objetivo y situación comprobada
 
-Entregar un editor integrable por cualquier aplicación anfitriona que pueda montar un elemento HTML y proporcionar acceso a las API. El repositorio contiene un backend PHP con nodos, catálogo y renderizado; no se identificó una aplicación de edición visual ni un pipeline frontend. El editor debe trabajar sobre el documento canónico del backend, evitando guardar HTML como estado primario.
+Entregar un editor integrable por cualquier aplicación anfitriona que pueda montar un elemento HTML y proporcionar acceso a las API. El repositorio contiene un backend PHP con nodos, catálogo y renderizado; no se identificó una aplicación de edición visual ni un pipeline frontend dentro del módulo. Campus sí tiene un editor Svelte que debe auditarse y adaptarse antes de decidir una nueva implementación. El editor debe trabajar sobre el documento canónico del backend, evitando guardar HTML como estado primario.
 
 ## Arquitectura propuesta
 
-- Paquete de editor distribuido como módulos ES y un Web Component `ceiba-page-builder`; la compilación ocurre al publicar el paquete, sin exigir Node.js en el servidor PHP consumidor.
+- Opción de distribución por evaluar tras auditar Campus: paquete de editor con módulos ES y un Web Component `ceiba-page-builder`; la compilación ocurre al publicar el paquete, sin exigir Node.js en el servidor PHP consumidor.
 - Núcleo de estado y comandos independiente del DOM. Adaptadores separados para transporte HTTP, selección de medios, permisos, traducción y renderizado de preview.
 - Interfaz con panel de componentes, canvas, navegador de estructura e inspector de propiedades. Los controles se obtienen del esquema del catálogo, con extensiones registradas explícitamente.
 - Canvas dentro de iframe para aislar CSS del anfitrión. La comunicación usa un canal con origen y sesión verificados y mensajes enumerados; nunca `eval` ni ejecución de código recibido desde el documento.
@@ -54,3 +54,7 @@ La selección, arrastre y edición deben ser utilizables con teclado; gestionar 
 ## Migración y despliegue
 
 Activar mediante capacidad/feature flag del host. Los documentos actuales deben abrirse conservando tipos y propiedades desconocidas, con edición restringida donde no exista control compatible. No sustituir silenciosamente un componente por otro. Desplegar APIs compatibles antes del cliente; rollback del editor debe seguir permitiendo lectura del contenido guardado o bloquear explícitamente versiones incompatibles.
+
+## Integración obligatoria con el host
+
+Auditar primero CmsPageBuilder y PageEditorBuilder.svelte en Campus. La UI distribuida por el módulo es opcional; el host puede mantener su editor. Módulos ES/Web Component son una propuesta de distribución que debe contrastarse con la integración actual antes de implementarse. Véase [00: integración en sistemas existentes](00-integracion-en-sistemas-existentes.md).

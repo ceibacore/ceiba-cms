@@ -49,3 +49,7 @@ Esta lista evita declarar paridad total prematuramente. Cada capacidad necesita 
 ## Despliegue
 
 Comenzar por exportación y dry-run; después importación de kits internos. Activar extensiones individualmente con compatibilidad verificada. Reversión desactiva registro/runtime y restaura revisiones; no elimina automáticamente datos cuyo renderer podría volver a instalarse.
+
+## Integración obligatoria con el host
+
+Los kits transfieren contenido del CMS, no configuración privada del host. La instalación de extensiones y dependencias pertenece al despliegue del consumidor. Véase [00: integración en sistemas existentes](00-integracion-en-sistemas-existentes.md).

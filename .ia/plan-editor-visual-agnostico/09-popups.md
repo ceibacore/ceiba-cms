@@ -35,3 +35,7 @@ Verificar triggers con reloj y scroll controlados, límites de frecuencia, almac
 ## Activación y reversión
 
 Bandera por sitio, primer despliegue con trigger de click y después triggers automáticos. Desactivar manifiesto de una revisión revierte sin editar páginas. Invalidar caché del manifiesto al publicar/despublicar y limpiar listeners al desmontar runtime.
+
+## Integración obligatoria con el host
+
+El host decide montaje, navegación y consentimiento. Runtime desacoplado de Svelte/Laravel; no exigir incluir las rutas del módulo. Véase [00: integración en sistemas existentes](00-integracion-en-sistemas-existentes.md).

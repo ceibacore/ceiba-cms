@@ -39,3 +39,7 @@ Fixtures con valores nulos, relaciones vacías, HTML malicioso y permisos distin
 ## Activación
 
 Registrar fuentes nuevas de forma optativa y habilitar el inspector por sitio. Mantener adaptador de lecturas antiguas. Ante regresión deshabilitar consultas nuevas o restaurar revisión, preservando configuraciones para diagnóstico. No reinterpretar silenciosamente filtros heredados.
+
+## Integración obligatoria con el host
+
+Fuentes y contexto se registran desde el host. No depender de modelos Eloquent en el dominio; conservar la integración de DynamicModule disponible para el consumidor. Véase [00: integración en sistemas existentes](00-integracion-en-sistemas-existentes.md).

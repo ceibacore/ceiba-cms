@@ -48,3 +48,7 @@ Usar datos ficticios, dominios y credenciales independientes, correo en sandbox 
 ## Entrega gradual
 
 Primero host local, luego staging, después sitios internos y finalmente adopción por cohortes. Flags por capacidad y sitio; desactivar una capacidad debe preservar sus datos y mostrar un estado recuperable. Registrar versión de código, migraciones, contrato y resultado de validación por entrega. No declarar paridad total con Elementor hasta cerrar una matriz versionada de requisitos y sus evidencias.
+
+## Integración obligatoria con el host
+
+Añadir validación contractual de Campus (Laravel y editor Svelte existente) y host PHP mínimo. Probar cambios de tenant en el mismo proceso, rutas propias, prefijo de tablas y actualización del paquete Composer. No declarar validada Campus por aprobar solo pruebas unitarias del módulo. Véase [00: integración en sistemas existentes](00-integracion-en-sistemas-existentes.md).

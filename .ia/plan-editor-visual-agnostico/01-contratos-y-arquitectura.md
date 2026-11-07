@@ -40,3 +40,7 @@ La validación del cliente mejora UX; el servidor decide. Autorizar cada recurso
 ## Despliegue y reversión
 
 Activar escritura del nuevo formato por sitio. Primera entrega mantiene lectura de ambos formatos. Migración con dry-run, respaldo y reporte; no modificar masivamente documentos al arrancar. Volver al renderer anterior solo para formatos que pueda leer; para formatos nuevos, restaurar snapshots mediante procedimiento probado. No borrar formato antiguo hasta cerrar la ventana de recuperación.
+
+## Integración obligatoria con el host
+
+Conservar invocación directa de casos de uso y claves consumidas por CmsBridge. El contexto del host debe admitir aislamiento por conexión; no exigir Laravel ni una tabla central de tenants. Véase [00: integración en sistemas existentes](00-integracion-en-sistemas-existentes.md).

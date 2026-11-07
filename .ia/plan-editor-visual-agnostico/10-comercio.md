@@ -41,3 +41,7 @@ Precio, descuentos, stock y total definitivos proceden del proveedor en cada ope
 ## Rollout
 
 Activar primero catálogo de lectura; después carrito y checkout en sandbox. Producción requiere credenciales y validación del adaptador del host. Revertir UI no cancela pedidos ni reembolsa pagos; conservar callbacks y tareas pendientes hasta cerrar sus operaciones.
+
+## Integración obligatoria con el host
+
+Reutilizar el proveedor comercial del sistema anfitrión mediante capacidades y adaptadores. No imponer un catálogo o identidad de clientes paralelos. Véase [00: integración en sistemas existentes](00-integracion-en-sistemas-existentes.md).

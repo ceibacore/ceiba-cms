@@ -58,3 +58,7 @@ Para medios, cubrir archivo válido, MIME falso, tamaño excesivo, SVG activo, p
 ## Migración y rollout
 
 Inventariar esquemas/componentes existentes antes de ampliar el contrato. Mantener IDs y rutas públicas actuales. Añadir metadatos mediante campos opcionales y backfill repetible; convertir URLs heredadas a referencias solo cuando se pueda identificar inequívocamente el activo. Habilitar nuevos tipos por capacidades del sitio y observar errores de renderizado y procesamiento antes de ampliar el catálogo.
+
+## Integración obligatoria con el host
+
+Integrar mediante adaptadores los selectores y controladores de medios existentes de Campus. No exigir sustituir almacenamiento o biblioteca del host para usar el catálogo. Véase [00: integración en sistemas existentes](00-integracion-en-sistemas-existentes.md).
