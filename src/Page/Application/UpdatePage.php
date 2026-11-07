@@ -17,8 +17,8 @@ final class UpdatePage
         $page = $this->repo->findById($id);
         if (!$page) return;
 
-        if (isset($data['content']) && is_array($data['content'])) {
-            $data['content'] = $this->normalizer->normalize($data['content']);
+        if (isset($data['content'])) {
+            $data['content'] = $this->normalizer->preparePageContent($data['content']);
         }
 
         $data['id'] = $id;

@@ -14,8 +14,8 @@ final class CreatePage
 
     public function execute(array $data): string
     {
-        if (isset($data['content']) && is_array($data['content'])) {
-            $data['content'] = $this->normalizer->normalize($data['content']);
+        if (isset($data['content'])) {
+            $data['content'] = $this->normalizer->preparePageContent($data['content']);
         }
 
         return $this->repo->save($data);

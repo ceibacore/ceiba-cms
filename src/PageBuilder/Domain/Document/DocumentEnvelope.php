@@ -112,6 +112,12 @@ final class DocumentEnvelope
         return json_decode($this->json, true, 512, JSON_THROW_ON_ERROR | JSON_BIGINT_AS_STRING)['root'];
     }
 
+    /** @return list<string> */
+    public function resources(): array
+    {
+        return json_decode($this->json, true, 512, JSON_THROW_ON_ERROR)['resources'];
+    }
+
     public function toJson(): string
     {
         return $this->json;

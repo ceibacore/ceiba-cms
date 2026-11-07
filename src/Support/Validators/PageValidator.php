@@ -42,7 +42,15 @@ class PageValidator
         }
 
         $content = $data['content'];
+        try {
+            (new \LemurCms\PageBuilder\Domain\Document\DocumentWriteValidator())->validatePageContent($content);
+        } catch (\InvalidArgumentException $e) {
+            throw new InvalidMenuException($e->getMessage());
+        }
         if (is_array($content)) {
+            if (!array_is_list($content)) {
+                throw new InvalidMenuException('Expected a list of page nodes');
+            }
             $validator = new \LemurCms\PageBuilder\Domain\Service\TreeValidator();
             $errors = $validator->validate($content);
             if (!empty($errors)) {
@@ -56,7 +64,7 @@ class PageValidator
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     throw new InvalidMenuException('Page content is malformed JSON');
                 }
-                if (!is_array($decoded)) {
+                if (!is_array($decoded) || !array_is_list($decoded)) {
                     throw new InvalidMenuException('Page content JSON must be an array or object');
                 }
                 $validator = new \LemurCms\PageBuilder\Domain\Service\TreeValidator();
