@@ -237,6 +237,24 @@ require_once __DIR__ . '/src/PageBuilder/Domain/Contract/UiFrameworkModuleInterf
 require_once __DIR__ . '/src/PageBuilder/Domain/Service/UiFrameworkRegistry.php';
 require_once __DIR__ . '/src/PageBuilder/Frameworks/Bootstrap5/Bootstrap5Module.php';
 
+// ── Integration Ports & Adapters ─────────────────────────────────────────────
+require_once __DIR__ . '/src/PageBuilder/Domain/Document/HostContext.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Document/DocumentEnvelope.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Document/DocumentWriteValidator.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/Clock.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/DocumentAuthorization.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/JobDispatcher.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/MailDelivery.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/MediaStorage.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/ContentSource.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/SystemClock.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/CmsDocumentAuthorization.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/LoopResolverContentSource.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/LocalMediaStorage.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/SyncJobDispatcher.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/NullMailDelivery.php';
+require_once __DIR__ . '/src/PageBuilder/Application/ValidatePageDocument.php';
+
 // ── DynamicModule Layer ──────────────────────────────────────────────────────
 require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleFieldType.php';
 require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleField.php';
@@ -406,6 +424,26 @@ $deleteLanguage     = new \LemurCms\Localization\Application\DeleteLanguage($db,
 $listTranslations   = new \LemurCms\Localization\Application\ListTranslations($translationRepository);
 $updateTranslations = new \LemurCms\Localization\Application\UpdateTranslations($translationRepository);
 
+// ── Integration Ports & Adapters Instantiation ───────────────────────────────
+$siteId = (string) \LemurCms\Support\Infrastructure\EnvironmentGuard::get(
+    'CMS_SITE_ID',
+    \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_NAME', 'default')
+);
+$systemClock               = new \LemurCms\PageBuilder\Infrastructure\SystemClock();
+$cmsDocumentAuthorization  = new \LemurCms\PageBuilder\Infrastructure\CmsDocumentAuthorization($siteId, $checkPermission);
+$loopResolverContentSource = new \LemurCms\PageBuilder\Infrastructure\LoopResolverContentSource($loopResolver);
+$localMediaStorage         = new \LemurCms\PageBuilder\Infrastructure\LocalMediaStorage(
+    \LemurCms\Support\Infrastructure\EnvironmentGuard::get('MEDIA_STORAGE_PATH', sys_get_temp_dir() . '/cms_media')
+);
+$syncJobDispatcher         = new \LemurCms\PageBuilder\Infrastructure\SyncJobDispatcher();
+$nullMailDelivery          = new \LemurCms\PageBuilder\Infrastructure\NullMailDelivery();
+$validatePageDocument      = new \LemurCms\PageBuilder\Application\ValidatePageDocument(
+    $siteId,
+    $pageRepository,
+    $mediaRepository,
+    $cmsDocumentAuthorization
+);
+
 
 // ── Export container (opcional: devolver un contenedor manual) ───────────────
 return [
@@ -444,6 +482,20 @@ return [
         'contextResolver'      => $contextResolver,
         'queryEngine'          => $queryEngine,
         'pageBuilderMetadata'  => $pageBuilderMetadataService,
+        'clock'                => $systemClock,
+        'authorization'        => $cmsDocumentAuthorization,
+        'contentSource'        => $loopResolverContentSource,
+        'mediaStorage'         => $localMediaStorage,
+        'jobDispatcher'        => $syncJobDispatcher,
+        'mailDelivery'         => $nullMailDelivery,
+    ],
+    'ports' => [
+        'clock'         => $systemClock,
+        'authorization' => $cmsDocumentAuthorization,
+        'contentSource' => $loopResolverContentSource,
+        'mediaStorage'  => $localMediaStorage,
+        'jobDispatcher' => $syncJobDispatcher,
+        'mailDelivery'  => $nullMailDelivery,
     ],
     'loopResolver'        => $loopResolver,
     'bladeRenderer'       => $bladeRenderer,
@@ -516,5 +568,6 @@ return [
         'deleteLanguage'      => $deleteLanguage,
         'listTranslations'    => $listTranslations,
         'updateTranslations'  => $updateTranslations,
+        'validatePageDocument' => $validatePageDocument,
     ],
 ];
