@@ -88,8 +88,9 @@ $builderPrefix = $editorApiController->prefix;
 
 $router->get("{$builderPrefix}/capabilities", function () use ($editorApiController) {
     header('Content-Type: application/json');
-    $headers = function_exists('getallheaders') ? (getallheaders() ?: []) : [];
-    echo json_encode($editorApiController->capabilities($headers), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    $res = $editorApiController->capabilities();
+    http_response_code($res['status'] ?? 200);
+    echo json_encode($res, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 }, 'builder.capabilities')->middleware('auth');
 
 $router->get("{$builderPrefix}/components", function () use ($editorApiController) {
@@ -104,8 +105,7 @@ $router->get("{$builderPrefix}/components/{name}/diagnose", function (string $na
 
 $router->get("{$builderPrefix}/pages/{id}", function (string $id) use ($editorApiController) {
     header('Content-Type: application/json');
-    $headers = function_exists('getallheaders') ? (getallheaders() ?: []) : [];
-    $res = $editorApiController->showPage($id, $headers);
+    $res = $editorApiController->showPage($id);
     if (isset($res['status'])) {
         http_response_code($res['status']);
     }
@@ -114,9 +114,8 @@ $router->get("{$builderPrefix}/pages/{id}", function (string $id) use ($editorAp
 
 $router->post("{$builderPrefix}/pages/{id}/validate", function (string $id) use ($editorApiController) {
     header('Content-Type: application/json');
-    $body = json_decode(file_get_contents('php://input'), true) ?? [];
-    $headers = function_exists('getallheaders') ? (getallheaders() ?: []) : [];
-    $res = $editorApiController->validatePage($id, $body, $headers);
+    $body = (string) file_get_contents('php://input');
+    $res = $editorApiController->validatePage($id, $body);
     if (isset($res['status'])) {
         http_response_code($res['status']);
     }
@@ -125,8 +124,7 @@ $router->post("{$builderPrefix}/pages/{id}/validate", function (string $id) use 
 
 $router->post("{$builderPrefix}/pages/{id}/migrate", function (string $id) use ($editorApiController) {
     header('Content-Type: application/json');
-    $headers = function_exists('getallheaders') ? (getallheaders() ?: []) : [];
-    $res = $editorApiController->migratePage($id, $headers);
+    $res = $editorApiController->migratePage($id);
     if (isset($res['status'])) {
         http_response_code($res['status']);
     }

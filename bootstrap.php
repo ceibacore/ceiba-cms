@@ -262,6 +262,7 @@ require_once __DIR__ . '/src/PageBuilder/Domain/Catalogue/ComponentDescriptor.ph
 require_once __DIR__ . '/src/PageBuilder/Domain/Catalogue/ComponentCatalogue.php';
 require_once __DIR__ . '/src/PageBuilder/Presentation/Api/EditorError.php';
 require_once __DIR__ . '/src/PageBuilder/Presentation/Api/NegotiatedCapabilities.php';
+require_once __DIR__ . '/src/PageBuilder/Presentation/Api/EditorAccessDenied.php';
 require_once __DIR__ . '/src/PageBuilder/Presentation/Api/EditorApiController.php';
 
 // ── DynamicModule Layer ──────────────────────────────────────────────────────
@@ -469,7 +470,20 @@ $editorApiController       = new \LemurCms\PageBuilder\Presentation\Api\EditorAp
     $cmsDocumentAuthorization,
     $documentMigrator,
     $validatePageDocument,
-    $componentCatalogue
+    $componentCatalogue,
+    static function () use ($siteId, $authManager, $checkPermission) {
+        $actorId = $authManager->id();
+        if ($actorId === null || !$authManager->check()) {
+            return null;
+        }
+        $capabilities = [];
+        foreach (['pages.view' => 'pages.read', 'pages.update' => 'pages.update'] as $permission => $capability) {
+            if ($checkPermission->execute($actorId, $permission)) {
+                $capabilities[] = $capability;
+            }
+        }
+        return new \LemurCms\PageBuilder\Domain\Document\HostContext($siteId, $actorId, 'es', $capabilities);
+    }
 );
 
 

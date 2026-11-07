@@ -112,19 +112,25 @@ final class EditorApiAndCatalogueTest extends TestCase
 
     public function testEditorApiControllerCapabilitiesAndComponents(): void
     {
-        $controller = $this->createController('site-1');
+        $controller = $this->createController('site-1', static function (): HostContext {
+            self::assertSame([], func_get_args());
+            return new HostContext('site-1', 'actor-test', 'en', ['pages.read']);
+        });
 
-        $capRes = $controller->capabilities([
-            'X-Site-Id' => 'site-1',
-            'X-Actor-Id' => 'actor-test',
-            'X-Locale' => 'en',
+        $forgedHeaders = [
+            'X-Site-Id' => 'other-site',
+            'X-Actor-Id' => 'admin',
+            'X-Locale' => 'es',
             'X-Capabilities' => 'pages.read,pages.update',
-        ]);
+        ];
+        $capRes = $controller->capabilities($forgedHeaders);
 
         self::assertTrue($capRes['success']);
         self::assertSame('site-1', $capRes['data']['siteId']);
         self::assertSame('actor-test', $capRes['data']['actorId']);
         self::assertSame('en', $capRes['data']['locale']);
+        self::assertSame(['pages.read'], $capRes['data']['effectivePermissions']);
+        self::assertFalse($controller->migratePage('page-abc', $forgedHeaders)['success']);
 
         $compRes = $controller->components();
         self::assertTrue($compRes['success']);
@@ -142,7 +148,7 @@ final class EditorApiAndCatalogueTest extends TestCase
 
     public function testEditorApiControllerValidatesDocumentSuccessfully(): void
     {
-        $controller = $this->createController('site-1');
+        $controller = $this->createController('site-1', static fn () => new HostContext('site-1', 'user-1', 'es', ['pages.update']));
 
         $validPayload = [
             'schemaVersion' => 1,
@@ -155,11 +161,7 @@ final class EditorApiAndCatalogueTest extends TestCase
             'resources'     => ['res-logo'],
         ];
 
-        $res = $controller->validatePage('page-abc', $validPayload, [
-            'X-Site-Id' => 'site-1',
-            'X-Actor-Id' => 'user-1',
-            'X-Capabilities' => 'pages.update',
-        ]);
+        $res = $controller->validatePage('page-abc', $validPayload);
 
         self::assertTrue($res['success']);
         self::assertTrue($res['data']['valid']);
@@ -168,7 +170,7 @@ final class EditorApiAndCatalogueTest extends TestCase
 
     public function testEditorApiControllerRejectsInvalidDocumentWithStructuredError(): void
     {
-        $controller = $this->createController('site-1');
+        $controller = $this->createController('site-1', static fn () => new HostContext('site-1', 'user-1', 'es', ['pages.update']));
 
         // Document has nodes missing ID (rejected by v1 validator)
         $invalidPayload = [
@@ -182,11 +184,7 @@ final class EditorApiAndCatalogueTest extends TestCase
             'resources'     => [],
         ];
 
-        $res = $controller->validatePage('page-abc', $invalidPayload, [
-            'X-Site-Id' => 'site-1',
-            'X-Actor-Id' => 'user-1',
-            'X-Capabilities' => 'pages.update',
-        ]);
+        $res = $controller->validatePage('page-abc', $invalidPayload);
 
         self::assertFalse($res['success']);
         self::assertSame(422, $res['status']);
@@ -211,6 +209,7 @@ final class EditorApiAndCatalogueTest extends TestCase
         $campusCatalogue = ComponentCatalogue::createDefault();
 
         $campusValidator = new ValidatePageDocument('tenant_moodle_101', $campusPages, $campusMedia, $campusAuth);
+        $campusContext = new HostContext('tenant_moodle_101', 'prof_1', 'es', ['pages.read', 'pages.update']);
         $campusController = new EditorApiController(
             prefix: '/api/builder/v1',
             siteId: 'tenant_moodle_101',
@@ -219,7 +218,8 @@ final class EditorApiAndCatalogueTest extends TestCase
             authorization: $campusAuth,
             migrator: new DocumentMigrator(),
             validator: $campusValidator,
-            catalogue: $campusCatalogue
+            catalogue: $campusCatalogue,
+            contextResolver: static fn () => $campusContext
         );
 
         // Host 2: Standalone headless store ('headless_store_prod')
@@ -236,6 +236,7 @@ final class EditorApiAndCatalogueTest extends TestCase
         $storeCatalogue = ComponentCatalogue::createDefault();
 
         $storeValidator = new ValidatePageDocument('headless_store_prod', $storePages, $storeMedia, $storeAuth);
+        $activeContext = new HostContext('headless_store_prod', 'merchant_9', 'en', ['pages.read', 'pages.update']);
         $storeController = new EditorApiController(
             prefix: '/cms/v1/editor', // Configurable prefix in Host 2!
             siteId: 'headless_store_prod',
@@ -244,11 +245,12 @@ final class EditorApiAndCatalogueTest extends TestCase
             authorization: $storeAuth,
             migrator: new DocumentMigrator(),
             validator: $storeValidator,
-            catalogue: $storeCatalogue
+            catalogue: $storeCatalogue,
+            contextResolver: static function () use (&$activeContext): HostContext { return $activeContext; }
         );
 
         // 1. Host 1 negotiates capabilities and validates its own page
-        $campusCaps = $campusController->capabilities(['X-Site-Id' => 'tenant_moodle_101', 'X-Actor-Id' => 'prof_1']);
+        $campusCaps = $campusController->capabilities();
         self::assertTrue($campusCaps['success']);
         self::assertSame('tenant_moodle_101', $campusCaps['data']['siteId']);
 
@@ -259,11 +261,11 @@ final class EditorApiAndCatalogueTest extends TestCase
             'root'          => [['id' => 'n1', 'type' => 'container', 'props' => (object) [], 'children' => []]],
             'settings'      => (object) [],
             'resources'     => ['campus_logo'],
-        ], ['X-Site-Id' => 'tenant_moodle_101', 'X-Actor-Id' => 'prof_1', 'X-Capabilities' => 'pages.update']);
+        ]);
         self::assertTrue($campusValidRes['success']);
 
         // 2. Host 2 negotiates capabilities and validates its own page
-        $storeCaps = $storeController->capabilities(['X-Site-Id' => 'headless_store_prod', 'X-Actor-Id' => 'merchant_9']);
+        $storeCaps = $storeController->capabilities();
         self::assertTrue($storeCaps['success']);
         self::assertSame('/cms/v1/editor', $storeController->prefix);
 
@@ -274,10 +276,11 @@ final class EditorApiAndCatalogueTest extends TestCase
             'root'          => [['id' => 's1', 'type' => 'container', 'props' => (object) [], 'children' => []]],
             'settings'      => (object) [],
             'resources'     => ['product_img'],
-        ], ['X-Site-Id' => 'headless_store_prod', 'X-Actor-Id' => 'merchant_9', 'X-Capabilities' => 'pages.update']);
+        ]);
         self::assertTrue($storeValidRes['success']);
 
         // 3. Cross-host intrusion attempt: Host 1 actor targets Host 2 connection with valid page ID
+        $activeContext = $campusContext;
         $intrusionRes = $storeController->validatePage('store_home', [
             'schemaVersion' => 1,
             'documentId'    => 'store_home',
@@ -285,14 +288,29 @@ final class EditorApiAndCatalogueTest extends TestCase
             'root'          => [['id' => 's1', 'type' => 'container', 'props' => (object) [], 'children' => []]],
             'settings'      => (object) [],
             'resources'     => ['product_img'],
-        ], ['X-Site-Id' => 'tenant_moodle_101', 'X-Actor-Id' => 'prof_1', 'X-Capabilities' => 'pages.update']);
+        ]);
 
         self::assertFalse($intrusionRes['success'], 'Cross-site request must be rejected even with valid page ID');
         self::assertSame(403, $intrusionRes['status']);
         self::assertSame('AUTHORIZATION_DENIED', $intrusionRes['error']['code']);
     }
 
-    private function createController(string $siteId): EditorApiController
+    public function testMissingServerContextDeniesProtectedOperationsDespiteHeaders(): void
+    {
+        $controller = $this->createController('site-1', null);
+        $headers = ['X-Site-Id' => 'site-1', 'X-Actor-Id' => 'admin', 'X-Capabilities' => 'pages.read,pages.update'];
+        foreach ([
+            $controller->capabilities($headers),
+            $controller->showPage('page-abc', $headers),
+            $controller->migratePage('page-abc', $headers),
+            $controller->validatePage('page-abc', [], $headers),
+        ] as $response) {
+            self::assertFalse($response['success']);
+            self::assertArrayNotHasKey('data', $response);
+        }
+    }
+
+    private function createController(string $siteId, ?callable $contextResolver): EditorApiController
     {
         $pages = $this->createMock(PageRepositoryInterface::class);
         $pages->method('findById')->willReturnMap([
@@ -319,7 +337,8 @@ final class EditorApiAndCatalogueTest extends TestCase
             authorization: $auth,
             migrator: $migrator,
             validator: $validator,
-            catalogue: $catalogue
+            catalogue: $catalogue,
+            contextResolver: $contextResolver
         );
     }
 }

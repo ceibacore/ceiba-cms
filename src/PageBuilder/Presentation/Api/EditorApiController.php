@@ -47,23 +47,11 @@ final class EditorApiController
      */
     public function resolveContext(array $headers = []): HostContext
     {
-        if ($this->contextResolver !== null) {
-            $context = ($this->contextResolver)($headers);
-            if ($context instanceof HostContext) {
-                return $context;
-            }
+        $context = $this->contextResolver === null ? null : ($this->contextResolver)();
+        if (!$context instanceof HostContext || $context->siteId !== $this->siteId) {
+            throw new EditorAccessDenied('Authenticated site context required');
         }
-
-        $siteId = (string) ($headers['X-Site-Id'] ?? $headers['x-site-id'] ?? $this->siteId);
-        $actorId = (string) ($headers['X-Actor-Id'] ?? $headers['x-actor-id'] ?? 'system');
-        $locale = (string) ($headers['X-Locale'] ?? $headers['x-locale'] ?? 'es');
-        $capsHeader = $headers['X-Capabilities'] ?? $headers['x-capabilities'] ?? null;
-
-        $capabilities = is_array($capsHeader)
-            ? array_values(array_filter($capsHeader, 'is_string'))
-            : (is_string($capsHeader) ? array_map('trim', explode(',', $capsHeader)) : ['pages.read', 'pages.update']);
-
-        return new HostContext($siteId, $actorId, $locale, $capabilities);
+        return $context;
     }
 
     /**
@@ -82,8 +70,10 @@ final class EditorApiController
                 'success' => true,
                 'data'    => $negotiated->toArray(),
             ];
+        } catch (EditorAccessDenied $e) {
+            return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
         } catch (Throwable $e) {
-            return $this->errorResponse('CAPABILITIES_ERROR', $e->getMessage(), 400);
+            return $this->errorResponse('CAPABILITIES_ERROR', 'Unable to resolve capabilities', 500);
         }
     }
 
@@ -164,8 +154,10 @@ final class EditorApiController
                     'sourceVersion' => $envelope->sourceVersion,
                 ],
             ];
+        } catch (EditorAccessDenied $e) {
+            return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
         } catch (Throwable $e) {
-            return $this->errorResponse('LOAD_ERROR', $e->getMessage(), 400);
+            return $this->errorResponse('LOAD_ERROR', 'Unable to load document', 500);
         }
     }
 
@@ -187,6 +179,9 @@ final class EditorApiController
                 : json_encode($documentPayload, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
 
             $document = DocumentEnvelope::fromJson($json, $id);
+            if ($document->documentId !== $id) {
+                throw new InvalidArgumentException('Document ID does not match the requested page');
+            }
             $this->validator->execute($context, $document);
 
             return [
@@ -197,7 +192,7 @@ final class EditorApiController
                 ],
             ];
         } catch (RuntimeException $e) {
-            return $this->errorResponse('AUTHORIZATION_DENIED', $e->getMessage(), 403);
+            return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
         } catch (InvalidArgumentException $e) {
             return $this->errorResponse('VALIDATION_FAILED', $e->getMessage(), 422, [
                 'document' => $e->getMessage(),
@@ -219,7 +214,8 @@ final class EditorApiController
         try {
             $context = $this->resolveContext($headers);
 
-            if ($context->siteId !== $this->siteId || !in_array('pages.update', $context->capabilities, true)) {
+            if ($context->siteId !== $this->siteId || !in_array('pages.update', $context->capabilities, true)
+                || !$this->authorization->canUpdate($context, $id)) {
                 return $this->errorResponse('AUTHORIZATION_DENIED', 'Unauthorized migration request', 403);
             }
 
@@ -235,8 +231,10 @@ final class EditorApiController
                 'success' => $report->isSuccessful,
                 'data'    => $report->toArray(),
             ];
+        } catch (EditorAccessDenied $e) {
+            return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
         } catch (Throwable $e) {
-            return $this->errorResponse('MIGRATION_ERROR', $e->getMessage(), 400);
+            return $this->errorResponse('MIGRATION_ERROR', 'Unable to migrate document', 500);
         }
     }
 
