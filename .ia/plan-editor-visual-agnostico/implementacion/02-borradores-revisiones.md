@@ -26,4 +26,7 @@ Estado: en desarrollo. Cada entrega debe conservar la lectura pública existente
 - **1 Esquema aditivo:** implementado y probado a nivel de SQL generado y rollback.
 - **2 Inicializador explícito:** implementado y probado en SQLite. Lee por lotes, conserva contenido/status, crea un snapshot inicial, fija el puntero según estado, reporta fallos por página y omite páginas ya inicializadas.
 
+- **3 Lectura administrativa:** caso de uso disponible en el contenedor.
+- **4 Guardado con concurrencia:** caso de uso PHP verificado con SQLite (guardado, conflicto y rollback). En una instancia MariaDB temporal se verificaron la migración, la inicialización, la edición desde la revisión publicada y el rechazo de una segunda escritura obsoleta. La integración HTTP y el autosave de Campus corresponden a la entrega 5.
+
 La inicialización sigue siendo explícita. El host debe ejecutar la migración antes de invocar `initializePageRevisions` en la conexión tenant correspondiente.

@@ -15,6 +15,7 @@ final class DocumentEnvelope
         public readonly int $sourceVersion,
         private readonly string $json,
         public readonly string $documentId,
+        public readonly int $revision,
     ) {}
 
     public static function fromJson(string $json, ?string $legacyDocumentId = null): self
@@ -64,7 +65,7 @@ final class DocumentEnvelope
                 throw new InvalidArgumentException('Tree exceeds maximum envelope depth');
             }
         }
-        return new self($sourceVersion, $json, $data->documentId);
+        return new self($sourceVersion, $json, $data->documentId, $data->revision);
     }
 
     private static function validateNodes(array $nodes): void
