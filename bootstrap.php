@@ -82,6 +82,7 @@ require_once __DIR__ . '/src/Page/Application/GetPageBySlug.php';
 require_once __DIR__ . '/src/Page/Application/GetPageById.php';
 require_once __DIR__ . '/src/Page/Application/CreatePage.php';
 require_once __DIR__ . '/src/Page/Application/UpdatePage.php';
+require_once __DIR__ . '/src/Page/Application/InitializePageRevisions.php';
 require_once __DIR__ . '/src/Page/Application/PublishPage.php';
 require_once __DIR__ . '/src/Page/Application/DeletePage.php';
 require_once __DIR__ . '/src/Page/Application/ListPages.php';
@@ -552,6 +553,7 @@ return [
     'queryEngine'         => $queryEngine,
     'pageBuilderMetadataService' => $pageBuilderMetadataService,
     'useCases' => [
+        'initializePageRevisions' => new \LemurCms\Page\Application\InitializePageRevisions($db, $siteId),
         // Menu
         'getMainNavbar'    => $getMainNavbar,
         'getNavbar'        => $getNavbar,

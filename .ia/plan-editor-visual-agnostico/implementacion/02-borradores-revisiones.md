@@ -21,6 +21,9 @@ Estado: en desarrollo. Cada entrega debe conservar la lectura pública existente
 6. **Restaurar y publicar:** restaurar crea nueva revisión. Publicación refiere una revisión concreta, actualiza el snapshot público y es atómica e idempotente.
 7. **Operación:** auditoría, retención que preserve publicaciones fijadas, métricas, respaldo, recuperación y prueba de aislamiento entre dos conexiones tenant.
 
-## Primera entrega en curso
+## Estado de entregas
 
-Crear solo el esquema. No modificar filas `pages` y no activar la inicialización hasta que la herramienta host ejecute y verifique la migración en una base de prueba.
+- **1 Esquema aditivo:** implementado y probado a nivel de SQL generado y rollback.
+- **2 Inicializador explícito:** implementado y probado en SQLite. Lee por lotes, conserva contenido/status, crea un snapshot inicial, fija el puntero según estado, reporta fallos por página y omite páginas ya inicializadas.
+
+La inicialización sigue siendo explícita. El host debe ejecutar la migración antes de invocar `initializePageRevisions` en la conexión tenant correspondiente.
