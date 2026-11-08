@@ -64,6 +64,7 @@ require_once __DIR__ . '/database/factories/UserFactory.php';
 // ── Domain Ports ─────────────────────────────────────────────────────────────
 require_once __DIR__ . '/src/Menu/Domain/Repository/MenuRepositoryInterface.php';
 require_once __DIR__ . '/src/Page/Domain/Repository/PageRepositoryInterface.php';
+require_once __DIR__ . '/src/Page/Domain/Repository/AdministrativePageReaderInterface.php';
 require_once __DIR__ . '/src/Seo/Domain/Repository/SeoRepositoryInterface.php';
 require_once __DIR__ . '/src/Media/Domain/Repository/MediaRepositoryInterface.php';
 require_once __DIR__ . '/src/Auth/Domain/Repository/UserRepositoryInterface.php';
@@ -82,7 +83,6 @@ require_once __DIR__ . '/src/Page/Application/GetPageBySlug.php';
 require_once __DIR__ . '/src/Page/Application/GetPageById.php';
 require_once __DIR__ . '/src/Page/Application/CreatePage.php';
 require_once __DIR__ . '/src/Page/Application/UpdatePage.php';
-require_once __DIR__ . '/src/Page/Application/InitializePageRevisions.php';
 require_once __DIR__ . '/src/Page/Application/SavePageDraft.php';
 require_once __DIR__ . '/src/Page/Application/PageRevisionConflict.php';
 require_once __DIR__ . '/src/Page/Application/PagePublicationKeyConflict.php';
@@ -92,6 +92,22 @@ require_once __DIR__ . '/src/Page/Application/PublishPage.php';
 require_once __DIR__ . '/src/Page/Application/DeletePage.php';
 require_once __DIR__ . '/src/Page/Application/ListPages.php';
 require_once __DIR__ . '/src/Page/Application/ListAdministrativePages.php';
+require_once __DIR__ . '/src/Page/Application/PublicContentFingerprint.php';
+require_once __DIR__ . '/src/Page/Application/PublicContentDrift.php';
+require_once __DIR__ . '/src/Page/Application/PageRevisionNotFound.php';
+require_once __DIR__ . '/src/Page/Application/PreviewTokenLimitReached.php';
+require_once __DIR__ . '/src/Page/Application/PageRevisionAuditLog.php';
+require_once __DIR__ . '/src/Page/Application/ReconcilePageContent.php';
+require_once __DIR__ . '/src/Page/Application/PageNotFound.php';
+require_once __DIR__ . '/src/Page/Application/SavePageContent.php';
+require_once __DIR__ . '/src/Page/Application/GetPageWorkingRevision.php';
+require_once __DIR__ . '/src/Page/Application/UnpublishPage.php';
+require_once __DIR__ . '/src/Page/Application/PagePreviewTokens.php';
+require_once __DIR__ . '/src/Page/Application/PinPageRevision.php';
+require_once __DIR__ . '/src/Page/Application/PageRevisionRetentionPolicy.php';
+require_once __DIR__ . '/src/Page/Application/PurgePageRevisions.php';
+require_once __DIR__ . '/src/Page/Application/DispatchPagePublicationOutbox.php';
+require_once __DIR__ . '/src/Page/Application/PageRevisionOperationalMetrics.php';
 require_once __DIR__ . '/src/Seo/Application/GetSeoForEntity.php';
 require_once __DIR__ . '/src/Seo/Application/UpsertSeo.php';
 require_once __DIR__ . '/src/Media/Application/StoreMedia.php';
@@ -258,12 +274,17 @@ require_once __DIR__ . '/src/PageBuilder/Domain/Contract/JobDispatcher.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Contract/MailDelivery.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Contract/MediaStorage.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Contract/ContentSource.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/RevisionOperationAuthorization.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/RevisionArchive.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/PublicationEvent.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/PublicationEventHandler.php';
 require_once __DIR__ . '/src/PageBuilder/Infrastructure/SystemClock.php';
 require_once __DIR__ . '/src/PageBuilder/Infrastructure/CmsDocumentAuthorization.php';
 require_once __DIR__ . '/src/PageBuilder/Infrastructure/LoopResolverContentSource.php';
 require_once __DIR__ . '/src/PageBuilder/Infrastructure/LocalMediaStorage.php';
 require_once __DIR__ . '/src/PageBuilder/Infrastructure/SyncJobDispatcher.php';
 require_once __DIR__ . '/src/PageBuilder/Infrastructure/NullMailDelivery.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/JsonLinesRevisionArchive.php';
 require_once __DIR__ . '/src/PageBuilder/Application/ValidatePageDocument.php';
 require_once __DIR__ . '/src/PageBuilder/Application/MigratePageDocument.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Catalogue/ComponentDescriptor.php';
@@ -272,6 +293,7 @@ require_once __DIR__ . '/src/PageBuilder/Presentation/Api/EditorError.php';
 require_once __DIR__ . '/src/PageBuilder/Presentation/Api/NegotiatedCapabilities.php';
 require_once __DIR__ . '/src/PageBuilder/Presentation/Api/EditorAccessDenied.php';
 require_once __DIR__ . '/src/PageBuilder/Presentation/Api/EditorApiController.php';
+require_once __DIR__ . '/src/PageBuilder/Presentation/Api/RevisionApiController.php';
 
 // ── DynamicModule Layer ──────────────────────────────────────────────────────
 require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleFieldType.php';
@@ -342,9 +364,8 @@ $saveLogo         = new \LemurCms\Menu\Application\SaveLogo($menuRepository);
 $getPageBySlug    = new \LemurCms\Page\Application\GetPageBySlug($pageRepository);
 $getPageById      = new \LemurCms\Page\Application\GetPageById($pageRepository);
 $treeNormalizer   = new \LemurCms\PageBuilder\Domain\Service\TreeNormalizer();
-$createPage       = new \LemurCms\Page\Application\CreatePage($pageRepository, $treeNormalizer);
-$updatePage       = new \LemurCms\Page\Application\UpdatePage($pageRepository, $treeNormalizer);
-$publishPage      = new \LemurCms\Page\Application\PublishPage($pageRepository);
+$updatePage       = new \LemurCms\Page\Application\UpdatePage($pageRepository);
+// createPage and publishPage are versioned and are wired with the revision services below.
 $deletePage       = new \LemurCms\Page\Application\DeletePage($pageRepository);
 $listPages        = new \LemurCms\Page\Application\ListPages($pageRepository);
 
@@ -470,6 +491,42 @@ $migratePageDocument       = new \LemurCms\PageBuilder\Application\MigratePageDo
 );
 $componentCatalogue        = \LemurCms\PageBuilder\Domain\Catalogue\ComponentCatalogue::createDefault();
 $builderApiPrefix          = (string) \LemurCms\Support\Infrastructure\EnvironmentGuard::get('BUILDER_API_PREFIX', '/api/builder/v1');
+// CMS permission => editor capability. Each revision operation has its own permission.
+$builderContextResolver    = static function () use ($siteId, $authManager, $checkPermission) {
+    $actorId = $authManager->id();
+    if ($actorId === null || !$authManager->check()) {
+        return null;
+    }
+    $capabilities = [];
+    foreach ([
+        'pages.view' => 'pages.read', 'pages.update' => 'pages.update', 'pages.publish' => 'pages.publish',
+        'pages.restore' => 'pages.restore', 'pages.unpublish' => 'pages.unpublish',
+    ] as $permission => $capability) {
+        if ($checkPermission->execute($actorId, $permission)) {
+            $capabilities[] = $capability;
+        }
+    }
+    return new \LemurCms\PageBuilder\Domain\Document\HostContext($siteId, (string) $actorId, 'es', $capabilities);
+};
+// Server errors are logged with the requestId returned to the client; never the payload.
+$builderErrorReporter      = static function (string $requestId, \Throwable $error): void {
+    error_log(sprintf('[ceiba-cms] %s %s: %s', $requestId, get_class($error), $error->getMessage()));
+};
+$revisionAuditLog          = new \LemurCms\Page\Application\PageRevisionAuditLog($db, $siteId, $systemClock);
+$savePageDraft             = new \LemurCms\Page\Application\SavePageDraft($db, $siteId, $systemClock);
+$restorePageRevision       = new \LemurCms\Page\Application\RestorePageRevision($db, $siteId, $savePageDraft);
+$publishPageRevision       = new \LemurCms\Page\Application\PublishPageRevision($db, $siteId, $systemClock);
+$unpublishPage             = new \LemurCms\Page\Application\UnpublishPage($db, $siteId, $systemClock);
+$reconcilePageContent      = new \LemurCms\Page\Application\ReconcilePageContent($db, $siteId, $savePageDraft, $documentMigrator);
+$createPage                = new \LemurCms\Page\Application\CreatePage($db, $siteId, $treeNormalizer, $documentMigrator, $systemClock);
+$publishPage               = new \LemurCms\Page\Application\PublishPage($db, $siteId, $publishPageRevision);
+$getPageWorkingRevision    = new \LemurCms\Page\Application\GetPageWorkingRevision($db, $siteId);
+$savePageContent           = new \LemurCms\Page\Application\SavePageContent($savePageDraft, $treeNormalizer, $documentMigrator, $getPageWorkingRevision);
+$pagePreviewTokens         = new \LemurCms\Page\Application\PagePreviewTokens($db, $siteId, $systemClock);
+$pinPageRevision           = new \LemurCms\Page\Application\PinPageRevision($db, $siteId, $systemClock);
+$revisionArchive           = new \LemurCms\PageBuilder\Infrastructure\JsonLinesRevisionArchive(
+    (string) \LemurCms\Support\Infrastructure\EnvironmentGuard::get('REVISION_ARCHIVE_PATH', __DIR__ . '/storage/revision-archive')
+);
 $editorApiController       = new \LemurCms\PageBuilder\Presentation\Api\EditorApiController(
     $builderApiPrefix,
     $siteId,
@@ -479,23 +536,27 @@ $editorApiController       = new \LemurCms\PageBuilder\Presentation\Api\EditorAp
     $documentMigrator,
     $validatePageDocument,
     $componentCatalogue,
-    static function () use ($siteId, $authManager, $checkPermission) {
-        $actorId = $authManager->id();
-        if ($actorId === null || !$authManager->check()) {
-            return null;
-        }
-        $capabilities = [];
-        foreach (['pages.view' => 'pages.read', 'pages.update' => 'pages.update', 'pages.publish' => 'pages.publish'] as $permission => $capability) {
-            if ($checkPermission->execute($actorId, $permission)) {
-                $capabilities[] = $capability;
-            }
-        }
-        return new \LemurCms\PageBuilder\Domain\Document\HostContext($siteId, $actorId, 'es', $capabilities);
-    },
-    new \LemurCms\Page\Application\SavePageDraft($db, $siteId),
+    $builderContextResolver,
+    $savePageDraft,
     $db,
-    new \LemurCms\Page\Application\PublishPageRevision($db, $siteId),
-    $cmsDocumentAuthorization
+    $publishPageRevision,
+    $cmsDocumentAuthorization,
+    $revisionAuditLog,
+    $builderErrorReporter,
+    true
+);
+$revisionApiController     = new \LemurCms\PageBuilder\Presentation\Api\RevisionApiController(
+    $siteId,
+    $builderContextResolver,
+    $cmsDocumentAuthorization,
+    $revisionAuditLog,
+    $restorePageRevision,
+    $reconcilePageContent,
+    $unpublishPage,
+    $pagePreviewTokens,
+    $pinPageRevision,
+    $db,
+    $builderErrorReporter
 );
 
 
@@ -527,6 +588,7 @@ return [
         'breadcrumbBuilder'      => $breadcrumbBuilder,
         'notificationPresenter'  => $notificationPresenter,
         'editorApiController'    => $editorApiController,
+        'revisionApiController'  => $revisionApiController,
     ],
     'services' => [
         'loopResolver'         => $loopResolver,
@@ -546,6 +608,9 @@ return [
         'documentMigrator'     => $documentMigrator,
         'componentCatalogue'   => $componentCatalogue,
         'editorApiController'  => $editorApiController,
+        'revisionApiController' => $revisionApiController,
+        'revisionAuditLog'     => $revisionAuditLog,
+        'revisionArchive'      => $revisionArchive,
     ],
     'ports' => [
         'clock'         => $systemClock,
@@ -564,14 +629,22 @@ return [
     'queryEngine'         => $queryEngine,
     'pageBuilderMetadataService' => $pageBuilderMetadataService,
     'useCases' => [
-        'initializePageRevisions' => new \LemurCms\Page\Application\InitializePageRevisions($db, $siteId),
-        'savePageDraft' => new \LemurCms\Page\Application\SavePageDraft($db, $siteId),
-        'restorePageRevision' => new \LemurCms\Page\Application\RestorePageRevision(
-            $db,
-            $siteId,
-            new \LemurCms\Page\Application\SavePageDraft($db, $siteId)
-        ),
-        'publishPageRevision' => new \LemurCms\Page\Application\PublishPageRevision($db, $siteId),
+        'savePageContent' => $savePageContent,
+        'getPageWorkingRevision' => $getPageWorkingRevision,
+        'savePageDraft' => $savePageDraft,
+        'restorePageRevision' => $restorePageRevision,
+        'publishPageRevision' => $publishPageRevision,
+        'unpublishPage' => $unpublishPage,
+        'reconcilePageContent' => $reconcilePageContent,
+        'pagePreviewTokens' => $pagePreviewTokens,
+        'pinPageRevision' => $pinPageRevision,
+        // Maintenance (CLI/cron only): dry-run by default, archives before deleting.
+        'purgePageRevisions' => new \LemurCms\Page\Application\PurgePageRevisions($db, $siteId, $revisionArchive, $systemClock),
+        'pageRevisionMetrics' => new \LemurCms\Page\Application\PageRevisionOperationalMetrics($db, $siteId, $systemClock),
+        // Worker: the host supplies its idempotent PublicationEventHandler (cache/CDN/search).
+        'createPublicationOutboxDispatcher' => static fn (
+            \LemurCms\PageBuilder\Domain\Contract\PublicationEventHandler $handler
+        ) => new \LemurCms\Page\Application\DispatchPagePublicationOutbox($db, $siteId, $handler, $systemClock),
         // Menu
         'getMainNavbar'    => $getMainNavbar,
         'getNavbar'        => $getNavbar,

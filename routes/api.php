@@ -32,9 +32,9 @@ $menuController = new MenuController(
 );
 
 $router->get('/api/menus/{slug}', fn($slug) => $menuController->show($slug), 'menu.show')->middleware('auth');
-$router->post('/api/menus/items', fn() => $menuController->store(), 'menu.store')->middleware('auth');
-$router->put('/api/menus/items/{id}', fn($id) => $menuController->update($id), 'menu.update')->middleware('auth');
-$router->delete('/api/menus/items/{id}', fn($id) => $menuController->destroy($id), 'menu.delete')->middleware('auth');
+$router->post('/api/menus/items', fn() => $menuController->store(), 'menu.store')->middleware('auth', 'csrf');
+$router->put('/api/menus/items/{id}', fn($id) => $menuController->update($id), 'menu.update')->middleware('auth', 'csrf');
+$router->delete('/api/menus/items/{id}', fn($id) => $menuController->destroy($id), 'menu.delete')->middleware('auth', 'csrf');
 
 // ── Page Routes ──────────────────────────────────────────────────────────────
 $pageController = new PageController(
@@ -44,15 +44,16 @@ $pageController = new PageController(
     $container['useCases']['updatePage'],
     $container['useCases']['deletePage'],
     $container['useCases']['publishPage'],
+    static fn (): ?string => ($id = $container['auth']->id()) === null ? null : (string) $id,
 );
 
 $router->get('/api/pages', fn() => $pageController->index(), 'page.index')->middleware('auth');
-$router->post('/api/pages', fn() => $pageController->store(), 'page.store')->middleware('auth');
+$router->post('/api/pages', fn() => $pageController->store(), 'page.store')->middleware('auth', 'csrf');
 $router->get('/api/pages/{id}', fn($id) => $pageController->show($id), 'page.show')->middleware('auth');
-$router->put('/api/pages/{id}', fn($id) => $pageController->update($id), 'page.update')->middleware('auth');
-$router->patch('/api/pages/{id}', fn($id) => $pageController->update($id), 'page.patch')->middleware('auth');
-$router->delete('/api/pages/{id}', fn($id) => $pageController->destroy($id), 'page.delete')->middleware('auth');
-$router->post('/api/pages/{id}/publish', fn($id) => $pageController->publish($id), 'page.publish')->middleware('auth', 'permission:pages.publish');
+$router->put('/api/pages/{id}', fn($id) => $pageController->update($id), 'page.update')->middleware('auth', 'csrf');
+$router->patch('/api/pages/{id}', fn($id) => $pageController->update($id), 'page.patch')->middleware('auth', 'csrf');
+$router->delete('/api/pages/{id}', fn($id) => $pageController->destroy($id), 'page.delete')->middleware('auth', 'csrf');
+$router->post('/api/pages/{id}/publish', fn($id) => $pageController->publish($id), 'page.publish')->middleware('auth', 'csrf', 'permission:pages.publish');
 
 // ── Template Routes ──────────────────────────────────────────────────────────
 $templateController = new TemplateController(
@@ -63,9 +64,9 @@ $templateController = new TemplateController(
 );
 
 $router->get('/api/templates', fn() => $templateController->index(), 'template.index')->middleware('auth');
-$router->post('/api/templates', fn() => $templateController->store(), 'template.store')->middleware('auth');
+$router->post('/api/templates', fn() => $templateController->store(), 'template.store')->middleware('auth', 'csrf');
 $router->get('/api/templates/{id}', fn($id) => $templateController->show($id), 'template.show')->middleware('auth');
-$router->delete('/api/templates/{id}', fn($id) => $templateController->destroy($id), 'template.destroy')->middleware('auth');
+$router->delete('/api/templates/{id}', fn($id) => $templateController->destroy($id), 'template.destroy')->middleware('auth', 'csrf');
 
 // ── Component Routes ─────────────────────────────────────────────────────────
 $componentController = new ComponentDefinitionController(
@@ -120,21 +121,22 @@ $router->post("{$builderPrefix}/pages/{id}/validate", function (string $id) use 
         http_response_code($res['status']);
     }
     echo json_encode($res, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-}, 'builder.pages.validate')->middleware('auth');
+}, 'builder.pages.validate')->middleware('auth', 'csrf');
 
 $router->put("{$builderPrefix}/pages/{id}/draft", function (string $id) use ($editorApiController) {
     header('Content-Type: application/json');
     $response = $editorApiController->saveDraft(
         $id,
         (string) file_get_contents('php://input'),
-        $_SERVER['HTTP_IF_MATCH'] ?? null
+        $_SERVER['HTTP_IF_MATCH'] ?? null,
+        isset($_GET['reason']) ? (string) $_GET['reason'] : null
     );
     http_response_code($response['status'] ?? 200);
     if (isset($response['data']['etag'])) {
         header('ETag: ' . $response['data']['etag']);
     }
     echo json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-}, 'builder.pages.draft')->middleware('auth');
+}, 'builder.pages.draft')->middleware('auth', 'csrf');
 
 $router->get("{$builderPrefix}/pages/{id}/draft", function (string $id) use ($editorApiController) {
     header('Content-Type: application/json');
@@ -166,7 +168,7 @@ $router->post("{$builderPrefix}/pages/{id}/publish-revision", function (string $
     );
     http_response_code($response['status'] ?? 200);
     echo json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-}, 'builder.pages.publish-revision')->middleware('auth');
+}, 'builder.pages.publish-revision')->middleware('auth', 'csrf');
 
 $router->post("{$builderPrefix}/pages/{id}/migrate", function (string $id) use ($editorApiController) {
     header('Content-Type: application/json');
@@ -175,7 +177,72 @@ $router->post("{$builderPrefix}/pages/{id}/migrate", function (string $id) use (
         http_response_code($res['status']);
     }
     echo json_encode($res, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-}, 'builder.pages.migrate')->middleware('auth');
+}, 'builder.pages.migrate')->middleware('auth', 'csrf');
+
+// ── Visual Builder V1 revision operations ────────────────────────────────────
+/** @var \LemurCms\PageBuilder\Presentation\Api\RevisionApiController|null $revisionApiController */
+$revisionApiController = $container['presentation']['revisionApiController'] ?? null;
+if ($revisionApiController !== null) {
+    $sendBuilderJson = static function (array $response, array $headers = []): void {
+        header('Content-Type: application/json');
+        foreach ($headers as $name => $value) {
+            header($name . ': ' . $value);
+        }
+        if (isset($response['data']['etag'])) {
+            header('ETag: ' . $response['data']['etag']);
+        }
+        http_response_code($response['status'] ?? 200);
+        echo json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    };
+    $requestBody = static fn (): string => (string) file_get_contents('php://input');
+    $noStore = ['Cache-Control' => 'no-store, private, max-age=0'];
+
+    $router->post("{$builderPrefix}/pages/{id}/restore", fn (string $id) => $sendBuilderJson(
+        $revisionApiController->restore($id, $requestBody(), $_SERVER['HTTP_IF_MATCH'] ?? null)
+    ), 'builder.pages.restore')->middleware('auth', 'csrf');
+
+    $router->post("{$builderPrefix}/pages/{id}/reconcile", fn (string $id) => $sendBuilderJson(
+        $revisionApiController->reconcile($id, $_SERVER['HTTP_IF_MATCH'] ?? null)
+    ), 'builder.pages.reconcile')->middleware('auth', 'csrf');
+
+    $router->post("{$builderPrefix}/pages/{id}/unpublish", fn (string $id) => $sendBuilderJson(
+        $revisionApiController->unpublish($id, $_SERVER['HTTP_IDEMPOTENCY_KEY'] ?? null)
+    ), 'builder.pages.unpublish')->middleware('auth', 'csrf');
+
+    $router->get("{$builderPrefix}/pages/{id}/revisions/{revision}", fn (string $id, string $revision) => $sendBuilderJson(
+        $revisionApiController->showRevision($id, ctype_digit($revision) ? (int) $revision : 0), $noStore
+    ), 'builder.pages.revision')->middleware('auth');
+
+    $router->put("{$builderPrefix}/pages/{id}/revisions/{revision}/pin", fn (string $id, string $revision) => $sendBuilderJson(
+        $revisionApiController->setPin($id, ctype_digit($revision) ? (int) $revision : 0, true)
+    ), 'builder.pages.revision.pin')->middleware('auth', 'csrf');
+
+    $router->delete("{$builderPrefix}/pages/{id}/revisions/{revision}/pin", fn (string $id, string $revision) => $sendBuilderJson(
+        $revisionApiController->setPin($id, ctype_digit($revision) ? (int) $revision : 0, false)
+    ), 'builder.pages.revision.unpin')->middleware('auth', 'csrf');
+
+    $router->post("{$builderPrefix}/pages/{id}/preview-tokens", fn (string $id) => $sendBuilderJson(
+        $revisionApiController->issuePreview($id, $requestBody()), $noStore
+    ), 'builder.pages.preview-tokens.issue')->middleware('auth', 'csrf');
+
+    $router->delete("{$builderPrefix}/pages/{id}/preview-tokens", fn (string $id) => $sendBuilderJson(
+        $revisionApiController->revokePreviews($id, null)
+    ), 'builder.pages.preview-tokens.revoke-all')->middleware('auth', 'csrf');
+
+    $router->delete("{$builderPrefix}/pages/{id}/preview-tokens/{tokenId}", fn (string $id, string $tokenId) => $sendBuilderJson(
+        $revisionApiController->revokePreviews($id, $tokenId)
+    ), 'builder.pages.preview-tokens.revoke')->middleware('auth', 'csrf');
+
+    $router->get("{$builderPrefix}/pages/{id}/audit", fn (string $id) => $sendBuilderJson(
+        $revisionApiController->auditTrail($id, (int) ($_GET['limit'] ?? 50), (int) ($_GET['offset'] ?? 0)), $noStore
+    ), 'builder.pages.audit')->middleware('auth');
+
+    // Public by design: access is granted only by the short-lived, revocable token.
+    $router->get("{$builderPrefix}/preview/{token}", fn (string $token) => $sendBuilderJson(
+        $revisionApiController->resolvePreview($token),
+        \LemurCms\PageBuilder\Presentation\Api\RevisionApiController::PREVIEW_HEADERS
+    ), 'builder.preview');
+}
 
 // ── Layout Routes ─────────────────────────────────────────────────────────────
 $layoutController = new LayoutController(
@@ -187,10 +254,10 @@ $layoutController = new LayoutController(
 );
 
 $router->get('/api/layouts', fn() => $layoutController->index(), 'layout.index')->middleware('auth');
-$router->post('/api/layouts', fn() => $layoutController->store(), 'layout.store')->middleware('auth');
+$router->post('/api/layouts', fn() => $layoutController->store(), 'layout.store')->middleware('auth', 'csrf');
 $router->get('/api/layouts/{id}', fn($id) => $layoutController->show($id), 'layout.show')->middleware('auth');
-$router->put('/api/layouts/{id}', fn($id) => $layoutController->update($id), 'layout.update')->middleware('auth');
-$router->delete('/api/layouts/{id}', fn($id) => $layoutController->destroy($id), 'layout.destroy')->middleware('auth');
+$router->put('/api/layouts/{id}', fn($id) => $layoutController->update($id), 'layout.update')->middleware('auth', 'csrf');
+$router->delete('/api/layouts/{id}', fn($id) => $layoutController->destroy($id), 'layout.destroy')->middleware('auth', 'csrf');
 
 // ── Reserved Paths Routes ─────────────────────────────────────────────────────
 $reservedController = new ReservedPathController(
@@ -201,19 +268,19 @@ $reservedController = new ReservedPathController(
 );
 
 $router->get('/api/reserved-paths', fn() => $reservedController->index(), 'reserved.index')->middleware('auth');
-$router->post('/api/reserved-paths', fn() => $reservedController->store(), 'reserved.store')->middleware('auth');
-$router->delete('/api/reserved-paths/{id}', fn($id) => $reservedController->destroy($id), 'reserved.destroy')->middleware('auth');
+$router->post('/api/reserved-paths', fn() => $reservedController->store(), 'reserved.store')->middleware('auth', 'csrf');
+$router->delete('/api/reserved-paths/{id}', fn($id) => $reservedController->destroy($id), 'reserved.destroy')->middleware('auth', 'csrf');
 
 // ── Cache Routes ─────────────────────────────────────────────────────────────
 $cacheController = new CacheController($container['presentation']['menuCache']);
 
-$router->post('/api/cache/clear', fn() => $cacheController->clear(), 'cache.clear')->middleware('auth');
-$router->post('/api/cache/menus/{slug}/clear', fn($slug) => $cacheController->clearMenu($slug), 'cache.menu.clear')->middleware('auth');
+$router->post('/api/cache/clear', fn() => $cacheController->clear(), 'cache.clear')->middleware('auth', 'csrf');
+$router->post('/api/cache/menus/{slug}/clear', fn($slug) => $cacheController->clearMenu($slug), 'cache.menu.clear')->middleware('auth', 'csrf');
 
 // ── Import Routes ─────────────────────────────────────────────────────────────
 $importController = new \LemurCms\Http\Controllers\ImportController($container['uiFrameworkRegistry'] ?? null);
-$router->post('/api/import/html', fn() => $importController->importHtml(), 'import.html')->middleware('auth');
-$router->post('/api/import/html/preview', fn() => $importController->previewHtml(), 'import.html.preview')->middleware('auth');
+$router->post('/api/import/html', fn() => $importController->importHtml(), 'import.html')->middleware('auth', 'csrf');
+$router->post('/api/import/html/preview', fn() => $importController->previewHtml(), 'import.html.preview')->middleware('auth', 'csrf');
 
 // ── Settings Routes ───────────────────────────────────────────────────────────
 $settingsController = new SettingsController(
@@ -221,7 +288,7 @@ $settingsController = new SettingsController(
 );
 
 $router->get('/api/settings', fn() => $settingsController->index(), 'settings.index')->middleware('auth');
-$router->put('/api/settings', fn() => $settingsController->update(), 'settings.update')->middleware('auth');
+$router->put('/api/settings', fn() => $settingsController->update(), 'settings.update')->middleware('auth', 'csrf');
 
 // ── Language & Translation Routes ─────────────────────────────────────────────
 $languageController = new LanguageController(
@@ -234,11 +301,11 @@ $languageController = new LanguageController(
 );
 
 $router->get('/api/languages', fn() => $languageController->index(), 'languages.index')->middleware('auth');
-$router->post('/api/languages', fn() => $languageController->store(), 'languages.store')->middleware('auth');
-$router->put('/api/languages/{id}', fn($id) => $languageController->update($id), 'languages.update')->middleware('auth');
-$router->delete('/api/languages/{id}', fn($id) => $languageController->destroy($id), 'languages.delete')->middleware('auth');
+$router->post('/api/languages', fn() => $languageController->store(), 'languages.store')->middleware('auth', 'csrf');
+$router->put('/api/languages/{id}', fn($id) => $languageController->update($id), 'languages.update')->middleware('auth', 'csrf');
+$router->delete('/api/languages/{id}', fn($id) => $languageController->destroy($id), 'languages.delete')->middleware('auth', 'csrf');
 $router->get('/api/languages/{id}/translations', fn($id) => $languageController->showTranslations($id), 'languages.translations.show')->middleware('auth');
-$router->put('/api/languages/{id}/translations', fn($id) => $languageController->saveTranslations($id), 'languages.translations.save')->middleware('auth');
+$router->put('/api/languages/{id}/translations', fn($id) => $languageController->saveTranslations($id), 'languages.translations.save')->middleware('auth', 'csrf');
 
 // ── Public Routing — Home ────────────────────────────────────────────────────
 $pageRenderController = new PageRenderController(

@@ -11,6 +11,28 @@ class PageValidator
     private const VALID_STATUSES = ['draft', 'published', 'archived'];
 
     /**
+     * Validates a metadata update. Content is versioned and is never accepted here.
+     *
+     * @param array<string, mixed> $data
+     * @throws InvalidMenuException
+     */
+    public static function validateMetadata(array $data): void
+    {
+        if (array_key_exists('content', $data)) {
+            throw new InvalidMenuException('Page content is versioned; save it through the builder draft API');
+        }
+        if (array_key_exists('title', $data) && (!is_string($data['title']) || trim($data['title']) === '' || strlen($data['title']) > 255)) {
+            throw new InvalidMenuException('Page title must be a non-empty string of at most 255 characters');
+        }
+        if (array_key_exists('slug', $data) && (!is_string($data['slug']) || !preg_match('/^[a-z0-9-]+$/i', $data['slug']))) {
+            throw new InvalidMenuException('Page slug must contain only alphanumeric characters and hyphens');
+        }
+        if (array_key_exists('status', $data) && !in_array($data['status'], self::VALID_STATUSES, true)) {
+            throw new InvalidMenuException('Invalid page status');
+        }
+    }
+
+    /**
      * @param array<string, mixed> $data
      * @throws InvalidMenuException
      */

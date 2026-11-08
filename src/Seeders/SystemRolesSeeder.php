@@ -43,8 +43,8 @@ class SystemRolesSeeder extends CmsSeeder
         });
 
         foreach ($contentPermissions as $permission) {
-            // Exclude publish permission for basic editor as an example
-            if ($permission['slug'] === 'pages.publish') continue;
+            // Editors draft and restore; publishing and withdrawal stay with publishers.
+            if (in_array($permission['slug'], ['pages.publish', 'pages.unpublish'], true)) continue;
 
             $this->firstOrCreate('role_permissions', [
                 'role_id' => $editorId,

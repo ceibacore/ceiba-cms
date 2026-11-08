@@ -43,11 +43,18 @@ class SystemPermissionsSeeder extends CmsSeeder
             }
 
             if ($slug === 'pages') {
-                $this->firstOrCreate('permissions', ['slug' => 'pages.publish'], [
-                    'id' => UuidHelper::v4(),
-                    'module_id' => $module['id'],
-                    'name' => 'Publish Pages',
-                ]);
+                // Segregated revision duties: publish, unpublish and restore are separate grants.
+                foreach ([
+                    'pages.publish' => 'Publish Pages',
+                    'pages.unpublish' => 'Unpublish Pages',
+                    'pages.restore' => 'Restore Page Revisions',
+                ] as $permissionSlug => $permissionName) {
+                    $this->firstOrCreate('permissions', ['slug' => $permissionSlug], [
+                        'id' => UuidHelper::v4(),
+                        'module_id' => $module['id'],
+                        'name' => $permissionName,
+                    ]);
+                }
             }
         }
     }

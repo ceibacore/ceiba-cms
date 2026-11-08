@@ -10,6 +10,9 @@ use LemurCms\Page\Application\SavePageDraft;
 use LemurCms\Page\Application\PublishPageRevision;
 use LemurCms\Page\Application\PageRevisionConflict;
 use LemurCms\Page\Application\PagePublicationKeyConflict;
+use LemurCms\Page\Application\PageRevisionAuditLog;
+use LemurCms\Page\Application\PageRevisionNotFound;
+use LemurCms\Page\Application\PublicContentDrift;
 use LemurCms\PageBuilder\Application\ValidatePageDocument;
 use LemurCms\PageBuilder\Domain\Catalogue\ComponentCatalogue;
 use LemurCms\PageBuilder\Domain\Contract\DocumentAuthorization;
@@ -31,6 +34,8 @@ final class EditorApiController
 {
     /** @var callable|null */
     private $contextResolver;
+    /** @var callable|null fn(string $requestId, Throwable $error): void */
+    private $errorReporter;
 
     public function __construct(
         public readonly string $prefix,
@@ -46,20 +51,32 @@ final class EditorApiController
         private readonly ?LemurDB $revisionDb = null,
         private readonly ?PublishPageRevision $publishPageRevision = null,
         private readonly ?PagePublicationAuthorization $publicationAuthorization = null,
+        private readonly ?PageRevisionAuditLog $audit = null,
+        ?callable $errorReporter = null,
+        private readonly bool $revisionOperationsAvailable = false,
     ) {
         $this->contextResolver = $contextResolver;
+        $this->errorReporter = $errorReporter;
     }
 
-    public function saveDraft(string $id, string $json, ?string $ifMatch): array
+    /** @param string|null $reason 'edit' (default) or 'autosave'; autosave never publishes. */
+    public function saveDraft(string $id, string $json, ?string $ifMatch, ?string $reason = null): array
     {
-        if ($ifMatch === null || !preg_match('/^"([0-9]+)"$/', $ifMatch, $match)) {
+        if ($ifMatch === null || !preg_match('/^"([0-9]{1,10})"$/', $ifMatch, $match)) {
             return $this->errorResponse('PRECONDITION_REQUIRED', 'A quoted revision is required in If-Match', 428);
         }
+        $reason ??= 'edit';
+        if (!in_array($reason, ['edit', 'autosave'], true)) {
+            return $this->errorResponse('VALIDATION_FAILED', 'Save reason must be edit or autosave', 422);
+        }
+        $action = $reason === 'autosave' ? 'autosave' : 'save';
+        $context = null;
         try {
             $context = $this->resolveContext();
             if ($context->siteId !== $this->siteId || !in_array('pages.update', $context->capabilities, true)
                 || !$this->authorization->canUpdate($context, $id)) {
-                return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
+                return $this->audited($id, $action, 'denied', $context,
+                    $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403));
             }
             $document = DocumentEnvelope::fromJson($json);
             if ($document->documentId !== $id) {
@@ -68,29 +85,33 @@ final class EditorApiController
             if ($this->savePageDraft === null) {
                 throw new RuntimeException('Draft storage unavailable');
             }
-            $revision = $this->savePageDraft->execute($document, (int) $match[1], $context->actorId);
+            $revision = $this->savePageDraft->execute($document, (int) $match[1], $context->actorId, $reason);
             return ['success' => true, 'data' => ['revision' => $revision, 'etag' => '"' . $revision . '"']];
         } catch (PageRevisionConflict $conflict) {
-            return $this->errorResponse('REVISION_CONFLICT', 'Draft revision has changed', 412, [
-                'currentRevision' => (string) $conflict->currentRevision,
-            ]);
+            return $this->audited($id, $action, 'conflict', $context,
+                $this->errorResponse('REVISION_CONFLICT', 'Draft revision has changed', 412, [
+                    'currentRevision' => (string) $conflict->currentRevision,
+                ]));
         } catch (EditorAccessDenied $denied) {
             return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
         } catch (InvalidArgumentException $invalid) {
             return $this->errorResponse('VALIDATION_FAILED', $invalid->getMessage(), 422);
         } catch (Throwable $error) {
-            return $this->errorResponse('SAVE_FAILED', 'Unable to save draft', 500);
+            return $this->audited($id, $action, 'failed', $context,
+                $this->reported($error, $this->errorResponse('SAVE_FAILED', 'Unable to save draft', 500)));
         }
     }
 
     public function publishRevision(string $id, string $json, ?string $idempotencyKey): array
     {
+        $context = null;
         try {
             $context = $this->resolveContext();
             if ($context->siteId !== $this->siteId || !in_array('pages.publish', $context->capabilities, true)
                 || $this->publicationAuthorization === null
                 || !$this->publicationAuthorization->canPublish($context, $id)) {
-                return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
+                return $this->audited($id, 'publish', 'denied', $context,
+                    $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403));
             }
             if ($this->publishPageRevision === null) {
                 throw new RuntimeException('Publication storage unavailable');
@@ -108,20 +129,28 @@ final class EditorApiController
             if (!is_object($payload) || !is_int($payload->revision ?? null) || $payload->revision < 1) {
                 throw new InvalidArgumentException('A positive revision is required');
             }
-            $revisionId = $this->publishPageRevision->execute($id, $payload->revision, $idempotencyKey);
+            $revisionId = $this->publishPageRevision->execute($id, $payload->revision, $idempotencyKey, $context->actorId);
             return ['success' => true, 'data' => ['revision' => $payload->revision, 'revisionId' => $revisionId]];
         } catch (PageRevisionConflict $conflict) {
-            return $this->errorResponse('REVISION_CONFLICT', 'Draft revision has changed', 409, [
-                'currentRevision' => (string) $conflict->currentRevision,
-            ]);
+            return $this->audited($id, 'publish', 'conflict', $context,
+                $this->errorResponse('REVISION_CONFLICT', 'Draft revision has changed', 409, [
+                    'currentRevision' => (string) $conflict->currentRevision,
+                ]));
+        } catch (PublicContentDrift $drift) {
+            return $this->audited($id, 'publish', 'conflict', $context,
+                $this->errorResponse('PUBLIC_CONTENT_DRIFT', 'Public content changed outside the revision system; reconcile it before publishing', 409));
+        } catch (PageRevisionNotFound $missing) {
+            return $this->errorResponse('REVISION_NOT_FOUND', 'Page revision unavailable', 404);
         } catch (PagePublicationKeyConflict $conflict) {
-            return $this->errorResponse('IDEMPOTENCY_CONFLICT', 'Idempotency key belongs to another publication', 409);
+            return $this->audited($id, 'publish', 'conflict', $context,
+                $this->errorResponse('IDEMPOTENCY_CONFLICT', 'Idempotency key belongs to another publication', 409));
         } catch (EditorAccessDenied $denied) {
             return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
         } catch (\JsonException|InvalidArgumentException $invalid) {
             return $this->errorResponse('VALIDATION_FAILED', 'Invalid publication request', 422);
         } catch (Throwable $error) {
-            return $this->errorResponse('PUBLISH_FAILED', 'Unable to publish revision', 500);
+            return $this->audited($id, 'publish', 'failed', $context,
+                $this->reported($error, $this->errorResponse('PUBLISH_FAILED', 'Unable to publish revision', 500)));
         }
     }
 
@@ -145,6 +174,7 @@ final class EditorApiController
                 'id' => $row['id'], 'revision' => (int) $row['revision'],
                 'authorId' => $row['author_id'], 'reason' => $row['reason'],
                 'createdAt' => $row['created_at'], 'hash' => $row['content_hash'],
+                'pinned' => (bool) (int) ($row['pinned'] ?? 0),
             ], $revisions)]];
         } catch (EditorAccessDenied $denied) {
             return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
@@ -216,7 +246,8 @@ final class EditorApiController
                 $context,
                 $this->catalogue,
                 $this->savePageDraft !== null && $this->revisionDb !== null,
-                $this->publishPageRevision !== null && $this->publicationAuthorization !== null
+                $this->publishPageRevision !== null && $this->publicationAuthorization !== null,
+                $this->revisionOperationsAvailable
             );
             return [
                 'success' => true,
@@ -396,6 +427,28 @@ final class EditorApiController
      * @param array<string, string> $fieldErrors
      * @return array<string, mixed>
      */
+    /** Best-effort audit of a denied/conflicting/failed attempt on an existing page. */
+    private function audited(string $pageId, string $action, string $result, ?HostContext $context, array $response): array
+    {
+        if ($this->audit !== null && $this->pages->findById($pageId) !== null) {
+            $this->audit->recordQuietly($pageId, $action, $result, $context?->actorId, [], $response['error']['requestId'] ?? null);
+        }
+        return $response;
+    }
+
+    /** Hands a server error to the host reporter with the requestId the client received. */
+    private function reported(Throwable $error, array $response): array
+    {
+        if ($this->errorReporter !== null) {
+            try {
+                ($this->errorReporter)($response['error']['requestId'], $error);
+            } catch (Throwable) {
+                // Reporting must never change the response.
+            }
+        }
+        return $response;
+    }
+
     private function errorResponse(string $code, string $message, int $status, array $fieldErrors = []): array
     {
         $error = EditorError::create($code, $message, $fieldErrors);
