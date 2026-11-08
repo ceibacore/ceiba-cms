@@ -6,6 +6,8 @@ namespace LemurCms\PageBuilder\Presentation\Api;
 use InvalidArgumentException;
 use LemurCms\Media\Domain\Repository\MediaRepositoryInterface;
 use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
+use LemurCms\Page\Application\SavePageDraft;
+use LemurCms\Page\Application\PageRevisionConflict;
 use LemurCms\PageBuilder\Application\ValidatePageDocument;
 use LemurCms\PageBuilder\Domain\Catalogue\ComponentCatalogue;
 use LemurCms\PageBuilder\Domain\Contract\DocumentAuthorization;
@@ -14,6 +16,7 @@ use LemurCms\PageBuilder\Domain\Document\DocumentMigrator;
 use LemurCms\PageBuilder\Domain\Document\HostContext;
 use RuntimeException;
 use Throwable;
+use LemurDB;
 
 /**
  * Controller exposing the versioned editor API under a configurable prefix.
@@ -36,8 +39,105 @@ final class EditorApiController
         private readonly ValidatePageDocument $validator,
         private readonly ComponentCatalogue $catalogue,
         ?callable $contextResolver = null,
+        private readonly ?SavePageDraft $savePageDraft = null,
+        private readonly ?LemurDB $revisionDb = null,
     ) {
         $this->contextResolver = $contextResolver;
+    }
+
+    public function saveDraft(string $id, string $json, ?string $ifMatch): array
+    {
+        if ($ifMatch === null || !preg_match('/^"([0-9]+)"$/', $ifMatch, $match)) {
+            return $this->errorResponse('PRECONDITION_REQUIRED', 'A quoted revision is required in If-Match', 428);
+        }
+        try {
+            $context = $this->resolveContext();
+            if ($context->siteId !== $this->siteId || !in_array('pages.update', $context->capabilities, true)
+                || !$this->authorization->canUpdate($context, $id)) {
+                return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
+            }
+            $document = DocumentEnvelope::fromJson($json);
+            if ($document->documentId !== $id) {
+                throw new InvalidArgumentException('Document ID does not match the page');
+            }
+            if ($this->savePageDraft === null) {
+                throw new RuntimeException('Draft storage unavailable');
+            }
+            $revision = $this->savePageDraft->execute($document, (int) $match[1], $context->actorId);
+            return ['success' => true, 'data' => ['revision' => $revision, 'etag' => '"' . $revision . '"']];
+        } catch (PageRevisionConflict $conflict) {
+            return $this->errorResponse('REVISION_CONFLICT', 'Draft revision has changed', 412, [
+                'currentRevision' => (string) $conflict->currentRevision,
+            ]);
+        } catch (EditorAccessDenied $denied) {
+            return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
+        } catch (InvalidArgumentException $invalid) {
+            return $this->errorResponse('VALIDATION_FAILED', $invalid->getMessage(), 422);
+        } catch (Throwable $error) {
+            return $this->errorResponse('SAVE_FAILED', 'Unable to save draft', 500);
+        }
+    }
+
+    public function draftHistory(string $id, int $limit = 20, int $offset = 0): array
+    {
+        try {
+            $context = $this->resolveContext();
+            if ($context->siteId !== $this->siteId || !in_array('pages.read', $context->capabilities, true)) {
+                return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
+            }
+            if ($limit < 1 || $limit > 100 || $offset < 0) {
+                throw new InvalidArgumentException('Invalid history pagination');
+            }
+            if ($this->revisionDb === null || $this->pages->findById($id) === null) {
+                return $this->errorResponse('PAGE_NOT_FOUND', 'Page unavailable', 404);
+            }
+            $revisions = $this->revisionDb->query('page_revisions')
+                ->where(['page_id' => $id, 'site_id' => $context->siteId])
+                ->orderBy('revision', 'DESC')->limit($limit, $offset)->get();
+            return ['success' => true, 'data' => ['revisions' => array_map(static fn (array $row): array => [
+                'id' => $row['id'], 'revision' => (int) $row['revision'],
+                'authorId' => $row['author_id'], 'reason' => $row['reason'],
+                'createdAt' => $row['created_at'], 'hash' => $row['content_hash'],
+            ], $revisions)]];
+        } catch (EditorAccessDenied $denied) {
+            return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
+        } catch (InvalidArgumentException $invalid) {
+            return $this->errorResponse('VALIDATION_FAILED', $invalid->getMessage(), 422);
+        } catch (Throwable $error) {
+            return $this->errorResponse('HISTORY_ERROR', 'Unable to load history', 500);
+        }
+    }
+
+    public function showDraft(string $id): array
+    {
+        try {
+            $context = $this->resolveContext();
+            if ($context->siteId !== $this->siteId || !in_array('pages.read', $context->capabilities, true)) {
+                return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
+            }
+            if ($this->revisionDb === null || $this->pages->findById($id) === null) {
+                return $this->errorResponse('PAGE_NOT_FOUND', 'Page unavailable', 404);
+            }
+            $head = $this->revisionDb->query('page_revision_heads')->where(['page_id' => $id])->first();
+            $revisionId = $head['draft_revision_id'] ?? $head['published_revision_id'] ?? null;
+            if ($revisionId === null) {
+                return $this->errorResponse('REVISION_NOT_FOUND', 'Page revision unavailable', 404);
+            }
+            $row = $this->revisionDb->query('page_revisions')
+                ->where(['id' => $revisionId, 'page_id' => $id, 'site_id' => $context->siteId])->first();
+            if ($row === null) {
+                return $this->errorResponse('REVISION_NOT_FOUND', 'Page revision unavailable', 404);
+            }
+            $revision = (int) $row['revision'];
+            return ['success' => true, 'data' => [
+                'revision' => $revision, 'etag' => '"' . $revision . '"',
+                'snapshot' => json_decode($row['snapshot'], true, 512, JSON_THROW_ON_ERROR),
+            ]];
+        } catch (EditorAccessDenied $denied) {
+            return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
+        } catch (Throwable $error) {
+            return $this->errorResponse('LOAD_ERROR', 'Unable to load draft', 500);
+        }
     }
 
     /**

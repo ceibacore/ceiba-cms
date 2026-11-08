@@ -83,6 +83,7 @@ require_once __DIR__ . '/src/Page/Application/GetPageById.php';
 require_once __DIR__ . '/src/Page/Application/CreatePage.php';
 require_once __DIR__ . '/src/Page/Application/UpdatePage.php';
 require_once __DIR__ . '/src/Page/Application/InitializePageRevisions.php';
+require_once __DIR__ . '/src/Page/Application/SavePageDraft.php';
 require_once __DIR__ . '/src/Page/Application/PublishPage.php';
 require_once __DIR__ . '/src/Page/Application/DeletePage.php';
 require_once __DIR__ . '/src/Page/Application/ListPages.php';
@@ -485,7 +486,9 @@ $editorApiController       = new \LemurCms\PageBuilder\Presentation\Api\EditorAp
             }
         }
         return new \LemurCms\PageBuilder\Domain\Document\HostContext($siteId, $actorId, 'es', $capabilities);
-    }
+    },
+    new \LemurCms\Page\Application\SavePageDraft($db, $siteId),
+    $db
 );
 
 

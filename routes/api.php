@@ -122,6 +122,41 @@ $router->post("{$builderPrefix}/pages/{id}/validate", function (string $id) use 
     echo json_encode($res, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 }, 'builder.pages.validate')->middleware('auth');
 
+$router->put("{$builderPrefix}/pages/{id}/draft", function (string $id) use ($editorApiController) {
+    header('Content-Type: application/json');
+    $response = $editorApiController->saveDraft(
+        $id,
+        (string) file_get_contents('php://input'),
+        $_SERVER['HTTP_IF_MATCH'] ?? null
+    );
+    http_response_code($response['status'] ?? 200);
+    if (isset($response['data']['etag'])) {
+        header('ETag: ' . $response['data']['etag']);
+    }
+    echo json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}, 'builder.pages.draft')->middleware('auth');
+
+$router->get("{$builderPrefix}/pages/{id}/draft", function (string $id) use ($editorApiController) {
+    header('Content-Type: application/json');
+    $response = $editorApiController->showDraft($id);
+    http_response_code($response['status'] ?? 200);
+    if (isset($response['data']['etag'])) {
+        header('ETag: ' . $response['data']['etag']);
+    }
+    echo json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}, 'builder.pages.draft.show')->middleware('auth');
+
+$router->get("{$builderPrefix}/pages/{id}/history", function (string $id) use ($editorApiController) {
+    header('Content-Type: application/json');
+    $response = $editorApiController->draftHistory(
+        $id,
+        (int) ($_GET['limit'] ?? 20),
+        (int) ($_GET['offset'] ?? 0)
+    );
+    http_response_code($response['status'] ?? 200);
+    echo json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}, 'builder.pages.history')->middleware('auth');
+
 $router->post("{$builderPrefix}/pages/{id}/migrate", function (string $id) use ($editorApiController) {
     header('Content-Type: application/json');
     $res = $editorApiController->migratePage($id);
