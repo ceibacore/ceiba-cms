@@ -165,7 +165,7 @@ final class EditorApiController
     {
         try {
             $context = $this->resolveContext($headers);
-            $negotiated = NegotiatedCapabilities::negotiate($context, $this->catalogue);
+            $negotiated = NegotiatedCapabilities::negotiate($context, $this->catalogue, $this->savePageDraft !== null && $this->revisionDb !== null);
             return [
                 'success' => true,
                 'data'    => $negotiated->toArray(),
