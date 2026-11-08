@@ -246,6 +246,18 @@ final class MariaDbRevisionContractTest extends TestCase
         self::assertSame(['like-5'], $ids($list->execute(null, "it's")));
     }
 
+    public function testTranslationsOrderByReservedColumnsOnMariaDb(): void
+    {
+        $p = self::$prefix;
+        self::$db->pdo()->exec("INSERT INTO {$p}languages (id, code, label, is_active, is_default, created_at, updated_at) VALUES ('lang-ct', 'ct', 'Contract', 1, 0, NOW(), NOW())");
+        $insert = self::$db->pdo()->prepare("INSERT INTO {$p}translations (id, language_id, `group`, `key`, value, created_at, updated_at) VALUES (?, 'lang-ct', ?, ?, ?, NOW(), NOW())");
+        foreach ([['t1', 'general', 'z', 'Z'], ['t2', 'auth', 'b', 'B'], ['t3', 'general', 'a', 'A'], ['t4', 'auth', 'a', 'A2']] as $row) {
+            $insert->execute($row);
+        }
+        $rows = (new \LemurCms\Localization\Infrastructure\LemurDbTranslationRepository(self::$db))->getTranslationsForLanguage('lang-ct');
+        self::assertSame(['t4', 't2', 't3', 't1'], array_column($rows, 'id'));
+    }
+
     private function page(string $id, string $content, string $status = 'published'): void
     {
         (new CreatePage(self::$db, 'site-1'))->execute(

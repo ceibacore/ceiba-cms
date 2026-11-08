@@ -13,11 +13,12 @@ final class LemurDbTranslationRepository implements TranslationRepositoryInterfa
 
     public function getTranslationsForLanguage(string $languageId): array
     {
-        return $this->db->query('translations')
-            ->where(['language_id' => $languageId])
-            ->orderBy('group', 'ASC')
-            ->orderBy('key', 'ASC')
-            ->get();
+        // `group` and `key` are reserved words, and the query builder keeps only the
+        // last orderBy(); use explicit, quoted multi-column ordering.
+        $query = $this->db->pdo()->prepare("SELECT * FROM `{$this->db->getPrefix()}translations`
+            WHERE `language_id` = ? ORDER BY `group` ASC, `key` ASC");
+        $query->execute([$languageId]);
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function updateTranslationsForLanguage(string $languageId, array $translations): void

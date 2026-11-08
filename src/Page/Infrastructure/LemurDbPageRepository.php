@@ -40,17 +40,26 @@ final class LemurDbPageRepository implements PageRepositoryInterface, Administra
 
     public function findAdministrative(?string $status, ?string $search, int $limit, int $offset): array
     {
-        $query = $this->db->query('pages');
+        // Explicit SQL: the query builder keeps only the last orderBy(), and the listing
+        // needs a deterministic two-column order.
+        $where = [];
+        $params = [];
         if ($status !== null) {
-            $query->where(['status' => $status]);
+            $where[] = '`status` = ?';
+            $params[] = $status;
         }
         if ($search !== null && $search !== '') {
             // '!' escape is portable across SQLite and MySQL/MariaDB.
             $pattern = '%' . str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $search) . '%';
-            $query->whereRaw("(title LIKE ? ESCAPE '!' OR slug LIKE ? ESCAPE '!')", [$pattern, $pattern]);
+            $where[] = "(`title` LIKE ? ESCAPE '!' OR `slug` LIKE ? ESCAPE '!')";
+            array_push($params, $pattern, $pattern);
         }
-        $rows = $query->orderBy('sort_order', 'ASC')->orderBy('id', 'ASC')->limit($limit, $offset)->get();
-        return array_map([$this, 'decodePage'], $rows);
+        $sql = "SELECT * FROM `{$this->db->getPrefix()}pages`"
+            . ($where === [] ? '' : ' WHERE ' . implode(' AND ', $where))
+            . ' ORDER BY `sort_order` ASC, `id` ASC LIMIT ' . max(0, $limit) . ' OFFSET ' . max(0, $offset);
+        $query = $this->db->pdo()->prepare($sql);
+        $query->execute($params);
+        return array_map([$this, 'decodePage'], $query->fetchAll(\PDO::FETCH_ASSOC));
     }
 
     public function save(array $data): string
