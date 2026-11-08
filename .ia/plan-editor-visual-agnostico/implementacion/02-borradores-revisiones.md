@@ -1,33 +1,59 @@
 # Implementación 02: borradores, revisiones y publicación
 
-Estado: en desarrollo. Cada entrega debe conservar la lectura pública existente hasta que las pruebas demuestren equivalencia.
+Estado: **completado** (2026-11-07). Sin compatibilidad heredada: el sistema está en desarrollo y no tiene clientes, así que todo el contenido de página es versionado desde su creación. Verificado en SQLite, en MariaDB 11.8 con las migraciones reales y de extremo a extremo desde Campus.
 
-## Decisiones para esta implementación
+## Modelo
 
-- Las revisiones viven en una tabla propia. El contenido actual de `pages` continúa siendo la fuente pública durante la transición.
-- La migración de esquema es aditiva y corre con el mecanismo existente del host en cada conexión autorizada.
-- La copia de páginas existentes a revisiones es una operación explícita, reanudable e idempotente. No se ejecuta al construir servicios ni al recibir una petición.
-- Los snapshots guardan JSON exacto, versión de esquema, hash SHA-256, autor, fecha y motivo. Los punteros de trabajo y publicación se agregan en una tabla auxiliar para evitar alterar consumidores antiguos de `pages`.
-- Toda escritura compara la revisión esperada y guarda snapshot y puntero dentro de una transacción de la conexión del sitio.
-- Una edición guarda borrador. Publicar una revisión exacta actualiza el contenido visible solo después de comprobar permisos y revisión.
+- **Toda página nace versionada.** `CreatePage` crea en una sola transacción la fila de `pages`, la revisión 1 (documento canónico v1), la cabecera de revisiones, la entrada de auditoría y, si nace publicada, el evento del outbox.
+- **El contenido solo cambia mediante revisiones:** `SavePageContent` (árbol del editor o HTML → documento canónico; guardar contenido idéntico no crea revisión) o `SavePageDraft` (documento ya canónico). Ambos usan concurrencia optimista (`If-Match`/`draft_revision`).
+- **`UpdatePage` solo modifica metadatos.** Rechaza `content`, `published_at` e `id`, y solo permite pasar de `draft` a `archived` y viceversa en páginas no publicadas.
+- **La publicación solo cambia mediante `PublishPage`** (publica el borrador de trabajo), `PublishPageRevision` (una revisión exacta, idempotente) y `UnpublishPage`.
+- `pages.content` contiene siempre el JSON canónico de la revisión publicada; para páginas nunca publicadas, el de la revisión inicial. La lectura pública (`findBySlug`, `findPublished`) no cambia.
+- **Integridad:** si `pages.content` se modifica por fuera (SQL directo, importación externa), la publicación se rechaza con `PUBLIC_CONTENT_DRIFT`. `ReconcilePageContent` conserva ese contenido como borrador nuevo sin perder el anterior.
+- `GetPageWorkingRevision` entrega al editor la revisión de trabajo, su ETag, la revisión publicada y si hay cambios sin publicar.
+- Se eliminaron el inicializador de backfill, los snapshots de esquema 0 y la captura «legacy». Las revisiones solo admiten el esquema 1.
+- Migraciones reseteadas: `20261107000000_create_page_revision_tables` crea en una sola migración revisiones, cabeceras, outbox (`sequence` como clave primaria para FIFO), auditoría y tokens de preview. `20260522000013` ya no fija el nombre de su constraint, así que varias instalaciones pueden compartir base de datos.
+- Todas las rutas mutantes del adaptador HTTP del módulo exigen `auth` + `csrf`.
 
-## Entregas
+## API (prefijo configurable, por defecto `/api/builder/v1`)
 
-1. **Esquema aditivo:** tabla `page_revisions`, tabla `page_revision_heads` con punteros draft/published, índices e identificadores únicos por página y número. Probar SQL generado y rollback de las dos tablas.
-2. **Inicializador explícito:** caso de uso que recorre páginas por lotes, crea la revisión inicial preservando status y contenido, calcula hash y fija los punteros. Repetir o reanudar no duplica snapshots. Reporta inválidos sin perder el original.
-3. **Lectura administrativa:** listar páginas borrador con filtros y paginación. Mantener `findBySlug` y `findPublished` apuntando al contenido público actual.
-4. **Guardado con concurrencia:** guardar una revisión nueva con `expectedRevision`; crear snapshot y mover puntero en transacción. Responder conflicto si el puntero cambió.
-5. **Autosave e historial:** endpoints autenticados, historial paginado y comparación por snapshot. Ninguna escritura de autosave cambia la publicación.
-6. **Restaurar y publicar:** restaurar crea nueva revisión. Publicación refiere una revisión concreta, actualiza el snapshot público y es atómica e idempotente.
-7. **Operación:** auditoría, retención que preserve publicaciones fijadas, métricas, respaldo, recuperación y prueba de aislamiento entre dos conexiones tenant.
+Todas las mutaciones exigen `auth` + `csrf`; cada operación exige la capacidad del contexto **y** la política del host (`RevisionOperationAuthorization`).
 
-## Estado de entregas
+| Método y ruta | Capacidad / permiso CMS | Notas |
+|---|---|---|
+| `PUT pages/{id}/draft[?reason=autosave]` | `pages.update` | `If-Match: "n"`; 428 sin él, 412 si está obsoleto |
+| `POST pages/{id}/publish-revision` | `pages.publish` | `Idempotency-Key`; 409 `PUBLIC_CONTENT_DRIFT` o `REVISION_CONFLICT` |
+| `POST pages/{id}/restore` | `pages.restore` | Cuerpo `{"sourceRevision":n}` + `If-Match` |
+| `POST pages/{id}/reconcile` | `pages.update` | `If-Match`; idempotente si no hay divergencia |
+| `POST pages/{id}/unpublish` | `pages.unpublish` | `Idempotency-Key`; la revisión retirada pasa a ser el borrador de trabajo |
+| `GET pages/{id}/revisions/{n}` | `pages.read` | Preview autenticado; `no-store` |
+| `POST/DELETE pages/{id}/preview-tokens[/{tokenId}]` | `pages.update` | TTL 60–3600 s; máximo 50 activos por página; solo se guarda el SHA-256 |
+| `GET preview/{token}` | público | Ligado a sitio, página y revisión; `no-store`, `noindex`, `no-referrer` |
+| `PUT/DELETE pages/{id}/revisions/{n}/pin` | `pages.publish` | Protege la revisión de la retención |
+| `GET pages/{id}/audit` | `pages.publish` | Orden estricto (ID autoincremental) |
 
-- **1 Esquema aditivo:** implementado y probado a nivel de SQL generado y rollback.
-- **2 Inicializador explícito:** implementado y probado en SQLite. Lee por lotes, conserva contenido/status, crea un snapshot inicial, fija el puntero según estado, reporta fallos por página y omite páginas ya inicializadas.
+Los errores 500 devuelven un mensaje genérico con `requestId`; el host recibe la excepción con ese mismo `requestId` mediante el reporter (por defecto `error_log`).
 
-- **3 Lectura administrativa:** caso de uso disponible en el contenedor.
-- **6 Restauración:** caso de uso que crea un borrador nuevo desde una revisión anterior, conservando el snapshot fuente y la publicación. Publicación atómica pendiente.
-- **4 Guardado con concurrencia:** caso de uso PHP verificado con SQLite (guardado, conflicto y rollback). En una instancia MariaDB temporal se verificaron la migración, la inicialización, la edición desde la revisión publicada y el rechazo de una segunda escritura obsoleta. La integración HTTP está disponible mediante rutas de borrador e historial. El autosave del editor de Campus queda pendiente de adaptación de su cliente.
+## Runbook operativo por tenant
 
-La inicialización sigue siendo explícita. El host debe ejecutar la migración antes de invocar `initializePageRevisions` en la conexión tenant correspondiente.
+1. **Migrar** con el runner del host (Campus: `CmsWrapper::initializeTenant` o `php artisan lemur:cms-migrate`). En entornos de desarrollo con datos anteriores, usar `refresh`.
+2. **Permisos:** `SystemPermissionsSeeder` y `SystemRolesSeeder` crean `pages.restore` y `pages.unpublish`. El rol editor recibe `pages.restore`, pero no `pages.publish` ni `pages.unpublish`.
+3. **Worker del outbox:** el host implementa `PublicationEventHandler` (idempotente por `event->id`) y ejecuta periódicamente `useCases.createPublicationOutboxDispatcher($handler)->execute()`. El FIFO por página es estricto, de modo que un evento en dead-letter bloquea los posteriores de esa página hasta `requeueFailed()`.
+4. **Retención (cron, nunca vía web):** `useCases.purgePageRevisions->execute($policy)` en dry-run; después `execute($policy, false, 'ops:<usuario>')`. Primero archiva en `REVISION_ARCHIVE_PATH` y, si el archivo falla, no borra nada.
+5. **Monitorización:** `useCases.pageRevisionMetrics->snapshot()`. Alertas sugeridas: `outboxDeadLettered > 0`, el retraso del outbox y el crecimiento de `conflicts` o `denied`.
+6. **Divergencia:** ante `PUBLIC_CONTENT_DRIFT`, revisar el historial y ejecutar `reconcile`.
+7. **Identidad de sitio:** el host fija `CMS_SITE_ID` en cada arranque (Campus: `tenant-<id>` o `central`). Esa variable es estado global del proceso y no debe heredarse entre tenants.
+
+## Evidencia de verificación
+
+- Módulo, suite completa con MariaDB temporal: **690 pruebas, 2.442 aserciones, en verde**. La única deprecación es previa, en `HtmlImporter.php:120`.
+- Contrato MariaDB (`MariaDbRevisionContractTest`, opt-in con `CMS_CONTRACT_DB_*`): migraciones reales, ciclo completo, republicación idéntica, bloqueo entre conexiones, retención, FIFO, rollback y reaplicación, y escape de `LIKE`. También se verificó que dos prefijos conviven en la misma base de datos (19 migraciones cada uno).
+- Arranque sin autoload de Composer: carga completa, 0 rutas mutantes sin CSRF, y crear, guardar y publicar funciona de extremo a extremo.
+- Campus (`tests/Feature/Admin/CmsPageRevisionFlowTest.php`, opt-in): flujo HTTP real contra MariaDB, con 66 aserciones.
+
+## Hallazgos previos fuera de alcance
+
+1. `tests/TestCase.php` del módulo contiene credenciales por defecto de MySQL y espera un servidor en `127.0.0.1:3307`. Sin él, esas pruebas tardan hasta el timeout de conexión.
+2. Campus: 59 claves `controllers.*` no tenían fichero de idioma. Se añadió el grupo `page`; el resto sigue mostrando la clave en bruto.
+3. Campus: 3 pruebas fallan ya en el `HEAD` limpio (`InternalSsoTest` ×2 y `MarketplaceIntegrationTest`); no están relacionadas con el CMS.
+4. Campus: ESLint y Prettier no tienen configuración válida (no hay `eslint.config.js` ni plugin de Svelte para Prettier).
