@@ -27,6 +27,7 @@ final class RestorePageRevisionTest extends TestCase
         $insert->execute(['source', 'page-1', 'site-1', 1, 1, $source, hash('sha256', $source), 'actor', 'initial', '2026-11-07 10:00:00']);
         $insert->execute(['current', 'page-1', 'site-1', 2, 1, str_replace('Old', 'Current', $source), 'hash', 'actor', 'edit', '2026-11-07 11:00:00']);
         $pdo->exec("INSERT INTO {$prefix}page_revision_heads VALUES ('page-1','current','source',3,'2026-11-07 11:00:00')");
+        \LemurCms\Tests\Support\RevisionSchema::upgradeMinimalFixture($db);
 
         $revision = (new RestorePageRevision($db, 'site-1', new SavePageDraft($db, 'site-1')))
             ->execute('page-1', 1, 2, 'actor');

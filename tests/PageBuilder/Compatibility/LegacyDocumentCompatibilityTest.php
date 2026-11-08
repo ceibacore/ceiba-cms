@@ -5,12 +5,12 @@ namespace LemurCms\Tests\PageBuilder\Compatibility;
 
 use InvalidArgumentException;
 use LemurCms\Page\Application\CreatePage;
-use LemurCms\Page\Application\UpdatePage;
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
+use LemurCms\Page\Application\SavePageContent;
+use LemurCms\Page\Application\SavePageDraft;
+use LemurCms\Tests\Support\RevisionSchema;
 use LemurCms\PageBuilder\Domain\Entity\Node;
 use LemurCms\PageBuilder\Domain\Service\BladeRenderer;
 use LemurCms\PageBuilder\Domain\Service\LoopResolver;
-use LemurCms\PageBuilder\Domain\Service\TreeNormalizer;
 use LemurCms\PageBuilder\Domain\Service\TreeValidator;
 use LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
 use LemurCms\PageBuilder\Domain\Service\VariableInterpolator;
@@ -29,28 +29,41 @@ final class LegacyDocumentCompatibilityTest extends TestCase
     }
 
     #[DataProvider('legacyTrees')]
-    public function testDirectCreateAndUpdatePreserveLegacyPayloads(array $tree): void
+    public function testCreateAndSaveKeepEditorPayloadsWithoutLoss(array $tree): void
     {
-        $this->assertSavedWithoutChanges($tree);
+        $this->savedCanonicalTree($tree);
     }
 
-    private function assertSavedWithoutChanges(array $tree): void
+    /**
+     * Creates the page through CreatePage, saves the same tree again through
+     * SavePageContent and returns the canonical root stored in the revisions.
+     * Fails if saving is not stable or loses any scalar value of the editor tree.
+     */
+    private function savedCanonicalTree(array $tree): array
     {
-        $payload = ['title' => 'Compatibility fixture', 'content' => $tree];
-        $repo = $this->createMock(PageRepositoryInterface::class);
-        $repo->method('findById')->with('page-fixture')->willReturn($payload);
-        $saved = [];
-        $repo->expects(self::exactly(2))->method('save')
-            ->willReturnCallback(static function (array $data) use (&$saved): string {
-                $saved[] = $data;
-                return 'page-fixture';
+        $db = RevisionSchema::create();
+        $id = (new CreatePage($db, 'site-1'))->execute(['title' => 'Compatibility fixture', 'slug' => 'fixture', 'content' => $tree]);
+        (new SavePageContent(new SavePageDraft($db, 'site-1')))->execute($id, $tree, 1, 'editor-1');
+        $roots = array_map(static fn (string $snapshot) => json_decode($snapshot, true)['root'],
+            $db->pdo()->query("SELECT snapshot FROM {$db->getPrefix()}page_revisions ORDER BY revision")->fetchAll(\PDO::FETCH_COLUMN));
+        self::assertCount(2, $roots);
+        self::assertSame($roots[0], $roots[1], 'Saving the same tree twice must be stable');
+        self::assertSame($roots[0], json_decode($db->pdo()->query("SELECT content FROM {$db->getPrefix()}pages")->fetchColumn(), true));
+        $scalars = static function (array $node) use (&$scalars): array {
+            $values = [];
+            array_walk_recursive($node, static function ($value) use (&$values): void {
+                if ($value !== null && $value !== '' && !is_bool($value)) {
+                    $values[] = (string) $value;
+                }
             });
-
-        self::assertSame('page-fixture', (new CreatePage($repo, new TreeNormalizer()))->execute($payload));
-        (new UpdatePage($repo, new TreeNormalizer()))->execute('page-fixture', $payload);
-
-        self::assertSame($payload, $saved[0]);
-        self::assertSame($payload + ['id' => 'page-fixture'], $saved[1]);
+            return $values;
+        };
+        $stored = json_encode($roots[0], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        foreach ($scalars($tree) as $value) {
+            // Compare in JSON-escaped form so quotes and backslashes match the stored encoding.
+            self::assertStringContainsString(trim(json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"'), $stored);
+        }
+        return $roots[0];
     }
 
     public function testCampusIdentifiersAreNotCurrentlyAcceptedByNode(): void
@@ -91,9 +104,9 @@ final class LegacyDocumentCompatibilityTest extends TestCase
             $tree = (new HtmlImporter($framework))->import($html)->toArray()['tree'];
             self::assertSame([], (new TreeValidator())->validate($tree));
             self::assertNotEmpty(Node::fromArray($tree[0])->id);
-            $this->assertSavedWithoutChanges($tree);
+            $stored = $this->savedCanonicalTree($tree);
             $rendered = new \DOMDocument();
-            $rendered->loadHTML($this->renderer($framework)->renderPage($tree), LIBXML_NOERROR);
+            $rendered->loadHTML($this->renderer($framework)->renderPage($stored), LIBXML_NOERROR);
             $xpath = new \DOMXPath($rendered);
             self::assertSame(1, $xpath->query('//section')->length);
             self::assertSame('Ejemplo', $xpath->evaluate('string(//section/h1)'));
@@ -102,12 +115,14 @@ final class LegacyDocumentCompatibilityTest extends TestCase
         }
     }
 
-    public function testDirectSavePreservesUnknownNestedExtensions(): void
+    public function testSavePreservesUnknownNestedExtensions(): void
     {
         $tree = self::fixture('campus-editor');
         $tree[0]['extension'] = ['version' => 2, 'enabled' => false];
         $tree[0]['children'][0]['extension'] = ['locale' => 'es', 'values' => [0, null, '']];
-        $this->assertSavedWithoutChanges($tree);
+        $stored = $this->savedCanonicalTree($tree);
+        self::assertSame(['version' => 2, 'enabled' => false], $stored[0]['extension']);
+        self::assertSame(['locale' => 'es', 'values' => [0, null, '']], $stored[0]['children'][0]['extension']);
     }
 
     private static function fixture(string $name): array

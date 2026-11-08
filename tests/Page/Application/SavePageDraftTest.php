@@ -93,6 +93,7 @@ final class SavePageDraftTest extends TestCase
         $pdo->exec("INSERT INTO {$prefix}page_revisions VALUES ('live-revision','page-1','site-1',1,0,'{}','hash',NULL,'initial','2026-11-07 10:00:00')");
         $pdo->prepare("INSERT INTO {$prefix}page_revision_heads VALUES ('page-1',?,'live-revision',?,'2026-11-07 10:00:00')")
             ->execute([$withDraft ? 'draft-2' : null, $withDraft ? 3 : 2]);
+        \LemurCms\Tests\Support\RevisionSchema::upgradeMinimalFixture($db);
         return [$db, $prefix];
     }
 

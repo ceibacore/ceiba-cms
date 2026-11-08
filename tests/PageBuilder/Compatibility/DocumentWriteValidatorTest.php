@@ -7,30 +7,32 @@ use InvalidArgumentException;
 use LemurCms\Page\Application\CreatePage;
 use LemurCms\Page\Application\UpdatePage;
 use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
-use LemurCms\PageBuilder\Domain\Service\TreeNormalizer;
 use LemurCms\PageBuilder\Domain\Document\DocumentEnvelope;
 use LemurCms\PageBuilder\Domain\Document\DocumentWriteValidator;
 use PHPUnit\Framework\TestCase;
 
 final class DocumentWriteValidatorTest extends TestCase
 {
-    public function testCreateRejectsRecursivePhpTreeBeforeNormalization(): void
+    public function testCreateRejectsRecursivePhpTreeAndWritesNothing(): void
     {
-        $repo = $this->createMock(PageRepositoryInterface::class);
-        $repo->expects(self::never())->method('save');
+        $db = \LemurCms\Tests\Support\RevisionSchema::create();
         $tree = [['type' => 'div', 'id' => 'node']];
         $tree[0]['children'] = &$tree;
-        $this->expectException(InvalidArgumentException::class);
-        (new CreatePage($repo, new TreeNormalizer()))->execute(['content' => $tree]);
+        try {
+            (new CreatePage($db, 'site-1'))->execute(['title' => 'X', 'slug' => 'x', 'content' => $tree]);
+            self::fail('Recursive tree accepted');
+        } catch (InvalidArgumentException) {
+        }
+        self::assertSame(0, (int) $db->pdo()->query("SELECT COUNT(*) FROM {$db->getPrefix()}pages")->fetchColumn());
     }
 
-    public function testUpdateRejectsDuplicateIdsInSerializedContentBeforeSave(): void
+    public function testUpdateNeverAcceptsContent(): void
     {
         $repo = $this->createMock(PageRepositoryInterface::class);
-        $repo->method('findById')->willReturn(['id' => 'page']);
-        $repo->expects(self::never())->method('save');
+        $repo->method('findById')->willReturn(['id' => 'page', 'status' => 'draft']);
+        $repo->expects(self::never())->method('update');
         $this->expectException(InvalidArgumentException::class);
-        (new UpdatePage($repo, new TreeNormalizer()))->execute('page', [
+        (new UpdatePage($repo))->execute('page', [
             'content' => '[{"type":"p","id":"shared"},{"type":"p","_id":"shared"}]',
         ]);
     }

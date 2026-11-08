@@ -26,6 +26,7 @@ final class PublishPageRevisionTest extends TestCase
         $pdo->prepare("INSERT INTO {$prefix}page_revisions VALUES ('r1','p','site',1,?)")->execute([$snapshot]);
         $pdo->prepare("INSERT INTO {$prefix}page_revisions VALUES ('r2','p','site',2,?)")->execute([$snapshot]);
         $pdo->prepare("INSERT INTO {$prefix}page_revisions VALUES ('r3','p','site',3,?)")->execute([$snapshot]);
+        \LemurCms\Tests\Support\RevisionSchema::upgradeMinimalFixture($db);
         $publish = new PublishPageRevision($db, 'site');
 
         try {
