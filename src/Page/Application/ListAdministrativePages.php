@@ -4,14 +4,14 @@ declare(strict_types=1);
 namespace LemurCms\Page\Application;
 
 use InvalidArgumentException;
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
+use LemurCms\Page\Domain\Repository\AdministrativePageReaderInterface;
 
 /** Administrative listing. The host must authorize the caller before invoking it. */
 final class ListAdministrativePages
 {
     private const STATUSES = ['draft', 'published', 'archived'];
 
-    public function __construct(private readonly PageRepositoryInterface $pages) {}
+    public function __construct(private readonly AdministrativePageReaderInterface $pages) {}
 
     public function execute(?string $status = null, ?string $search = null, int $limit = 50, int $offset = 0): array
     {

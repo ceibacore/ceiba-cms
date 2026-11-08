@@ -7,8 +7,6 @@ interface PageRepositoryInterface
 {
     public function findBySlug(string $slug): ?array;
     public function findPublished(int $limit, int $offset): array;
-    /** @return array<int, array<string, mixed>> */
-    public function findAdministrative(?string $status, ?string $search, int $limit, int $offset): array;
     public function findById(string $id): ?array;
     public function save(array $data): string;
     public function delete(string $id): void;

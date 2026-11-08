@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace LemurCms\Page\Infrastructure;
 
+use LemurCms\Page\Domain\Repository\AdministrativePageReaderInterface;
 use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
 use LemurDB;
 use LemurCms\Support\Helpers\UuidHelper;
@@ -11,7 +12,7 @@ use LemurCms\Support\Helpers\UuidHelper;
  * LemurDB adapter — concrete implementation of PageRepositoryInterface.
  * Inject via constructor in your bootstrap.
  */
-final class LemurDbPageRepository implements PageRepositoryInterface
+final class LemurDbPageRepository implements PageRepositoryInterface, AdministrativePageReaderInterface
 {
     public function __construct(private readonly \LemurDB $db) {}
 
@@ -44,7 +45,9 @@ final class LemurDbPageRepository implements PageRepositoryInterface
             $query->where(['status' => $status]);
         }
         if ($search !== null && $search !== '') {
-            $query->whereRaw('(title LIKE ? OR slug LIKE ?)', ['%' . $search . '%', '%' . $search . '%']);
+            // '!' escape is portable across SQLite and MySQL/MariaDB.
+            $pattern = '%' . str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $search) . '%';
+            $query->whereRaw("(title LIKE ? ESCAPE '!' OR slug LIKE ? ESCAPE '!')", [$pattern, $pattern]);
         }
         $rows = $query->orderBy('sort_order', 'ASC')->orderBy('id', 'ASC')->limit($limit, $offset)->get();
         return array_map([$this, 'decodePage'], $rows);
