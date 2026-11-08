@@ -558,6 +558,7 @@ return [
     'pageBuilderMetadataService' => $pageBuilderMetadataService,
     'useCases' => [
         'initializePageRevisions' => new \LemurCms\Page\Application\InitializePageRevisions($db, $siteId),
+        'savePageDraft' => new \LemurCms\Page\Application\SavePageDraft($db, $siteId),
         // Menu
         'getMainNavbar'    => $getMainNavbar,
         'getNavbar'        => $getNavbar,
