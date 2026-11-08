@@ -85,6 +85,7 @@ require_once __DIR__ . '/src/Page/Application/UpdatePage.php';
 require_once __DIR__ . '/src/Page/Application/InitializePageRevisions.php';
 require_once __DIR__ . '/src/Page/Application/SavePageDraft.php';
 require_once __DIR__ . '/src/Page/Application/PageRevisionConflict.php';
+require_once __DIR__ . '/src/Page/Application/PagePublicationKeyConflict.php';
 require_once __DIR__ . '/src/Page/Application/PublishPageRevision.php';
 require_once __DIR__ . '/src/Page/Application/RestorePageRevision.php';
 require_once __DIR__ . '/src/Page/Application/PublishPage.php';
@@ -252,6 +253,7 @@ require_once __DIR__ . '/src/PageBuilder/Domain/Document/MigrationReport.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Document/DocumentMigrator.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Contract/Clock.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Contract/DocumentAuthorization.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/PagePublicationAuthorization.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Contract/JobDispatcher.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Contract/MailDelivery.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Contract/MediaStorage.php';
@@ -483,7 +485,7 @@ $editorApiController       = new \LemurCms\PageBuilder\Presentation\Api\EditorAp
             return null;
         }
         $capabilities = [];
-        foreach (['pages.view' => 'pages.read', 'pages.update' => 'pages.update'] as $permission => $capability) {
+        foreach (['pages.view' => 'pages.read', 'pages.update' => 'pages.update', 'pages.publish' => 'pages.publish'] as $permission => $capability) {
             if ($checkPermission->execute($actorId, $permission)) {
                 $capabilities[] = $capability;
             }
@@ -491,7 +493,9 @@ $editorApiController       = new \LemurCms\PageBuilder\Presentation\Api\EditorAp
         return new \LemurCms\PageBuilder\Domain\Document\HostContext($siteId, $actorId, 'es', $capabilities);
     },
     new \LemurCms\Page\Application\SavePageDraft($db, $siteId),
-    $db
+    $db,
+    new \LemurCms\Page\Application\PublishPageRevision($db, $siteId),
+    $cmsDocumentAuthorization
 );
 
 

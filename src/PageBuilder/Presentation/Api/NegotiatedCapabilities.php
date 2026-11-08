@@ -27,7 +27,7 @@ final class NegotiatedCapabilities
         public readonly array $features = [],
     ) {}
 
-    public static function negotiate(HostContext $context, ComponentCatalogue $catalogue, bool $draftStorageAvailable = false): self
+    public static function negotiate(HostContext $context, ComponentCatalogue $catalogue, bool $draftStorageAvailable = false, bool $publicationAvailable = false): self
     {
         return new self(
             siteId: $context->siteId,
@@ -44,6 +44,7 @@ final class NegotiatedCapabilities
                 'versionedEnvelopes'        => true,
                 'draftSave'                 => $draftStorageAvailable && in_array('pages.update', $context->capabilities, true),
                 'draftHistory'              => $draftStorageAvailable && in_array('pages.read', $context->capabilities, true),
+                'revisionPublish'           => $publicationAvailable && in_array('pages.publish', $context->capabilities, true),
             ]
         );
     }

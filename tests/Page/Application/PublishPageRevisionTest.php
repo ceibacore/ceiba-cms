@@ -5,6 +5,7 @@ namespace LemurCms\Tests\Page\Application;
 
 use LemurDB;
 use LemurCms\Page\Application\PageRevisionConflict;
+use LemurCms\Page\Application\PagePublicationKeyConflict;
 use LemurCms\Page\Application\PublishPageRevision;
 use PHPUnit\Framework\TestCase;
 
@@ -50,7 +51,7 @@ final class PublishPageRevisionTest extends TestCase
         self::assertSame('published', $pdo->query("SELECT status FROM {$prefix}pages")->fetchColumn());
         self::assertSame('title', json_decode($pdo->query("SELECT content FROM {$prefix}pages")->fetchColumn(), true)[0]['id']);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(PagePublicationKeyConflict::class);
         $this->expectExceptionMessage('Idempotency key belongs to another publication');
         $publish->execute('p', 3, 'attempt-1');
     }

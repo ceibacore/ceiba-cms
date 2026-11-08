@@ -7,10 +7,13 @@ use InvalidArgumentException;
 use LemurCms\Media\Domain\Repository\MediaRepositoryInterface;
 use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
 use LemurCms\Page\Application\SavePageDraft;
+use LemurCms\Page\Application\PublishPageRevision;
 use LemurCms\Page\Application\PageRevisionConflict;
+use LemurCms\Page\Application\PagePublicationKeyConflict;
 use LemurCms\PageBuilder\Application\ValidatePageDocument;
 use LemurCms\PageBuilder\Domain\Catalogue\ComponentCatalogue;
 use LemurCms\PageBuilder\Domain\Contract\DocumentAuthorization;
+use LemurCms\PageBuilder\Domain\Contract\PagePublicationAuthorization;
 use LemurCms\PageBuilder\Domain\Document\DocumentEnvelope;
 use LemurCms\PageBuilder\Domain\Document\DocumentMigrator;
 use LemurCms\PageBuilder\Domain\Document\HostContext;
@@ -41,6 +44,8 @@ final class EditorApiController
         ?callable $contextResolver = null,
         private readonly ?SavePageDraft $savePageDraft = null,
         private readonly ?LemurDB $revisionDb = null,
+        private readonly ?PublishPageRevision $publishPageRevision = null,
+        private readonly ?PagePublicationAuthorization $publicationAuthorization = null,
     ) {
         $this->contextResolver = $contextResolver;
     }
@@ -75,6 +80,48 @@ final class EditorApiController
             return $this->errorResponse('VALIDATION_FAILED', $invalid->getMessage(), 422);
         } catch (Throwable $error) {
             return $this->errorResponse('SAVE_FAILED', 'Unable to save draft', 500);
+        }
+    }
+
+    public function publishRevision(string $id, string $json, ?string $idempotencyKey): array
+    {
+        try {
+            $context = $this->resolveContext();
+            if ($context->siteId !== $this->siteId || !in_array('pages.publish', $context->capabilities, true)
+                || $this->publicationAuthorization === null
+                || !$this->publicationAuthorization->canPublish($context, $id)) {
+                return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
+            }
+            if ($this->publishPageRevision === null) {
+                throw new RuntimeException('Publication storage unavailable');
+            }
+            if ($this->pages->findById($id) === null) {
+                return $this->errorResponse('PAGE_NOT_FOUND', 'Page unavailable', 404);
+            }
+            if ($idempotencyKey === null || trim($idempotencyKey) === '') {
+                return $this->errorResponse('PRECONDITION_REQUIRED', 'Idempotency-Key is required', 428);
+            }
+            if (strlen($idempotencyKey) > 191) {
+                throw new InvalidArgumentException('Invalid idempotency key');
+            }
+            $payload = json_decode($json, false, 512, JSON_THROW_ON_ERROR);
+            if (!is_object($payload) || !is_int($payload->revision ?? null) || $payload->revision < 1) {
+                throw new InvalidArgumentException('A positive revision is required');
+            }
+            $revisionId = $this->publishPageRevision->execute($id, $payload->revision, $idempotencyKey);
+            return ['success' => true, 'data' => ['revision' => $payload->revision, 'revisionId' => $revisionId]];
+        } catch (PageRevisionConflict $conflict) {
+            return $this->errorResponse('REVISION_CONFLICT', 'Draft revision has changed', 409, [
+                'currentRevision' => (string) $conflict->currentRevision,
+            ]);
+        } catch (PagePublicationKeyConflict $conflict) {
+            return $this->errorResponse('IDEMPOTENCY_CONFLICT', 'Idempotency key belongs to another publication', 409);
+        } catch (EditorAccessDenied $denied) {
+            return $this->errorResponse('AUTHORIZATION_DENIED', 'Access denied', 403);
+        } catch (\JsonException|InvalidArgumentException $invalid) {
+            return $this->errorResponse('VALIDATION_FAILED', 'Invalid publication request', 422);
+        } catch (Throwable $error) {
+            return $this->errorResponse('PUBLISH_FAILED', 'Unable to publish revision', 500);
         }
     }
 
@@ -165,7 +212,12 @@ final class EditorApiController
     {
         try {
             $context = $this->resolveContext($headers);
-            $negotiated = NegotiatedCapabilities::negotiate($context, $this->catalogue, $this->savePageDraft !== null && $this->revisionDb !== null);
+            $negotiated = NegotiatedCapabilities::negotiate(
+                $context,
+                $this->catalogue,
+                $this->savePageDraft !== null && $this->revisionDb !== null,
+                $this->publishPageRevision !== null && $this->publicationAuthorization !== null
+            );
             return [
                 'success' => true,
                 'data'    => $negotiated->toArray(),

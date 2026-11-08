@@ -41,7 +41,7 @@ final class PublishPageRevision
             $revision = $this->revision($pdo, $prefix, $pageId, $revisionNumber);
             if ($previous !== false) {
                 if ($previous['page_id'] !== $pageId || $previous['revision_id'] !== $revision['id']) {
-                    throw new RuntimeException('Idempotency key belongs to another publication');
+                    throw new PagePublicationKeyConflict();
                 }
                 return $revision['id'];
             }

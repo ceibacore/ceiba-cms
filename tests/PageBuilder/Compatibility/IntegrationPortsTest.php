@@ -79,7 +79,8 @@ final class IntegrationPortsTest extends TestCase
     {
         $users = $this->createMock(UserRepositoryInterface::class);
         $users->method('checkPermission')->willReturnCallback(
-            fn(string $userId, string $permission) => $userId === 'user-allowed' && $permission === 'pages.update'
+            fn(string $userId, string $permission) => $userId === 'user-allowed'
+                && in_array($permission, ['pages.update', 'pages.publish'], true)
         );
 
         $checkPermission = new CheckPermission($users);
@@ -93,6 +94,9 @@ final class IntegrationPortsTest extends TestCase
         self::assertTrue($auth->canUpdate($allowedContext, 'page-10'));
         self::assertFalse($auth->canUpdate($deniedContext, 'page-10'));
         self::assertFalse($auth->canUpdate($alienContext, 'page-10'), 'Cross-site request must be rejected');
+        self::assertTrue($auth->canPublish($allowedContext, 'page-10'));
+        self::assertFalse($auth->canPublish($deniedContext, 'page-10'));
+        self::assertFalse($auth->canPublish($alienContext, 'page-10'));
     }
 
     public function testLoopResolverContentSourceDelegatesToLoopResolver(): void

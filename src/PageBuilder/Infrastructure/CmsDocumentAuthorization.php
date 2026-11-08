@@ -5,10 +5,11 @@ namespace LemurCms\PageBuilder\Infrastructure;
 
 use LemurCms\Auth\Application\CheckPermission;
 use LemurCms\PageBuilder\Domain\Contract\DocumentAuthorization;
+use LemurCms\PageBuilder\Domain\Contract\PagePublicationAuthorization;
 use LemurCms\PageBuilder\Domain\Document\HostContext;
 
 /** The CMS permission is site-wide. The caller resolves the page on the same connection. */
-final class CmsDocumentAuthorization implements DocumentAuthorization
+final class CmsDocumentAuthorization implements DocumentAuthorization, PagePublicationAuthorization
 {
     public function __construct(private readonly string $siteId, private readonly CheckPermission $permissions) {}
 
@@ -16,5 +17,11 @@ final class CmsDocumentAuthorization implements DocumentAuthorization
     {
         return $context->siteId === $this->siteId
             && $this->permissions->execute($context->actorId, 'pages.update');
+    }
+
+    public function canPublish(HostContext $context, string $pageId): bool
+    {
+        return $context->siteId === $this->siteId
+            && $this->permissions->execute($context->actorId, 'pages.publish');
     }
 }

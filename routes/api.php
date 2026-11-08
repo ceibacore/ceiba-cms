@@ -52,7 +52,7 @@ $router->get('/api/pages/{id}', fn($id) => $pageController->show($id), 'page.sho
 $router->put('/api/pages/{id}', fn($id) => $pageController->update($id), 'page.update')->middleware('auth');
 $router->patch('/api/pages/{id}', fn($id) => $pageController->update($id), 'page.patch')->middleware('auth');
 $router->delete('/api/pages/{id}', fn($id) => $pageController->destroy($id), 'page.delete')->middleware('auth');
-$router->post('/api/pages/{id}/publish', fn($id) => $pageController->publish($id), 'page.publish')->middleware('auth');
+$router->post('/api/pages/{id}/publish', fn($id) => $pageController->publish($id), 'page.publish')->middleware('auth', 'permission:pages.publish');
 
 // ── Template Routes ──────────────────────────────────────────────────────────
 $templateController = new TemplateController(
@@ -156,6 +156,17 @@ $router->get("{$builderPrefix}/pages/{id}/history", function (string $id) use ($
     http_response_code($response['status'] ?? 200);
     echo json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 }, 'builder.pages.history')->middleware('auth');
+
+$router->post("{$builderPrefix}/pages/{id}/publish-revision", function (string $id) use ($editorApiController) {
+    header('Content-Type: application/json');
+    $response = $editorApiController->publishRevision(
+        $id,
+        (string) file_get_contents('php://input'),
+        $_SERVER['HTTP_IDEMPOTENCY_KEY'] ?? null
+    );
+    http_response_code($response['status'] ?? 200);
+    echo json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}, 'builder.pages.publish-revision')->middleware('auth');
 
 $router->post("{$builderPrefix}/pages/{id}/migrate", function (string $id) use ($editorApiController) {
     header('Content-Type: application/json');
