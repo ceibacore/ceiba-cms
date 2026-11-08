@@ -11,14 +11,6 @@ use LemurCms\PageBuilder\Domain\Document\DocumentWriteValidator;
 use LemurCms\Support\Helpers\UuidHelper;
 use RuntimeException;
 
-final class PageRevisionConflict extends RuntimeException
-{
-    public function __construct(public readonly int $currentRevision)
-    {
-        parent::__construct('Page draft revision has changed');
-    }
-}
-
 /** Saves a validated draft snapshot without changing the public page content. */
 final class SavePageDraft
 {

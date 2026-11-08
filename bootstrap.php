@@ -84,6 +84,8 @@ require_once __DIR__ . '/src/Page/Application/CreatePage.php';
 require_once __DIR__ . '/src/Page/Application/UpdatePage.php';
 require_once __DIR__ . '/src/Page/Application/InitializePageRevisions.php';
 require_once __DIR__ . '/src/Page/Application/SavePageDraft.php';
+require_once __DIR__ . '/src/Page/Application/PageRevisionConflict.php';
+require_once __DIR__ . '/src/Page/Application/PublishPageRevision.php';
 require_once __DIR__ . '/src/Page/Application/RestorePageRevision.php';
 require_once __DIR__ . '/src/Page/Application/PublishPage.php';
 require_once __DIR__ . '/src/Page/Application/DeletePage.php';
@@ -565,6 +567,7 @@ return [
             $siteId,
             new \LemurCms\Page\Application\SavePageDraft($db, $siteId)
         ),
+        'publishPageRevision' => new \LemurCms\Page\Application\PublishPageRevision($db, $siteId),
         // Menu
         'getMainNavbar'    => $getMainNavbar,
         'getNavbar'        => $getNavbar,

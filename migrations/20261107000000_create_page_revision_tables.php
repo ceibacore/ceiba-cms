@@ -36,9 +36,9 @@ final class Migration_20261107000000_CreatePageRevisionTables extends CmsBaseMig
             $table->datetime('updated_at')->notNull();
             $table->uniqueIndex('draft_revision_id', 'uq_page_revision_draft');
             $table->uniqueIndex('published_revision_id', 'uq_page_revision_published');
-            $table->foreignKey('page_id', 'pages', 'id', 'CASCADE', 'fk_page_revision_heads_page');
-            $table->foreignKey('draft_revision_id', 'page_revisions', 'id', 'SET NULL', 'fk_page_revision_heads_draft');
-            $table->foreignKey('published_revision_id', 'page_revisions', 'id', 'SET NULL', 'fk_page_revision_heads_published');
+            $table->foreignKey('page_id', 'pages', 'id', 'CASCADE');
+            $table->foreignKey('draft_revision_id', 'page_revisions', 'id', 'SET NULL');
+            $table->foreignKey('published_revision_id', 'page_revisions', 'id', 'SET NULL');
         });
     }
 
