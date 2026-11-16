@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\DynamicModule\Infrastructure;
+namespace CeibaCms\DynamicModule\Infrastructure;
 
-use LemurCms\PageBuilder\Domain\Service\DataProviderInterface;
-use LemurCms\DynamicModule\Domain\Repository\GenericModuleRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Service\DataProviderInterface;
+use CeibaCms\DynamicModule\Domain\Repository\GenericModuleRepositoryInterface;
 
 final class DynamicModuleDataProvider implements DataProviderInterface
 {

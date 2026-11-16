@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\DynamicModule\Infrastructure;
+namespace CeibaCms\DynamicModule\Infrastructure;
 
-use LemurCms\DynamicModule\Domain\Repository\GenericModuleRepositoryInterface;
-use LemurDB;
+use CeibaCms\DynamicModule\Domain\Repository\GenericModuleRepositoryInterface;
+use CeibaDB;
 
 final class GenericModuleRepository implements GenericModuleRepositoryInterface
 {
-    public function __construct(private readonly LemurDB $db) {}
+    public function __construct(private readonly CeibaDB $db) {}
 
     public function list(string $table, array $filters = [], array $sort = [], int $limit = 50, int $offset = 0): array
     {
@@ -179,7 +179,7 @@ final class GenericModuleRepository implements GenericModuleRepositoryInterface
     public function create(string $table, array $data): string
     {
         if (empty($data['id'])) {
-            $data['id'] = \LemurCms\Support\Helpers\UuidHelper::v4();
+            $data['id'] = \CeibaCms\Support\Helpers\UuidHelper::v4();
         }
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['updated_at'] = date('Y-m-d H:i:s');

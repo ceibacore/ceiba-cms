@@ -1,13 +1,13 @@
-# Lemur CMS - Status de Implementación
+# Ceiba CMS - Status de Implementación
 
 ## Completado ✅
 
 ### Prioridad Alta - Infrastructure (5 Adapters)
-- ✅ LemurDbMenuRepository - CRUD + tree building + mega menu
-- ✅ LemurDbPageRepository - CRUD con status filtering
-- ✅ LemurDbSeoRepository - polymorphic upsert
-- ✅ LemurDbMediaRepository - CRUD con pagination
-- ✅ LemurDbUserRepository - permission hierarchy + role assignment
+- ✅ CeibaDbMenuRepository - CRUD + tree building + mega menu
+- ✅ CeibaDbPageRepository - CRUD con status filtering
+- ✅ CeibaDbSeoRepository - polymorphic upsert
+- ✅ CeibaDbMediaRepository - CRUD con pagination
+- ✅ CeibaDbUserRepository - permission hierarchy + role assignment
 
 ### Prioridad Alta - Database Schema
 - ✅ 5 Concrete migrations generando 14 tablas
@@ -49,9 +49,9 @@
 - ✅ Test bootstrap, TestCase base, .env.test, bin/test.sh
 
 ### Prioridad Baja Phase 1 - Presentation Layer (Menu)
-- ✅ LemurMenuRenderer (Bootstrap 5 navbar HTML)
-- ✅ LemurMenuCache (file-based JSON caching)
-- ✅ LemurMenuBuilder (fluent API)
+- ✅ CeibaMenuRenderer (Bootstrap 5 navbar HTML)
+- ✅ CeibaMenuCache (file-based JSON caching)
+- ✅ CeibaMenuBuilder (fluent API)
 - ✅ GetNavbar use case (integration)
 - ✅ Tests completos (16 test cases)
 
@@ -119,7 +119,7 @@
 
 ### Localización y Traducciones Dinámicas ✅
 - ✅ Migración de base de datos (`languages` y `translations`)
-- ✅ Repositorios `LanguageRepository` y `TranslationRepository` utilizando LemurDB
+- ✅ Repositorios `LanguageRepository` y `TranslationRepository` utilizando CeibaDB
 - ✅ Casos de uso: ListLanguages, CreateLanguage, UpdateLanguage, DeleteLanguage, ListTranslations, UpdateTranslations
 - ✅ LanguageController y endpoints API mapeados en `routes/api.php`
 - ✅ Cargador de traducción personalizado `DatabaseTranslationLoader` y `TranslationServiceProvider` para Laravel con soporte de caché
@@ -168,31 +168,31 @@ src/
   Menu/
     Domain/           ✅ (MenuRepositoryInterface)
     Application/      ✅ (GetNavbar + 5 use cases)
-    Infrastructure/   ✅ (LemurDbMenuRepository)
+    Infrastructure/   ✅ (CeibaDbMenuRepository)
     Presentation/     ✅ (6: Renderer, Cache, Builder, Banner, Breadcrumb, Notification)
   Page/
     Domain/           ✅ (PageRepositoryInterface)
     Application/      ✅ (5 use cases)
-    Infrastructure/   ✅ (LemurDbPageRepository)
+    Infrastructure/   ✅ (CeibaDbPageRepository)
   Seo/
     Domain/           ✅ (SeoRepositoryInterface)
     Application/      ✅ (1 use case)
-    Infrastructure/   ✅ (LemurDbSeoRepository)
+    Infrastructure/   ✅ (CeibaDbSeoRepository)
   Media/
     Domain/           ✅ (MediaRepositoryInterface)
     Application/      ✅ (3 use cases)
-    Infrastructure/   ✅ (LemurDbMediaRepository)
+    Infrastructure/   ✅ (CeibaDbMediaRepository)
   Auth/
     Domain/           ✅ (UserRepositoryInterface)
     Application/      ✅ (4 use cases)
-    Infrastructure/   ✅ (LemurDbUserRepository)
+    Infrastructure/   ✅ (CeibaDbUserRepository)
   Localization/
     Domain/           ✅ (Language & Translation repository interfaces)
     Application/      ✅ (6 use cases)
-    Infrastructure/   ✅ (LemurDb repos)
+    Infrastructure/   ✅ (CeibaDb repos)
 
 bin/
-  lemur.php, CliKernel.php, commands/ ✅ (5 CLI commands)
+  ceiba.php, CliKernel.php, commands/ ✅ (5 CLI commands)
 
 config/
   cms.php             ✅ (Configuración centralizada)
@@ -237,10 +237,10 @@ Documentation         ✅ (4 files: STATUS.md, SUPPORT_INFRASTRUCTURE.md, PRESEN
 
 ```bash
 # ── CLI Commands ─────────────────────────────────────
-php bin/lemur migrate                # Ejecutar migraciones
-php bin/lemur migrate:list           # Listar migraciones
-php bin/lemur cache:clear            # Limpiar cache
-php bin/lemur user:create            # Crear usuario interactivo
+php bin/ceiba migrate                # Ejecutar migraciones
+php bin/ceiba migrate:list           # Listar migraciones
+php bin/ceiba cache:clear            # Limpiar cache
+php bin/ceiba user:create            # Crear usuario interactivo
 
 # ── Tests ─────────────────────────────────────────────
 bash bin/test.sh                     # Ejecutar todos los tests

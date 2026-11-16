@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Http\Middleware;
+namespace CeibaCms\Http\Middleware;
 
-use LemurDB;
+use CeibaDB;
 
 class ModuleMiddleware implements MiddlewareInterface
 {
-    public function __construct(private readonly LemurDB $db) {}
+    public function __construct(private readonly CeibaDB $db) {}
 
     public function handle(\Closure $next, ...$params): mixed
     {

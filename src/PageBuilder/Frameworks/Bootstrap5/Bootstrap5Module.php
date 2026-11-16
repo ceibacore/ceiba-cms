@@ -1,24 +1,24 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Frameworks\Bootstrap5;
+namespace CeibaCms\PageBuilder\Frameworks\Bootstrap5;
 
-use LemurCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\AccordionRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\BreadcrumbRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ButtonGroupRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ButtonRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\CardRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\CarouselRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\CollapseRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ColRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ContainerRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ListGroupRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\OffcanvasRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\RowRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ScrollspyRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\ToastRule;
-use LemurCms\PageBuilder\Import\Rules\Bootstrap\TooltipRule;
+use CeibaCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\AccordionRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\BreadcrumbRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\ButtonGroupRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\ButtonRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\CardRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\CarouselRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\CollapseRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\ColRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\ContainerRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\ListGroupRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\OffcanvasRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\RowRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\ScrollspyRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\ToastRule;
+use CeibaCms\PageBuilder\Import\Rules\Bootstrap\TooltipRule;
 
 
 /**

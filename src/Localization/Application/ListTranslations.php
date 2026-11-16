@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Localization\Application;
+namespace CeibaCms\Localization\Application;
 
-use LemurCms\Localization\Domain\Repository\TranslationRepositoryInterface;
+use CeibaCms\Localization\Domain\Repository\TranslationRepositoryInterface;
 
 final class ListTranslations
 {

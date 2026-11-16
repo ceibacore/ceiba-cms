@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Import;
+namespace CeibaCms\Tests\PageBuilder\Import;
 
-use LemurCms\PageBuilder\Import\ClassHelper;
+use CeibaCms\PageBuilder\Import\ClassHelper;
 use PHPUnit\Framework\TestCase;
 
 class ClassHelperTest extends TestCase

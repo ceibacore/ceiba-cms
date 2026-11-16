@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Localization\Application;
+namespace CeibaCms\Localization\Application;
 
-use LemurCms\Localization\Domain\Repository\LanguageRepositoryInterface;
-use LemurCms\Localization\Domain\Repository\TranslationRepositoryInterface;
-use LemurDB;
+use CeibaCms\Localization\Domain\Repository\LanguageRepositoryInterface;
+use CeibaCms\Localization\Domain\Repository\TranslationRepositoryInterface;
+use CeibaDB;
 
 final class CreateLanguage
 {
     public function __construct(
-        private readonly LemurDB $db,
+        private readonly CeibaDB $db,
         private readonly LanguageRepositoryInterface $languageRepo,
         private readonly TranslationRepositoryInterface $translationRepo
     ) {}

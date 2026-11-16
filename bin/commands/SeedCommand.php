@@ -1,17 +1,17 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Commands;
+namespace CeibaCms\Commands;
 
-use LemurDB;
-use LemurCms\Seeder\CmsSeederRunner;
+use CeibaDB;
+use CeibaCms\Seeder\CmsSeederRunner;
 
 class SeedCommand extends Command
 {
     protected string $signature = 'db:seed {--class=}';
     protected string $description = 'Run database seeders';
 
-    public function __construct(private readonly LemurDB $db) {}
+    public function __construct(private readonly CeibaDB $db) {}
 
     public function handle(): int
     {
@@ -20,7 +20,7 @@ class SeedCommand extends Command
         $runner = new CmsSeederRunner($this->db, $this->db->getPrefix());
 
         $className = $specificClass ?: 'DatabaseSeeder';
-        $fullClass = str_contains($className, '\\') ? $className : "LemurCms\\Seeders\\" . $className;
+        $fullClass = str_contains($className, '\\') ? $className : "CeibaCms\\Seeders\\" . $className;
         
         // Extract base name to find the file
         $parts = explode('\\', $fullClass);

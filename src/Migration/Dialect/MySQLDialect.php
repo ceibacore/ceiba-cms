@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Migration\Dialect;
+namespace CeibaCms\Migration\Dialect;
 
-use LemurCms\Migration\CmsColumnDef;
+use CeibaCms\Migration\CmsColumnDef;
 
 final class MySQLDialect implements CmsDialectInterface
 {

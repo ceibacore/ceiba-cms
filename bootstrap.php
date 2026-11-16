@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * Lemur CMS Bootstrap
+ * Ceiba CMS Bootstrap
  * 
  * Manual Dependency Injection setup.
  * Inyecta los adaptadores concretos en los casos de uso.
@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 // ── Environment Configuration ───────────────────────────────────────────────
 require_once __DIR__ . '/src/Support/Infrastructure/EnvironmentGuard.php';
-\LemurCms\Support\Infrastructure\EnvironmentGuard::check();
+\CeibaCms\Support\Infrastructure\EnvironmentGuard::check();
 
 require_once __DIR__ . '/src/Migration/CmsMigrationGenerator.php';
 require_once __DIR__ . '/src/Migration/CmsSchemaBuilder.php';
@@ -64,6 +64,7 @@ require_once __DIR__ . '/database/factories/UserFactory.php';
 // ── Domain Ports ─────────────────────────────────────────────────────────────
 require_once __DIR__ . '/src/Menu/Domain/Repository/MenuRepositoryInterface.php';
 require_once __DIR__ . '/src/Page/Domain/Repository/PageRepositoryInterface.php';
+require_once __DIR__ . '/src/Page/Domain/Repository/AdministrativePageReaderInterface.php';
 require_once __DIR__ . '/src/Seo/Domain/Repository/SeoRepositoryInterface.php';
 require_once __DIR__ . '/src/Media/Domain/Repository/MediaRepositoryInterface.php';
 require_once __DIR__ . '/src/Auth/Domain/Repository/UserRepositoryInterface.php';
@@ -82,9 +83,31 @@ require_once __DIR__ . '/src/Page/Application/GetPageBySlug.php';
 require_once __DIR__ . '/src/Page/Application/GetPageById.php';
 require_once __DIR__ . '/src/Page/Application/CreatePage.php';
 require_once __DIR__ . '/src/Page/Application/UpdatePage.php';
+require_once __DIR__ . '/src/Page/Application/SavePageDraft.php';
+require_once __DIR__ . '/src/Page/Application/PageRevisionConflict.php';
+require_once __DIR__ . '/src/Page/Application/PagePublicationKeyConflict.php';
+require_once __DIR__ . '/src/Page/Application/PublishPageRevision.php';
+require_once __DIR__ . '/src/Page/Application/RestorePageRevision.php';
 require_once __DIR__ . '/src/Page/Application/PublishPage.php';
 require_once __DIR__ . '/src/Page/Application/DeletePage.php';
 require_once __DIR__ . '/src/Page/Application/ListPages.php';
+require_once __DIR__ . '/src/Page/Application/ListAdministrativePages.php';
+require_once __DIR__ . '/src/Page/Application/PublicContentFingerprint.php';
+require_once __DIR__ . '/src/Page/Application/PublicContentDrift.php';
+require_once __DIR__ . '/src/Page/Application/PageRevisionNotFound.php';
+require_once __DIR__ . '/src/Page/Application/PreviewTokenLimitReached.php';
+require_once __DIR__ . '/src/Page/Application/PageRevisionAuditLog.php';
+require_once __DIR__ . '/src/Page/Application/ReconcilePageContent.php';
+require_once __DIR__ . '/src/Page/Application/PageNotFound.php';
+require_once __DIR__ . '/src/Page/Application/SavePageContent.php';
+require_once __DIR__ . '/src/Page/Application/GetPageWorkingRevision.php';
+require_once __DIR__ . '/src/Page/Application/UnpublishPage.php';
+require_once __DIR__ . '/src/Page/Application/PagePreviewTokens.php';
+require_once __DIR__ . '/src/Page/Application/PinPageRevision.php';
+require_once __DIR__ . '/src/Page/Application/PageRevisionRetentionPolicy.php';
+require_once __DIR__ . '/src/Page/Application/PurgePageRevisions.php';
+require_once __DIR__ . '/src/Page/Application/DispatchPagePublicationOutbox.php';
+require_once __DIR__ . '/src/Page/Application/PageRevisionOperationalMetrics.php';
 require_once __DIR__ . '/src/Seo/Application/GetSeoForEntity.php';
 require_once __DIR__ . '/src/Seo/Application/UpsertSeo.php';
 require_once __DIR__ . '/src/Media/Application/StoreMedia.php';
@@ -104,21 +127,21 @@ require_once __DIR__ . '/src/Localization/Application/ListTranslations.php';
 require_once __DIR__ . '/src/Localization/Application/UpdateTranslations.php';
 
 // ── Presentation Layer ───────────────────────────────────────────────────────
-require_once __DIR__ . '/src/Menu/Presentation/LemurMenuRenderer.php';
-require_once __DIR__ . '/src/Menu/Presentation/LemurMenuCache.php';
-require_once __DIR__ . '/src/Menu/Presentation/LemurMenuBuilder.php';
+require_once __DIR__ . '/src/Menu/Presentation/CeibaMenuRenderer.php';
+require_once __DIR__ . '/src/Menu/Presentation/CeibaMenuCache.php';
+require_once __DIR__ . '/src/Menu/Presentation/CeibaMenuBuilder.php';
 require_once __DIR__ . '/src/Menu/Presentation/BannerRenderer.php';
 require_once __DIR__ . '/src/Menu/Presentation/BreadcrumbBuilder.php';
 require_once __DIR__ . '/src/Menu/Presentation/NotificationPresenter.php';
 
 // ── Infrastructure Adapters ──────────────────────────────────────────────────
-require_once __DIR__ . '/src/Menu/Infrastructure/LemurDbMenuRepository.php';
-require_once __DIR__ . '/src/Page/Infrastructure/LemurDbPageRepository.php';
-require_once __DIR__ . '/src/Seo/Infrastructure/LemurDbSeoRepository.php';
-require_once __DIR__ . '/src/Media/Infrastructure/LemurDbMediaRepository.php';
-require_once __DIR__ . '/src/Auth/Infrastructure/LemurDbUserRepository.php';
-require_once __DIR__ . '/src/Localization/Infrastructure/LemurDbLanguageRepository.php';
-require_once __DIR__ . '/src/Localization/Infrastructure/LemurDbTranslationRepository.php';
+require_once __DIR__ . '/src/Menu/Infrastructure/CeibaDbMenuRepository.php';
+require_once __DIR__ . '/src/Page/Infrastructure/CeibaDbPageRepository.php';
+require_once __DIR__ . '/src/Seo/Infrastructure/CeibaDbSeoRepository.php';
+require_once __DIR__ . '/src/Media/Infrastructure/CeibaDbMediaRepository.php';
+require_once __DIR__ . '/src/Auth/Infrastructure/CeibaDbUserRepository.php';
+require_once __DIR__ . '/src/Localization/Infrastructure/CeibaDbLanguageRepository.php';
+require_once __DIR__ . '/src/Localization/Infrastructure/CeibaDbTranslationRepository.php';
 
 // ── PageBuilder Layer ────────────────────────────────────────────────────────
 require_once __DIR__ . '/src/PageBuilder/Domain/Entity/LoopConfig.php';
@@ -139,18 +162,18 @@ require_once __DIR__ . '/src/PageBuilder/Application/GetTemplateById.php';
 require_once __DIR__ . '/src/PageBuilder/Application/CreateTemplate.php';
 require_once __DIR__ . '/src/PageBuilder/Application/DeleteTemplate.php';
 require_once __DIR__ . '/src/PageBuilder/Application/ListComponentDefinitions.php';
-require_once __DIR__ . '/src/PageBuilder/Infrastructure/LemurDbTemplateRepository.php';
-require_once __DIR__ . '/src/PageBuilder/Infrastructure/LemurDbComponentDefinitionRepository.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/CeibaDbTemplateRepository.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/CeibaDbComponentDefinitionRepository.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Entity/PageLayout.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Repository/PageLayoutRepositoryInterface.php';
-require_once __DIR__ . '/src/PageBuilder/Infrastructure/LemurDbPageLayoutRepository.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/CeibaDbPageLayoutRepository.php';
 
 // V2 Page Template & Engine Entities/Contracts
 require_once __DIR__ . '/src/PageBuilder/Domain/Entity/PageTemplate.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Entity/QueryConfig.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Entity/RenderCondition.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Repository/PageTemplateRepositoryInterface.php';
-require_once __DIR__ . '/src/PageBuilder/Infrastructure/LemurDbPageTemplateRepository.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/CeibaDbPageTemplateRepository.php';
 require_once __DIR__ . '/src/PageBuilder/Application/GetPageTemplateById.php';
 require_once __DIR__ . '/src/PageBuilder/Application/ListPageTemplates.php';
 require_once __DIR__ . '/src/PageBuilder/Domain/Service/HtmlSemanticRulesProvider.php';
@@ -176,7 +199,7 @@ require_once __DIR__ . '/src/PageBuilder/Application/DeleteLayout.php';
 require_once __DIR__ . '/src/Support/Validators/TemplateValidator.php';
 require_once __DIR__ . '/src/Support/Validators/LayoutValidator.php';
 require_once __DIR__ . '/src/Routing/Domain/Repository/ReservedPathRepositoryInterface.php';
-require_once __DIR__ . '/src/Routing/Infrastructure/LemurDbReservedPathRepository.php';
+require_once __DIR__ . '/src/Routing/Infrastructure/CeibaDbReservedPathRepository.php';
 require_once __DIR__ . '/src/Routing/Domain/Service/ReservedPathChecker.php';
 require_once __DIR__ . '/src/Routing/Application/ListReservedPaths.php';
 require_once __DIR__ . '/src/Routing/Application/AddReservedPath.php';
@@ -188,7 +211,7 @@ require_once __DIR__ . '/src/Http/Controllers/ReservedPathController.php';
 require_once __DIR__ . '/src/Http/Controllers/HomeController.php';
 require_once __DIR__ . '/src/Http/Controllers/ImportController.php';
 require_once __DIR__ . '/src/Settings/Domain/Repository/SettingsRepositoryInterface.php';
-require_once __DIR__ . '/src/Settings/Infrastructure/LemurDbSettingsRepository.php';
+require_once __DIR__ . '/src/Settings/Infrastructure/CeibaDbSettingsRepository.php';
 require_once __DIR__ . '/src/Http/Controllers/SettingsController.php';
 
 // ── Import Module ────────────────────────────────────────────────────────────
@@ -237,6 +260,41 @@ require_once __DIR__ . '/src/PageBuilder/Domain/Contract/UiFrameworkModuleInterf
 require_once __DIR__ . '/src/PageBuilder/Domain/Service/UiFrameworkRegistry.php';
 require_once __DIR__ . '/src/PageBuilder/Frameworks/Bootstrap5/Bootstrap5Module.php';
 
+// ── Integration Ports & Adapters ─────────────────────────────────────────────
+require_once __DIR__ . '/src/PageBuilder/Domain/Document/HostContext.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Document/DocumentEnvelope.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Document/DocumentWriteValidator.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Document/MigrationIncompatibility.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Document/MigrationReport.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Document/DocumentMigrator.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/Clock.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/DocumentAuthorization.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/PagePublicationAuthorization.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/JobDispatcher.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/MailDelivery.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/MediaStorage.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/ContentSource.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/RevisionOperationAuthorization.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/RevisionArchive.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/PublicationEvent.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Contract/PublicationEventHandler.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/SystemClock.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/CmsDocumentAuthorization.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/LoopResolverContentSource.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/LocalMediaStorage.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/SyncJobDispatcher.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/NullMailDelivery.php';
+require_once __DIR__ . '/src/PageBuilder/Infrastructure/JsonLinesRevisionArchive.php';
+require_once __DIR__ . '/src/PageBuilder/Application/ValidatePageDocument.php';
+require_once __DIR__ . '/src/PageBuilder/Application/MigratePageDocument.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Catalogue/ComponentDescriptor.php';
+require_once __DIR__ . '/src/PageBuilder/Domain/Catalogue/ComponentCatalogue.php';
+require_once __DIR__ . '/src/PageBuilder/Presentation/Api/EditorError.php';
+require_once __DIR__ . '/src/PageBuilder/Presentation/Api/NegotiatedCapabilities.php';
+require_once __DIR__ . '/src/PageBuilder/Presentation/Api/EditorAccessDenied.php';
+require_once __DIR__ . '/src/PageBuilder/Presentation/Api/EditorApiController.php';
+require_once __DIR__ . '/src/PageBuilder/Presentation/Api/RevisionApiController.php';
+
 // ── DynamicModule Layer ──────────────────────────────────────────────────────
 require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleFieldType.php';
 require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleField.php';
@@ -244,7 +302,7 @@ require_once __DIR__ . '/src/DynamicModule/Domain/Entity/ModuleDefinition.php';
 require_once __DIR__ . '/src/DynamicModule/Domain/Repository/ModuleDefinitionRepositoryInterface.php';
 require_once __DIR__ . '/src/DynamicModule/Domain/Repository/GenericModuleRepositoryInterface.php';
 require_once __DIR__ . '/src/DynamicModule/Infrastructure/DynamicTableManager.php';
-require_once __DIR__ . '/src/DynamicModule/Infrastructure/LemurDbModuleDefinitionRepository.php';
+require_once __DIR__ . '/src/DynamicModule/Infrastructure/CeibaDbModuleDefinitionRepository.php';
 require_once __DIR__ . '/src/DynamicModule/Infrastructure/GenericModuleRepository.php';
 require_once __DIR__ . '/src/DynamicModule/Application/CreateDynamicModule.php';
 require_once __DIR__ . '/src/DynamicModule/Application/UpdateDynamicModule.php';
@@ -256,113 +314,112 @@ require_once __DIR__ . '/src/DynamicModule/Infrastructure/ApiDataProvider.php';
 
 
 // ── Database Connection ──────────────────────────────────────────────────────
-$driver = \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_CONNECTION', 'mysql');
+$driver = \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('DB_CONNECTION', 'mysql');
 if ($driver === 'mariadb') {
     $driver = 'mysql';
 }
-$db = \LemurDB::getInstance([
+$db = \CeibaDB::getInstance([
     'driver'   => $driver,
-    'host'     => \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_HOST', 'localhost'),
-    'port'     => (int) \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_PORT', 3306),
-    'db'       => \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_NAME', \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_DATABASE', 'lemur_cms')),
-    'username' => \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_USER', \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_USERNAME', 'root')),
-    'password' => \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_PASS', \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_PASSWORD', '')),
-    'prefix'   => \LemurCms\Support\Infrastructure\EnvironmentGuard::get('DB_PREFIX', 'cms_'),
+    'host'     => \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('DB_HOST', 'localhost'),
+    'port'     => (int) \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('DB_PORT', 3306),
+    'db'       => \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('DB_NAME', \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('DB_DATABASE', 'ceiba_cms')),
+    'username' => \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('DB_USER', \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('DB_USERNAME', 'root')),
+    'password' => \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('DB_PASS', \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('DB_PASSWORD', '')),
+    'prefix'   => \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('DB_PREFIX', 'cms_'),
 ]);
 
 // ── Create Repositories (Dependency Injection) ───────────────────────────────
-$menuRepository  = new \LemurCms\Menu\Infrastructure\LemurDbMenuRepository($db);
-$pageRepository  = new \LemurCms\Page\Infrastructure\LemurDbPageRepository($db);
-$seoRepository   = new \LemurCms\Seo\Infrastructure\LemurDbSeoRepository($db);
-$mediaRepository = new \LemurCms\Media\Infrastructure\LemurDbMediaRepository($db);
-$userRepository  = new \LemurCms\Auth\Infrastructure\LemurDbUserRepository($db);
-$templateRepository = new \LemurCms\PageBuilder\Infrastructure\LemurDbTemplateRepository($db);
-$componentDefinitionRepository = new \LemurCms\PageBuilder\Infrastructure\LemurDbComponentDefinitionRepository($db);
-$pageLayoutRepository    = new \LemurCms\PageBuilder\Infrastructure\LemurDbPageLayoutRepository($db);
-$reservedPathRepository  = new \LemurCms\Routing\Infrastructure\LemurDbReservedPathRepository($db);
-$moduleDefinitionRepository = new \LemurCms\DynamicModule\Infrastructure\LemurDbModuleDefinitionRepository($db);
-$genericModuleRepository    = new \LemurCms\DynamicModule\Infrastructure\GenericModuleRepository($db);
-$dynamicTableManager        = new \LemurCms\DynamicModule\Infrastructure\DynamicTableManager($db);
-$settingsRepository         = new \LemurCms\Settings\Infrastructure\LemurDbSettingsRepository($db);
-$languageRepository         = new \LemurCms\Localization\Infrastructure\LemurDbLanguageRepository($db);
-$translationRepository      = new \LemurCms\Localization\Infrastructure\LemurDbTranslationRepository($db);
+$menuRepository  = new \CeibaCms\Menu\Infrastructure\CeibaDbMenuRepository($db);
+$pageRepository  = new \CeibaCms\Page\Infrastructure\CeibaDbPageRepository($db);
+$seoRepository   = new \CeibaCms\Seo\Infrastructure\CeibaDbSeoRepository($db);
+$mediaRepository = new \CeibaCms\Media\Infrastructure\CeibaDbMediaRepository($db);
+$userRepository  = new \CeibaCms\Auth\Infrastructure\CeibaDbUserRepository($db);
+$templateRepository = new \CeibaCms\PageBuilder\Infrastructure\CeibaDbTemplateRepository($db);
+$componentDefinitionRepository = new \CeibaCms\PageBuilder\Infrastructure\CeibaDbComponentDefinitionRepository($db);
+$pageLayoutRepository    = new \CeibaCms\PageBuilder\Infrastructure\CeibaDbPageLayoutRepository($db);
+$reservedPathRepository  = new \CeibaCms\Routing\Infrastructure\CeibaDbReservedPathRepository($db);
+$moduleDefinitionRepository = new \CeibaCms\DynamicModule\Infrastructure\CeibaDbModuleDefinitionRepository($db);
+$genericModuleRepository    = new \CeibaCms\DynamicModule\Infrastructure\GenericModuleRepository($db);
+$dynamicTableManager        = new \CeibaCms\DynamicModule\Infrastructure\DynamicTableManager($db);
+$settingsRepository         = new \CeibaCms\Settings\Infrastructure\CeibaDbSettingsRepository($db);
+$languageRepository         = new \CeibaCms\Localization\Infrastructure\CeibaDbLanguageRepository($db);
+$translationRepository      = new \CeibaCms\Localization\Infrastructure\CeibaDbTranslationRepository($db);
 
 
 // ── Create Use Cases ─────────────────────────────────────────────────────────
-$menuCache             = new \LemurCms\Menu\Presentation\LemurMenuCache(__DIR__);
-$menuRenderer          = new \LemurCms\Menu\Presentation\LemurMenuRenderer();
-$bannerRenderer        = new \LemurCms\Menu\Presentation\BannerRenderer($menuRepository);
-$breadcrumbBuilder     = new \LemurCms\Menu\Presentation\BreadcrumbBuilder();
-$notificationPresenter = new \LemurCms\Menu\Presentation\NotificationPresenter();
+$menuCache             = new \CeibaCms\Menu\Presentation\CeibaMenuCache(__DIR__);
+$menuRenderer          = new \CeibaCms\Menu\Presentation\CeibaMenuRenderer();
+$bannerRenderer        = new \CeibaCms\Menu\Presentation\BannerRenderer($menuRepository);
+$breadcrumbBuilder     = new \CeibaCms\Menu\Presentation\BreadcrumbBuilder();
+$notificationPresenter = new \CeibaCms\Menu\Presentation\NotificationPresenter();
 
-$getMainNavbar    = new \LemurCms\Menu\Application\GetMainNavbar($menuRepository);
-$getNavbar        = new \LemurCms\Menu\Application\GetNavbar($menuRepository, $menuRenderer, $menuCache);
-$createMenuItem   = new \LemurCms\Menu\Application\CreateMenuItem($menuRepository);
-$updateMenuItem   = new \LemurCms\Menu\Application\UpdateMenuItem($menuRepository);
-$deleteMenuItem   = new \LemurCms\Menu\Application\DeleteMenuItem($menuRepository);
-$saveBanner       = new \LemurCms\Menu\Application\SaveBanner($menuRepository);
-$saveLogo         = new \LemurCms\Menu\Application\SaveLogo($menuRepository);
+$getMainNavbar    = new \CeibaCms\Menu\Application\GetMainNavbar($menuRepository);
+$getNavbar        = new \CeibaCms\Menu\Application\GetNavbar($menuRepository, $menuRenderer, $menuCache);
+$createMenuItem   = new \CeibaCms\Menu\Application\CreateMenuItem($menuRepository);
+$updateMenuItem   = new \CeibaCms\Menu\Application\UpdateMenuItem($menuRepository);
+$deleteMenuItem   = new \CeibaCms\Menu\Application\DeleteMenuItem($menuRepository);
+$saveBanner       = new \CeibaCms\Menu\Application\SaveBanner($menuRepository);
+$saveLogo         = new \CeibaCms\Menu\Application\SaveLogo($menuRepository);
 
-$getPageBySlug    = new \LemurCms\Page\Application\GetPageBySlug($pageRepository);
-$getPageById      = new \LemurCms\Page\Application\GetPageById($pageRepository);
-$treeNormalizer   = new \LemurCms\PageBuilder\Domain\Service\TreeNormalizer();
-$createPage       = new \LemurCms\Page\Application\CreatePage($pageRepository, $treeNormalizer);
-$updatePage       = new \LemurCms\Page\Application\UpdatePage($pageRepository, $treeNormalizer);
-$publishPage      = new \LemurCms\Page\Application\PublishPage($pageRepository);
-$deletePage       = new \LemurCms\Page\Application\DeletePage($pageRepository);
-$listPages        = new \LemurCms\Page\Application\ListPages($pageRepository);
+$getPageBySlug    = new \CeibaCms\Page\Application\GetPageBySlug($pageRepository);
+$getPageById      = new \CeibaCms\Page\Application\GetPageById($pageRepository);
+$treeNormalizer   = new \CeibaCms\PageBuilder\Domain\Service\TreeNormalizer();
+$updatePage       = new \CeibaCms\Page\Application\UpdatePage($pageRepository);
+// createPage and publishPage are versioned and are wired with the revision services below.
+$deletePage       = new \CeibaCms\Page\Application\DeletePage($pageRepository);
+$listPages        = new \CeibaCms\Page\Application\ListPages($pageRepository);
 
-$getSeoForEntity  = new \LemurCms\Seo\Application\GetSeoForEntity($seoRepository);
-$upsertSeo        = new \LemurCms\Seo\Application\UpsertSeo($seoRepository);
+$getSeoForEntity  = new \CeibaCms\Seo\Application\GetSeoForEntity($seoRepository);
+$upsertSeo        = new \CeibaCms\Seo\Application\UpsertSeo($seoRepository);
 
-$storeMedia       = new \LemurCms\Media\Application\StoreMedia($mediaRepository);
-$deleteMedia      = new \LemurCms\Media\Application\DeleteMedia($mediaRepository);
-$listMedia        = new \LemurCms\Media\Application\ListMedia($mediaRepository);
-$findMediaById    = new \LemurCms\Media\Application\FindMediaById($mediaRepository);
+$storeMedia       = new \CeibaCms\Media\Application\StoreMedia($mediaRepository);
+$deleteMedia      = new \CeibaCms\Media\Application\DeleteMedia($mediaRepository);
+$listMedia        = new \CeibaCms\Media\Application\ListMedia($mediaRepository);
+$findMediaById    = new \CeibaCms\Media\Application\FindMediaById($mediaRepository);
 
-$authenticateUser = new \LemurCms\Auth\Application\AuthenticateUser($userRepository);
-$createUser       = new \LemurCms\Auth\Application\CreateUser($userRepository);
-$assignRole       = new \LemurCms\Auth\Application\AssignRole($userRepository);
-$checkPermission  = new \LemurCms\Auth\Application\CheckPermission($userRepository);
-$changePassword   = new \LemurCms\Auth\Application\ChangePassword($userRepository);
+$authenticateUser = new \CeibaCms\Auth\Application\AuthenticateUser($userRepository);
+$createUser       = new \CeibaCms\Auth\Application\CreateUser($userRepository);
+$assignRole       = new \CeibaCms\Auth\Application\AssignRole($userRepository);
+$checkPermission  = new \CeibaCms\Auth\Application\CheckPermission($userRepository);
+$changePassword   = new \CeibaCms\Auth\Application\ChangePassword($userRepository);
 
-$listTemplates            = new \LemurCms\PageBuilder\Application\ListTemplates($templateRepository);
-$getTemplateById          = new \LemurCms\PageBuilder\Application\GetTemplateById($templateRepository);
-$createTemplate           = new \LemurCms\PageBuilder\Application\CreateTemplate($templateRepository);
-$deleteTemplate           = new \LemurCms\PageBuilder\Application\DeleteTemplate($templateRepository);
-$listComponentDefinitions = new \LemurCms\PageBuilder\Application\ListComponentDefinitions($componentDefinitionRepository);
+$listTemplates            = new \CeibaCms\PageBuilder\Application\ListTemplates($templateRepository);
+$getTemplateById          = new \CeibaCms\PageBuilder\Application\GetTemplateById($templateRepository);
+$createTemplate           = new \CeibaCms\PageBuilder\Application\CreateTemplate($templateRepository);
+$deleteTemplate           = new \CeibaCms\PageBuilder\Application\DeleteTemplate($templateRepository);
+$listComponentDefinitions = new \CeibaCms\PageBuilder\Application\ListComponentDefinitions($componentDefinitionRepository);
 
 // V2 Page Templates
-$pageTemplateRepository   = new \LemurCms\PageBuilder\Infrastructure\LemurDbPageTemplateRepository($db);
-$getPageTemplateById      = new \LemurCms\PageBuilder\Application\GetPageTemplateById($pageTemplateRepository);
-$listPageTemplates        = new \LemurCms\PageBuilder\Application\ListPageTemplates($pageTemplateRepository);
+$pageTemplateRepository   = new \CeibaCms\PageBuilder\Infrastructure\CeibaDbPageTemplateRepository($db);
+$getPageTemplateById      = new \CeibaCms\PageBuilder\Application\GetPageTemplateById($pageTemplateRepository);
+$listPageTemplates        = new \CeibaCms\PageBuilder\Application\ListPageTemplates($pageTemplateRepository);
 
-$htmlSemanticRulesProvider = new \LemurCms\PageBuilder\Domain\Service\HtmlSemanticRulesProvider();
+$htmlSemanticRulesProvider = new \CeibaCms\PageBuilder\Domain\Service\HtmlSemanticRulesProvider();
 
 // V2 Engine Services
-$authManager              = new \LemurCms\Auth\AuthManager(new \LemurCms\Auth\Drivers\SessionDriver($db));
-$conditionEngine          = new \LemurCms\PageBuilder\Domain\Service\ConditionEngine($authManager, $db);
-$contextResolver          = new \LemurCms\PageBuilder\Domain\Service\ContextResolver($authManager);
-$queryEngine              = new \LemurCms\PageBuilder\Domain\Service\QueryEngine($db, $contextResolver);
+$authManager              = new \CeibaCms\Auth\AuthManager(new \CeibaCms\Auth\Drivers\SessionDriver($db));
+$conditionEngine          = new \CeibaCms\PageBuilder\Domain\Service\ConditionEngine($authManager, $db);
+$contextResolver          = new \CeibaCms\PageBuilder\Domain\Service\ContextResolver($authManager);
+$queryEngine              = new \CeibaCms\PageBuilder\Domain\Service\QueryEngine($db, $contextResolver);
 
-$listLayouts      = new \LemurCms\PageBuilder\Application\ListLayouts($pageLayoutRepository);
-$getLayoutById    = new \LemurCms\PageBuilder\Application\GetLayoutById($pageLayoutRepository);
-$getDefaultLayout = new \LemurCms\PageBuilder\Application\GetDefaultLayout($pageLayoutRepository);
-$createLayout     = new \LemurCms\PageBuilder\Application\CreateLayout($pageLayoutRepository);
-$updateLayout     = new \LemurCms\PageBuilder\Application\UpdateLayout($pageLayoutRepository);
-$deleteLayout     = new \LemurCms\PageBuilder\Application\DeleteLayout($pageLayoutRepository);
+$listLayouts      = new \CeibaCms\PageBuilder\Application\ListLayouts($pageLayoutRepository);
+$getLayoutById    = new \CeibaCms\PageBuilder\Application\GetLayoutById($pageLayoutRepository);
+$getDefaultLayout = new \CeibaCms\PageBuilder\Application\GetDefaultLayout($pageLayoutRepository);
+$createLayout     = new \CeibaCms\PageBuilder\Application\CreateLayout($pageLayoutRepository);
+$updateLayout     = new \CeibaCms\PageBuilder\Application\UpdateLayout($pageLayoutRepository);
+$deleteLayout     = new \CeibaCms\PageBuilder\Application\DeleteLayout($pageLayoutRepository);
 
 // ── Render Engine services ───────────────────────────────────────────────────
-$loopResolver         = new \LemurCms\PageBuilder\Domain\Service\LoopResolver();
+$loopResolver         = new \CeibaCms\PageBuilder\Domain\Service\LoopResolver();
 
 // Register Data Providers
-$loopResolver->register('api', new \LemurCms\DynamicModule\Infrastructure\ApiDataProvider());
+$loopResolver->register('api', new \CeibaCms\DynamicModule\Infrastructure\ApiDataProvider());
 try {
     $activeModules = $moduleDefinitionRepository->listAll();
     foreach ($activeModules as $moduleDef) {
         $loopResolver->register(
             'module:' . $moduleDef->moduleSlug,
-            new \LemurCms\DynamicModule\Infrastructure\DynamicModuleDataProvider(
+            new \CeibaCms\DynamicModule\Infrastructure\DynamicModuleDataProvider(
                 $moduleDef->tableName(),
                 $genericModuleRepository
             )
@@ -373,38 +430,134 @@ try {
 }
 
 // ── UI Framework Registry ────────────────────────────────────────────────────
-$uiFrameworkRegistry = new \LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry();
-$uiFrameworkRegistry->register(new \LemurCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module());
+$uiFrameworkRegistry = new \CeibaCms\PageBuilder\Domain\Service\UiFrameworkRegistry();
+$uiFrameworkRegistry->register(new \CeibaCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module());
 // No default active module — activate explicitly per app: $uiFrameworkRegistry->setActive('bootstrap5');
 
-$pageBuilderMetadataService = new \LemurCms\PageBuilder\Domain\Service\PageBuilderMetadataService(
+$pageBuilderMetadataService = new \CeibaCms\PageBuilder\Domain\Service\PageBuilderMetadataService(
     $uiFrameworkRegistry,
     $templateRepository,
     $pageTemplateRepository,
     $htmlSemanticRulesProvider
 );
 
-$variableInterpolator = new \LemurCms\PageBuilder\Domain\Service\VariableInterpolator();
-$bladeRenderer        = new \LemurCms\PageBuilder\Domain\Service\BladeRenderer($loopResolver, $variableInterpolator, $uiFrameworkRegistry);
-$layoutRenderer       = new \LemurCms\PageBuilder\Domain\Service\LayoutRenderer();
-$reservedPathChecker  = new \LemurCms\Routing\Domain\Service\ReservedPathChecker($reservedPathRepository);
+$variableInterpolator = new \CeibaCms\PageBuilder\Domain\Service\VariableInterpolator();
+$bladeRenderer        = new \CeibaCms\PageBuilder\Domain\Service\BladeRenderer($loopResolver, $variableInterpolator, $uiFrameworkRegistry);
+$layoutRenderer       = new \CeibaCms\PageBuilder\Domain\Service\LayoutRenderer();
+$reservedPathChecker  = new \CeibaCms\Routing\Domain\Service\ReservedPathChecker($reservedPathRepository);
 
-$listReservedPaths   = new \LemurCms\Routing\Application\ListReservedPaths($reservedPathRepository);
-$addReservedPath     = new \LemurCms\Routing\Application\AddReservedPath($reservedPathRepository);
-$removeReservedPath  = new \LemurCms\Routing\Application\RemoveReservedPath($reservedPathRepository);
+$listReservedPaths   = new \CeibaCms\Routing\Application\ListReservedPaths($reservedPathRepository);
+$addReservedPath     = new \CeibaCms\Routing\Application\AddReservedPath($reservedPathRepository);
+$removeReservedPath  = new \CeibaCms\Routing\Application\RemoveReservedPath($reservedPathRepository);
 
-$createDynamicModule = new \LemurCms\DynamicModule\Application\CreateDynamicModule($db, $moduleDefinitionRepository, $dynamicTableManager);
-$updateDynamicModule = new \LemurCms\DynamicModule\Application\UpdateDynamicModule($db, $moduleDefinitionRepository, $dynamicTableManager);
-$deleteDynamicModule = new \LemurCms\DynamicModule\Application\DeleteDynamicModule($db, $moduleDefinitionRepository, $dynamicTableManager);
-$getModuleDefinition = new \LemurCms\DynamicModule\Application\GetModuleDefinition($moduleDefinitionRepository);
-$listDynamicModules  = new \LemurCms\DynamicModule\Application\ListDynamicModules($moduleDefinitionRepository);
+$createDynamicModule = new \CeibaCms\DynamicModule\Application\CreateDynamicModule($db, $moduleDefinitionRepository, $dynamicTableManager);
+$updateDynamicModule = new \CeibaCms\DynamicModule\Application\UpdateDynamicModule($db, $moduleDefinitionRepository, $dynamicTableManager);
+$deleteDynamicModule = new \CeibaCms\DynamicModule\Application\DeleteDynamicModule($db, $moduleDefinitionRepository, $dynamicTableManager);
+$getModuleDefinition = new \CeibaCms\DynamicModule\Application\GetModuleDefinition($moduleDefinitionRepository);
+$listDynamicModules  = new \CeibaCms\DynamicModule\Application\ListDynamicModules($moduleDefinitionRepository);
 
-$listLanguages      = new \LemurCms\Localization\Application\ListLanguages($languageRepository);
-$createLanguage     = new \LemurCms\Localization\Application\CreateLanguage($db, $languageRepository, $translationRepository);
-$updateLanguage     = new \LemurCms\Localization\Application\UpdateLanguage($db, $languageRepository);
-$deleteLanguage     = new \LemurCms\Localization\Application\DeleteLanguage($db, $languageRepository, $translationRepository);
-$listTranslations   = new \LemurCms\Localization\Application\ListTranslations($translationRepository);
-$updateTranslations = new \LemurCms\Localization\Application\UpdateTranslations($translationRepository);
+$listLanguages      = new \CeibaCms\Localization\Application\ListLanguages($languageRepository);
+$createLanguage     = new \CeibaCms\Localization\Application\CreateLanguage($db, $languageRepository, $translationRepository);
+$updateLanguage     = new \CeibaCms\Localization\Application\UpdateLanguage($db, $languageRepository);
+$deleteLanguage     = new \CeibaCms\Localization\Application\DeleteLanguage($db, $languageRepository, $translationRepository);
+$listTranslations   = new \CeibaCms\Localization\Application\ListTranslations($translationRepository);
+$updateTranslations = new \CeibaCms\Localization\Application\UpdateTranslations($translationRepository);
+
+// ── Integration Ports & Adapters Instantiation ───────────────────────────────
+$siteId = (string) \CeibaCms\Support\Infrastructure\EnvironmentGuard::get(
+    'CMS_SITE_ID',
+    \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('DB_NAME', 'default')
+);
+$systemClock               = new \CeibaCms\PageBuilder\Infrastructure\SystemClock();
+$cmsDocumentAuthorization  = new \CeibaCms\PageBuilder\Infrastructure\CmsDocumentAuthorization($siteId, $checkPermission);
+$loopResolverContentSource = new \CeibaCms\PageBuilder\Infrastructure\LoopResolverContentSource($loopResolver);
+$localMediaStorage         = new \CeibaCms\PageBuilder\Infrastructure\LocalMediaStorage(
+    \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('MEDIA_STORAGE_PATH', sys_get_temp_dir() . '/cms_media')
+);
+$syncJobDispatcher         = new \CeibaCms\PageBuilder\Infrastructure\SyncJobDispatcher();
+$nullMailDelivery          = new \CeibaCms\PageBuilder\Infrastructure\NullMailDelivery();
+$documentMigrator          = new \CeibaCms\PageBuilder\Domain\Document\DocumentMigrator();
+$validatePageDocument      = new \CeibaCms\PageBuilder\Application\ValidatePageDocument(
+    $siteId,
+    $pageRepository,
+    $mediaRepository,
+    $cmsDocumentAuthorization
+);
+$migratePageDocument       = new \CeibaCms\PageBuilder\Application\MigratePageDocument(
+    $siteId,
+    $pageRepository,
+    $cmsDocumentAuthorization,
+    $documentMigrator
+);
+$componentCatalogue        = \CeibaCms\PageBuilder\Domain\Catalogue\ComponentCatalogue::createDefault();
+$builderApiPrefix          = (string) \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('BUILDER_API_PREFIX', '/api/builder/v1');
+// CMS permission => editor capability. Each revision operation has its own permission.
+$builderContextResolver    = static function () use ($siteId, $authManager, $checkPermission) {
+    $actorId = $authManager->id();
+    if ($actorId === null || !$authManager->check()) {
+        return null;
+    }
+    $capabilities = [];
+    foreach ([
+        'pages.view' => 'pages.read', 'pages.update' => 'pages.update', 'pages.publish' => 'pages.publish',
+        'pages.restore' => 'pages.restore', 'pages.unpublish' => 'pages.unpublish',
+    ] as $permission => $capability) {
+        if ($checkPermission->execute($actorId, $permission)) {
+            $capabilities[] = $capability;
+        }
+    }
+    return new \CeibaCms\PageBuilder\Domain\Document\HostContext($siteId, (string) $actorId, 'es', $capabilities);
+};
+// Server errors are logged with the requestId returned to the client; never the payload.
+$builderErrorReporter      = static function (string $requestId, \Throwable $error): void {
+    error_log(sprintf('[ceiba-cms] %s %s: %s', $requestId, get_class($error), $error->getMessage()));
+};
+$revisionAuditLog          = new \CeibaCms\Page\Application\PageRevisionAuditLog($db, $siteId, $systemClock);
+$savePageDraft             = new \CeibaCms\Page\Application\SavePageDraft($db, $siteId, $systemClock);
+$restorePageRevision       = new \CeibaCms\Page\Application\RestorePageRevision($db, $siteId, $savePageDraft);
+$publishPageRevision       = new \CeibaCms\Page\Application\PublishPageRevision($db, $siteId, $systemClock);
+$unpublishPage             = new \CeibaCms\Page\Application\UnpublishPage($db, $siteId, $systemClock);
+$reconcilePageContent      = new \CeibaCms\Page\Application\ReconcilePageContent($db, $siteId, $savePageDraft, $documentMigrator);
+$createPage                = new \CeibaCms\Page\Application\CreatePage($db, $siteId, $treeNormalizer, $documentMigrator, $systemClock);
+$publishPage               = new \CeibaCms\Page\Application\PublishPage($db, $siteId, $publishPageRevision);
+$getPageWorkingRevision    = new \CeibaCms\Page\Application\GetPageWorkingRevision($db, $siteId);
+$savePageContent           = new \CeibaCms\Page\Application\SavePageContent($savePageDraft, $treeNormalizer, $documentMigrator, $getPageWorkingRevision);
+$pagePreviewTokens         = new \CeibaCms\Page\Application\PagePreviewTokens($db, $siteId, $systemClock);
+$pinPageRevision           = new \CeibaCms\Page\Application\PinPageRevision($db, $siteId, $systemClock);
+$revisionArchive           = new \CeibaCms\PageBuilder\Infrastructure\JsonLinesRevisionArchive(
+    (string) \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('REVISION_ARCHIVE_PATH', __DIR__ . '/storage/revision-archive')
+);
+$editorApiController       = new \CeibaCms\PageBuilder\Presentation\Api\EditorApiController(
+    $builderApiPrefix,
+    $siteId,
+    $pageRepository,
+    $mediaRepository,
+    $cmsDocumentAuthorization,
+    $documentMigrator,
+    $validatePageDocument,
+    $componentCatalogue,
+    $builderContextResolver,
+    $savePageDraft,
+    $db,
+    $publishPageRevision,
+    $cmsDocumentAuthorization,
+    $revisionAuditLog,
+    $builderErrorReporter,
+    true
+);
+$revisionApiController     = new \CeibaCms\PageBuilder\Presentation\Api\RevisionApiController(
+    $siteId,
+    $builderContextResolver,
+    $cmsDocumentAuthorization,
+    $revisionAuditLog,
+    $restorePageRevision,
+    $reconcilePageContent,
+    $unpublishPage,
+    $pagePreviewTokens,
+    $pinPageRevision,
+    $db,
+    $builderErrorReporter
+);
 
 
 // ── Export container (opcional: devolver un contenedor manual) ───────────────
@@ -434,6 +587,8 @@ return [
         'bannerRenderer'         => $bannerRenderer,
         'breadcrumbBuilder'      => $breadcrumbBuilder,
         'notificationPresenter'  => $notificationPresenter,
+        'editorApiController'    => $editorApiController,
+        'revisionApiController'  => $revisionApiController,
     ],
     'services' => [
         'loopResolver'         => $loopResolver,
@@ -444,6 +599,26 @@ return [
         'contextResolver'      => $contextResolver,
         'queryEngine'          => $queryEngine,
         'pageBuilderMetadata'  => $pageBuilderMetadataService,
+        'clock'                => $systemClock,
+        'authorization'        => $cmsDocumentAuthorization,
+        'contentSource'        => $loopResolverContentSource,
+        'mediaStorage'         => $localMediaStorage,
+        'jobDispatcher'        => $syncJobDispatcher,
+        'mailDelivery'         => $nullMailDelivery,
+        'documentMigrator'     => $documentMigrator,
+        'componentCatalogue'   => $componentCatalogue,
+        'editorApiController'  => $editorApiController,
+        'revisionApiController' => $revisionApiController,
+        'revisionAuditLog'     => $revisionAuditLog,
+        'revisionArchive'      => $revisionArchive,
+    ],
+    'ports' => [
+        'clock'         => $systemClock,
+        'authorization' => $cmsDocumentAuthorization,
+        'contentSource' => $loopResolverContentSource,
+        'mediaStorage'  => $localMediaStorage,
+        'jobDispatcher' => $syncJobDispatcher,
+        'mailDelivery'  => $nullMailDelivery,
     ],
     'loopResolver'        => $loopResolver,
     'bladeRenderer'       => $bladeRenderer,
@@ -454,6 +629,22 @@ return [
     'queryEngine'         => $queryEngine,
     'pageBuilderMetadataService' => $pageBuilderMetadataService,
     'useCases' => [
+        'savePageContent' => $savePageContent,
+        'getPageWorkingRevision' => $getPageWorkingRevision,
+        'savePageDraft' => $savePageDraft,
+        'restorePageRevision' => $restorePageRevision,
+        'publishPageRevision' => $publishPageRevision,
+        'unpublishPage' => $unpublishPage,
+        'reconcilePageContent' => $reconcilePageContent,
+        'pagePreviewTokens' => $pagePreviewTokens,
+        'pinPageRevision' => $pinPageRevision,
+        // Maintenance (CLI/cron only): dry-run by default, archives before deleting.
+        'purgePageRevisions' => new \CeibaCms\Page\Application\PurgePageRevisions($db, $siteId, $revisionArchive, $systemClock),
+        'pageRevisionMetrics' => new \CeibaCms\Page\Application\PageRevisionOperationalMetrics($db, $siteId, $systemClock),
+        // Worker: the host supplies its idempotent PublicationEventHandler (cache/CDN/search).
+        'createPublicationOutboxDispatcher' => static fn (
+            \CeibaCms\PageBuilder\Domain\Contract\PublicationEventHandler $handler
+        ) => new \CeibaCms\Page\Application\DispatchPagePublicationOutbox($db, $siteId, $handler, $systemClock),
         // Menu
         'getMainNavbar'    => $getMainNavbar,
         'getNavbar'        => $getNavbar,
@@ -470,6 +661,7 @@ return [
         'publishPage'      => $publishPage,
         'deletePage'       => $deletePage,
         'listPages'        => $listPages,
+        'listAdministrativePages' => new \CeibaCms\Page\Application\ListAdministrativePages($pageRepository),
         // Seo
         'getSeoForEntity'  => $getSeoForEntity,
         'upsertSeo'        => $upsertSeo,
@@ -516,5 +708,7 @@ return [
         'deleteLanguage'      => $deleteLanguage,
         'listTranslations'    => $listTranslations,
         'updateTranslations'  => $updateTranslations,
+        'validatePageDocument' => $validatePageDocument,
+        'migratePageDocument'  => $migratePageDocument,
     ],
 ];

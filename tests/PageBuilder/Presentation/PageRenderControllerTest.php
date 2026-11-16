@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Presentation;
+namespace CeibaCms\Tests\PageBuilder\Presentation;
 
-use LemurCms\Http\Controllers\PageRenderController;
-use LemurCms\Page\Application\GetPageBySlug;
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
-use LemurCms\PageBuilder\Domain\Service\BladeRendererInterface;
+use CeibaCms\Http\Controllers\PageRenderController;
+use CeibaCms\Page\Application\GetPageBySlug;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Service\BladeRendererInterface;
 use PHPUnit\Framework\TestCase;
 
 class PageRenderControllerTest extends TestCase
@@ -26,10 +26,10 @@ class PageRenderControllerTest extends TestCase
 
         $getPageBySlug = new GetPageBySlug($this->pageRepoMock);
 
-        $getLayoutByIdMock = $this->createMock(\LemurCms\PageBuilder\Application\GetLayoutById::class);
-        $getDefaultLayoutMock = $this->createMock(\LemurCms\PageBuilder\Application\GetDefaultLayout::class);
-        $layoutRendererMock = $this->createMock(\LemurCms\PageBuilder\Domain\Service\LayoutRenderer::class);
-        $getNavbarMock = $this->createMock(\LemurCms\Menu\Application\GetNavbar::class);
+        $getLayoutByIdMock = $this->createMock(\CeibaCms\PageBuilder\Application\GetLayoutById::class);
+        $getDefaultLayoutMock = $this->createMock(\CeibaCms\PageBuilder\Application\GetDefaultLayout::class);
+        $layoutRendererMock = $this->createMock(\CeibaCms\PageBuilder\Domain\Service\LayoutRenderer::class);
+        $getNavbarMock = $this->createMock(\CeibaCms\Menu\Application\GetNavbar::class);
 
         $layoutRendererMock->method('render')->willReturnCallback(fn($contentHtml) => $contentHtml);
 

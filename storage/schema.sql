@@ -1,4 +1,4 @@
--- Lemur CMS — Generated schema (do not edit manually)
+-- Ceiba CMS — Generated schema (do not edit manually)
 -- Generated: 2026-05-10 22:20:45
 -- Dialect: mysql
 

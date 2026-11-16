@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Http;
+namespace CeibaCms\Tests\Http;
 
-use LemurCms\Http\Controllers\SettingsController;
-use LemurCms\Settings\Domain\Repository\SettingsRepositoryInterface;
+use CeibaCms\Http\Controllers\SettingsController;
+use CeibaCms\Settings\Domain\Repository\SettingsRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 

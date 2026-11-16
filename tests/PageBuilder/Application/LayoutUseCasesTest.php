@@ -1,17 +1,17 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Application;
+namespace CeibaCms\Tests\PageBuilder\Application;
 
-use LemurCms\PageBuilder\Application\CreateLayout;
-use LemurCms\PageBuilder\Application\DeleteLayout;
-use LemurCms\PageBuilder\Application\GetDefaultLayout;
-use LemurCms\PageBuilder\Application\GetLayoutById;
-use LemurCms\PageBuilder\Application\ListLayouts;
-use LemurCms\PageBuilder\Application\UpdateLayout;
-use LemurCms\PageBuilder\Domain\Entity\PageLayout;
-use LemurCms\PageBuilder\Domain\Repository\PageLayoutRepositoryInterface;
-use LemurCms\Support\Exceptions\InvalidMenuException;
+use CeibaCms\PageBuilder\Application\CreateLayout;
+use CeibaCms\PageBuilder\Application\DeleteLayout;
+use CeibaCms\PageBuilder\Application\GetDefaultLayout;
+use CeibaCms\PageBuilder\Application\GetLayoutById;
+use CeibaCms\PageBuilder\Application\ListLayouts;
+use CeibaCms\PageBuilder\Application\UpdateLayout;
+use CeibaCms\PageBuilder\Domain\Entity\PageLayout;
+use CeibaCms\PageBuilder\Domain\Repository\PageLayoutRepositoryInterface;
+use CeibaCms\Support\Exceptions\InvalidMenuException;
 use PHPUnit\Framework\TestCase;
 
 class LayoutUseCasesTest extends TestCase

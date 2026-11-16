@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Tests\Menu\Application;
+namespace CeibaCms\Tests\Menu\Application;
 
-use LemurCms\Menu\Application\GetNavbar;
-use LemurCms\Menu\Domain\Repository\MenuRepositoryInterface;
-use LemurCms\Menu\Presentation\LemurMenuRenderer;
-use LemurCms\Menu\Presentation\LemurMenuCache;
+use CeibaCms\Menu\Application\GetNavbar;
+use CeibaCms\Menu\Domain\Repository\MenuRepositoryInterface;
+use CeibaCms\Menu\Presentation\CeibaMenuRenderer;
+use CeibaCms\Menu\Presentation\CeibaMenuCache;
 use PHPUnit\Framework\TestCase;
 
 class GetNavbarTest extends TestCase
@@ -14,8 +14,8 @@ class GetNavbarTest extends TestCase
     {
         $repo = $this->createMock(MenuRepositoryInterface::class);
         $repo->method('getMenuTree')->willReturn([]);
-        $renderer = new LemurMenuRenderer();
-        $cache = new LemurMenuCache(sys_get_temp_dir());
+        $renderer = new CeibaMenuRenderer();
+        $cache = new CeibaMenuCache(sys_get_temp_dir());
 
         $useCase = new GetNavbar($repo, $renderer, $cache);
         $html = $useCase->execute('nonexistent');
@@ -36,8 +36,8 @@ class GetNavbarTest extends TestCase
 
         $repo = $this->createMock(MenuRepositoryInterface::class);
         $repo->method('getMenuTree')->willReturn($items);
-        $renderer = new LemurMenuRenderer();
-        $cache = new LemurMenuCache(sys_get_temp_dir());
+        $renderer = new CeibaMenuRenderer();
+        $cache = new CeibaMenuCache(sys_get_temp_dir());
 
         $useCase = new GetNavbar($repo, $renderer, $cache);
         $html = $useCase->execute('main');
@@ -57,13 +57,13 @@ class GetNavbarTest extends TestCase
             'children' => []
         ]];
 
-        $tempDir = sys_get_temp_dir() . '/lemur_test_' . uniqid();
+        $tempDir = sys_get_temp_dir() . '/ceiba_test_' . uniqid();
         mkdir($tempDir);
 
         $repo = $this->createMock(MenuRepositoryInterface::class);
         $repo->expects($this->once())->method('getMenuTree')->willReturn($items);
-        $renderer = new LemurMenuRenderer();
-        $cache = new LemurMenuCache($tempDir);
+        $renderer = new CeibaMenuRenderer();
+        $cache = new CeibaMenuCache($tempDir);
 
         $useCase = new GetNavbar($repo, $renderer, $cache);
 
@@ -93,8 +93,8 @@ class GetNavbarTest extends TestCase
 
         $repo = $this->createMock(MenuRepositoryInterface::class);
         $repo->method('getMenuTree')->willReturn($items);
-        $renderer = new LemurMenuRenderer();
-        $cache = new LemurMenuCache(sys_get_temp_dir());
+        $renderer = new CeibaMenuRenderer();
+        $cache = new CeibaMenuCache(sys_get_temp_dir());
 
         $useCase = new GetNavbar($repo, $renderer, $cache);
         $useCase->execute('main');

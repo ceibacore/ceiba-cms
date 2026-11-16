@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Http\Controllers;
+namespace CeibaCms\Http\Controllers;
 
-use LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
-use LemurCms\PageBuilder\Import\HtmlImporter;
+use CeibaCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
+use CeibaCms\PageBuilder\Import\HtmlImporter;
 
 class ImportController extends BaseController
 {

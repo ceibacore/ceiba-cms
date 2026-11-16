@@ -1,12 +1,12 @@
 # VDOM Layout Structure & Component Tree
 
-This document outlines how layouts in Lemur CMS are constructed dynamically using the internal Virtual DOM (VDOM) node tree system. This allows administrative templates, headers, and footers to be edited as flexible, component-based structures rather than static files.
+This document outlines how layouts in Ceiba CMS are constructed dynamically using the internal Virtual DOM (VDOM) node tree system. This allows administrative templates, headers, and footers to be edited as flexible, component-based structures rather than static files.
 
 ---
 
 ## 1. Concept of VDOM in Layouts
 
-A **Page Layout** in Lemur CMS is not just database metadata; it holds executable interface structures. Layout components are declared as a VDOM node tree, which the renderer parses recursively.
+A **Page Layout** in Ceiba CMS is not just database metadata; it holds executable interface structures. Layout components are declared as a VDOM node tree, which the renderer parses recursively.
 
 Specifically, the footer of the layout (`footer_tree`) is stored in the `page_layouts` table as a JSON array of node definitions, identical to how a standard page's content is modeled. This enables admins to build rich, multi-column footers with links, paragraphs, and images using standard builder blocks.
 
@@ -60,7 +60,7 @@ Here is an example representing a two-column footer containing copyright info an
             "type": "img",
             "props": { 
               "src": "/assets/logo-footer.png", 
-              "alt": "Lemur CMS Logo",
+              "alt": "Ceiba CMS Logo",
               "class": "mb-2" 
             }
           },
@@ -68,7 +68,7 @@ Here is an example representing a two-column footer containing copyright info an
             "id": "copyright-id",
             "type": "p",
             "props": { 
-              "content": "© 2026 Lemur Bookstores. Todos los derechos reservados.",
+              "content": "© 2026 Ceiba Bookstores. Todos los derechos reservados.",
               "class": "text-muted small"
             }
           }
@@ -112,7 +112,7 @@ Rather than declaring navbar nodes directly in the VDOM of the layout, layouts l
 
 1. The layout defines `menu_slug` (e.g. `"main-navigation"`).
 2. During page load, the page controller invokes `GetNavbar::execute($menuSlug)`.
-3. The menu system resolves the hierarchy from `menu_items` and renders it using `LemurMenuRenderer` to produce Bootstrap 5 navbar HTML.
+3. The menu system resolves the hierarchy from `menu_items` and renders it using `CeibaMenuRenderer` to produce Bootstrap 5 navbar HTML.
 4. This generated markup is injected directly as `$navbarHtml` into the layout's header placeholder.
 
 ---

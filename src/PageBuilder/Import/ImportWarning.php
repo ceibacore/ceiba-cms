@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Import;
+namespace CeibaCms\PageBuilder\Import;
 
 final class ImportWarning
 {

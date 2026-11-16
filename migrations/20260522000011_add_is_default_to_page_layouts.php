@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Migrations;
-use LemurCms\Migration\CmsBaseMigration;
+namespace CeibaCms\Migrations;
+use CeibaCms\Migration\CmsBaseMigration;
 
 class Migration_20260522000011_AddIsDefaultToPageLayouts extends CmsBaseMigration
 {

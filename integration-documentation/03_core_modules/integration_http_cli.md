@@ -31,25 +31,25 @@ echo $config['cache']['ttl']; // 3600
 
 **migrate** - Ejecutar migraciones
 ```bash
-php bin/lemur migrate
+php bin/ceiba migrate
 ```
 
 **migrate:list** - Listar migraciones disponibles
 ```bash
-php bin/lemur migrate:list
+php bin/ceiba migrate:list
 ```
 
 **cache:clear** - Limpiar cache de aplicación
 ```bash
-php bin/lemur cache:clear
+php bin/ceiba cache:clear
 ```
 
 **user:create** - Crear usuario interactivo
 ```bash
-php bin/lemur user:create
+php bin/ceiba user:create
 ```
 
-**Entrada:** `bin/lemur.php`
+**Entrada:** `bin/ceiba.php`
 
 ---
 
@@ -225,13 +225,13 @@ curl -X POST http://localhost/api/cache/clear
 
 ```bash
 # Migrar base de datos
-php bin/lemur migrate
+php bin/ceiba migrate
 
 # Crear usuario
-php bin/lemur user:create
+php bin/ceiba user:create
 
 # Limpiar cache
-php bin/lemur cache:clear
+php bin/ceiba cache:clear
 ```
 
 ### 3. Seeding (Programático)
@@ -254,7 +254,7 @@ foreach ($pages as $page) {
 
 ### CLI
 - ✅ bin/CliKernel.php
-- ✅ bin/lemur.php
+- ✅ bin/ceiba.php
 - ✅ bin/commands/Command.php
 - ✅ bin/commands/MigrateCommand.php
 - ✅ bin/commands/CacheClearCommand.php

@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\DynamicModule\Infrastructure;
+namespace CeibaCms\DynamicModule\Infrastructure;
 
-use LemurCms\DynamicModule\Domain\Entity\ModuleDefinition;
-use LemurCms\DynamicModule\Domain\Entity\ModuleField;
-use LemurCms\DynamicModule\Domain\Entity\ModuleFieldType;
-use LemurDB;
+use CeibaCms\DynamicModule\Domain\Entity\ModuleDefinition;
+use CeibaCms\DynamicModule\Domain\Entity\ModuleField;
+use CeibaCms\DynamicModule\Domain\Entity\ModuleFieldType;
+use CeibaDB;
 
 final class DynamicTableManager
 {
-    public function __construct(private readonly LemurDB $db) {}
+    public function __construct(private readonly CeibaDB $db) {}
 
     private function prefixedTable(string $table): string
     {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\DynamicModule\Domain\Entity;
+namespace CeibaCms\DynamicModule\Domain\Entity;
 
 final class ModuleFieldType
 {

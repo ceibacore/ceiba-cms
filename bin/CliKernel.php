@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LemurCms;
+namespace CeibaCms;
 
 class CliKernel
 {
@@ -52,7 +52,7 @@ class CliKernel
     private function showUsage(): void
     {
         echo "╔════════════════════════════════════════╗\n";
-        echo "║      Lemur CMS - CLI Application       ║\n";
+        echo "║      Ceiba CMS - CLI Application       ║\n";
         echo "╚════════════════════════════════════════╝\n\n";
 
         echo "Available Commands:\n";
@@ -64,6 +64,6 @@ class CliKernel
             printf("  %-30s %s\n", $signature, $description);
         }
 
-        echo "\nUsage: php bin/lemur <command> [options]\n\n";
+        echo "\nUsage: php bin/ceiba <command> [options]\n\n";
     }
 }

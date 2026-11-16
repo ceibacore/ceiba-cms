@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Seeders;
+namespace CeibaCms\Seeders;
 
-use LemurCms\Seeder\CmsSeeder;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaCms\Seeder\CmsSeeder;
+use CeibaCms\Support\Helpers\UuidHelper;
 
 class PageLayoutsSeeder extends CmsSeeder
 {
@@ -33,7 +33,7 @@ class PageLayoutsSeeder extends CmsSeeder
                                     [
                                         'id'       => 'footer_brand',
                                         'type'     => 'text',
-                                        'props'    => ['tag' => 'p', 'content' => '© 2026 Lemur LMS. Todos los derechos reservados.', 'class' => 'mb-0 small'],
+                                        'props'    => ['tag' => 'p', 'content' => '© 2026 Ceiba LMS. Todos los derechos reservados.', 'class' => 'mb-0 small'],
                                         'loop'     => null,
                                         'children' => [],
                                     ],

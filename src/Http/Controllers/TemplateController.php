@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Http\Controllers;
+namespace CeibaCms\Http\Controllers;
 
-use LemurCms\PageBuilder\Application\ListTemplates;
-use LemurCms\PageBuilder\Application\GetTemplateById;
-use LemurCms\PageBuilder\Application\CreateTemplate;
-use LemurCms\PageBuilder\Application\DeleteTemplate;
-use LemurCms\Support\Validators\TemplateValidator;
+use CeibaCms\PageBuilder\Application\ListTemplates;
+use CeibaCms\PageBuilder\Application\GetTemplateById;
+use CeibaCms\PageBuilder\Application\CreateTemplate;
+use CeibaCms\PageBuilder\Application\DeleteTemplate;
+use CeibaCms\Support\Validators\TemplateValidator;
 
 class TemplateController extends BaseController
 {

@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\DynamicModule\Application;
+namespace CeibaCms\DynamicModule\Application;
 
-use LemurCms\DynamicModule\Domain\Entity\ModuleDefinition;
-use LemurCms\DynamicModule\Domain\Repository\ModuleDefinitionRepositoryInterface;
+use CeibaCms\DynamicModule\Domain\Entity\ModuleDefinition;
+use CeibaCms\DynamicModule\Domain\Repository\ModuleDefinitionRepositoryInterface;
 
 final class GetModuleDefinition
 {

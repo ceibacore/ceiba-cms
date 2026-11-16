@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Auth\Domain\Repository;
+namespace CeibaCms\Auth\Domain\Repository;
 
 interface UserRepositoryInterface
 {

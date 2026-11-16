@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Support\Validators;
+namespace CeibaCms\Support\Validators;
 
-use LemurCms\Support\Exceptions\InvalidMenuException;
+use CeibaCms\Support\Exceptions\InvalidMenuException;
 
 class TemplateValidator
 {
@@ -31,7 +31,7 @@ class TemplateValidator
 
         $tree = $data['tree'];
         if (is_array($tree)) {
-            $validator = new \LemurCms\PageBuilder\Domain\Service\TreeValidator();
+            $validator = new \CeibaCms\PageBuilder\Domain\Service\TreeValidator();
             $errors = $validator->validate($tree);
             if (!empty($errors)) {
                 throw new InvalidMenuException('Invalid template tree: ' . implode('; ', $errors));
@@ -47,7 +47,7 @@ class TemplateValidator
                 if (!is_array($decoded)) {
                     throw new InvalidMenuException('Template tree JSON must be an array or object');
                 }
-                $validator = new \LemurCms\PageBuilder\Domain\Service\TreeValidator();
+                $validator = new \CeibaCms\PageBuilder\Domain\Service\TreeValidator();
                 $errors = $validator->validate($decoded);
                 if (!empty($errors)) {
                     throw new InvalidMenuException('Invalid template tree: ' . implode('; ', $errors));

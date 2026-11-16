@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Import\Rules;
+namespace CeibaCms\PageBuilder\Import\Rules;
 
-use LemurCms\PageBuilder\Import\Contract\RuleInterface;
-use LemurCms\PageBuilder\Import\ImportWarning;
+use CeibaCms\PageBuilder\Import\Contract\RuleInterface;
+use CeibaCms\PageBuilder\Import\ImportWarning;
 
 /**
  * Last-resort rule. Always matches.

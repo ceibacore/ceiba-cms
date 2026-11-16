@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\PageBuilder\Domain\Entity;
+namespace CeibaCms\PageBuilder\Domain\Entity;
 
 /**
  * Immutable value object for loop configuration on a node.

@@ -2,13 +2,35 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Support\Validators;
+namespace CeibaCms\Support\Validators;
 
-use LemurCms\Support\Exceptions\InvalidMenuException;
+use CeibaCms\Support\Exceptions\InvalidMenuException;
 
 class PageValidator
 {
     private const VALID_STATUSES = ['draft', 'published', 'archived'];
+
+    /**
+     * Validates a metadata update. Content is versioned and is never accepted here.
+     *
+     * @param array<string, mixed> $data
+     * @throws InvalidMenuException
+     */
+    public static function validateMetadata(array $data): void
+    {
+        if (array_key_exists('content', $data)) {
+            throw new InvalidMenuException('Page content is versioned; save it through the builder draft API');
+        }
+        if (array_key_exists('title', $data) && (!is_string($data['title']) || trim($data['title']) === '' || strlen($data['title']) > 255)) {
+            throw new InvalidMenuException('Page title must be a non-empty string of at most 255 characters');
+        }
+        if (array_key_exists('slug', $data) && (!is_string($data['slug']) || !preg_match('/^[a-z0-9-]+$/i', $data['slug']))) {
+            throw new InvalidMenuException('Page slug must contain only alphanumeric characters and hyphens');
+        }
+        if (array_key_exists('status', $data) && !in_array($data['status'], self::VALID_STATUSES, true)) {
+            throw new InvalidMenuException('Invalid page status');
+        }
+    }
 
     /**
      * @param array<string, mixed> $data
@@ -42,8 +64,16 @@ class PageValidator
         }
 
         $content = $data['content'];
+        try {
+            (new \CeibaCms\PageBuilder\Domain\Document\DocumentWriteValidator())->validatePageContent($content);
+        } catch (\InvalidArgumentException $e) {
+            throw new InvalidMenuException($e->getMessage());
+        }
         if (is_array($content)) {
-            $validator = new \LemurCms\PageBuilder\Domain\Service\TreeValidator();
+            if (!array_is_list($content)) {
+                throw new InvalidMenuException('Expected a list of page nodes');
+            }
+            $validator = new \CeibaCms\PageBuilder\Domain\Service\TreeValidator();
             $errors = $validator->validate($content);
             if (!empty($errors)) {
                 throw new InvalidMenuException('Invalid page tree: ' . implode('; ', $errors));
@@ -56,10 +86,10 @@ class PageValidator
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     throw new InvalidMenuException('Page content is malformed JSON');
                 }
-                if (!is_array($decoded)) {
+                if (!is_array($decoded) || !array_is_list($decoded)) {
                     throw new InvalidMenuException('Page content JSON must be an array or object');
                 }
-                $validator = new \LemurCms\PageBuilder\Domain\Service\TreeValidator();
+                $validator = new \CeibaCms\PageBuilder\Domain\Service\TreeValidator();
                 $errors = $validator->validate($decoded);
                 if (!empty($errors)) {
                     throw new InvalidMenuException('Invalid page tree: ' . implode('; ', $errors));

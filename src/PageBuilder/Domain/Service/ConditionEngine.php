@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Service;
+namespace CeibaCms\PageBuilder\Domain\Service;
 
-use LemurDB;
-use LemurCms\Auth\AuthManager;
+use CeibaDB;
+use CeibaCms\Auth\AuthManager;
 
 final class ConditionEngine
 {
     public function __construct(
         private readonly AuthManager $auth,
-        private readonly LemurDB $db
+        private readonly CeibaDB $db
     ) {}
 
     /**

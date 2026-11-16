@@ -155,8 +155,8 @@ El `QueryEngine` traduce definiciones JSON abstractas a consultas seguras de Elo
    ```php
    return [
        'allowed_query_models' => [
-           'Article' => \LemurCms\Models\Article::class,
-           'Product' => \LemurCms\Models\Product::class,
+           'Article' => \CeibaCms\Models\Article::class,
+           'Product' => \CeibaCms\Models\Product::class,
        ]
    ];
    ```

@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Http;
+namespace CeibaCms\Tests\Http;
 
-use LemurCms\Http\Controllers\LanguageController;
-use LemurCms\Localization\Domain\Repository\LanguageRepositoryInterface;
-use LemurCms\Localization\Domain\Repository\TranslationRepositoryInterface;
-use LemurCms\Localization\Application\ListLanguages;
-use LemurCms\Localization\Application\CreateLanguage;
-use LemurCms\Localization\Application\UpdateLanguage;
-use LemurCms\Localization\Application\DeleteLanguage;
-use LemurCms\Localization\Application\ListTranslations;
-use LemurCms\Localization\Application\UpdateTranslations;
-use LemurDB;
+use CeibaCms\Http\Controllers\LanguageController;
+use CeibaCms\Localization\Domain\Repository\LanguageRepositoryInterface;
+use CeibaCms\Localization\Domain\Repository\TranslationRepositoryInterface;
+use CeibaCms\Localization\Application\ListLanguages;
+use CeibaCms\Localization\Application\CreateLanguage;
+use CeibaCms\Localization\Application\UpdateLanguage;
+use CeibaCms\Localization\Application\DeleteLanguage;
+use CeibaCms\Localization\Application\ListTranslations;
+use CeibaCms\Localization\Application\UpdateTranslations;
+use CeibaDB;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -20,7 +20,7 @@ class LanguageControllerTest extends TestCase
 {
     private LanguageRepositoryInterface&MockObject $languageRepo;
     private TranslationRepositoryInterface&MockObject $translationRepo;
-    private LemurDB&MockObject $db;
+    private CeibaDB&MockObject $db;
     private LanguageController&MockObject $controller;
 
     protected function setUp(): void
@@ -29,7 +29,7 @@ class LanguageControllerTest extends TestCase
 
         $this->languageRepo = $this->createMock(LanguageRepositoryInterface::class);
         $this->translationRepo = $this->createMock(TranslationRepositoryInterface::class);
-        $this->db = $this->createMock(LemurDB::class);
+        $this->db = $this->createMock(CeibaDB::class);
 
         $listLanguages = new ListLanguages($this->languageRepo);
         $createLanguage = new CreateLanguage($this->db, $this->languageRepo, $this->translationRepo);

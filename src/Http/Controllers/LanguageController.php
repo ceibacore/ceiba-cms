@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Http\Controllers;
+namespace CeibaCms\Http\Controllers;
 
-use LemurCms\Localization\Application\ListLanguages;
-use LemurCms\Localization\Application\CreateLanguage;
-use LemurCms\Localization\Application\UpdateLanguage;
-use LemurCms\Localization\Application\DeleteLanguage;
-use LemurCms\Localization\Application\ListTranslations;
-use LemurCms\Localization\Application\UpdateTranslations;
+use CeibaCms\Localization\Application\ListLanguages;
+use CeibaCms\Localization\Application\CreateLanguage;
+use CeibaCms\Localization\Application\UpdateLanguage;
+use CeibaCms\Localization\Application\DeleteLanguage;
+use CeibaCms\Localization\Application\ListTranslations;
+use CeibaCms\Localization\Application\UpdateTranslations;
 
 class LanguageController extends BaseController
 {

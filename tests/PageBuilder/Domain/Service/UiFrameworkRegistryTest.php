@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Domain\Service;
+namespace CeibaCms\Tests\PageBuilder\Domain\Service;
 
-use LemurCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
-use LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
+use CeibaCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
+use CeibaCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
 use PHPUnit\Framework\TestCase;
 
 class UiFrameworkRegistryTest extends TestCase

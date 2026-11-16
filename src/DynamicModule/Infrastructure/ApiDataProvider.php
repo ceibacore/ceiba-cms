@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\DynamicModule\Infrastructure;
+namespace CeibaCms\DynamicModule\Infrastructure;
 
-use LemurCms\PageBuilder\Domain\Service\DataProviderInterface;
+use CeibaCms\PageBuilder\Domain\Service\DataProviderInterface;
 
 final class ApiDataProvider implements DataProviderInterface
 {
@@ -16,7 +16,7 @@ final class ApiDataProvider implements DataProviderInterface
             return [];
         }
 
-        $cacheDir = sys_get_temp_dir() . '/lemur_cms_cache';
+        $cacheDir = sys_get_temp_dir() . '/ceiba_cms_cache';
         if (!is_dir($cacheDir)) {
             @mkdir($cacheDir, 0700, true);
         }
@@ -36,7 +36,7 @@ final class ApiDataProvider implements DataProviderInterface
             'http' => [
                 'method' => 'GET',
                 'header' => [
-                    "User-Agent: LemurCMS/1.0",
+                    "User-Agent: CeibaCMS/1.0",
                     "Accept: application/json"
                 ],
                 'timeout' => 5 // 5 seconds timeout

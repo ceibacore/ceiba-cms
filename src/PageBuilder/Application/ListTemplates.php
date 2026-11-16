@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Application;
+namespace CeibaCms\PageBuilder\Application;
 
-use LemurCms\PageBuilder\Domain\Repository\TemplateRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Repository\TemplateRepositoryInterface;
 
 final class ListTemplates
 {

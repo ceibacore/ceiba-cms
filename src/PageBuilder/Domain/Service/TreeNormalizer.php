@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Service;
+namespace CeibaCms\PageBuilder\Domain\Service;
+
+use CeibaCms\PageBuilder\Domain\Document\DocumentWriteValidator;
 
 /**
  * TreeNormalizer
@@ -38,6 +40,17 @@ final class TreeNormalizer
         'scrollspy' => ['id' => null],
         'toast'     => ['id' => null],
     ];
+
+    public function preparePageContent(mixed $content): array|string
+    {
+        (new DocumentWriteValidator())->validatePageContent($content);
+        if (!is_array($content) || !array_is_list($content)) {
+            return $content;
+        }
+        $tree = $this->normalize($content);
+        DocumentWriteValidator::checkBytes(json_encode($tree, JSON_THROW_ON_ERROR));
+        return $tree;
+    }
 
     /**
      * Normaliza un árbol de nodos completo.

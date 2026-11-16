@@ -1,17 +1,17 @@
 <?php
 /**
- * EXAMPLE: Using LemurMenuBuilder to create menus programmatically
+ * EXAMPLE: Using CeibaMenuBuilder to create menus programmatically
  */
 
 declare(strict_types=1);
 
 require_once __DIR__ . '/bootstrap.php';
 
-use LemurCms\Menu\Presentation\LemurMenuBuilder;
-use LemurCms\Menu\Presentation\LemurMenuRenderer;
+use CeibaCms\Menu\Presentation\CeibaMenuBuilder;
+use CeibaCms\Menu\Presentation\CeibaMenuRenderer;
 
 // Create menus programmatically using fluent API
-$builder = new LemurMenuBuilder();
+$builder = new CeibaMenuBuilder();
 
 $menus = $builder
     ->menu('main', 'Main Menu', ['type' => 'main'])
@@ -45,7 +45,7 @@ $menus = $builder
     ->build();
 
 // Render the main menu
-$renderer = new LemurMenuRenderer('/about');
+$renderer = new CeibaMenuRenderer('/about');
 $navbarHtml = $renderer->render($menus['main']['items']);
 
 echo $navbarHtml;

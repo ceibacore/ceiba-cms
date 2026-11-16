@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Seo\Domain;
+namespace CeibaCms\Seo\Domain;
 
 interface SeoRepositoryInterface
 {

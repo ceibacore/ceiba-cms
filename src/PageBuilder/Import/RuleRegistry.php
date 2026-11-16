@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Import;
+namespace CeibaCms\PageBuilder\Import;
 
-use LemurCms\PageBuilder\Import\Contract\RuleInterface;
+use CeibaCms\PageBuilder\Import\Contract\RuleInterface;
 
 /**
  * Stores all registered rules, ordered by priority (DESC).

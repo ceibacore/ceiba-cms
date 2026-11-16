@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Seeder;
+namespace CeibaCms\Seeder;
 
-use LemurDB;
+use CeibaDB;
 
 class CmsSeederRunner
 {
     private array $seeders = [];
 
     public function __construct(
-        private readonly LemurDB $db,
+        private readonly CeibaDB $db,
         private readonly string $prefix = ''
     ) {}
 

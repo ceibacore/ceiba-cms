@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Database;
+namespace CeibaCms\Tests\Database;
 
-use LemurCms\Database\Factories\MenuFactory;
-use LemurCms\Database\Factories\PageFactory;
-use LemurCms\Database\Factories\UserFactory;
+use CeibaCms\Database\Factories\MenuFactory;
+use CeibaCms\Database\Factories\PageFactory;
+use CeibaCms\Database\Factories\UserFactory;
 use PHPUnit\Framework\TestCase;
 
 class FactoriesTest extends TestCase

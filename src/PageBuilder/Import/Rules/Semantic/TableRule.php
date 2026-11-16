@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Import\Rules\Semantic;
+namespace CeibaCms\PageBuilder\Import\Rules\Semantic;
 
-use LemurCms\PageBuilder\Import\AttrExtractor;
-use LemurCms\PageBuilder\Import\Contract\RuleInterface;
+use CeibaCms\PageBuilder\Import\AttrExtractor;
+use CeibaCms\PageBuilder\Import\Contract\RuleInterface;
 
 /**
  * Maps standard HTML table tags to the PageBuilder.

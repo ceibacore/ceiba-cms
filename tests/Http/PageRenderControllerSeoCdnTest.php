@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Http;
+namespace CeibaCms\Tests\Http;
 
-use LemurCms\Http\Controllers\PageRenderController;
-use LemurCms\Page\Application\GetPageBySlug;
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
-use LemurCms\PageBuilder\Domain\Service\BladeRendererInterface;
-use LemurCms\PageBuilder\Domain\Service\LayoutRenderer;
-use LemurCms\PageBuilder\Application\GetLayoutById;
-use LemurCms\PageBuilder\Application\GetDefaultLayout;
-use LemurCms\Seo\Domain\Repository\SeoRepositoryInterface;
-use LemurCms\Settings\Domain\Repository\SettingsRepositoryInterface;
-use LemurCms\PageBuilder\Domain\Entity\PageLayout;
-use LemurCms\Menu\Application\GetNavbar;
+use CeibaCms\Http\Controllers\PageRenderController;
+use CeibaCms\Page\Application\GetPageBySlug;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Service\BladeRendererInterface;
+use CeibaCms\PageBuilder\Domain\Service\LayoutRenderer;
+use CeibaCms\PageBuilder\Application\GetLayoutById;
+use CeibaCms\PageBuilder\Application\GetDefaultLayout;
+use CeibaCms\Seo\Domain\Repository\SeoRepositoryInterface;
+use CeibaCms\Settings\Domain\Repository\SettingsRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Entity\PageLayout;
+use CeibaCms\Menu\Application\GetNavbar;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 

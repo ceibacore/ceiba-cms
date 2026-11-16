@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Import;
+namespace CeibaCms\Tests\PageBuilder\Import;
 
-use LemurCms\PageBuilder\Import\HtmlImporter;
+use CeibaCms\PageBuilder\Import\HtmlImporter;
 use PHPUnit\Framework\TestCase;
 
 class NewSemanticRulesTest extends TestCase

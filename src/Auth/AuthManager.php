@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Auth;
+namespace CeibaCms\Auth;
 
-use LemurCms\Auth\Contracts\AuthDriverInterface;
+use CeibaCms\Auth\Contracts\AuthDriverInterface;
 
 /**
  * AuthManager

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Seeders;
+namespace CeibaCms\Seeders;
 
-use LemurCms\Seeder\CmsSeeder;
-use LemurCms\Support\Helpers\FakeDataHelper;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaCms\Seeder\CmsSeeder;
+use CeibaCms\Support\Helpers\FakeDataHelper;
+use CeibaCms\Support\Helpers\UuidHelper;
 
 require_once __DIR__ . '/SystemModulesSeeder.php';
 require_once __DIR__ . '/SystemPermissionsSeeder.php';
@@ -47,7 +47,7 @@ class DatabaseSeeder extends CmsSeeder
         $superAdminRoleId = $this->db->query('roles')->where(['slug' => 'superadmin'])->first()['id'] ?? null;
         
         $adminId = $this->firstOrCreate('access', 
-            ['email' => 'admin@lemur.local'],
+            ['email' => 'admin@ceiba.local'],
             [
                 'id' => UuidHelper::v4(),
                 'name' => 'System Admin',

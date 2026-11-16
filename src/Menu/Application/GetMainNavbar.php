@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Menu\Application;
-use LemurCms\Menu\Domain\Repository\MenuRepositoryInterface;
+namespace CeibaCms\Menu\Application;
+use CeibaCms\Menu\Domain\Repository\MenuRepositoryInterface;
 final class GetMainNavbar
 {
     public function __construct(private readonly MenuRepositoryInterface $repo) {}

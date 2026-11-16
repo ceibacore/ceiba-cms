@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Commands;
+namespace CeibaCms\Commands;
 
 class MigrateCommand extends Command
 {
     protected string $signature = 'migrate {--rollback} {--refresh}';
     protected string $description = 'Run, rollback or refresh database migrations';
 
-    public function __construct(private readonly \LemurDB $db)
+    public function __construct(private readonly \CeibaDB $db)
     {
     }
 
@@ -18,12 +18,12 @@ class MigrateCommand extends Command
         $rollback = $this->option('rollback');
         $refresh  = $this->option('refresh');
 
-        $generator = new \LemurCms\Migration\CmsMigrationGenerator(
+        $generator = new \CeibaCms\Migration\CmsMigrationGenerator(
             __DIR__ . '/../../migrations',
             $this->db->getPrefix()
         );
 
-        $runner = new \LemurCms\Migration\CmsMigrationRunner(
+        $runner = new \CeibaCms\Migration\CmsMigrationRunner(
             $generator,
             $this->db,
             $this->db->getPrefix()

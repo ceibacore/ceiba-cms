@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Migrations;
+namespace CeibaCms\Migrations;
 
-use LemurCms\Migration\CmsBaseMigration;
-use LemurCms\Migration\CmsColumnBlueprint;
+use CeibaCms\Migration\CmsBaseMigration;
+use CeibaCms\Migration\CmsColumnBlueprint;
 
 class Migration_20260522000013_CreateModuleDefinitionsTable extends CmsBaseMigration
 {
@@ -20,7 +20,7 @@ class Migration_20260522000013_CreateModuleDefinitionsTable extends CmsBaseMigra
             $t->string('icon', 50)->nullable();
             $t->timestamps();
             $t->uniqueIndex('module_id', 'uq_module_definitions_module_id');
-            $t->foreignKey('module_id', 'modules', 'id', 'CASCADE', 'fk_cms_module_definitions_module');
+            $t->foreignKey('module_id', 'modules', 'id', 'CASCADE');
         });
     }
 

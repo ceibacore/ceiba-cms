@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Menu\Presentation;
+namespace CeibaCms\Menu\Presentation;
 
 class BreadcrumbBuilder
 {

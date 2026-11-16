@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Migrations;
+namespace CeibaCms\Migrations;
 
-use LemurCms\Migration\CmsBaseMigration;
-use LemurCms\Migration\CmsColumnBlueprint;
+use CeibaCms\Migration\CmsBaseMigration;
+use CeibaCms\Migration\CmsColumnBlueprint;
 
 class Migration_20260605000000_V2ArchitectureUpdate extends CmsBaseMigration
 {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Entity;
+namespace CeibaCms\PageBuilder\Domain\Entity;
 
 final class PageLayout
 {

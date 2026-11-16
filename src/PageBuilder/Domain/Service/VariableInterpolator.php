@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\PageBuilder\Domain\Service;
+namespace CeibaCms\PageBuilder\Domain\Service;
 
 /**
  * Interpolates {{ variable.field }} expressions in string values.

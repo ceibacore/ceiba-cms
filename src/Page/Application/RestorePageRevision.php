@@ -1,0 +1,46 @@
+<?php
+declare(strict_types=1);
+
+namespace CeibaCms\Page\Application;
+
+use InvalidArgumentException;
+use CeibaDB;
+use CeibaCms\PageBuilder\Domain\Document\DocumentEnvelope;
+use RuntimeException;
+
+/** Restores an immutable snapshot as a new draft revision. */
+final class RestorePageRevision
+{
+    public function __construct(
+        private readonly CeibaDB $db,
+        private readonly string $siteId,
+        private readonly SavePageDraft $saveDraft,
+    ) {}
+
+    public function execute(string $pageId, int $sourceRevision, int $expectedRevision, string $actorId): int
+    {
+        if ($pageId === '' || $sourceRevision < 1 || $expectedRevision < 0 || $actorId === '') {
+            throw new InvalidArgumentException('Invalid restore request');
+        }
+        $source = $this->db->query('page_revisions')->where([
+            'page_id' => $pageId, 'site_id' => $this->siteId, 'revision' => $sourceRevision,
+        ])->first();
+        if ($source === null) {
+            throw new PageRevisionNotFound();
+        }
+        $snapshot = json_decode($source['snapshot'], false, 512, JSON_THROW_ON_ERROR);
+        if (!is_object($snapshot) || !isset($snapshot->root) || !is_array($snapshot->root)) {
+            throw new RuntimeException('Source revision has an invalid snapshot');
+        }
+        if ((int) $source['schema_version'] !== DocumentEnvelope::VERSION) {
+            throw new RuntimeException('Unsupported revision schema version');
+        }
+        $snapshot->schemaVersion = DocumentEnvelope::VERSION;
+        $snapshot->documentId = $pageId;
+        $snapshot->revision = $expectedRevision + 1;
+        $document = DocumentEnvelope::fromJson(json_encode($snapshot, JSON_THROW_ON_ERROR));
+        return $this->saveDraft->execute($document, $expectedRevision, $actorId, 'restore', [
+            'sourceRevision' => $sourceRevision,
+        ]);
+    }
+}

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Import;
+namespace CeibaCms\Tests\PageBuilder\Import;
 
-use LemurCms\PageBuilder\Import\Contract\RuleInterface;
-use LemurCms\PageBuilder\Import\RuleRegistry;
+use CeibaCms\PageBuilder\Import\Contract\RuleInterface;
+use CeibaCms\PageBuilder\Import\RuleRegistry;
 use PHPUnit\Framework\TestCase;
 
 class MockCacheRule implements RuleInterface

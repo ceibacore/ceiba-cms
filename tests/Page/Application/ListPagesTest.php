@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Tests\Page\Application;
+namespace CeibaCms\Tests\Page\Application;
 
-use LemurCms\Page\Application\ListPages;
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
+use CeibaCms\Page\Application\ListPages;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class ListPagesTest extends TestCase

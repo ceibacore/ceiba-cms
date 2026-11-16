@@ -5,9 +5,9 @@
 
 declare(strict_types=1);
 
-use LemurCms\Menu\Presentation\BannerRenderer;
-use LemurCms\Menu\Presentation\BreadcrumbBuilder;
-use LemurCms\Menu\Presentation\NotificationPresenter;
+use CeibaCms\Menu\Presentation\BannerRenderer;
+use CeibaCms\Menu\Presentation\BreadcrumbBuilder;
+use CeibaCms\Menu\Presentation\NotificationPresenter;
 
 require_once __DIR__ . '/../bootstrap.php';
 

@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Http\Controllers;
+namespace CeibaCms\Http\Controllers;
 
-use LemurCms\PageBuilder\Application\ListLayouts;
-use LemurCms\PageBuilder\Application\GetLayoutById;
-use LemurCms\PageBuilder\Application\CreateLayout;
-use LemurCms\PageBuilder\Application\UpdateLayout;
-use LemurCms\PageBuilder\Application\DeleteLayout;
+use CeibaCms\PageBuilder\Application\ListLayouts;
+use CeibaCms\PageBuilder\Application\GetLayoutById;
+use CeibaCms\PageBuilder\Application\CreateLayout;
+use CeibaCms\PageBuilder\Application\UpdateLayout;
+use CeibaCms\PageBuilder\Application\DeleteLayout;
 
 class LayoutController extends BaseController
 {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Migration\Dialect;
-use LemurCms\Migration\CmsColumnDef;
+namespace CeibaCms\Migration\Dialect;
+use CeibaCms\Migration\CmsColumnDef;
 interface CmsDialectInterface
 {
     public function jsonType(): string;

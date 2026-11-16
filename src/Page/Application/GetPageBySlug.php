@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Page\Application;
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
+namespace CeibaCms\Page\Application;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
 final class GetPageBySlug
 {
     public function __construct(private readonly PageRepositoryInterface $repo) {}

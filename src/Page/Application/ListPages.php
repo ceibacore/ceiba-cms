@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
 
 final class ListPages
 {

@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\PageBuilder\Domain\Service;
+namespace CeibaCms\PageBuilder\Domain\Service;
 
-use LemurCms\PageBuilder\Domain\Entity\Node;
+use CeibaCms\PageBuilder\Domain\Entity\Node;
 
 /**
  * Validates a page tree against structural constraints.

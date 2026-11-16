@@ -1,4 +1,4 @@
-# Lemur CMS - Quick Start
+# Ceiba CMS - Quick Start
 
 ## Setup
 
@@ -15,12 +15,12 @@ mysql -u manager -p
 > CREATE DATABASE dashboard CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 # Migrar schema
-php bin/lemur migrate
+php bin/ceiba migrate
 ```
 
 ### 3. Crear usuario admin
 ```bash
-php bin/lemur user:create
+php bin/ceiba user:create
 # Ingresar nombre, email, password
 ```
 
@@ -29,13 +29,13 @@ php bin/lemur user:create
 ### CLI
 ```bash
 # Listar comandos
-php bin/lemur
+php bin/ceiba
 
 # Migrar
-php bin/lemur migrate
+php bin/ceiba migrate
 
 # Limpiar cache
-php bin/lemur cache:clear
+php bin/ceiba cache:clear
 ```
 
 ### API
@@ -58,7 +58,7 @@ bash bin/test.sh
 - `bootstrap.php` - DI container (83+ requires)
 - `config/cms.php` - Configuración centralizada
 - `routes/api.php` - Definición de endpoints
-- `bin/lemur.php` - CLI entry point
+- `bin/ceiba.php` - CLI entry point
 - `public/api.php` - HTTP entry point
 - `storage/schema.sql` - Schema generado
 
@@ -73,7 +73,7 @@ src/
 └── Migration/      - Migration system
 
 bin/
-├── lemur.php       - CLI entry
+├── ceiba.php       - CLI entry
 └── commands/       - CLI commands (5)
 
 database/
@@ -102,7 +102,7 @@ storage/
 
 ## Próximos pasos
 
-1. Ejecutar `php bin/lemur migrate`
-2. Ejecutar `php bin/lemur user:create`
+1. Ejecutar `php bin/ceiba migrate`
+2. Ejecutar `php bin/ceiba user:create`
 3. Iniciar servidor: `php -S localhost:8000 -t public/`
 4. Probar API: `curl http://localhost:8000/api/pages`

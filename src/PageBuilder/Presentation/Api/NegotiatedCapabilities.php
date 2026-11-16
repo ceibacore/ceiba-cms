@@ -1,0 +1,78 @@
+<?php
+declare(strict_types=1);
+
+namespace CeibaCms\PageBuilder\Presentation\Api;
+
+use CeibaCms\PageBuilder\Domain\Catalogue\ComponentCatalogue;
+use CeibaCms\PageBuilder\Domain\Document\HostContext;
+
+/**
+ * Negotiated capabilities exchanged on editor visual bootstrap.
+ */
+final class NegotiatedCapabilities
+{
+    /**
+     * @param list<int> $supportedSchemaVersions
+     * @param list<string> $effectivePermissions
+     * @param list<array<string, mixed>> $components
+     * @param array<string, bool> $features
+     */
+    public function __construct(
+        public readonly string $siteId,
+        public readonly string $actorId,
+        public readonly string $locale,
+        public readonly array $supportedSchemaVersions,
+        public readonly array $effectivePermissions,
+        public readonly array $components,
+        public readonly array $features = [],
+    ) {}
+
+    public static function negotiate(
+        HostContext $context,
+        ComponentCatalogue $catalogue,
+        bool $draftStorageAvailable = false,
+        bool $publicationAvailable = false,
+        bool $revisionOperationsAvailable = false,
+    ): self {
+        $can = static fn (string $capability): bool => in_array($capability, $context->capabilities, true);
+        return new self(
+            siteId: $context->siteId,
+            actorId: $context->actorId,
+            locale: $context->locale,
+            supportedSchemaVersions: [1],
+            effectivePermissions: $context->capabilities,
+            components: $catalogue->toArray(),
+            features: [
+                'dragAndDrop'               => true,
+                'responsivePreview'         => true,
+                'dryRunMigration'           => true,
+                'retainedUnknownComponents' => true,
+                'versionedEnvelopes'        => true,
+                'draftSave'                 => $draftStorageAvailable && in_array('pages.update', $context->capabilities, true),
+                'draftHistory'              => $draftStorageAvailable && in_array('pages.read', $context->capabilities, true),
+                'revisionPublish'           => $publicationAvailable && in_array('pages.publish', $context->capabilities, true),
+                'autosave'                  => $draftStorageAvailable && $can('pages.update'),
+                'revisionRestore'           => $revisionOperationsAvailable && $can('pages.restore'),
+                'unpublish'                 => $revisionOperationsAvailable && $can('pages.unpublish'),
+                'previewLinks'              => $revisionOperationsAvailable && $can('pages.update'),
+                'contentReconcile'          => $revisionOperationsAvailable && $can('pages.update'),
+                'revisionPins'              => $revisionOperationsAvailable && $can('pages.publish'),
+                'revisionAudit'             => $revisionOperationsAvailable && $can('pages.publish'),
+            ]
+        );
+    }
+
+    /** @return array<string, mixed> */
+    public function toArray(): array
+    {
+        return [
+            'siteId'                  => $this->siteId,
+            'actorId'                 => $this->actorId,
+            'locale'                  => $this->locale,
+            'supportedSchemaVersions' => $this->supportedSchemaVersions,
+            'effectivePermissions'    => $this->effectivePermissions,
+            'components'              => $this->components,
+            'features'                => $this->features,
+        ];
+    }
+}

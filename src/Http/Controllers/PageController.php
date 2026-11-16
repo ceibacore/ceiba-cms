@@ -2,18 +2,26 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Http\Controllers;
+namespace CeibaCms\Http\Controllers;
 
 class PageController extends BaseController
 {
     public function __construct(
-        private \LemurCms\Page\Application\ListPages $listPages,
-        private \LemurCms\Page\Application\GetPageById $getPageById,
-        private \LemurCms\Page\Application\CreatePage $createPage,
-        private \LemurCms\Page\Application\UpdatePage $updatePage,
-        private \LemurCms\Page\Application\DeletePage $deletePage,
-        private \LemurCms\Page\Application\PublishPage $publishPage,
+        private \CeibaCms\Page\Application\ListPages $listPages,
+        private \CeibaCms\Page\Application\GetPageById $getPageById,
+        private \CeibaCms\Page\Application\CreatePage $createPage,
+        private \CeibaCms\Page\Application\UpdatePage $updatePage,
+        private \CeibaCms\Page\Application\DeletePage $deletePage,
+        private \CeibaCms\Page\Application\PublishPage $publishPage,
+        /** @var (\Closure(): ?string)|null Resolves the authenticated actor for the audit trail. */
+        private ?\Closure $actorResolver = null,
     ) {
+    }
+
+    private function actor(): ?string
+    {
+        $actor = $this->actorResolver === null ? null : ($this->actorResolver)();
+        return $actor === null ? null : (string) $actor;
     }
 
     public function index(): void
@@ -47,11 +55,13 @@ class PageController extends BaseController
     {
         try {
             $data = $this->getRequest();
-            \LemurCms\Support\Validators\PageValidator::validatePage($data);
-            $pageId = $this->createPage->execute($data);
+            \CeibaCms\Support\Validators\PageValidator::validatePage($data);
+            $pageId = $this->createPage->execute($data, $this->actor());
             $this->success(['id' => $pageId], 'Page created', 201);
+        } catch (\InvalidArgumentException|\CeibaCms\Support\Exceptions\InvalidMenuException $e) {
+            $this->error($e->getMessage(), 422);
         } catch (\Exception $e) {
-            $this->error($e->getMessage());
+            $this->error('Unable to create page', 500);
         }
     }
 
@@ -59,11 +69,15 @@ class PageController extends BaseController
     {
         try {
             $data = $this->getRequest();
-            \LemurCms\Support\Validators\PageValidator::validatePage($data);
+            \CeibaCms\Support\Validators\PageValidator::validateMetadata($data);
             $this->updatePage->execute($id, $data);
             $this->success([], 'Page updated');
+        } catch (\CeibaCms\Page\Application\PageNotFound $e) {
+            $this->error('Page not found', 404);
+        } catch (\InvalidArgumentException|\CeibaCms\Support\Exceptions\InvalidMenuException $e) {
+            $this->error($e->getMessage(), 422);
         } catch (\Exception $e) {
-            $this->error($e->getMessage());
+            $this->error('Unable to update page', 500);
         }
     }
 
@@ -80,10 +94,14 @@ class PageController extends BaseController
     public function publish(string $id): void
     {
         try {
-            $this->publishPage->execute($id);
-            $this->success([], 'Page published');
+            $revisionId = $this->publishPage->execute($id, $this->actor());
+            $this->success(['revisionId' => $revisionId, 'published' => $revisionId !== null], 'Page published');
+        } catch (\CeibaCms\Page\Application\PageNotFound $e) {
+            $this->error('Page not found', 404);
+        } catch (\CeibaCms\Page\Application\PageRevisionConflict|\CeibaCms\Page\Application\PublicContentDrift $e) {
+            $this->error($e->getMessage(), 409);
         } catch (\Exception $e) {
-            $this->error($e->getMessage());
+            $this->error('Unable to publish page', 500);
         }
     }
 }

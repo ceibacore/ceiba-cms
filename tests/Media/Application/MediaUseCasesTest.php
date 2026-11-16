@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Tests\Media\Application;
+namespace CeibaCms\Tests\Media\Application;
 
-use LemurCms\Media\Application\DeleteMedia;
-use LemurCms\Media\Application\ListMedia;
-use LemurCms\Media\Application\FindMediaById;
-use LemurCms\Media\Domain\MediaRepositoryInterface;
+use CeibaCms\Media\Application\DeleteMedia;
+use CeibaCms\Media\Application\ListMedia;
+use CeibaCms\Media\Application\FindMediaById;
+use CeibaCms\Media\Domain\MediaRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class DeleteMediaTest extends TestCase

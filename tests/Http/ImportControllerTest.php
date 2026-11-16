@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Http;
+namespace CeibaCms\Tests\Http;
 
-use LemurCms\Http\Controllers\ImportController;
-use LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
-use LemurCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
+use CeibaCms\Http\Controllers\ImportController;
+use CeibaCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
+use CeibaCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
 use PHPUnit\Framework\TestCase;
 
 class TestImportController extends ImportController

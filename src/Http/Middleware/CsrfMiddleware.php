@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Http\Middleware;
+namespace CeibaCms\Http\Middleware;
 
 class CsrfMiddleware implements MiddlewareInterface
 {

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Routing\Domain\Service;
+namespace CeibaCms\Routing\Domain\Service;
 
-use LemurCms\Routing\Domain\Repository\ReservedPathRepositoryInterface;
+use CeibaCms\Routing\Domain\Repository\ReservedPathRepositoryInterface;
 
 /**
  * Determines whether a given URL path is reserved (i.e. must NOT be

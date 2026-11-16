@@ -1,34 +1,34 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Tests;
+namespace CeibaCms\Tests;
 
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
 abstract class TestCase extends PHPUnitTestCase
 {
-    protected \LemurDB $db;
+    protected \CeibaDB $db;
 
     protected function setUp(): void
     {
         parent::setUp();
         
-        // Initialize test database connection
-        // Configure with environment or defaults
-        $host = getenv('DB_HOST') ?: '127.0.0.1';
-        $port = (int) (getenv('DB_PORT') ?: 3307);
-        $name = getenv('DB_NAME') ?: 'cms_test';
-        $user = getenv('DB_USER') ?: 'manager';
-        $pass = getenv('DB_PASS') ?: 'Manager2026x';
-        $prefix = getenv('DB_PREFIX') ?: 't_';
+        // Database-backed tests need explicit credentials (never hard-coded):
+        // DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS and optionally DB_PREFIX.
+        $host = getenv('DB_HOST');
+        $user = getenv('DB_USER');
+        if (!$host || !$user || getenv('DB_PASS') === false) {
+            $this->markTestSkipped('Set DB_HOST, DB_PORT, DB_NAME, DB_USER and DB_PASS to run database tests.');
+        }
 
-        $this->db = \LemurDB::getInstance([
+        $this->db = \CeibaDB::getInstance([
             'driver'   => 'mysql',
             'host'     => $host,
-            'port'     => $port,
-            'db'       => $name,
+            'port'     => (int) (getenv('DB_PORT') ?: 3306),
+            'db'       => getenv('DB_NAME') ?: 'cms_test',
             'username' => $user,
-            'password' => $pass,
-            'prefix'   => $prefix,
+            'password' => (string) getenv('DB_PASS'),
+            'prefix'   => getenv('DB_PREFIX') ?: 't_',
+            'timeout'  => 5,
         ]);
     }
 

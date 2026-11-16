@@ -1,9 +1,9 @@
 <?php
 
-namespace LemurCms\Migrations;
+namespace CeibaCms\Migrations;
 
-use LemurCms\Migration\CmsBaseMigration;
-use LemurCms\Migration\CmsSchemaBuilder;
+use CeibaCms\Migration\CmsBaseMigration;
+use CeibaCms\Migration\CmsSchemaBuilder;
 
 class Migration_{{VERSION}}_{{CLASSNAME}} extends CmsBaseMigration
 {

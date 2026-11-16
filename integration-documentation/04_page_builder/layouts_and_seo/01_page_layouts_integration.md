@@ -1,12 +1,12 @@
 # Page-to-Layout Integration Guide
 
-This document describes the architectural relationship between **Pages** and **Layouts** in Lemur CMS, detailing the rendering pipeline, database schema, and layout resolution sequence.
+This document describes the architectural relationship between **Pages** and **Layouts** in Ceiba CMS, detailing the rendering pipeline, database schema, and layout resolution sequence.
 
 ---
 
 ## 1. Architectural Concept
 
-In Lemur CMS, page rendering is separated into three distinct layers:
+In Ceiba CMS, page rendering is separated into three distinct layers:
 1. **Content Structure (Page VDOM)**: The actual elements and blocks of the page (e.g., headers, paragraphs, cards).
 2. **Page Template (Structure/Slots)**: A reusable wireframe (e.g., sidebar layout, full-width grid) where the Page VDOM nodes are distributed into specific `slot` nodes.
 3. **Page Layout (Branding Wrapper)**: The global framing of the page, defining the navigation menu, footer VDOM tree, color palette, custom CSS/JS, and external asset injections (CDNs).
@@ -72,7 +72,7 @@ sequenceDiagram
     autonumber
     actor Visitor
     participant Ctrl as PageRenderController
-    participant DB as LemurDB (MySQL/SQLite)
+    participant DB as CeibaDB (MySQL/SQLite)
     participant VDOM as BladeRenderer
     participant Layout as LayoutRenderer
 

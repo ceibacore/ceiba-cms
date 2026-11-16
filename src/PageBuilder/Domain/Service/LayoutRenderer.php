@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Service;
+namespace CeibaCms\PageBuilder\Domain\Service;
 
 /**
  * Wraps page content HTML with navbar + footer into a full layout document.
@@ -13,7 +13,7 @@ class LayoutRenderer
 {
     /**
      * @param string   $contentHtml      Rendered inner content (from BladeRenderer)
-     * @param string   $navbarHtml       Rendered navigation markup (from LemurMenuRenderer)
+     * @param string   $navbarHtml       Rendered navigation markup (from CeibaMenuRenderer)
      * @param string   $footerHtml       Rendered footer markup (from BladeRenderer for footer_tree)
      * @param array    $palette          CSS variable map: ['primary' => '#3b5cc4', ...]
      * @param array    $pageMeta         Page metadata: title, description, slug, etc.
@@ -97,15 +97,15 @@ class LayoutRenderer
         if (!$useSystemPalette && !empty($palette)) {
             $vars = '';
             foreach ($palette as $key => $value) {
-                $cssVar = '--lemur-' . preg_replace('/[^a-z0-9-]/', '-', strtolower((string) $key));
+                $cssVar = '--ceiba-' . preg_replace('/[^a-z0-9-]/', '-', strtolower((string) $key));
                 $cssVal = htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
                 $vars  .= "    {$cssVar}: {$cssVal};\n";
             }
             $paletteStyle = "<style>:root {\n{$vars}}</style>\n";
         }
 
-        $customCssBlock = $customCss !== '' ? "<style data-lemur-custom>\n{$customCss}\n</style>" : '';
-        $customJsBlock  = $customJs  !== '' ? "<script data-lemur-custom>\n{$customJs}\n</script>" : '';
+        $customCssBlock = $customCss !== '' ? "<style data-ceiba-custom>\n{$customCss}\n</style>" : '';
+        $customJsBlock  = $customJs  !== '' ? "<script data-ceiba-custom>\n{$customJs}\n</script>" : '';
 
         $switcherCss = <<<CSS
 <style data-cms-language-switcher>
@@ -206,7 +206,7 @@ CSS;
     const switcher = document.getElementById('cms-language-switcher') || document.getElementById('floating-language-switcher');
     if (!switcher) return;
 
-    const DB_NAME = 'lemur_dashboard_storage';
+    const DB_NAME = 'ceiba_dashboard_storage';
     const STORE_NAME = 'ui_state';
 
     function getStoredLocale() {
@@ -269,7 +269,7 @@ CSS;
     function setLocaleCookie(locale) {
         const d = new Date();
         d.setTime(d.getTime() + (365*24*60*60*1000));
-        document.cookie = "lemur_locale=" + locale + ";path=/;expires=" + d.toUTCString();
+        document.cookie = "ceiba_locale=" + locale + ";path=/;expires=" + d.toUTCString();
     }
 
     async function init() {

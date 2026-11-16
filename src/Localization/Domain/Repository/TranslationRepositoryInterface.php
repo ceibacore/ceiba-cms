@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Localization\Domain\Repository;
+namespace CeibaCms\Localization\Domain\Repository;
 
 interface TranslationRepositoryInterface
 {

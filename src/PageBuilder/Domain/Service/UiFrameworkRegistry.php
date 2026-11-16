@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Service;
+namespace CeibaCms\PageBuilder\Domain\Service;
 
-use LemurCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
+use CeibaCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
 
 /**
  * Central registry for UI framework modules.

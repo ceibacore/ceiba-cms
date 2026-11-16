@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Support\Infrastructure;
+namespace CeibaCms\Support\Infrastructure;
 
 class EnvironmentGuard
 {
@@ -51,7 +51,7 @@ class EnvironmentGuard
 
         if (!empty($missing)) {
             throw new \RuntimeException(
-                "Lemur CMS is missing required environment variables: " . 
+                "Ceiba CMS is missing required environment variables: " . 
                 implode(', ', $missing) . "\n" .
                 "Check your .env file or set them manually."
             );

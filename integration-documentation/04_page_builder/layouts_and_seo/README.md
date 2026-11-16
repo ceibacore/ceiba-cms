@@ -1,6 +1,6 @@
 # Page Builder - Layouts, SEO & CDN Integration Documentation
 
-This folder contains the technical specifications and documentation for the Presentation, Layout, and SEO subsystems in Lemur CMS.
+This folder contains the technical specifications and documentation for the Presentation, Layout, and SEO subsystems in Ceiba CMS.
 
 ## Documents Index
 

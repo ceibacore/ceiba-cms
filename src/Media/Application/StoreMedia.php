@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Media\Application;
-use LemurCms\Media\Domain\Repository\MediaRepositoryInterface;
+namespace CeibaCms\Media\Application;
+use CeibaCms\Media\Domain\Repository\MediaRepositoryInterface;
 final class StoreMedia
 {
     public function __construct(private readonly MediaRepositoryInterface $repo) {}

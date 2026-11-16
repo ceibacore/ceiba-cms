@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Seo\Domain\Repository;
+namespace CeibaCms\Seo\Domain\Repository;
 interface SeoRepositoryInterface
 {
     public function findByEntity(string $entityType, string|int $entityId): ?array;

@@ -6,3 +6,9 @@ scripts/
 vendor/
 docs/
 .env
+.env.*
+!.env.example
+*.key
+*.pem
+*.sqlite
+*.db

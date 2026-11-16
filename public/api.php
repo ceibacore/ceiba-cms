@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * API Entry Point - Lemur CMS
+ * API Entry Point - Ceiba CMS
  * 
  * Punto de entrada para todas las rutas API
  * 

@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Seo\Application;
+namespace CeibaCms\Seo\Application;
 
-use LemurCms\Seo\Domain\Repository\SeoRepositoryInterface;
+use CeibaCms\Seo\Domain\Repository\SeoRepositoryInterface;
 
 final class UpsertSeo
 {

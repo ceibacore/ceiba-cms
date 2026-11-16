@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Http\Controllers;
+namespace CeibaCms\Http\Controllers;
 
 abstract class BaseController
 {

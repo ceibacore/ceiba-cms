@@ -1,6 +1,6 @@
 # SEO & Metadata System Documentation
 
-This document describes the SEO metadata system in Lemur CMS, explaining its database structure, repository architecture, current rendering status, and the integration gaps that need to be resolved.
+This document describes the SEO metadata system in Ceiba CMS, explaining its database structure, repository architecture, current rendering status, and the integration gaps that need to be resolved.
 
 ---
 
@@ -36,7 +36,7 @@ Defined in migration `20260510000003_create_seo_tables.php`:
 Located in [SeoRepositoryInterface.php](../../../src/Seo/Domain/Repository/SeoRepositoryInterface.php):
 
 ```php
-namespace LemurCms\Seo\Domain\Repository;
+namespace CeibaCms\Seo\Domain\Repository;
 
 interface SeoRepositoryInterface
 {
@@ -47,8 +47,8 @@ interface SeoRepositoryInterface
 *(Note: Although entity IDs in migrations are UUID CHAR(36), the interface specifies type limits or formats depending on the database adapter. The concrete adapter supports string/UUID parameters).*
 
 ### 2.2 Infrastructure Implementation
-Located in [LemurDbSeoRepository.php](../../../src/Seo/Infrastructure/LemurDbSeoRepository.php):
-Implements the interface by querying the `seo` table using the custom `LemurDB` query builder.
+Located in [CeibaDbSeoRepository.php](../../../src/Seo/Infrastructure/CeibaDbSeoRepository.php):
+Implements the interface by querying the `seo` table using the custom `CeibaDB` query builder.
 
 ---
 

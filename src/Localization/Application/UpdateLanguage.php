@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Localization\Application;
+namespace CeibaCms\Localization\Application;
 
-use LemurCms\Localization\Domain\Repository\LanguageRepositoryInterface;
-use LemurDB;
+use CeibaCms\Localization\Domain\Repository\LanguageRepositoryInterface;
+use CeibaDB;
 
 final class UpdateLanguage
 {
     public function __construct(
-        private readonly LemurDB $db,
+        private readonly CeibaDB $db,
         private readonly LanguageRepositoryInterface $languageRepo
     ) {}
 

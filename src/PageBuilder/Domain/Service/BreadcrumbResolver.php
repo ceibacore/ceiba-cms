@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Service;
+namespace CeibaCms\PageBuilder\Domain\Service;
 
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
 
 /**
  * Simple breadcrumb resolver that builds a breadcrumb trail

@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Support\Helpers;
+namespace CeibaCms\Support\Helpers;
 
 class UuidHelper
 {

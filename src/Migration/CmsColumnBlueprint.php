@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Migration;
-use LemurCms\Migration\Dialect\CmsDialectInterface;
+namespace CeibaCms\Migration;
+use CeibaCms\Migration\Dialect\CmsDialectInterface;
 final class CmsColumnBlueprint
 {
     private array $columns = [];

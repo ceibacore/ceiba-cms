@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\DynamicModule\Domain\Repository;
+namespace CeibaCms\DynamicModule\Domain\Repository;
 
 interface GenericModuleRepositoryInterface
 {

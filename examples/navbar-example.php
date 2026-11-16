@@ -1,6 +1,6 @@
 <?php
 /**
- * EXAMPLE: Using LemurMenuRenderer with Bootstrap 5
+ * EXAMPLE: Using CeibaMenuRenderer with Bootstrap 5
  * 
  * This example demonstrates the complete menu system workflow:
  * 1. Retrieve menu from database via repository
@@ -32,7 +32,7 @@ $navbarHtml = $getNavbar->execute('main', $_SERVER['REQUEST_URI']);
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">Lemur CMS</a>
+            <a class="navbar-brand" href="/">Ceiba CMS</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>

@@ -8,7 +8,7 @@
 
 ## 1. Visión General del Cambio Arquitectónico
 
-Actualmente, el Page Builder y el importador de HTML de Lemur CMS están fuertemente condicionados a Bootstrap 5. Clases CSS como `row`, `col-md-*`, `card`, `accordion`, etc., y la estructura exacta de sus elementos hijos están "hardcodeadas" tanto en los renderizadores del backend como en las reglas del importador.
+Actualmente, el Page Builder y el importador de HTML de Ceiba CMS están fuertemente condicionados a Bootstrap 5. Clases CSS como `row`, `col-md-*`, `card`, `accordion`, etc., y la estructura exacta de sus elementos hijos están "hardcodeadas" tanto en los renderizadores del backend como en las reglas del importador.
 
 Esta refactorización tiene como objetivo **desacoplar completamente el core del CMS del framework de interfaz (UI Framework)**, implementando una arquitectura de **Virtual DOM (VDOM) Semántico** que actúe como único punto de verdad. Los frameworks de UI concretos pasarán a ser **módulos instalables independientes**.
 
@@ -34,7 +34,7 @@ Esta refactorización tiene como objetivo **desacoplar completamente el core del
 ```
 
 ### Objetivos Principales
-1. **Independencia de UI**: Permitir que un desarrollador cree y registre un módulo para Material UI, Tailwind o cualquier otro sistema de diseño sin modificar el núcleo de Lemur CMS.
+1. **Independencia de UI**: Permitir que un desarrollador cree y registre un módulo para Material UI, Tailwind o cualquier otro sistema de diseño sin modificar el núcleo de Ceiba CMS.
 2. **Virtual DOM como Única Verdad**: El árbol de nodos guardado en la base de datos es un espejo 1:1 del DOM HTML real. Cada nodo es una etiqueta HTML (`type`) con sus atributos (`props`), más un campo opcional `name` que identifica si ese nodo pertenece a un componente conocido (ej. `"card"`, `"accordion"`).
 3. **Flujo de Importación Decoplado**: El importador analiza un HTML y, a través de las reglas provistas por el módulo del framework activo, lo traduce a nodos del Virtual DOM sin persistirlo inicialmente.
 4. **Conversión Interactiva a Componentes**: Durante la importación, el usuario puede seleccionar un subárbol (ej. un banner, un listado), definirle variables y propiedades dinámicas, y guardarlo como un componente reutilizable.
@@ -191,10 +191,10 @@ Para estructurar los componentes según el framework de UI de elección, se intr
 ### Contrato: `UiFrameworkModuleInterface`
 
 ```php
-namespace LemurCms\PageBuilder\Domain\Contract;
+namespace CeibaCms\PageBuilder\Domain\Contract;
 
-use LemurCms\PageBuilder\Domain\Entity\ComponentDefinition;
-use LemurCms\PageBuilder\Import\Contract\RuleInterface;
+use CeibaCms\PageBuilder\Domain\Entity\ComponentDefinition;
+use CeibaCms\PageBuilder\Import\Contract\RuleInterface;
 
 interface UiFrameworkModuleInterface
 {
@@ -238,9 +238,9 @@ interface UiFrameworkModuleInterface
 Un servicio central administra los frameworks de UI disponibles y registra el framework activo para la renderización actual.
 
 ```php
-namespace LemurCms\PageBuilder\Domain\Service;
+namespace CeibaCms\PageBuilder\Domain\Service;
 
-use LemurCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
+use CeibaCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
 
 final class UiFrameworkRegistry
 {
@@ -306,7 +306,7 @@ Se ejecuta en cada petición de edición o preview sin persistir el archivo.
 Al crear, actualizar o importar una página, el árbol de nodos pasa por la validación estructural del framework. Si es válido, se almacena en la base de datos.
 Inmediatamente después, se dispara un **evento asíncrono** (`PageSaved` / `PagePublished`) que ejecuta el compilador del Page Builder:
 - El compilador recorre el VDOM y genera una plantilla de código de servidor (ej. un archivo Blade de Laravel compilado, o código PHP directo) y lo almacena en caché en el sistema de archivos (ej. `storage/cms/compiled/pages/{page_slug}.php`).
-- **Rendimiento Máximo**: Cuando un visitante final accede a la página, Lemur CMS sirve directamente el archivo compilado en disco, evitando el coste computacional de analizar el árbol JSON recursivamente y mapear propiedades en cada petición HTTP.
+- **Rendimiento Máximo**: Cuando un visitante final accede a la página, Ceiba CMS sirve directamente el archivo compilado en disco, evitando el coste computacional de analizar el árbol JSON recursivamente y mapear propiedades en cada petición HTTP.
 
 #### Ejemplo de compilación de bucles dinámicos a directivas SSR:
 Un nodo `div[name=col]` con loop sobre `module:products` se compila a un archivo PHP/Blade en caché:

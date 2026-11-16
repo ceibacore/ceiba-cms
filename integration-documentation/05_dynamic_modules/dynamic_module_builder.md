@@ -88,7 +88,7 @@ module_definitions
 
 ### Paso 1.1 — Migración `module_definitions`
 
-**Archivo:** `lemur-cms/migrations/20260522000013_create_module_definitions_table.php`
+**Archivo:** `ceiba-cms/migrations/20260522000013_create_module_definitions_table.php`
 
 Crea la tabla `module_definitions` con `module_id` (FK única a `modules`) y `fields_schema JSON`.
 
@@ -96,7 +96,7 @@ Crea la tabla `module_definitions` con `module_id` (FK única a `modules`) y `fi
 
 ### Paso 1.2 — Value Object `ModuleField`
 
-**Archivo:** `lemur-cms/src/DynamicModule/Domain/Entity/ModuleField.php`
+**Archivo:** `ceiba-cms/src/DynamicModule/Domain/Entity/ModuleField.php`
 
 ```php
 final class ModuleField
@@ -123,7 +123,7 @@ final class ModuleField
 
 ### Paso 1.3 — Entity `ModuleDefinition`
 
-**Archivo:** `lemur-cms/src/DynamicModule/Domain/Entity/ModuleDefinition.php`
+**Archivo:** `ceiba-cms/src/DynamicModule/Domain/Entity/ModuleDefinition.php`
 
 ```php
 final class ModuleDefinition
@@ -150,7 +150,7 @@ final class ModuleDefinition
 
 ### Paso 1.4 — `DynamicTableManager`
 
-**Archivo:** `lemur-cms/src/DynamicModule/Infrastructure/DynamicTableManager.php`
+**Archivo:** `ceiba-cms/src/DynamicModule/Infrastructure/DynamicTableManager.php`
 
 Responsabilidad: crear, alterar y eliminar la tabla física del módulo, incluyendo borrado lógico (Soft Deletes).
 
@@ -182,7 +182,7 @@ final class DynamicTableManager
 
 ### Paso 1.5 — `ModuleDefinitionRepository`
 
-**Archivo:** `lemur-cms/src/DynamicModule/Infrastructure/LemurDbModuleDefinitionRepository.php`
+**Archivo:** `ceiba-cms/src/DynamicModule/Infrastructure/CeibaDbModuleDefinitionRepository.php`
 
 CRUD estándar sobre `modules` + `module_definitions` (JOIN). Devuelve `ModuleDefinition`.
 
@@ -190,7 +190,7 @@ CRUD estándar sobre `modules` + `module_definitions` (JOIN). Devuelve `ModuleDe
 
 ### Paso 1.6 — Use cases
 
-**Directorio:** `lemur-cms/src/DynamicModule/Application/`
+**Directorio:** `ceiba-cms/src/DynamicModule/Application/`
 
 | Use case              | Responsabilidad                                                                                          |
 | --------------------- | -------------------------------------------------------------------------------------------------------- |
@@ -227,7 +227,7 @@ Sigue exactamente el mismo patrón que `SystemPermissionsSeeder`. Al ejecutar `C
 
 ### Paso 2.1 — `GenericModuleRepository`
 
-**Archivo:** `lemur-cms/src/DynamicModule/Infrastructure/GenericModuleRepository.php`
+**Archivo:** `ceiba-cms/src/DynamicModule/Infrastructure/GenericModuleRepository.php`
 
 Maneja el CRUD de tablas dinámicas, incluyendo la resolución automática de **Foreign Keys (relaciones)** mediante `LEFT JOIN` a los módulos objetivo, y soporte para filtros avanzados (`LIKE`, `>`, `<`).
 
@@ -248,7 +248,7 @@ final class GenericModuleRepository
 
 ### Paso 2.2 — `DynamicModuleController` (Laravel)
 
-**Archivo:** `lemur-server-dashboard/app/Http/Controllers/Admin/DynamicModuleController.php`
+**Archivo:** `ceiba-server-dashboard/app/Http/Controllers/Admin/DynamicModuleController.php`
 
 Un único controlador para todos los módulos dinámicos. Recibe `{module_slug}` como parámetro:
 
@@ -273,7 +273,7 @@ Flujo interno:
 
 ### Paso 2.3 — Rutas dinámicas
 
-**Archivo:** `lemur-server-dashboard/routes/web.php` — dentro del grupo `manager`:
+**Archivo:** `ceiba-server-dashboard/routes/web.php` — dentro del grupo `manager`:
 
 ```php
 Route::prefix('data/{module_slug}')
@@ -315,7 +315,7 @@ Route::prefix('data/{module_slug}')
 
 ### Paso 2.5 — Sidebar dinámico
 
-**Archivo:** `lemur-server-dashboard/resources/js/stores/menustructure.svelte.ts`
+**Archivo:** `ceiba-server-dashboard/resources/js/stores/menustructure.svelte.ts`
 
 El sidebar ya es estático. Se necesita que el backend envíe los módulos dinámicos activos en el `AppLayout` via Inertia shared data:
 
@@ -334,7 +334,7 @@ El sidebar itera `$page.props.dynamicModules` y añade los links bajo una secci�
 
 ### Paso 3.1 — `DynamicModuleDataProvider`
 
-**Archivo:** `lemur-cms/src/DynamicModule/Infrastructure/DynamicModuleDataProvider.php`
+**Archivo:** `ceiba-cms/src/DynamicModule/Infrastructure/DynamicModuleDataProvider.php`
 
 ```php
 final class DynamicModuleDataProvider implements DataProviderInterface
@@ -362,7 +362,7 @@ final class DynamicModuleDataProvider implements DataProviderInterface
 
 ### Paso 3.2 — `ApiDataProvider`
 
-**Archivo:** `lemur-cms/src/DynamicModule/Infrastructure/ApiDataProvider.php`
+**Archivo:** `ceiba-cms/src/DynamicModule/Infrastructure/ApiDataProvider.php`
 
 ```php
 final class ApiDataProvider implements DataProviderInterface
@@ -388,7 +388,7 @@ final class ApiDataProvider implements DataProviderInterface
 
 ### Paso 3.3 — Registro automático en bootstrap
 
-**Archivo:** `lemur-cms/bootstrap.php`
+**Archivo:** `ceiba-cms/bootstrap.php`
 
 ```php
 // Registro automático de todos los módulos dinámicos activos
@@ -463,7 +463,7 @@ El dropdown se llena con `$page.props.dynamicModules` (compartido via Inertia).
 
 ### Paso 3.5 — Soporte de `filters` y `sort` en LoopConfig
 
-**Archivo:** `lemur-cms/src/PageBuilder/Domain/Entity/LoopConfig.php`
+**Archivo:** `ceiba-cms/src/PageBuilder/Domain/Entity/LoopConfig.php`
 
 Añadir campos `filters` y `sort`:
 
@@ -485,7 +485,7 @@ $options['sort']    = $loop['sort'] ?? [];
 
 ## Resumen de archivos a crear
 
-### lemur-cms
+### ceiba-cms
 
 ```
 migrations/
@@ -507,18 +507,18 @@ src/DynamicModule/
     ListDynamicModules.php
   Infrastructure/
     DynamicTableManager.php
-    LemurDbModuleDefinitionRepository.php
+    CeibaDbModuleDefinitionRepository.php
     GenericModuleRepository.php
     DynamicModuleDataProvider.php
     ApiDataProvider.php
 ```
 
-**Modificaciones en lemur-cms:**
+**Modificaciones en ceiba-cms:**
 - `bootstrap.php` — registro automático de DataProviders
 - `src/PageBuilder/Domain/Entity/LoopConfig.php` — añadir `filters` y `sort`
 - `src/PageBuilder/Domain/Service/BladeRenderer.php` — pasar `filters` y `sort` a `LoopResolver`
 
-### lemur-server-dashboard
+### ceiba-server-dashboard
 
 ```
 app/Http/Controllers/Admin/
@@ -532,7 +532,7 @@ resources/js/pages/admin/cms/
   ModuleBuilderEdit.svelte       ← editar definición
 ```
 
-**Modificaciones en lemur-server-dashboard:**
+**Modificaciones en ceiba-server-dashboard:**
 - `routes/web.php` — rutas `/manager/data/{slug}` y `/manager/modules-builder`
 - `app/Http/Middleware/HandleInertiaRequests.php` — compartir `dynamicModules`
 - `resources/js/stores/menustructure.svelte.ts` — sección dinámica en sidebar

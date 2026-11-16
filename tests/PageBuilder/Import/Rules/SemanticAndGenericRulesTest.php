@@ -1,22 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Import\Rules;
+namespace CeibaCms\Tests\PageBuilder\Import\Rules;
 
-use LemurCms\PageBuilder\Import\Rules\FallbackRule;
-use LemurCms\PageBuilder\Import\Rules\Generic\GenericDivRule;
-use LemurCms\PageBuilder\Import\Rules\Generic\SpanRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\AnchorRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\DetailsRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\DividerRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\FigureRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\HeadingRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\ImageRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\InlineTextRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\ParagraphRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\PictureRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\SemanticSectionRule;
-use LemurCms\PageBuilder\Import\Rules\Semantic\FormRule;
+use CeibaCms\PageBuilder\Import\Rules\FallbackRule;
+use CeibaCms\PageBuilder\Import\Rules\Generic\GenericDivRule;
+use CeibaCms\PageBuilder\Import\Rules\Generic\SpanRule;
+use CeibaCms\PageBuilder\Import\Rules\Semantic\AnchorRule;
+use CeibaCms\PageBuilder\Import\Rules\Semantic\DetailsRule;
+use CeibaCms\PageBuilder\Import\Rules\Semantic\DividerRule;
+use CeibaCms\PageBuilder\Import\Rules\Semantic\FigureRule;
+use CeibaCms\PageBuilder\Import\Rules\Semantic\HeadingRule;
+use CeibaCms\PageBuilder\Import\Rules\Semantic\ImageRule;
+use CeibaCms\PageBuilder\Import\Rules\Semantic\InlineTextRule;
+use CeibaCms\PageBuilder\Import\Rules\Semantic\ParagraphRule;
+use CeibaCms\PageBuilder\Import\Rules\Semantic\PictureRule;
+use CeibaCms\PageBuilder\Import\Rules\Semantic\SemanticSectionRule;
+use CeibaCms\PageBuilder\Import\Rules\Semantic\FormRule;
 use PHPUnit\Framework\TestCase;
 
 class SemanticAndGenericRulesTest extends TestCase

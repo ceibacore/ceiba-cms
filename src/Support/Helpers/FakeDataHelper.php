@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Support\Helpers;
+namespace CeibaCms\Support\Helpers;
 
 /**
  * A lightweight alternative to Faker for generating fake data.

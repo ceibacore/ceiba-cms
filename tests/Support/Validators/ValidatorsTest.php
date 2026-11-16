@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Support\Validators;
+namespace CeibaCms\Tests\Support\Validators;
 
-use LemurCms\Support\Validators\MenuValidator;
-use LemurCms\Support\Validators\PageValidator;
-use LemurCms\Support\Validators\UserValidator;
-use LemurCms\Support\Exceptions\InvalidMenuException;
+use CeibaCms\Support\Validators\MenuValidator;
+use CeibaCms\Support\Validators\PageValidator;
+use CeibaCms\Support\Validators\UserValidator;
+use CeibaCms\Support\Exceptions\InvalidMenuException;
 use PHPUnit\Framework\TestCase;
 
 class ValidatorsTest extends TestCase

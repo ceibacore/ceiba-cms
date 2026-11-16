@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Http\Controllers;
+namespace CeibaCms\Http\Controllers;
 
-use LemurCms\Routing\Application\ListReservedPaths;
-use LemurCms\Routing\Application\AddReservedPath;
-use LemurCms\Routing\Application\RemoveReservedPath;
-use LemurCms\Routing\Domain\Service\ReservedPathChecker;
+use CeibaCms\Routing\Application\ListReservedPaths;
+use CeibaCms\Routing\Application\AddReservedPath;
+use CeibaCms\Routing\Application\RemoveReservedPath;
+use CeibaCms\Routing\Domain\Service\ReservedPathChecker;
 
 class ReservedPathController extends BaseController
 {

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * Generate Lemur CMS schema
+ * Generate Ceiba CMS schema
  * 
  * php bin/generate-schema.php
  */
@@ -17,7 +17,7 @@ require_once __DIR__ . '/../src/Migration/GeneratorResult.php';
 require_once __DIR__ . '/../src/Migration/Dialect/CmsDialectInterface.php';
 require_once __DIR__ . '/../src/Migration/Dialect/MySQLDialect.php';
 
-$generator = new \LemurCms\Migration\CmsMigrationGenerator(
+$generator = new \CeibaCms\Migration\CmsMigrationGenerator(
     __DIR__ . '/../migrations',
     prefix: 'cms_'
 );

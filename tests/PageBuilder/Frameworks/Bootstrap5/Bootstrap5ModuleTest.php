@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Frameworks\Bootstrap5;
+namespace CeibaCms\Tests\PageBuilder\Frameworks\Bootstrap5;
 
-use LemurCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
-use LemurCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
-use LemurCms\PageBuilder\Import\Contract\RuleInterface;
+use CeibaCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
+use CeibaCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
+use CeibaCms\PageBuilder\Import\Contract\RuleInterface;
 use PHPUnit\Framework\TestCase;
 
 class Bootstrap5ModuleTest extends TestCase
@@ -62,11 +62,11 @@ class Bootstrap5ModuleTest extends TestCase
         $classes = array_map('get_class', $this->module->getImportRules());
 
         $expected = [
-            \LemurCms\PageBuilder\Import\Rules\Bootstrap\ContainerRule::class,
-            \LemurCms\PageBuilder\Import\Rules\Bootstrap\RowRule::class,
-            \LemurCms\PageBuilder\Import\Rules\Bootstrap\ColRule::class,
-            \LemurCms\PageBuilder\Import\Rules\Bootstrap\CardRule::class,
-            \LemurCms\PageBuilder\Import\Rules\Bootstrap\ButtonRule::class,
+            \CeibaCms\PageBuilder\Import\Rules\Bootstrap\ContainerRule::class,
+            \CeibaCms\PageBuilder\Import\Rules\Bootstrap\RowRule::class,
+            \CeibaCms\PageBuilder\Import\Rules\Bootstrap\ColRule::class,
+            \CeibaCms\PageBuilder\Import\Rules\Bootstrap\CardRule::class,
+            \CeibaCms\PageBuilder\Import\Rules\Bootstrap\ButtonRule::class,
         ];
 
         foreach ($expected as $class) {
@@ -75,7 +75,7 @@ class Bootstrap5ModuleTest extends TestCase
 
         // Semantic rules must NOT be in the module anymore
         $this->assertNotContains(
-            \LemurCms\PageBuilder\Import\Rules\Semantic\HeadingRule::class,
+            \CeibaCms\PageBuilder\Import\Rules\Semantic\HeadingRule::class,
             $classes,
             'HeadingRule is a core rule, not a module rule'
         );
@@ -86,7 +86,7 @@ class Bootstrap5ModuleTest extends TestCase
         // FallbackRule is always added by HtmlImporter, never by the module
         $classes = array_map('get_class', $this->module->getImportRules());
         $this->assertNotContains(
-            \LemurCms\PageBuilder\Import\Rules\FallbackRule::class,
+            \CeibaCms\PageBuilder\Import\Rules\FallbackRule::class,
             $classes,
             'FallbackRule must NOT be provided by the module — HtmlImporter adds it'
         );

@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\DynamicModule\Infrastructure;
+namespace CeibaCms\Tests\DynamicModule\Infrastructure;
 
-use LemurCms\DynamicModule\Domain\Entity\ModuleDefinition;
-use LemurCms\DynamicModule\Domain\Entity\ModuleField;
-use LemurCms\DynamicModule\Infrastructure\DynamicTableManager;
-use LemurCms\DynamicModule\Infrastructure\GenericModuleRepository;
-use LemurCms\Support\Helpers\UuidHelper;
-use LemurCms\Tests\TestCase;
+use CeibaCms\DynamicModule\Domain\Entity\ModuleDefinition;
+use CeibaCms\DynamicModule\Domain\Entity\ModuleField;
+use CeibaCms\DynamicModule\Infrastructure\DynamicTableManager;
+use CeibaCms\DynamicModule\Infrastructure\GenericModuleRepository;
+use CeibaCms\Support\Helpers\UuidHelper;
+use CeibaCms\Tests\TestCase;
 
 class GenericModuleRepositoryTest extends TestCase
 {

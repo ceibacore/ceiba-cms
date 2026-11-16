@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Http\Middleware;
+namespace CeibaCms\Http\Middleware;
 
-use LemurCms\Auth\AuthManager;
+use CeibaCms\Auth\AuthManager;
 
 class AuthMiddleware implements MiddlewareInterface
 {

@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Http\Controllers;
+namespace CeibaCms\Http\Controllers;
 
-use LemurCms\Page\Application\GetPageBySlug;
-use LemurCms\PageBuilder\Application\GetLayoutById;
-use LemurCms\PageBuilder\Application\GetDefaultLayout;
-use LemurCms\PageBuilder\Domain\Service\BladeRendererInterface;
-use LemurCms\PageBuilder\Domain\Service\LayoutRenderer;
-use LemurCms\Menu\Application\GetNavbar;
-use LemurCms\Auth\AuthManager;
-use LemurCms\Settings\Domain\Repository\SettingsRepositoryInterface;
-use LemurCms\Seo\Domain\Repository\SeoRepositoryInterface;
-use LemurCms\PageBuilder\Application\GetPageTemplateById;
+use CeibaCms\Page\Application\GetPageBySlug;
+use CeibaCms\PageBuilder\Application\GetLayoutById;
+use CeibaCms\PageBuilder\Application\GetDefaultLayout;
+use CeibaCms\PageBuilder\Domain\Service\BladeRendererInterface;
+use CeibaCms\PageBuilder\Domain\Service\LayoutRenderer;
+use CeibaCms\Menu\Application\GetNavbar;
+use CeibaCms\Auth\AuthManager;
+use CeibaCms\Settings\Domain\Repository\SettingsRepositoryInterface;
+use CeibaCms\Seo\Domain\Repository\SeoRepositoryInterface;
+use CeibaCms\PageBuilder\Application\GetPageTemplateById;
 
 class PageRenderController extends BaseController
 {
@@ -24,8 +24,8 @@ class PageRenderController extends BaseController
         private readonly ?LayoutRenderer      $layoutRenderer = null,
         private readonly ?GetNavbar           $getNavbar = null,
         private readonly ?GetPageTemplateById $getPageTemplateById = null,
-        private readonly ?\LemurCms\PageBuilder\Domain\Service\ConditionEngine $conditionEngine = null,
-        private readonly ?\LemurCms\PageBuilder\Domain\Service\QueryEngine $queryEngine = null,
+        private readonly ?\CeibaCms\PageBuilder\Domain\Service\ConditionEngine $conditionEngine = null,
+        private readonly ?\CeibaCms\PageBuilder\Domain\Service\QueryEngine $queryEngine = null,
         private readonly ?AuthManager                     $authManager        = null,
         private readonly ?SettingsRepositoryInterface     $settingsRepository = null,
         private readonly ?SeoRepositoryInterface          $seoRepository      = null,

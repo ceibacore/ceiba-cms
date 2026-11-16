@@ -1,0 +1,42 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Ceiba CMS - CLI Entry Point
+ * 
+ * Usage: php bin/ceiba <command> [options]
+ */
+
+// Cargar bootstrap y obtener container
+$container = require_once __DIR__ . '/../bootstrap.php';
+
+// Cargar clases CLI
+require_once __DIR__ . '/CliKernel.php';
+require_once __DIR__ . '/commands/Command.php';
+require_once __DIR__ . '/commands/MigrateCommand.php';
+require_once __DIR__ . '/commands/CacheClearCommand.php';
+require_once __DIR__ . '/commands/CreateUserCommand.php';
+require_once __DIR__ . '/commands/ListMigrationsCommand.php';
+require_once __DIR__ . '/commands/SeedCommand.php';
+
+use CeibaCms\CliKernel;
+use CeibaCms\Commands\MigrateCommand;
+use CeibaCms\Commands\CacheClearCommand;
+use CeibaCms\Commands\CreateUserCommand;
+use CeibaCms\Commands\ListMigrationsCommand;
+use CeibaCms\Commands\SeedCommand;
+
+// Crear kernel
+$kernel = new CliKernel();
+
+// Registrar comandos
+$kernel->registerCommand('migrate', new MigrateCommand($container['db']));
+$kernel->registerCommand('cache:clear', new CacheClearCommand($container['presentation']['menuCache']));
+$kernel->registerCommand('user:create', new CreateUserCommand($container['repositories']['user']));
+$kernel->registerCommand('migrate:list', new ListMigrationsCommand());
+$kernel->registerCommand('db:seed', new SeedCommand($container['db']));
+
+// Ejecutar
+exit($kernel->run($argv));

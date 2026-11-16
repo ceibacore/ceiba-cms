@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Http\Controllers;
+namespace CeibaCms\Http\Controllers;
 
 class MenuController extends BaseController
 {
     public function __construct(
-        private \LemurCms\Menu\Application\GetNavbar $getNavbar,
-        private \LemurCms\Menu\Application\CreateMenuItem $createMenuItem,
-        private \LemurCms\Menu\Application\UpdateMenuItem $updateMenuItem,
-        private \LemurCms\Menu\Application\DeleteMenuItem $deleteMenuItem,
+        private \CeibaCms\Menu\Application\GetNavbar $getNavbar,
+        private \CeibaCms\Menu\Application\CreateMenuItem $createMenuItem,
+        private \CeibaCms\Menu\Application\UpdateMenuItem $updateMenuItem,
+        private \CeibaCms\Menu\Application\DeleteMenuItem $deleteMenuItem,
     ) {
     }
 

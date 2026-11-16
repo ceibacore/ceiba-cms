@@ -26,9 +26,9 @@ Features:
 File: `builder-example.php`
 
 ```php
-use LemurCms\Menu\Presentation\LemurMenuBuilder;
+use CeibaCms\Menu\Presentation\CeibaMenuBuilder;
 
-$builder = new LemurMenuBuilder();
+$builder = new CeibaMenuBuilder();
 $menus = $builder
     ->menu('main', 'Main Menu')
     ->item('/', 'Home', ['icon' => 'bi bi-house'])
@@ -40,9 +40,9 @@ $menus = $builder
 ## 3. Direct HTML Rendering
 
 ```php
-use LemurCms\Menu\Presentation\LemurMenuRenderer;
+use CeibaCms\Menu\Presentation\CeibaMenuRenderer;
 
-$renderer = new LemurMenuRenderer('/current-url');
+$renderer = new CeibaMenuRenderer('/current-url');
 $html = $renderer->render($menuItems);
 ```
 

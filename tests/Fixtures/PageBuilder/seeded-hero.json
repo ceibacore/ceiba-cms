@@ -1,0 +1,88 @@
+{
+    "source": "src\/Seeders\/TemplatesSeeder.php: Hero Centrado Simple",
+    "kind": "bundled-seed",
+    "tree": [
+        {
+            "id": "hero_01_container",
+            "type": "container",
+            "props": {
+                "fluid": false,
+                "class": "py-5 my-4"
+            },
+            "loop": null,
+            "children": [
+                {
+                    "id": "hero_01_row",
+                    "type": "row",
+                    "props": {
+                        "justify": "justify-content-center",
+                        "align": ""
+                    },
+                    "loop": null,
+                    "children": [
+                        {
+                            "id": "hero_01_col",
+                            "type": "col",
+                            "props": {
+                                "xs": 12,
+                                "md": 8,
+                                "lg": 7,
+                                "class": "text-center"
+                            },
+                            "loop": null,
+                            "children": [
+                                {
+                                    "id": "hero_01_title",
+                                    "type": "text",
+                                    "props": {
+                                        "tag": "h1",
+                                        "content": "Construye algo increíble",
+                                        "class": "fw-bold mb-3 display-5"
+                                    },
+                                    "loop": null,
+                                    "children": []
+                                },
+                                {
+                                    "id": "hero_01_subtitle",
+                                    "type": "text",
+                                    "props": {
+                                        "tag": "p",
+                                        "content": "Una descripción breve y convincente de tu propuesta de valor. Máximo dos líneas.",
+                                        "class": "lead text-muted mb-4"
+                                    },
+                                    "loop": null,
+                                    "children": []
+                                },
+                                {
+                                    "id": "hero_01_btn1",
+                                    "type": "button",
+                                    "props": {
+                                        "label": "Comenzar ahora",
+                                        "href": "#",
+                                        "variant": "primary",
+                                        "size": "btn-lg",
+                                        "class": "me-2"
+                                    },
+                                    "loop": null,
+                                    "children": []
+                                },
+                                {
+                                    "id": "hero_01_btn2",
+                                    "type": "button",
+                                    "props": {
+                                        "label": "Ver demo",
+                                        "href": "#",
+                                        "variant": "outline-secondary",
+                                        "size": "btn-lg"
+                                    },
+                                    "loop": null,
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

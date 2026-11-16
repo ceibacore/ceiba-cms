@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Routing\Domain\Repository;
+namespace CeibaCms\Routing\Domain\Repository;
 
 interface ReservedPathRepositoryInterface
 {

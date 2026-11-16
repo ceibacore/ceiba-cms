@@ -1,24 +1,24 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Tests\Menu\Presentation;
+namespace CeibaCms\Tests\Menu\Presentation;
 
-use LemurCms\Menu\Presentation\LemurMenuRenderer;
-use LemurCms\Menu\Presentation\LemurMenuCache;
-use LemurCms\Menu\Presentation\LemurMenuBuilder;
+use CeibaCms\Menu\Presentation\CeibaMenuRenderer;
+use CeibaCms\Menu\Presentation\CeibaMenuCache;
+use CeibaCms\Menu\Presentation\CeibaMenuBuilder;
 use PHPUnit\Framework\TestCase;
 
-class LemurMenuRendererTest extends TestCase
+class CeibaMenuRendererTest extends TestCase
 {
     public function testRenderReturnsEmptyForNoItems(): void
     {
-        $renderer = new LemurMenuRenderer();
+        $renderer = new CeibaMenuRenderer();
         $html = $renderer->render([]);
         $this->assertEmpty($html);
     }
 
     public function testRenderGeneratesNavbarUl(): void
     {
-        $renderer = new LemurMenuRenderer();
+        $renderer = new CeibaMenuRenderer();
         $items = [['label' => 'Home', 'url' => '/', 'type' => 'link', 'target' => '_self', 'status' => 1]];
         $html = $renderer->render($items);
         
@@ -28,7 +28,7 @@ class LemurMenuRendererTest extends TestCase
 
     public function testRenderIncludesLink(): void
     {
-        $renderer = new LemurMenuRenderer();
+        $renderer = new CeibaMenuRenderer();
         $items = [['label' => 'Home', 'url' => '/', 'type' => 'link', 'target' => '_self', 'status' => 1, 'children' => []]];
         $html = $renderer->render($items);
         
@@ -38,7 +38,7 @@ class LemurMenuRendererTest extends TestCase
 
     public function testRenderHighlightsActiveLink(): void
     {
-        $renderer = new LemurMenuRenderer('/about');
+        $renderer = new CeibaMenuRenderer('/about');
         $items = [['label' => 'About', 'url' => '/about', 'type' => 'link', 'target' => '_self', 'status' => 1, 'children' => []]];
         $html = $renderer->render($items);
         
@@ -47,7 +47,7 @@ class LemurMenuRendererTest extends TestCase
 
     public function testRenderDropdown(): void
     {
-        $renderer = new LemurMenuRenderer();
+        $renderer = new CeibaMenuRenderer();
         $items = [[
             'label' => 'Services',
             'url' => '#',
@@ -66,7 +66,7 @@ class LemurMenuRendererTest extends TestCase
 
     public function testRenderIcon(): void
     {
-        $renderer = new LemurMenuRenderer();
+        $renderer = new CeibaMenuRenderer();
         $items = [[
             'label' => 'Home',
             'url' => '/',
@@ -82,16 +82,16 @@ class LemurMenuRendererTest extends TestCase
     }
 }
 
-class LemurMenuCacheTest extends TestCase
+class CeibaMenuCacheTest extends TestCase
 {
     private string $tempDir;
-    private LemurMenuCache $cache;
+    private CeibaMenuCache $cache;
 
     protected function setUp(): void
     {
-        $this->tempDir = sys_get_temp_dir() . '/lemur_menu_cache_' . uniqid();
+        $this->tempDir = sys_get_temp_dir() . '/ceiba_menu_cache_' . uniqid();
         mkdir($this->tempDir);
-        $this->cache = new LemurMenuCache($this->tempDir, 3600);
+        $this->cache = new CeibaMenuCache($this->tempDir, 3600);
     }
 
     protected function tearDown(): void
@@ -135,11 +135,11 @@ class LemurMenuCacheTest extends TestCase
     }
 }
 
-class LemurMenuBuilderTest extends TestCase
+class CeibaMenuBuilderTest extends TestCase
 {
     public function testBuilderCreatesMenu(): void
     {
-        $builder = new LemurMenuBuilder();
+        $builder = new CeibaMenuBuilder();
         $menus = $builder
             ->menu('main', 'Main Menu')
             ->item('/', 'Home')
@@ -151,7 +151,7 @@ class LemurMenuBuilderTest extends TestCase
 
     public function testBuilderAddsItems(): void
     {
-        $builder = new LemurMenuBuilder();
+        $builder = new CeibaMenuBuilder();
         $menus = $builder
             ->menu('main', 'Main Menu')
             ->item('/', 'Home')
@@ -163,7 +163,7 @@ class LemurMenuBuilderTest extends TestCase
 
     public function testBuilderAddsDropdown(): void
     {
-        $builder = new LemurMenuBuilder();
+        $builder = new CeibaMenuBuilder();
         $menus = $builder
             ->menu('main', 'Main Menu')
             ->dropdown('Services', [
@@ -180,7 +180,7 @@ class LemurMenuBuilderTest extends TestCase
     {
         $this->expectException(\LogicException::class);
         
-        $builder = new LemurMenuBuilder();
+        $builder = new CeibaMenuBuilder();
         $builder->item('/', 'Home')->build();
     }
 }
