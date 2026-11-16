@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
 use InvalidArgumentException;
-use LemurDB;
-use LemurCms\PageBuilder\Domain\Contract\Clock;
-use LemurCms\PageBuilder\Infrastructure\SystemClock;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaDB;
+use CeibaCms\PageBuilder\Domain\Contract\Clock;
+use CeibaCms\PageBuilder\Infrastructure\SystemClock;
+use CeibaCms\Support\Helpers\UuidHelper;
 
 /**
  * Short-lived, revocable preview links bound to one site, page and revision.
@@ -23,7 +23,7 @@ final class PagePreviewTokens
     private readonly Clock $clock;
     private readonly PageRevisionAuditLog $audit;
 
-    public function __construct(private readonly LemurDB $db, private readonly string $siteId, ?Clock $clock = null)
+    public function __construct(private readonly CeibaDB $db, private readonly string $siteId, ?Clock $clock = null)
     {
         if (trim($siteId) === '') {
             throw new InvalidArgumentException('A site ID is required for previews');

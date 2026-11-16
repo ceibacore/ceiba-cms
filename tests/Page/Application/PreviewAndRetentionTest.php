@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Page\Application;
+namespace CeibaCms\Tests\Page\Application;
 
-use LemurCms\Page\Application\PagePreviewTokens;
-use LemurCms\Page\Application\PageRevisionRetentionPolicy;
-use LemurCms\Page\Application\PinPageRevision;
-use LemurCms\Page\Application\PreviewTokenLimitReached;
-use LemurCms\Page\Application\PublishPageRevision;
-use LemurCms\Page\Application\PurgePageRevisions;
-use LemurCms\Page\Application\SavePageDraft;
-use LemurCms\PageBuilder\Domain\Contract\RevisionArchive;
-use LemurCms\PageBuilder\Infrastructure\JsonLinesRevisionArchive;
-use LemurCms\Tests\Support\FakeClock;
-use LemurCms\Tests\Support\RevisionSchema;
+use CeibaCms\Page\Application\PagePreviewTokens;
+use CeibaCms\Page\Application\PageRevisionRetentionPolicy;
+use CeibaCms\Page\Application\PinPageRevision;
+use CeibaCms\Page\Application\PreviewTokenLimitReached;
+use CeibaCms\Page\Application\PublishPageRevision;
+use CeibaCms\Page\Application\PurgePageRevisions;
+use CeibaCms\Page\Application\SavePageDraft;
+use CeibaCms\PageBuilder\Domain\Contract\RevisionArchive;
+use CeibaCms\PageBuilder\Infrastructure\JsonLinesRevisionArchive;
+use CeibaCms\Tests\Support\FakeClock;
+use CeibaCms\Tests\Support\RevisionSchema;
 use PHPUnit\Framework\TestCase;
 
 final class PreviewAndRetentionTest extends TestCase

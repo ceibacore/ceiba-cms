@@ -1,20 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Infrastructure;
+namespace CeibaCms\Tests\PageBuilder\Infrastructure;
 
-use LemurCms\PageBuilder\Infrastructure\LemurDbTemplateRepository;
-use LemurCms\Support\Helpers\UuidHelper;
-use LemurCms\Tests\TestCase;
+use CeibaCms\PageBuilder\Infrastructure\CeibaDbTemplateRepository;
+use CeibaCms\Support\Helpers\UuidHelper;
+use CeibaCms\Tests\TestCase;
 
-class LemurDbTemplateRepositoryTest extends TestCase
+class CeibaDbTemplateRepositoryTest extends TestCase
 {
-    private LemurDbTemplateRepository $repo;
+    private CeibaDbTemplateRepository $repo;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repo = new LemurDbTemplateRepository($this->db);
+        $this->repo = new CeibaDbTemplateRepository($this->db);
     }
 
     public function testSaveAndFindTemplate(): void

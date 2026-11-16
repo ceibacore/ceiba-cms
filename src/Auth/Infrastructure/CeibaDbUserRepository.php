@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Auth\Infrastructure;
+namespace CeibaCms\Auth\Infrastructure;
 
-use LemurCms\Auth\Domain\Repository\UserRepositoryInterface;
-use LemurDB;
+use CeibaCms\Auth\Domain\Repository\UserRepositoryInterface;
+use CeibaDB;
 
 /**
- * LemurDB adapter — concrete implementation of UserRepositoryInterface.
+ * CeibaDB adapter — concrete implementation of UserRepositoryInterface.
  * Inject via constructor in your bootstrap.
  */
-final class LemurDbUserRepository implements UserRepositoryInterface
+final class CeibaDbUserRepository implements UserRepositoryInterface
 {
-    public function __construct(private readonly \LemurDB $db) {}
+    public function __construct(private readonly \CeibaDB $db) {}
 
     public function findByEmail(string $email): ?array
     {
@@ -34,7 +34,7 @@ final class LemurDbUserRepository implements UserRepositoryInterface
         }
         
         // Generate UUID if not present
-        $id = \LemurCms\Support\Helpers\UuidHelper::v4();
+        $id = \CeibaCms\Support\Helpers\UuidHelper::v4();
         $data['id'] = $id;
         $this->db->query('access')->insert($data);
         return $id;

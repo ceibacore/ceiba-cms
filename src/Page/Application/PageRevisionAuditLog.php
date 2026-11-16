@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
 use InvalidArgumentException;
-use LemurDB;
-use LemurCms\PageBuilder\Domain\Contract\Clock;
-use LemurCms\PageBuilder\Infrastructure\SystemClock;
+use CeibaDB;
+use CeibaCms\PageBuilder\Domain\Contract\Clock;
+use CeibaCms\PageBuilder\Infrastructure\SystemClock;
 use Throwable;
 
 /**
@@ -26,7 +26,7 @@ final class PageRevisionAuditLog
 
     private readonly Clock $clock;
 
-    public function __construct(private readonly LemurDB $db, private readonly string $siteId, ?Clock $clock = null)
+    public function __construct(private readonly CeibaDB $db, private readonly string $siteId, ?Clock $clock = null)
     {
         if (trim($siteId) === '') {
             throw new InvalidArgumentException('A site ID is required for auditing');

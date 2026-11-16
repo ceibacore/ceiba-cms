@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Infrastructure;
+namespace CeibaCms\PageBuilder\Infrastructure;
 
-use LemurCms\PageBuilder\Domain\Contract\ContentSource;
-use LemurCms\PageBuilder\Domain\Document\HostContext;
-use LemurCms\PageBuilder\Domain\Service\LoopResolverInterface;
+use CeibaCms\PageBuilder\Domain\Contract\ContentSource;
+use CeibaCms\PageBuilder\Domain\Document\HostContext;
+use CeibaCms\PageBuilder\Domain\Service\LoopResolverInterface;
 
 final class LoopResolverContentSource implements ContentSource
 {

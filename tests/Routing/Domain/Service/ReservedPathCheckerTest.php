@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Routing\Domain\Service;
+namespace CeibaCms\Tests\Routing\Domain\Service;
 
-use LemurCms\Routing\Domain\Repository\ReservedPathRepositoryInterface;
-use LemurCms\Routing\Domain\Service\ReservedPathChecker;
+use CeibaCms\Routing\Domain\Repository\ReservedPathRepositoryInterface;
+use CeibaCms\Routing\Domain\Service\ReservedPathChecker;
 use PHPUnit\Framework\TestCase;
 
 class ReservedPathCheckerTest extends TestCase

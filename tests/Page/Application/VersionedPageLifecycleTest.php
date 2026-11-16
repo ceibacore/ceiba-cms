@@ -1,23 +1,23 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Page\Application;
+namespace CeibaCms\Tests\Page\Application;
 
 use InvalidArgumentException;
-use LemurCms\Page\Application\CreatePage;
-use LemurCms\Page\Application\GetPageWorkingRevision;
-use LemurCms\Page\Application\PageNotFound;
-use LemurCms\Page\Application\PageRevisionAuditLog;
-use LemurCms\Page\Application\PageRevisionConflict;
-use LemurCms\Page\Application\PublishPage;
-use LemurCms\Page\Application\PublishPageRevision;
-use LemurCms\Page\Application\SavePageContent;
-use LemurCms\Page\Application\SavePageDraft;
-use LemurCms\Page\Application\UnpublishPage;
-use LemurCms\Page\Application\UpdatePage;
-use LemurCms\Page\Infrastructure\LemurDbPageRepository;
-use LemurCms\Tests\Support\FakeClock;
-use LemurCms\Tests\Support\RevisionSchema;
+use CeibaCms\Page\Application\CreatePage;
+use CeibaCms\Page\Application\GetPageWorkingRevision;
+use CeibaCms\Page\Application\PageNotFound;
+use CeibaCms\Page\Application\PageRevisionAuditLog;
+use CeibaCms\Page\Application\PageRevisionConflict;
+use CeibaCms\Page\Application\PublishPage;
+use CeibaCms\Page\Application\PublishPageRevision;
+use CeibaCms\Page\Application\SavePageContent;
+use CeibaCms\Page\Application\SavePageDraft;
+use CeibaCms\Page\Application\UnpublishPage;
+use CeibaCms\Page\Application\UpdatePage;
+use CeibaCms\Page\Infrastructure\CeibaDbPageRepository;
+use CeibaCms\Tests\Support\FakeClock;
+use CeibaCms\Tests\Support\RevisionSchema;
 use PHPUnit\Framework\TestCase;
 
 /** Every content change is a revision: create, edit, autosave, publish, unpublish. */
@@ -153,7 +153,7 @@ final class VersionedPageLifecycleTest extends TestCase
     {
         $db = RevisionSchema::create();
         $p = $db->getPrefix();
-        $repo = new LemurDbPageRepository($db);
+        $repo = new CeibaDbPageRepository($db);
         $update = new UpdatePage($repo);
         $draft = (new CreatePage($db, 'site-1'))->execute(['title' => 'Borrador', 'slug' => 'borrador']);
         $live = (new CreatePage($db, 'site-1'))->execute(['title' => 'Vivo', 'slug' => 'vivo', 'status' => 'published']);

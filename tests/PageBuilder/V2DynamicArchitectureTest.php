@@ -1,32 +1,32 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder;
+namespace CeibaCms\Tests\PageBuilder;
 
-use LemurCms\PageBuilder\Domain\Entity\PageTemplate;
-use LemurCms\PageBuilder\Infrastructure\LemurDbPageTemplateRepository;
-use LemurCms\PageBuilder\Domain\Service\ContextResolver;
-use LemurCms\PageBuilder\Domain\Service\ConditionEngine;
-use LemurCms\PageBuilder\Domain\Service\QueryEngine;
-use LemurCms\PageBuilder\Domain\Service\BladeRenderer;
-use LemurCms\PageBuilder\Domain\Service\VariableInterpolator;
-use LemurCms\PageBuilder\Domain\Service\LoopResolverInterface;
-use LemurCms\Http\Controllers\PageRenderController;
-use LemurCms\Page\Application\GetPageBySlug;
-use LemurCms\PageBuilder\Application\GetPageTemplateById;
-use LemurCms\Auth\AuthManager;
-use LemurCms\Support\Exceptions\SecurityException;
-use LemurCms\Tests\TestCase;
+use CeibaCms\PageBuilder\Domain\Entity\PageTemplate;
+use CeibaCms\PageBuilder\Infrastructure\CeibaDbPageTemplateRepository;
+use CeibaCms\PageBuilder\Domain\Service\ContextResolver;
+use CeibaCms\PageBuilder\Domain\Service\ConditionEngine;
+use CeibaCms\PageBuilder\Domain\Service\QueryEngine;
+use CeibaCms\PageBuilder\Domain\Service\BladeRenderer;
+use CeibaCms\PageBuilder\Domain\Service\VariableInterpolator;
+use CeibaCms\PageBuilder\Domain\Service\LoopResolverInterface;
+use CeibaCms\Http\Controllers\PageRenderController;
+use CeibaCms\Page\Application\GetPageBySlug;
+use CeibaCms\PageBuilder\Application\GetPageTemplateById;
+use CeibaCms\Auth\AuthManager;
+use CeibaCms\Support\Exceptions\SecurityException;
+use CeibaCms\Tests\TestCase;
 
 class V2DynamicArchitectureTest extends TestCase
 {
-    private LemurDbPageTemplateRepository $templateRepo;
+    private CeibaDbPageTemplateRepository $templateRepo;
     private $authMock;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->templateRepo = new LemurDbPageTemplateRepository($this->db);
+        $this->templateRepo = new CeibaDbPageTemplateRepository($this->db);
         $this->authMock = $this->createMock(AuthManager::class);
     }
 
@@ -196,7 +196,7 @@ class V2DynamicArchitectureTest extends TestCase
             ]
         ];
 
-        $pageRepoMock = $this->createMock(\LemurCms\Page\Domain\Repository\PageRepositoryInterface::class);
+        $pageRepoMock = $this->createMock(\CeibaCms\Page\Domain\Repository\PageRepositoryInterface::class);
         $pageRepoMock->method('findBySlug')->willReturn($pageData);
         $getPageBySlug = new GetPageBySlug($pageRepoMock);
 

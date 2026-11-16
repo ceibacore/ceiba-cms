@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Menu\Domain;
+namespace CeibaCms\Menu\Domain;
 
 interface MenuRepositoryInterface
 {

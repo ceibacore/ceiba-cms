@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Migration;
+namespace CeibaCms\Migration;
 
 final class GeneratorResult
 {

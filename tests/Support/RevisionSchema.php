@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Support;
+namespace CeibaCms\Tests\Support;
 
-use LemurDB;
+use CeibaDB;
 
 /**
  * SQLite mirror of migration 20261107000000 (page revisions).
@@ -11,15 +11,15 @@ use LemurDB;
  */
 final class RevisionSchema
 {
-    public static function create(string $prefix = ''): LemurDB
+    public static function create(string $prefix = ''): CeibaDB
     {
         $prefix = $prefix !== '' ? $prefix : 'rev_' . bin2hex(random_bytes(4)) . '_';
-        $db = LemurDB::getInstance(['driver' => 'sqlite', 'db' => ':memory:', 'prefix' => $prefix]);
+        $db = CeibaDB::getInstance(['driver' => 'sqlite', 'db' => ':memory:', 'prefix' => $prefix]);
         self::install($db);
         return $db;
     }
 
-    public static function install(LemurDB $db): void
+    public static function install(CeibaDB $db): void
     {
         $p = $db->getPrefix();
         $pdo = $db->pdo();
@@ -58,7 +58,7 @@ final class RevisionSchema
      * sets each head's drift baseline to the page's current content, as the
      * initializer would have done.
      */
-    public static function upgradeMinimalFixture(LemurDB $db): void
+    public static function upgradeMinimalFixture(CeibaDB $db): void
     {
         $p = $db->getPrefix();
         $pdo = $db->pdo();
@@ -99,13 +99,13 @@ final class RevisionSchema
             foreach ($pdo->query("SELECT h.page_id, p.content FROM {$p}page_revision_heads h JOIN {$p}pages p ON p.id = h.page_id")
                 ->fetchAll(\PDO::FETCH_ASSOC) as $row) {
                 $pdo->prepare("UPDATE {$p}page_revision_heads SET public_content_hash = ? WHERE page_id = ?")
-                    ->execute([\LemurCms\Page\Application\PublicContentFingerprint::of($row['content']), $row['page_id']]);
+                    ->execute([\CeibaCms\Page\Application\PublicContentFingerprint::of($row['content']), $row['page_id']]);
             }
         }
     }
 
     /** SQLite allows one AUTOINCREMENT per table; emulate MySQL's outbox sequence with rowid. */
-    private static function sequenceTrigger(LemurDB $db): void
+    private static function sequenceTrigger(CeibaDB $db): void
     {
         $p = $db->getPrefix();
         $db->pdo()->exec("CREATE TRIGGER IF NOT EXISTS {$p}outbox_sequence AFTER INSERT ON {$p}page_publication_outbox
@@ -116,19 +116,19 @@ final class RevisionSchema
      * Creates a page through the real CreatePage use case and returns the raw
      * public content it stored (canonical JSON of the first revision).
      */
-    public static function page(LemurDB $db, string $siteId, string $id, string $content, string $status = 'published'): string
+    public static function page(CeibaDB $db, string $siteId, string $id, string $content, string $status = 'published'): string
     {
         $tree = json_decode($content, true);
-        (new \LemurCms\Page\Application\CreatePage($db, $siteId))->execute([
+        (new \CeibaCms\Page\Application\CreatePage($db, $siteId))->execute([
             'id' => $id, 'title' => 'Page ' . $id, 'slug' => 'slug-' . $id, 'status' => $status,
             'content' => is_array($tree) ? $tree : $content,
         ], 'fixture');
         return (string) $db->pdo()->query("SELECT content FROM {$db->getPrefix()}pages WHERE id = " . $db->pdo()->quote($id))->fetchColumn();
     }
 
-    public static function envelope(string $pageId, int $revision, string $text = 'Draft'): \LemurCms\PageBuilder\Domain\Document\DocumentEnvelope
+    public static function envelope(string $pageId, int $revision, string $text = 'Draft'): \CeibaCms\PageBuilder\Domain\Document\DocumentEnvelope
     {
-        return \LemurCms\PageBuilder\Domain\Document\DocumentEnvelope::fromJson(json_encode([
+        return \CeibaCms\PageBuilder\Domain\Document\DocumentEnvelope::fromJson(json_encode([
             'schemaVersion' => 1, 'documentId' => $pageId, 'revision' => $revision,
             'root' => [['id' => 'headline', 'type' => 'h1', 'props' => ['content' => $text], 'children' => []]],
             'settings' => (object) [], 'resources' => [],

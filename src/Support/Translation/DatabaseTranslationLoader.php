@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Support\Translation;
+namespace CeibaCms\Support\Translation;
 
 use Illuminate\Translation\FileLoader;
 use Illuminate\Support\Facades\Cache;
-use LemurCms\Localization\Domain\Repository\TranslationRepositoryInterface;
+use CeibaCms\Localization\Domain\Repository\TranslationRepositoryInterface;
 
 class DatabaseTranslationLoader extends FileLoader
 {

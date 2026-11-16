@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Presentation;
+namespace CeibaCms\Tests\PageBuilder\Presentation;
 
-use LemurCms\Http\Controllers\ComponentDefinitionController;
-use LemurCms\PageBuilder\Application\ListComponentDefinitions;
-use LemurCms\PageBuilder\Domain\Repository\ComponentDefinitionRepositoryInterface;
-use LemurCms\PageBuilder\Domain\Entity\ComponentDefinition;
+use CeibaCms\Http\Controllers\ComponentDefinitionController;
+use CeibaCms\PageBuilder\Application\ListComponentDefinitions;
+use CeibaCms\PageBuilder\Domain\Repository\ComponentDefinitionRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Entity\ComponentDefinition;
 use PHPUnit\Framework\TestCase;
 
 class TestComponentDefinitionController extends ComponentDefinitionController

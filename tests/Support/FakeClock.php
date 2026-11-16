@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Support;
+namespace CeibaCms\Tests\Support;
 
 use DateTimeImmutable;
-use LemurCms\PageBuilder\Domain\Contract\Clock;
+use CeibaCms\PageBuilder\Domain\Contract\Clock;
 
 final class FakeClock implements Clock
 {

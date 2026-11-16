@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Document;
+namespace CeibaCms\PageBuilder\Domain\Document;
 
 use InvalidArgumentException;
 

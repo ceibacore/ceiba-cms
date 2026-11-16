@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Seeder;
+namespace CeibaCms\Seeder;
 
-use LemurDB;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaDB;
+use CeibaCms\Support\Helpers\UuidHelper;
 
 abstract class CmsSeeder
 {
     public function __construct(
-        protected LemurDB $db,
+        protected CeibaDB $db,
         protected string $prefix = ''
     ) {}
 

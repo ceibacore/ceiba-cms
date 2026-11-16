@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Http\Controllers;
+namespace CeibaCms\Http\Controllers;
 
 class CacheController extends BaseController
 {
-    public function __construct(private \LemurCms\Menu\Presentation\LemurMenuCache $cache)
+    public function __construct(private \CeibaCms\Menu\Presentation\CeibaMenuCache $cache)
     {
     }
 

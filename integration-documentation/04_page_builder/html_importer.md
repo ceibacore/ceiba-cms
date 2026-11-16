@@ -383,7 +383,7 @@ public function importHtml(Request $request): JsonResponse
     $html = $request->validate(['html' => 'required|string'])['html'];
 
     $registry = app(UiFrameworkRegistry::class);
-    $importer = new \LemurCms\PageBuilder\Import\HtmlImporter($registry);
+    $importer = new \CeibaCms\PageBuilder\Import\HtmlImporter($registry);
     $result   = $importer->import($html);
 
     // Retornar árbol JSON al editor Svelte SIN persistir
@@ -423,7 +423,7 @@ public function saveImported(Request $request): RedirectResponse
 ### Desde CLI
 
 ```bash
-php lemur-cms/bin/lemur html:import \
+php ceiba-cms/bin/ceiba html:import \
   --file=templates/landing.html \
   --title="Landing Page" \
   --slug=landing \

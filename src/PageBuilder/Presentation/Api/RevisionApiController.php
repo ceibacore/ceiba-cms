@@ -1,23 +1,23 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Presentation\Api;
+namespace CeibaCms\PageBuilder\Presentation\Api;
 
 use InvalidArgumentException;
 use JsonException;
-use LemurDB;
-use LemurCms\Page\Application\ReconcilePageContent;
-use LemurCms\Page\Application\PagePreviewTokens;
-use LemurCms\Page\Application\PagePublicationKeyConflict;
-use LemurCms\Page\Application\PageRevisionAuditLog;
-use LemurCms\Page\Application\PageRevisionConflict;
-use LemurCms\Page\Application\PageRevisionNotFound;
-use LemurCms\Page\Application\PinPageRevision;
-use LemurCms\Page\Application\PreviewTokenLimitReached;
-use LemurCms\Page\Application\RestorePageRevision;
-use LemurCms\Page\Application\UnpublishPage;
-use LemurCms\PageBuilder\Domain\Contract\RevisionOperationAuthorization;
-use LemurCms\PageBuilder\Domain\Document\HostContext;
+use CeibaDB;
+use CeibaCms\Page\Application\ReconcilePageContent;
+use CeibaCms\Page\Application\PagePreviewTokens;
+use CeibaCms\Page\Application\PagePublicationKeyConflict;
+use CeibaCms\Page\Application\PageRevisionAuditLog;
+use CeibaCms\Page\Application\PageRevisionConflict;
+use CeibaCms\Page\Application\PageRevisionNotFound;
+use CeibaCms\Page\Application\PinPageRevision;
+use CeibaCms\Page\Application\PreviewTokenLimitReached;
+use CeibaCms\Page\Application\RestorePageRevision;
+use CeibaCms\Page\Application\UnpublishPage;
+use CeibaCms\PageBuilder\Domain\Contract\RevisionOperationAuthorization;
+use CeibaCms\PageBuilder\Domain\Document\HostContext;
 use Throwable;
 
 /**
@@ -53,7 +53,7 @@ final class RevisionApiController
         private readonly UnpublishPage $unpublishPage,
         private readonly PagePreviewTokens $previews,
         private readonly PinPageRevision $pin,
-        private readonly LemurDB $db,
+        private readonly CeibaDB $db,
         ?callable $errorReporter = null,
     ) {
         $this->contextResolver = $contextResolver;

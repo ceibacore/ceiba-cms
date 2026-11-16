@@ -1,28 +1,28 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Presentation\Api;
+namespace CeibaCms\PageBuilder\Presentation\Api;
 
 use InvalidArgumentException;
-use LemurCms\Media\Domain\Repository\MediaRepositoryInterface;
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
-use LemurCms\Page\Application\SavePageDraft;
-use LemurCms\Page\Application\PublishPageRevision;
-use LemurCms\Page\Application\PageRevisionConflict;
-use LemurCms\Page\Application\PagePublicationKeyConflict;
-use LemurCms\Page\Application\PageRevisionAuditLog;
-use LemurCms\Page\Application\PageRevisionNotFound;
-use LemurCms\Page\Application\PublicContentDrift;
-use LemurCms\PageBuilder\Application\ValidatePageDocument;
-use LemurCms\PageBuilder\Domain\Catalogue\ComponentCatalogue;
-use LemurCms\PageBuilder\Domain\Contract\DocumentAuthorization;
-use LemurCms\PageBuilder\Domain\Contract\PagePublicationAuthorization;
-use LemurCms\PageBuilder\Domain\Document\DocumentEnvelope;
-use LemurCms\PageBuilder\Domain\Document\DocumentMigrator;
-use LemurCms\PageBuilder\Domain\Document\HostContext;
+use CeibaCms\Media\Domain\Repository\MediaRepositoryInterface;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
+use CeibaCms\Page\Application\SavePageDraft;
+use CeibaCms\Page\Application\PublishPageRevision;
+use CeibaCms\Page\Application\PageRevisionConflict;
+use CeibaCms\Page\Application\PagePublicationKeyConflict;
+use CeibaCms\Page\Application\PageRevisionAuditLog;
+use CeibaCms\Page\Application\PageRevisionNotFound;
+use CeibaCms\Page\Application\PublicContentDrift;
+use CeibaCms\PageBuilder\Application\ValidatePageDocument;
+use CeibaCms\PageBuilder\Domain\Catalogue\ComponentCatalogue;
+use CeibaCms\PageBuilder\Domain\Contract\DocumentAuthorization;
+use CeibaCms\PageBuilder\Domain\Contract\PagePublicationAuthorization;
+use CeibaCms\PageBuilder\Domain\Document\DocumentEnvelope;
+use CeibaCms\PageBuilder\Domain\Document\DocumentMigrator;
+use CeibaCms\PageBuilder\Domain\Document\HostContext;
 use RuntimeException;
 use Throwable;
-use LemurDB;
+use CeibaDB;
 
 /**
  * Controller exposing the versioned editor API under a configurable prefix.
@@ -48,7 +48,7 @@ final class EditorApiController
         private readonly ComponentCatalogue $catalogue,
         ?callable $contextResolver = null,
         private readonly ?SavePageDraft $savePageDraft = null,
-        private readonly ?LemurDB $revisionDb = null,
+        private readonly ?CeibaDB $revisionDb = null,
         private readonly ?PublishPageRevision $publishPageRevision = null,
         private readonly ?PagePublicationAuthorization $publicationAuthorization = null,
         private readonly ?PageRevisionAuditLog $audit = null,

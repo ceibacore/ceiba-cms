@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Migrations;
+namespace CeibaCms\Migrations;
 
-use LemurCms\Migration\CmsBaseMigration;
-use LemurCms\Migration\CmsColumnBlueprint;
+use CeibaCms\Migration\CmsBaseMigration;
+use CeibaCms\Migration\CmsColumnBlueprint;
 
 /**
  * Versioned page content: immutable revision snapshots, draft/published heads,

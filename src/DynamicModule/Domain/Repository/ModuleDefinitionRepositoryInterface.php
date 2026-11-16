@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\DynamicModule\Domain\Repository;
+namespace CeibaCms\DynamicModule\Domain\Repository;
 
-use LemurCms\DynamicModule\Domain\Entity\ModuleDefinition;
+use CeibaCms\DynamicModule\Domain\Entity\ModuleDefinition;
 
 interface ModuleDefinitionRepositoryInterface
 {

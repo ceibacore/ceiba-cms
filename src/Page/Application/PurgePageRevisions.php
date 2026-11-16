@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
 use InvalidArgumentException;
-use LemurDB;
-use LemurCms\PageBuilder\Domain\Contract\Clock;
-use LemurCms\PageBuilder\Domain\Contract\RevisionArchive;
-use LemurCms\PageBuilder\Infrastructure\SystemClock;
+use CeibaDB;
+use CeibaCms\PageBuilder\Domain\Contract\Clock;
+use CeibaCms\PageBuilder\Domain\Contract\RevisionArchive;
+use CeibaCms\PageBuilder\Infrastructure\SystemClock;
 
 /**
  * Applies the retention policy for one site connection.
@@ -23,7 +23,7 @@ final class PurgePageRevisions
     private readonly PageRevisionAuditLog $audit;
 
     public function __construct(
-        private readonly LemurDB $db,
+        private readonly CeibaDB $db,
         private readonly string $siteId,
         private readonly RevisionArchive $archive,
         ?Clock $clock = null,

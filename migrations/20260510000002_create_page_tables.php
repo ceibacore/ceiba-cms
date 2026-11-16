@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Migrations;
-use LemurCms\Migration\CmsBaseMigration;
-use LemurCms\Migration\CmsColumnBlueprint;
+namespace CeibaCms\Migrations;
+use CeibaCms\Migration\CmsBaseMigration;
+use CeibaCms\Migration\CmsColumnBlueprint;
 
 class Migration_20260510000002_CreatePageTables extends CmsBaseMigration
 {

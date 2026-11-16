@@ -1,20 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Page\Application;
+namespace CeibaCms\Tests\Page\Application;
 
-use LemurCms\Page\Application\DispatchPagePublicationOutbox;
-use LemurCms\Page\Application\PagePreviewTokens;
-use LemurCms\Page\Application\PageRevisionConflict;
-use LemurCms\Page\Application\PageRevisionOperationalMetrics;
-use LemurCms\Page\Application\PublishPageRevision;
-use LemurCms\Page\Application\RestorePageRevision;
-use LemurCms\Page\Application\SavePageDraft;
-use LemurCms\Page\Application\UnpublishPage;
-use LemurCms\PageBuilder\Domain\Contract\PublicationEvent;
-use LemurCms\PageBuilder\Domain\Contract\PublicationEventHandler;
-use LemurCms\Tests\Support\FakeClock;
-use LemurCms\Tests\Support\RevisionSchema;
+use CeibaCms\Page\Application\DispatchPagePublicationOutbox;
+use CeibaCms\Page\Application\PagePreviewTokens;
+use CeibaCms\Page\Application\PageRevisionConflict;
+use CeibaCms\Page\Application\PageRevisionOperationalMetrics;
+use CeibaCms\Page\Application\PublishPageRevision;
+use CeibaCms\Page\Application\RestorePageRevision;
+use CeibaCms\Page\Application\SavePageDraft;
+use CeibaCms\Page\Application\UnpublishPage;
+use CeibaCms\PageBuilder\Domain\Contract\PublicationEvent;
+use CeibaCms\PageBuilder\Domain\Contract\PublicationEventHandler;
+use CeibaCms\Tests\Support\FakeClock;
+use CeibaCms\Tests\Support\RevisionSchema;
 use PHPUnit\Framework\TestCase;
 
 final class OutboxDispatchAndIsolationTest extends TestCase
@@ -97,7 +97,7 @@ final class OutboxDispatchAndIsolationTest extends TestCase
         $save = new SavePageDraft($db, 'site-1', $clock);
         $save->execute(RevisionSchema::envelope('page-1', 2), 1, 'editor-1');
         (new PublishPageRevision($db, 'site-1', $clock))->execute('page-1', 2, 'publish-2', 'publisher-1');
-        (new \LemurCms\Page\Application\PageRevisionAuditLog($db, 'site-1', $clock))
+        (new \CeibaCms\Page\Application\PageRevisionAuditLog($db, 'site-1', $clock))
             ->recordQuietly('page-1', 'save', 'conflict', 'editor-2');
         $clock->advance('+90 seconds');
 
@@ -126,7 +126,7 @@ final class OutboxDispatchAndIsolationTest extends TestCase
         (new SavePageDraft($tenantB, 'site-b'))->execute(RevisionSchema::envelope('page-1', 2, 'Tenant B'), 1, 'actor-b');
         (new PublishPageRevision($tenantB, 'site-b'))->execute('page-1', 2, 'same-key', 'actor-b');
 
-        $content = static fn (\LemurDB $db) => $db->pdo()->query("SELECT content FROM {$db->getPrefix()}pages")->fetchColumn();
+        $content = static fn (\CeibaDB $db) => $db->pdo()->query("SELECT content FROM {$db->getPrefix()}pages")->fetchColumn();
         self::assertStringContainsString('Tenant A', $content($tenantA));
         self::assertStringContainsString('Tenant B', $content($tenantB));
         $handlerA = new RecordingHandler(0);

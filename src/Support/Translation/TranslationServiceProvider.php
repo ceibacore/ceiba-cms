@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Support\Translation;
+namespace CeibaCms\Support\Translation;
 
 use Illuminate\Translation\TranslationServiceProvider as BaseServiceProvider;
 
@@ -18,7 +18,7 @@ class TranslationServiceProvider extends BaseServiceProvider
             $loader = new DatabaseTranslationLoader($app['files'], $app['path.lang']);
             
             try {
-                $cmsContainer = \LemurCms\LemurCms::container();
+                $cmsContainer = \CeibaCms\CeibaCms::container();
                 $translationRepo = $cmsContainer['repositories']['translation'] ?? null;
                 if ($translationRepo) {
                     $loader->setTranslationRepository($translationRepo);

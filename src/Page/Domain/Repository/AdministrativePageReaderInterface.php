@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Domain\Repository;
+namespace CeibaCms\Page\Domain\Repository;
 
 /**
  * Administrative read model including drafts. Kept separate from

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Http\Controllers;
+namespace CeibaCms\Http\Controllers;
 
-use LemurCms\PageBuilder\Domain\Service\PageBuilderMetadataService;
+use CeibaCms\PageBuilder\Domain\Service\PageBuilderMetadataService;
 
 class PageBuilderMetadataController extends BaseController
 {

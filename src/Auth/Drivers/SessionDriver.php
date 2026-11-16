@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Auth\Drivers;
+namespace CeibaCms\Auth\Drivers;
 
-use LemurDB;
-use LemurCms\Auth\Contracts\AuthDriverInterface;
+use CeibaDB;
+use CeibaCms\Auth\Contracts\AuthDriverInterface;
 
 class SessionDriver implements AuthDriverInterface
 {
@@ -12,7 +12,7 @@ class SessionDriver implements AuthDriverInterface
 
     private ?array $userCache = null;
 
-    public function __construct(private readonly LemurDB $db)
+    public function __construct(private readonly CeibaDB $db)
     {
         if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
             ini_set('session.cookie_httponly', '1');

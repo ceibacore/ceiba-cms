@@ -1,21 +1,21 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Compatibility;
+namespace CeibaCms\Tests\PageBuilder\Compatibility;
 
 use InvalidArgumentException;
-use LemurCms\Page\Application\CreatePage;
-use LemurCms\Page\Application\SavePageContent;
-use LemurCms\Page\Application\SavePageDraft;
-use LemurCms\Tests\Support\RevisionSchema;
-use LemurCms\PageBuilder\Domain\Entity\Node;
-use LemurCms\PageBuilder\Domain\Service\BladeRenderer;
-use LemurCms\PageBuilder\Domain\Service\LoopResolver;
-use LemurCms\PageBuilder\Domain\Service\TreeValidator;
-use LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
-use LemurCms\PageBuilder\Domain\Service\VariableInterpolator;
-use LemurCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
-use LemurCms\PageBuilder\Import\HtmlImporter;
+use CeibaCms\Page\Application\CreatePage;
+use CeibaCms\Page\Application\SavePageContent;
+use CeibaCms\Page\Application\SavePageDraft;
+use CeibaCms\Tests\Support\RevisionSchema;
+use CeibaCms\PageBuilder\Domain\Entity\Node;
+use CeibaCms\PageBuilder\Domain\Service\BladeRenderer;
+use CeibaCms\PageBuilder\Domain\Service\LoopResolver;
+use CeibaCms\PageBuilder\Domain\Service\TreeValidator;
+use CeibaCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
+use CeibaCms\PageBuilder\Domain\Service\VariableInterpolator;
+use CeibaCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
+use CeibaCms\PageBuilder\Import\HtmlImporter;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

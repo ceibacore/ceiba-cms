@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace LemurCms;
+namespace CeibaCms;
 
 /**
- * Public entry point for Lemur CMS.
+ * Public entry point for Ceiba CMS.
  *
  * Allows host applications to configure CMS programmatically
  * without relying on framework-specific bootstrapping.
  *
  * Usage:
- *   \LemurCms\LemurCms::boot([
+ *   \CeibaCms\CeibaCms::boot([
  *       'DB_DRIVER'   => 'mysql',
  *       'DB_HOST'     => '127.0.0.1',
  *       'DB_PORT'     => '3306',
@@ -21,7 +21,7 @@ namespace LemurCms;
  *       'DB_PREFIX'   => 'cms_',
  *   ]);
  */
-final class LemurCms
+final class CeibaCms
 {
     private function __construct() {}
 

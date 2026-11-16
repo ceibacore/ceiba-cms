@@ -1,20 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Infrastructure;
+namespace CeibaCms\Page\Infrastructure;
 
-use LemurCms\Page\Domain\Repository\AdministrativePageReaderInterface;
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
-use LemurDB;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaCms\Page\Domain\Repository\AdministrativePageReaderInterface;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
+use CeibaDB;
+use CeibaCms\Support\Helpers\UuidHelper;
 
 /**
- * LemurDB adapter — concrete implementation of PageRepositoryInterface.
+ * CeibaDB adapter — concrete implementation of PageRepositoryInterface.
  * Inject via constructor in your bootstrap.
  */
-final class LemurDbPageRepository implements PageRepositoryInterface, AdministrativePageReaderInterface
+final class CeibaDbPageRepository implements PageRepositoryInterface, AdministrativePageReaderInterface
 {
-    public function __construct(private readonly \LemurDB $db) {}
+    public function __construct(private readonly \CeibaDB $db) {}
 
     public function findBySlug(string $slug): ?array
     {

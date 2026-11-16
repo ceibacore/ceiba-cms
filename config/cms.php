@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Lemur CMS Configuration
+ * Ceiba CMS Configuration
  * 
  * Configuración centralizada para toda la aplicación
  */
@@ -71,7 +71,7 @@ return [
         'driver'   => $_ENV['DB_DRIVER'] ?? 'mysql',
         'host'     => $_ENV['DB_HOST'] ?? 'localhost',
         'port'     => $_ENV['DB_PORT'] ?? 3306,
-        'name'     => $_ENV['DB_NAME'] ?? 'lemur_cms',
+        'name'     => $_ENV['DB_NAME'] ?? 'ceiba_cms',
         'username' => $_ENV['DB_USER'] ?? 'root',
         'password' => $_ENV['DB_PASS'] ?? '',
         'prefix'   => $_ENV['DB_PREFIX'] ?? 'cms_',

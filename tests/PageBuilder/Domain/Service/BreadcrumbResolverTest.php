@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Domain\Service;
+namespace CeibaCms\Tests\PageBuilder\Domain\Service;
 
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
-use LemurCms\PageBuilder\Domain\Service\BreadcrumbResolver;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Service\BreadcrumbResolver;
 use PHPUnit\Framework\TestCase;
 
 class BreadcrumbResolverTest extends TestCase

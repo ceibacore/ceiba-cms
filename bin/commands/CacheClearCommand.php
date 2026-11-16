@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Commands;
+namespace CeibaCms\Commands;
 
 class CacheClearCommand extends Command
 {
     protected string $signature = 'cache:clear';
     protected string $description = 'Clear application cache';
 
-    public function __construct(private \LemurCms\Menu\Presentation\LemurMenuCache $cache)
+    public function __construct(private \CeibaCms\Menu\Presentation\CeibaMenuCache $cache)
     {
     }
 

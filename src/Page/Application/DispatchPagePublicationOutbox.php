@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
 use InvalidArgumentException;
-use LemurDB;
-use LemurCms\PageBuilder\Domain\Contract\Clock;
-use LemurCms\PageBuilder\Domain\Contract\PublicationEvent;
-use LemurCms\PageBuilder\Domain\Contract\PublicationEventHandler;
-use LemurCms\PageBuilder\Infrastructure\SystemClock;
+use CeibaDB;
+use CeibaCms\PageBuilder\Domain\Contract\Clock;
+use CeibaCms\PageBuilder\Domain\Contract\PublicationEvent;
+use CeibaCms\PageBuilder\Domain\Contract\PublicationEventHandler;
+use CeibaCms\PageBuilder\Infrastructure\SystemClock;
 use Throwable;
 
 /**
@@ -29,7 +29,7 @@ final class DispatchPagePublicationOutbox
     private readonly Clock $clock;
 
     public function __construct(
-        private readonly LemurDB $db,
+        private readonly CeibaDB $db,
         private readonly string $siteId,
         private readonly PublicationEventHandler $handler,
         ?Clock $clock = null,

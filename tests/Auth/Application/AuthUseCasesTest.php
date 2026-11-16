@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Tests\Auth\Application;
+namespace CeibaCms\Tests\Auth\Application;
 
-use LemurCms\Auth\Application\CreateUser;
-use LemurCms\Auth\Application\AssignRole;
-use LemurCms\Auth\Application\CheckPermission;
-use LemurCms\Auth\Application\ChangePassword;
-use LemurCms\Auth\Domain\UserRepositoryInterface;
+use CeibaCms\Auth\Application\CreateUser;
+use CeibaCms\Auth\Application\AssignRole;
+use CeibaCms\Auth\Application\CheckPermission;
+use CeibaCms\Auth\Application\ChangePassword;
+use CeibaCms\Auth\Domain\UserRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class CreateUserTest extends TestCase

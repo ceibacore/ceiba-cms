@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Import;
+namespace CeibaCms\Tests\PageBuilder\Import;
 
-use LemurCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
-use LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
-use LemurCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
-use LemurCms\PageBuilder\Import\Contract\RuleInterface;
-use LemurCms\PageBuilder\Import\HtmlImporter;
+use CeibaCms\PageBuilder\Domain\Contract\UiFrameworkModuleInterface;
+use CeibaCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
+use CeibaCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
+use CeibaCms\PageBuilder\Import\Contract\RuleInterface;
+use CeibaCms\PageBuilder\Import\HtmlImporter;
 use PHPUnit\Framework\TestCase;
 
 /**

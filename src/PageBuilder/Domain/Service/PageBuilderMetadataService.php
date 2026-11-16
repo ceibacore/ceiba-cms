@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Service;
+namespace CeibaCms\PageBuilder\Domain\Service;
 
-use LemurCms\PageBuilder\Domain\Repository\TemplateRepositoryInterface;
-use LemurCms\PageBuilder\Domain\Repository\PageTemplateRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Repository\TemplateRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Repository\PageTemplateRepositoryInterface;
 
 final class PageBuilderMetadataService
 {

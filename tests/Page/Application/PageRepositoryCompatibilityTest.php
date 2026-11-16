@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Page\Application;
+namespace CeibaCms\Tests\Page\Application;
 
-use LemurCms\Page\Application\ListAdministrativePages;
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
-use LemurCms\Page\Infrastructure\LemurDbPageRepository;
-use LemurCms\Tests\Support\RevisionSchema;
+use CeibaCms\Page\Application\ListAdministrativePages;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
+use CeibaCms\Page\Infrastructure\CeibaDbPageRepository;
+use CeibaCms\Tests\Support\RevisionSchema;
 use PHPUnit\Framework\TestCase;
 
 final class PageRepositoryCompatibilityTest extends TestCase
@@ -31,7 +31,7 @@ final class PageRepositoryCompatibilityTest extends TestCase
         $insert->execute(['p5', 'Bang!', 'bang', 'archived', 5]);
         // sort_order must win over id: this row sorts first despite the highest id.
         $insert->execute(['p9', 'Zz first', 'zz', 'draft', 0]);
-        $list = new ListAdministrativePages(new LemurDbPageRepository($db));
+        $list = new ListAdministrativePages(new CeibaDbPageRepository($db));
 
         $ids = static fn (array $rows) => array_column($rows, 'id');
         self::assertSame(['p1'], $ids($list->execute(null, '100%')));

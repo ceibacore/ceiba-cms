@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
 use InvalidArgumentException;
-use LemurDB;
-use LemurCms\PageBuilder\Domain\Document\DocumentEnvelope;
+use CeibaDB;
+use CeibaCms\PageBuilder\Domain\Document\DocumentEnvelope;
 use RuntimeException;
 
 /** Restores an immutable snapshot as a new draft revision. */
 final class RestorePageRevision
 {
     public function __construct(
-        private readonly LemurDB $db,
+        private readonly CeibaDB $db,
         private readonly string $siteId,
         private readonly SavePageDraft $saveDraft,
     ) {}

@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Media\Application;
+namespace CeibaCms\Media\Application;
 
-use LemurCms\Media\Domain\Repository\MediaRepositoryInterface;
+use CeibaCms\Media\Domain\Repository\MediaRepositoryInterface;
 
 final class ListMedia
 {

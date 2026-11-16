@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\DynamicModule\Application;
+namespace CeibaCms\DynamicModule\Application;
 
-use LemurCms\DynamicModule\Domain\Repository\ModuleDefinitionRepositoryInterface;
-use LemurCms\DynamicModule\Infrastructure\DynamicTableManager;
-use LemurDB;
+use CeibaCms\DynamicModule\Domain\Repository\ModuleDefinitionRepositoryInterface;
+use CeibaCms\DynamicModule\Infrastructure\DynamicTableManager;
+use CeibaDB;
 
 final class DeleteDynamicModule
 {
     public function __construct(
-        private readonly LemurDB                             $db,
+        private readonly CeibaDB                             $db,
         private readonly ModuleDefinitionRepositoryInterface $repo,
         private readonly DynamicTableManager                 $tableManager,
     ) {}

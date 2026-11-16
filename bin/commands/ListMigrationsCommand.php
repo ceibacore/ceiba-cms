@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Commands;
+namespace CeibaCms\Commands;
 
 class ListMigrationsCommand extends Command
 {

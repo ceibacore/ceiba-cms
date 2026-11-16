@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Migrations;
+namespace CeibaCms\Migrations;
 
-use LemurCms\Migration\CmsBaseMigration;
+use CeibaCms\Migration\CmsBaseMigration;
 
 class Migration_20260606000001_AddCdnToPageLayouts extends CmsBaseMigration
 {

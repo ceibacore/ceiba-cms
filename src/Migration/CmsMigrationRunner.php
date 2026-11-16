@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Migration;
+namespace CeibaCms\Migration;
 
-use LemurDB;
+use CeibaDB;
 use Throwable;
 
 /**
@@ -18,7 +18,7 @@ class CmsMigrationRunner
 
     public function __construct(
         private readonly CmsMigrationGenerator $generator,
-        private readonly LemurDB               $db,
+        private readonly CeibaDB               $db,
         private readonly string                $prefix = ''
     ) {}
 
@@ -72,13 +72,13 @@ class CmsMigrationRunner
 
         foreach ($pending as $meta) {
             try {
-                $builder = new CmsSchemaBuilder($this->prefix, new \LemurCms\Migration\Dialect\MySQLDialect());
+                $builder = new CmsSchemaBuilder($this->prefix, new \CeibaCms\Migration\Dialect\MySQLDialect());
                 
                 // Load migration class
                 require_once $meta['full_path'];
                 $class = $meta['class'];
                 if (!class_exists($class)) {
-                    $class = 'LemurCms\\Migrations\\' . $class;
+                    $class = 'CeibaCms\\Migrations\\' . $class;
                 }
                 
                 /** @var CmsBaseMigration $migration */
@@ -140,12 +140,12 @@ class CmsMigrationRunner
                 throw new \RuntimeException("Migration file for version {$version} not found for rollback.");
             }
 
-            $builder = new CmsSchemaBuilder($this->prefix, new \LemurCms\Migration\Dialect\MySQLDialect());
+            $builder = new CmsSchemaBuilder($this->prefix, new \CeibaCms\Migration\Dialect\MySQLDialect());
             
             require_once $meta['full_path'];
             $class = $meta['class'];
             if (!class_exists($class)) {
-                $class = 'LemurCms\\Migrations\\' . $class;
+                $class = 'CeibaCms\\Migrations\\' . $class;
             }
             
             $migration = new $class($builder);

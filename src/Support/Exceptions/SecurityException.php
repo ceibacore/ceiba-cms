@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Support\Exceptions;
+namespace CeibaCms\Support\Exceptions;
 
 use Exception;
 

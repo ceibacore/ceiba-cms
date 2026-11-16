@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Http;
+namespace CeibaCms\Http;
 
 class Router
 {

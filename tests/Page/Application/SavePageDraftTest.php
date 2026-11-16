@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Page\Application;
+namespace CeibaCms\Tests\Page\Application;
 
-use LemurDB;
-use LemurCms\Page\Application\PageRevisionConflict;
-use LemurCms\Page\Application\SavePageDraft;
-use LemurCms\PageBuilder\Domain\Document\DocumentEnvelope;
+use CeibaDB;
+use CeibaCms\Page\Application\PageRevisionConflict;
+use CeibaCms\Page\Application\SavePageDraft;
+use CeibaCms\PageBuilder\Domain\Document\DocumentEnvelope;
 use PHPUnit\Framework\TestCase;
 
 final class SavePageDraftTest extends TestCase
@@ -81,7 +81,7 @@ final class SavePageDraftTest extends TestCase
     private function database(bool $withDraft = true): array
     {
         $prefix = 'save_' . bin2hex(random_bytes(4)) . '_';
-        $db = LemurDB::getInstance(['driver' => 'sqlite', 'db' => ':memory:', 'prefix' => $prefix]);
+        $db = CeibaDB::getInstance(['driver' => 'sqlite', 'db' => ':memory:', 'prefix' => $prefix]);
         $pdo = $db->pdo();
         $pdo->exec("CREATE TABLE {$prefix}pages (id TEXT PRIMARY KEY, content TEXT, status TEXT)");
         $pdo->exec("CREATE TABLE {$prefix}page_revisions (id TEXT PRIMARY KEY, page_id TEXT, site_id TEXT, revision INTEGER, schema_version INTEGER, snapshot TEXT, content_hash TEXT, author_id TEXT, reason TEXT, created_at TEXT, UNIQUE(page_id,revision))");
@@ -93,7 +93,7 @@ final class SavePageDraftTest extends TestCase
         $pdo->exec("INSERT INTO {$prefix}page_revisions VALUES ('live-revision','page-1','site-1',1,0,'{}','hash',NULL,'initial','2026-11-07 10:00:00')");
         $pdo->prepare("INSERT INTO {$prefix}page_revision_heads VALUES ('page-1',?,'live-revision',?,'2026-11-07 10:00:00')")
             ->execute([$withDraft ? 'draft-2' : null, $withDraft ? 3 : 2]);
-        \LemurCms\Tests\Support\RevisionSchema::upgradeMinimalFixture($db);
+        \CeibaCms\Tests\Support\RevisionSchema::upgradeMinimalFixture($db);
         return [$db, $prefix];
     }
 

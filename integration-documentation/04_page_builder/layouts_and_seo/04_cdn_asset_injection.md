@@ -1,6 +1,6 @@
 # CDN & Layout Asset Injection Documentation
 
-This document explains the design and implementation proposal for layout-specific Content Delivery Network (CDN) asset management in Lemur CMS. It details how administrators can define external frameworks (like Bootstrap, Tailwind, or custom styles) and how assets are loaded into the document head and body.
+This document explains the design and implementation proposal for layout-specific Content Delivery Network (CDN) asset management in Ceiba CMS. It details how administrators can define external frameworks (like Bootstrap, Tailwind, or custom styles) and how assets are loaded into the document head and body.
 
 ---
 
@@ -8,7 +8,7 @@ This document explains the design and implementation proposal for layout-specifi
 
 Currently, the HTML skeleton rendered by the system lacks a flexible mechanism for admins to inject custom CSS libraries, script bundles, or Google Fonts. 
 
-To support complete design freedom, Lemur CMS layouts must allow defining external stylesheet and script links. 
+To support complete design freedom, Ceiba CMS layouts must allow defining external stylesheet and script links. 
 * **Design Goal**: Allow admins to switch from the default Bootstrap 5 framework to other design frameworks (such as Tailwind CSS or Bulma) or simply load additional scripts per layout.
 * **Separation of Injection Scope**:
   1. **Head CDN**: Stylesheets, preconnect links, and metadata scripts that must load before page content renders (placed within `<head>`).

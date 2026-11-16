@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Tests\Media\Infrastructure;
+namespace CeibaCms\Tests\Media\Infrastructure;
 
-use LemurCms\Media\Infrastructure\LemurDbMediaRepository;
-use LemurCms\Support\Helpers\UuidHelper;
-use LemurCms\Tests\TestCase;
+use CeibaCms\Media\Infrastructure\CeibaDbMediaRepository;
+use CeibaCms\Support\Helpers\UuidHelper;
+use CeibaCms\Tests\TestCase;
 
-class LemurDbMediaRepositoryTest extends TestCase
+class CeibaDbMediaRepositoryTest extends TestCase
 {
-    private LemurDbMediaRepository $repo;
+    private CeibaDbMediaRepository $repo;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repo = new LemurDbMediaRepository($this->db);
+        $this->repo = new CeibaDbMediaRepository($this->db);
     }
 
     public function testFindByIdReturnsMedia(): void

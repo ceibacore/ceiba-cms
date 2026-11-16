@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder;
+namespace CeibaCms\Tests\PageBuilder;
 
-use LemurCms\PageBuilder\Domain\Service\HtmlSemanticRulesProvider;
-use LemurCms\PageBuilder\Domain\Service\PageBuilderMetadataService;
-use LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
-use LemurCms\PageBuilder\Domain\Repository\TemplateRepositoryInterface;
-use LemurCms\PageBuilder\Domain\Repository\PageTemplateRepositoryInterface;
-use LemurCms\Http\Controllers\PageBuilderMetadataController;
-use LemurCms\Tests\TestCase;
+use CeibaCms\PageBuilder\Domain\Service\HtmlSemanticRulesProvider;
+use CeibaCms\PageBuilder\Domain\Service\PageBuilderMetadataService;
+use CeibaCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
+use CeibaCms\PageBuilder\Domain\Repository\TemplateRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Repository\PageTemplateRepositoryInterface;
+use CeibaCms\Http\Controllers\PageBuilderMetadataController;
+use CeibaCms\Tests\TestCase;
 
 class PageBuilderMetadataTest extends TestCase
 {

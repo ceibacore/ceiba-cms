@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Routing\Infrastructure;
+namespace CeibaCms\Routing\Infrastructure;
 
-use LemurCms\Routing\Domain\Repository\ReservedPathRepositoryInterface;
-use LemurDB;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaCms\Routing\Domain\Repository\ReservedPathRepositoryInterface;
+use CeibaDB;
+use CeibaCms\Support\Helpers\UuidHelper;
 
-final class LemurDbReservedPathRepository implements ReservedPathRepositoryInterface
+final class CeibaDbReservedPathRepository implements ReservedPathRepositoryInterface
 {
-    public function __construct(private readonly \LemurDB $db) {}
+    public function __construct(private readonly \CeibaDB $db) {}
 
     public function findAll(): array
     {

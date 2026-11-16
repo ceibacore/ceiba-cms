@@ -4,9 +4,9 @@
 declare(strict_types=1);
 
 /**
- * Lemur CMS - CLI Entry Point
+ * Ceiba CMS - CLI Entry Point
  * 
- * Usage: php bin/lemur <command> [options]
+ * Usage: php bin/ceiba <command> [options]
  */
 
 // Cargar bootstrap y obtener container
@@ -21,12 +21,12 @@ require_once __DIR__ . '/commands/CreateUserCommand.php';
 require_once __DIR__ . '/commands/ListMigrationsCommand.php';
 require_once __DIR__ . '/commands/SeedCommand.php';
 
-use LemurCms\CliKernel;
-use LemurCms\Commands\MigrateCommand;
-use LemurCms\Commands\CacheClearCommand;
-use LemurCms\Commands\CreateUserCommand;
-use LemurCms\Commands\ListMigrationsCommand;
-use LemurCms\Commands\SeedCommand;
+use CeibaCms\CliKernel;
+use CeibaCms\Commands\MigrateCommand;
+use CeibaCms\Commands\CacheClearCommand;
+use CeibaCms\Commands\CreateUserCommand;
+use CeibaCms\Commands\ListMigrationsCommand;
+use CeibaCms\Commands\SeedCommand;
 
 // Crear kernel
 $kernel = new CliKernel();

@@ -1,4 +1,4 @@
-# Lemur CMS — Documento Maestro de Arquitectura Hexagonal
+# Ceiba CMS — Documento Maestro de Arquitectura Hexagonal
 
 **Versión:** 1.0.0 · **Fecha:** 10 de mayo de 2026 · **Estado:** Referencia oficial del equipo
 
@@ -24,11 +24,11 @@
 
 ## 1. Visión general
 
-**Lemur CMS** es un módulo PHP 8.1+ de gestión de contenidos diseñado para ser completamente **agnóstico de framework**. No depende de Laravel, Symfony, CodeIgniter ni ningún otro framework. Puede instalarse en cualquier proyecto PHP limpio, en una aplicación legacy, o dentro de un framework existente sin colisiones.
+**Ceiba CMS** es un módulo PHP 8.1+ de gestión de contenidos diseñado para ser completamente **agnóstico de framework**. No depende de Laravel, Symfony, CodeIgniter ni ningún otro framework. Puede instalarse en cualquier proyecto PHP limpio, en una aplicación legacy, o dentro de un framework existente sin colisiones.
 
 ### ¿Para qué sirve?
 
-Lemur CMS proporciona las piezas de dominio esenciales que todo CMS necesita:
+Ceiba CMS proporciona las piezas de dominio esenciales que todo CMS necesita:
 
 - Navegación y menús configurables (incluyendo mega-menú)
 - Gestión de páginas con slugs
@@ -43,9 +43,9 @@ El agnóstico de framework no es una restricción técnica, es una decisión arq
 - **Portabilidad:** El mismo módulo se embebe en el servidor dashboard (Laravel/Livewire), en el client CLI, o en un proyecto PHP sin framework, sin modificar una línea de código del dominio.
 - **Longevidad:** Los frameworks cambian de versión o quedan obsoletos. El dominio de negocio no cambia.
 - **Testabilidad:** Las reglas de negocio pueden probarse sin levantar un framework completo.
-- **Responsabilidad única:** Lemur CMS sabe de CMS, no de HTTP, no de contenedores de inyección de dependencias, no de colas de trabajo.
+- **Responsabilidad única:** Ceiba CMS sabe de CMS, no de HTTP, no de contenedores de inyección de dependencias, no de colas de trabajo.
 
-La única dependencia interna permitida es `LemurDB`, el wrapper PDO propio del ecosistema Lemur. No hay dependencias de Composer de terceros en producción.
+La única dependencia interna permitida es `CeibaDB`, el wrapper PDO propio del ecosistema Ceiba. No hay dependencias de Composer de terceros en producción.
 
 ---
 
@@ -56,7 +56,7 @@ La arquitectura hexagonal (Ports & Adapters, Alistair Cockburn, 2005) organiza e
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                      INFRAESTRUCTURA                        │
-│   (LemurDbMenuRepository, LemurDbPageRepository, etc.)      │
+│   (CeibaDbMenuRepository, CeibaDbPageRepository, etc.)      │
 │                                                             │
 │   ┌─────────────────────────────────────────────────────┐  │
 │   │                   APLICACIÓN                        │  │
@@ -71,7 +71,7 @@ La arquitectura hexagonal (Ports & Adapters, Alistair Cockburn, 2005) organiza e
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Las tres capas en Lemur CMS
+### Las tres capas en Ceiba CMS
 
 | Capa | Qué contiene | Qué NO puede importar |
 |---|---|---|
@@ -83,14 +83,14 @@ La arquitectura hexagonal (Ports & Adapters, Alistair Cockburn, 2005) organiza e
 
 Un **puerto** es una interfaz PHP declarada en `Domain/Repository/`. Define el contrato que el dominio necesita sin importar quién lo cumple.
 
-Un **adaptador** es una clase en `Infrastructure/` que implementa ese puerto usando una tecnología concreta (`LemurDB`, un ORM externo, una API REST, un mock de tests, etc.).
+Un **adaptador** es una clase en `Infrastructure/` que implementa ese puerto usando una tecnología concreta (`CeibaDB`, un ORM externo, una API REST, un mock de tests, etc.).
 
 La capa de **Aplicación** contiene los casos de uso. Un caso de uso recibe el puerto por constructor (inyección de dependencias manual) y orquesta llamadas al dominio. Nunca instancia repositorios concretos.
 
 ```
 Puerto (interfaz)          Adaptador (implementación)
 ─────────────────          ──────────────────────────
-MenuRepositoryInterface ←── LemurDbMenuRepository
+MenuRepositoryInterface ←── CeibaDbMenuRepository
                         ←── ArrayMenuRepository (tests)
                         ←── RedisMenuRepository (caché)
 ```
@@ -104,17 +104,17 @@ El código de aplicación siempre habla con el puerto. El bootstrap del proyecto
 | Módulo | Responsabilidad | Puerto (interfaz) | Adaptador incluido | Casos de uso |
 |---|---|---|---|---|
 | **Migration** | Generación de DDL SQL | — | `CmsMigrationGenerator` | — |
-| **Menu** | Árbol de navegación, banners, logo | `MenuRepositoryInterface` | `LemurDbMenuRepository` | `GetMainNavbar` |
-| **Page** | Páginas con slug, publicación | `PageRepositoryInterface` | `LemurDbPageRepository` | `GetPageBySlug` |
-| **Seo** | Meta tags por entidad | `SeoRepositoryInterface` | `LemurDbSeoRepository` | `GetSeoForEntity` |
-| **Media** | Archivos, imágenes, almacenamiento | `MediaRepositoryInterface` | `LemurDbMediaRepository` | `StoreMedia` |
-| **Auth** | Autenticación de usuarios | `UserRepositoryInterface` | `LemurDbUserRepository` | `AuthenticateUser` |
+| **Menu** | Árbol de navegación, banners, logo | `MenuRepositoryInterface` | `CeibaDbMenuRepository` | `GetMainNavbar` |
+| **Page** | Páginas con slug, publicación | `PageRepositoryInterface` | `CeibaDbPageRepository` | `GetPageBySlug` |
+| **Seo** | Meta tags por entidad | `SeoRepositoryInterface` | `CeibaDbSeoRepository` | `GetSeoForEntity` |
+| **Media** | Archivos, imágenes, almacenamiento | `MediaRepositoryInterface` | `CeibaDbMediaRepository` | `StoreMedia` |
+| **Auth** | Autenticación de usuarios | `UserRepositoryInterface` | `CeibaDbUserRepository` | `AuthenticateUser` |
 
 ---
 
 ## 4. Módulo de Migración
 
-### Principio fundamental: Lemur CMS **nunca** toca la base de datos
+### Principio fundamental: Ceiba CMS **nunca** toca la base de datos
 
 El módulo de migración **no abre conexiones**, **no ejecuta DDL**, **no modifica esquemas**. Es un generador de scripts SQL para revisión humana.
 
@@ -168,10 +168,10 @@ GeneratorResult
 ```php
 <?php
 declare(strict_types=1);
-namespace LemurCms\Migrations;
+namespace CeibaCms\Migrations;
 
-use LemurCms\Migration\CmsBaseMigration;
-use LemurCms\Migration\CmsColumnBlueprint;
+use CeibaCms\Migration\CmsBaseMigration;
+use CeibaCms\Migration\CmsColumnBlueprint;
 
 class Migration_20260510000099_create_comments_table extends CmsBaseMigration
 {
@@ -262,8 +262,8 @@ Gestiona la estructura de navegación del sitio: menús jerárquicos, mega-menú
         │  implements
 ┌──────────────────────────────────┐
 │  Infrastructure:                 │
-│  LemurDbMenuRepository           │  ← Adaptador
-│  - usa LemurDB ($db->query(...)) │
+│  CeibaDbMenuRepository           │  ← Adaptador
+│  - usa CeibaDB ($db->query(...)) │
 └──────────────────────────────────┘
 ```
 
@@ -339,7 +339,7 @@ Gestiona las páginas de contenido estático del CMS: creación, publicación, b
         │
 ┌──────────────────────────────────┐
 │  Infrastructure:                 │
-│  LemurDbPageRepository           │
+│  CeibaDbPageRepository           │
 └──────────────────────────────────┘
 ```
 
@@ -407,7 +407,7 @@ Gestiona los metadatos SEO (título, descripción, canonical, Open Graph, robots
         │
 ┌──────────────────────────────────┐
 │  Infrastructure:                 │
-│  LemurDbSeoRepository            │
+│  CeibaDbSeoRepository            │
 └──────────────────────────────────┘
 ```
 
@@ -447,7 +447,7 @@ final class GetSeoForEntity
 
 ### Responsabilidad
 
-Gestiona el almacenamiento de referencias a archivos multimedia (imágenes, vídeos, documentos). **Lemur CMS no mueve archivos físicos**; eso es responsabilidad del adaptador de infraestructura o del proyecto consumidor. El módulo solo almacena y recupera metadatos: ruta, tipo MIME, tamaño, nombre original.
+Gestiona el almacenamiento de referencias a archivos multimedia (imágenes, vídeos, documentos). **Ceiba CMS no mueve archivos físicos**; eso es responsabilidad del adaptador de infraestructura o del proyecto consumidor. El módulo solo almacena y recupera metadatos: ruta, tipo MIME, tamaño, nombre original.
 
 ### Flujo hexagonal
 
@@ -475,7 +475,7 @@ Gestiona el almacenamiento de referencias a archivos multimedia (imágenes, víd
         │
 ┌──────────────────────────────────┐
 │  Infrastructure:                 │
-│  LemurDbMediaRepository          │
+│  CeibaDbMediaRepository          │
 └──────────────────────────────────┘
 ```
 
@@ -546,7 +546,7 @@ Autenticación de usuarios del back-office del CMS. Verifica credenciales usando
         │
 ┌──────────────────────────────────┐
 │  Infrastructure:                 │
-│  LemurDbUserRepository           │
+│  CeibaDbUserRepository           │
 └──────────────────────────────────┘
 ```
 
@@ -600,7 +600,7 @@ Supongamos que necesitamos un módulo `Comment`.
 
 ```php
 // src/Comment/Domain/Repository/CommentRepositoryInterface.php
-namespace LemurCms\Comment\Domain\Repository;
+namespace CeibaCms\Comment\Domain\Repository;
 
 interface CommentRepositoryInterface
 {
@@ -614,9 +614,9 @@ interface CommentRepositoryInterface
 
 ```php
 // src/Comment/Application/GetCommentsByPage.php
-namespace LemurCms\Comment\Application;
+namespace CeibaCms\Comment\Application;
 
-use LemurCms\Comment\Domain\Repository\CommentRepositoryInterface;
+use CeibaCms\Comment\Domain\Repository\CommentRepositoryInterface;
 
 final class GetCommentsByPage
 {
@@ -632,15 +632,15 @@ final class GetCommentsByPage
 **Paso 3 — Implementar el adaptador en Infrastructure**
 
 ```php
-// src/Comment/Infrastructure/LemurDbCommentRepository.php
-namespace LemurCms\Comment\Infrastructure;
+// src/Comment/Infrastructure/CeibaDbCommentRepository.php
+namespace CeibaCms\Comment\Infrastructure;
 
-use LemurCms\Comment\Domain\Repository\CommentRepositoryInterface;
-use LemurDB;
+use CeibaCms\Comment\Domain\Repository\CommentRepositoryInterface;
+use CeibaDB;
 
-final class LemurDbCommentRepository implements CommentRepositoryInterface
+final class CeibaDbCommentRepository implements CommentRepositoryInterface
 {
-    public function __construct(private readonly LemurDB $db) {}
+    public function __construct(private readonly CeibaDB $db) {}
 
     public function findByPage(int $pageId): array
     {
@@ -686,7 +686,7 @@ class Migration_20260510000099_create_comments_table extends CmsBaseMigration
 **Paso 5 — Inyectar en el bootstrap del proyecto**
 
 ```php
-$commentRepo = new LemurDbCommentRepository($db);
+$commentRepo = new CeibaDbCommentRepository($db);
 $getComments = new GetCommentsByPage($commentRepo);
 ```
 
@@ -697,7 +697,7 @@ $getComments = new GetCommentsByPage($commentRepo);
 - [ ] El adaptador vive en `src/{Modulo}/Infrastructure/` e implementa la interfaz
 - [ ] El caso de uso recibe solo interfaces, nunca clases concretas
 - [ ] La migración vive en `migrations/` y extiende `CmsBaseMigration`
-- [ ] Ninguna clase del módulo hace `new LemurDB()` directamente; el `$db` se inyecta
+- [ ] Ninguna clase del módulo hace `new CeibaDB()` directamente; el `$db` se inyecta
 
 ---
 
@@ -716,10 +716,10 @@ $getComments = new GetCommentsByPage($commentRepo);
 // bootstrap/cms.php
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../lemur-cms/lemurdb/lemurdb.php';
+require_once __DIR__ . '/../ceiba-cms/ceibadb/ceibadb.php';
 
-// 1. Crear la conexión LemurDB
-$db = LemurDB::getInstance([
+// 1. Crear la conexión CeibaDB
+$db = CeibaDB::getInstance([
     'driver'   => 'mysql',
     'host'     => 'localhost',
     'port'     => 3306,
@@ -730,18 +730,18 @@ $db = LemurDB::getInstance([
 ]);
 
 // 2. Instanciar los repositorios (adaptadores concretos)
-$menuRepo  = new \LemurCms\Menu\Infrastructure\LemurDbMenuRepository($db);
-$pageRepo  = new \LemurCms\Page\Infrastructure\LemurDbPageRepository($db);
-$seoRepo   = new \LemurCms\Seo\Infrastructure\LemurDbSeoRepository($db);
-$mediaRepo = new \LemurCms\Media\Infrastructure\LemurDbMediaRepository($db);
-$userRepo  = new \LemurCms\Auth\Infrastructure\LemurDbUserRepository($db);
+$menuRepo  = new \CeibaCms\Menu\Infrastructure\CeibaDbMenuRepository($db);
+$pageRepo  = new \CeibaCms\Page\Infrastructure\CeibaDbPageRepository($db);
+$seoRepo   = new \CeibaCms\Seo\Infrastructure\CeibaDbSeoRepository($db);
+$mediaRepo = new \CeibaCms\Media\Infrastructure\CeibaDbMediaRepository($db);
+$userRepo  = new \CeibaCms\Auth\Infrastructure\CeibaDbUserRepository($db);
 
 // 3. Instanciar los casos de uso (Application layer)
-$getNavbar   = new \LemurCms\Menu\Application\GetMainNavbar($menuRepo);
-$getPage     = new \LemurCms\Page\Application\GetPageBySlug($pageRepo);
-$getSeo      = new \LemurCms\Seo\Application\GetSeoForEntity($seoRepo);
-$storeMedia  = new \LemurCms\Media\Application\StoreMedia($mediaRepo);
-$authenticate = new \LemurCms\Auth\Application\AuthenticateUser($userRepo);
+$getNavbar   = new \CeibaCms\Menu\Application\GetMainNavbar($menuRepo);
+$getPage     = new \CeibaCms\Page\Application\GetPageBySlug($pageRepo);
+$getSeo      = new \CeibaCms\Seo\Application\GetSeoForEntity($seoRepo);
+$storeMedia  = new \CeibaCms\Media\Application\StoreMedia($mediaRepo);
+$authenticate = new \CeibaCms\Auth\Application\AuthenticateUser($userRepo);
 ```
 
 ### Uso en un controlador
@@ -766,11 +766,11 @@ if ($user === null) {
 // scripts/generate_schema.php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use LemurCms\Migration\CmsMigrationGenerator;
-use LemurCms\Migration\Dialect\MySQLDialect;
+use CeibaCms\Migration\CmsMigrationGenerator;
+use CeibaCms\Migration\Dialect\MySQLDialect;
 
 $gen    = new CmsMigrationGenerator(
-    __DIR__ . '/../lemur-cms/migrations',
+    __DIR__ . '/../ceiba-cms/migrations',
     prefix:  'lmr_',
     dialect: new MySQLDialect(),
 );
@@ -787,12 +787,12 @@ Si el proyecto usa PHP-DI, Pimple, o el contenedor de Laravel, simplemente regis
 ```php
 // Ejemplo con PHP-DI
 $container->bind(
-    \LemurCms\Menu\Domain\Repository\MenuRepositoryInterface::class,
-    \LemurCms\Menu\Infrastructure\LemurDbMenuRepository::class,
+    \CeibaCms\Menu\Domain\Repository\MenuRepositoryInterface::class,
+    \CeibaCms\Menu\Infrastructure\CeibaDbMenuRepository::class,
 );
 ```
 
-Lemur CMS no impone ningún contenedor. El bootstrap manual es suficiente para proyectos simples.
+Ceiba CMS no impone ningún contenedor. El bootstrap manual es suficiente para proyectos simples.
 
 ---
 
@@ -801,7 +801,7 @@ Lemur CMS no impone ningún contenedor. El bootstrap manual es suficiente para p
 ### Patrón general
 
 ```
-LemurCms\{Modulo}\{Capa}\{Clase}
+CeibaCms\{Modulo}\{Capa}\{Clase}
 ```
 
 | Segmento | Valores válidos | Ejemplo |
@@ -813,32 +813,32 @@ LemurCms\{Modulo}\{Capa}\{Clase}
 ### Ejemplos completos
 
 ```
-LemurCms\Menu\Domain\Repository\MenuRepositoryInterface   ← Puerto
-LemurCms\Menu\Application\GetMainNavbar                   ← Caso de uso
-LemurCms\Menu\Infrastructure\LemurDbMenuRepository        ← Adaptador LemurDB
+CeibaCms\Menu\Domain\Repository\MenuRepositoryInterface   ← Puerto
+CeibaCms\Menu\Application\GetMainNavbar                   ← Caso de uso
+CeibaCms\Menu\Infrastructure\CeibaDbMenuRepository        ← Adaptador CeibaDB
 
-LemurCms\Page\Domain\Repository\PageRepositoryInterface
-LemurCms\Page\Application\GetPageBySlug
-LemurCms\Page\Infrastructure\LemurDbPageRepository
+CeibaCms\Page\Domain\Repository\PageRepositoryInterface
+CeibaCms\Page\Application\GetPageBySlug
+CeibaCms\Page\Infrastructure\CeibaDbPageRepository
 
-LemurCms\Seo\Domain\Repository\SeoRepositoryInterface
-LemurCms\Seo\Application\GetSeoForEntity
-LemurCms\Seo\Infrastructure\LemurDbSeoRepository
+CeibaCms\Seo\Domain\Repository\SeoRepositoryInterface
+CeibaCms\Seo\Application\GetSeoForEntity
+CeibaCms\Seo\Infrastructure\CeibaDbSeoRepository
 
-LemurCms\Media\Domain\Repository\MediaRepositoryInterface
-LemurCms\Media\Application\StoreMedia
-LemurCms\Media\Infrastructure\LemurDbMediaRepository
+CeibaCms\Media\Domain\Repository\MediaRepositoryInterface
+CeibaCms\Media\Application\StoreMedia
+CeibaCms\Media\Infrastructure\CeibaDbMediaRepository
 
-LemurCms\Auth\Domain\Repository\UserRepositoryInterface
-LemurCms\Auth\Application\AuthenticateUser
-LemurCms\Auth\Infrastructure\LemurDbUserRepository
+CeibaCms\Auth\Domain\Repository\UserRepositoryInterface
+CeibaCms\Auth\Application\AuthenticateUser
+CeibaCms\Auth\Infrastructure\CeibaDbUserRepository
 
-LemurCms\Migration\CmsBaseMigration
-LemurCms\Migration\CmsSchemaBuilder
-LemurCms\Migration\CmsMigrationGenerator
-LemurCms\Migration\Dialect\CmsDialectInterface
-LemurCms\Migration\Dialect\MySQLDialect
-LemurCms\Migration\Dialect\PostgreSQLDialect
+CeibaCms\Migration\CmsBaseMigration
+CeibaCms\Migration\CmsSchemaBuilder
+CeibaCms\Migration\CmsMigrationGenerator
+CeibaCms\Migration\Dialect\CmsDialectInterface
+CeibaCms\Migration\Dialect\MySQLDialect
+CeibaCms\Migration\Dialect\PostgreSQLDialect
 ```
 
 ### Autoload en composer.json
@@ -847,8 +847,8 @@ LemurCms\Migration\Dialect\PostgreSQLDialect
 {
     "autoload": {
         "psr-4": {
-            "LemurCms\\": "src/",
-            "LemurCms\\Migrations\\": "migrations/"
+            "CeibaCms\\": "src/",
+            "CeibaCms\\Migrations\\": "migrations/"
         }
     }
 }
@@ -860,7 +860,7 @@ LemurCms\Migration\Dialect\PostgreSQLDialect
 |---|---|---|---|
 | Domain / Interfaz de repositorio | `Interface` | `{Entidad}RepositoryInterface` | `interface` |
 | Application / Caso de uso | ninguno | verbo + sustantivo: `GetPageBySlug`, `AuthenticateUser` | `final class` |
-| Infrastructure / Adaptador | nombre del driver | `LemurDb{Entidad}Repository` | `final class implements …` |
+| Infrastructure / Adaptador | nombre del driver | `CeibaDb{Entidad}Repository` | `final class implements …` |
 | Migration | ninguno | `Migration_{VERSION}_{descripcion}` | `class extends CmsBaseMigration` |
 
 ## 13. Módulo de PageBuilder y Arquitectura Dinámica V2
@@ -915,4 +915,4 @@ Cuando se solicita una página dinâmica con la arquitectura V2, el pipeline sig
 
 ---
 
-*Este documento refleja la arquitectura implementada en Lemur CMS v2.0. Cualquier cambio estructural al proyecto debe actualizarse aquí antes de fusionarse a la rama principal.*
+*Este documento refleja la arquitectura implementada en Ceiba CMS v2.0. Cualquier cambio estructural al proyecto debe actualizarse aquí antes de fusionarse a la rama principal.*

@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Import\Rules\Generic;
+namespace CeibaCms\PageBuilder\Import\Rules\Generic;
 
-use LemurCms\PageBuilder\Import\AttrExtractor;
-use LemurCms\PageBuilder\Import\Contract\RuleInterface;
+use CeibaCms\PageBuilder\Import\AttrExtractor;
+use CeibaCms\PageBuilder\Import\Contract\RuleInterface;
 
 final class SpanRule implements RuleInterface
 {

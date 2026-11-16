@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Media\Domain\Repository;
+namespace CeibaCms\Media\Domain\Repository;
 
 interface MediaRepositoryInterface
 {

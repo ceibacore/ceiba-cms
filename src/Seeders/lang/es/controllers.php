@@ -31,7 +31,7 @@ return [
         'link_invalid' => 'Enlace de verificación inválido o expirado.',
     ],
     'onboarding' => [
-        'checkout_success' => 'Suscripción activada. ¡Bienvenido a Lemur LMS!',
+        'checkout_success' => 'Suscripción activada. ¡Bienvenido a Ceiba LMS!',
         'checkout_cancelled' => 'El proceso de pago fue cancelado. Puedes intentarlo de nuevo cuando estés listo.',
     ],
     'white_label' => [

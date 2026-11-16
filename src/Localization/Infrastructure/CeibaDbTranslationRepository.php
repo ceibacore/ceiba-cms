@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Localization\Infrastructure;
+namespace CeibaCms\Localization\Infrastructure;
 
-use LemurCms\Localization\Domain\Repository\TranslationRepositoryInterface;
-use LemurDB;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaCms\Localization\Domain\Repository\TranslationRepositoryInterface;
+use CeibaDB;
+use CeibaCms\Support\Helpers\UuidHelper;
 
-final class LemurDbTranslationRepository implements TranslationRepositoryInterface
+final class CeibaDbTranslationRepository implements TranslationRepositoryInterface
 {
-    public function __construct(private readonly \LemurDB $db) {}
+    public function __construct(private readonly \CeibaDB $db) {}
 
     public function getTranslationsForLanguage(string $languageId): array
     {
@@ -31,7 +31,7 @@ final class LemurDbTranslationRepository implements TranslationRepositoryInterfa
         $now = date('Y-m-d H:i:s');
 
         // We run in a transaction to be safe
-        $this->db->transaction(function (\LemurDB $db) use ($languageId, $translations, $now) {
+        $this->db->transaction(function (\CeibaDB $db) use ($languageId, $translations, $now) {
             foreach ($translations as $item) {
                 $group = $item['group'] ?? '*';
                 $key = $item['key'];

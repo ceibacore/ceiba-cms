@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
 use InvalidArgumentException;
-use LemurCms\PageBuilder\Domain\Document\DocumentEnvelope;
-use LemurCms\PageBuilder\Domain\Document\DocumentMigrator;
-use LemurCms\PageBuilder\Domain\Service\TreeNormalizer;
+use CeibaCms\PageBuilder\Domain\Document\DocumentEnvelope;
+use CeibaCms\PageBuilder\Domain\Document\DocumentMigrator;
+use CeibaCms\PageBuilder\Domain\Service\TreeNormalizer;
 
 /**
  * Host-facing save: converts an editor tree (or HTML body) into the canonical

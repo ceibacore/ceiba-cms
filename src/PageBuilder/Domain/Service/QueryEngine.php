@@ -1,17 +1,17 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Service;
+namespace CeibaCms\PageBuilder\Domain\Service;
 
-use LemurDB;
-use LemurCms\Support\Exceptions\SecurityException;
+use CeibaDB;
+use CeibaCms\Support\Exceptions\SecurityException;
 
 final class QueryEngine
 {
     private array $allowedModels = [];
 
     public function __construct(
-        private readonly LemurDB $db,
+        private readonly CeibaDB $db,
         private readonly ContextResolver $contextResolver,
         array $allowedModels = []
     ) {

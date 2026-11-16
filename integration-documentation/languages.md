@@ -974,7 +974,7 @@ This document lists all the English translations defined in the CMS seeder file:
 
 | Key | Translation (EN) |
 | :--- | :--- |
-| `onboarding.checkout_success` | Subscription activated. Welcome to Lemur LMS! |
+| `onboarding.checkout_success` | Subscription activated. Welcome to Ceiba LMS! |
 | `onboarding.checkout_cancelled` | The payment process was cancelled. You can try again when you are ready. |
 
 ### Category: `white_label`

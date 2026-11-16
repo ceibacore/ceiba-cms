@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Tests\Menu\Infrastructure;
+namespace CeibaCms\Tests\Menu\Infrastructure;
 
-use LemurCms\Menu\Infrastructure\LemurDbMenuRepository;
-use LemurCms\Support\Helpers\UuidHelper;
-use LemurCms\Tests\TestCase;
+use CeibaCms\Menu\Infrastructure\CeibaDbMenuRepository;
+use CeibaCms\Support\Helpers\UuidHelper;
+use CeibaCms\Tests\TestCase;
 
-class LemurDbMenuRepositoryTest extends TestCase
+class CeibaDbMenuRepositoryTest extends TestCase
 {
-    private LemurDbMenuRepository $repo;
+    private CeibaDbMenuRepository $repo;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repo = new LemurDbMenuRepository($this->db);
+        $this->repo = new CeibaDbMenuRepository($this->db);
     }
 
     private function createMenu(string $slug): string

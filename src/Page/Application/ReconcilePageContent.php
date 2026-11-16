@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
 use InvalidArgumentException;
-use LemurDB;
-use LemurCms\PageBuilder\Domain\Document\DocumentEnvelope;
-use LemurCms\PageBuilder\Domain\Document\DocumentMigrator;
+use CeibaDB;
+use CeibaCms\PageBuilder\Domain\Document\DocumentEnvelope;
+use CeibaCms\PageBuilder\Domain\Document\DocumentMigrator;
 use RuntimeException;
 
 /**
@@ -19,7 +19,7 @@ use RuntimeException;
 final class ReconcilePageContent
 {
     public function __construct(
-        private readonly LemurDB $db,
+        private readonly CeibaDB $db,
         private readonly string $siteId,
         private readonly SavePageDraft $saveDraft,
         private readonly DocumentMigrator $migrator = new DocumentMigrator(),

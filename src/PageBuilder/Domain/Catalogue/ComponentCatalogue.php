@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Catalogue;
+namespace CeibaCms\PageBuilder\Domain\Catalogue;
 
 /**
  * Server-managed versioned component catalogue.

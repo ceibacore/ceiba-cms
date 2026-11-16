@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
 use InvalidArgumentException;
-use LemurDB;
-use LemurCms\Media\Infrastructure\LemurDbMediaRepository;
-use LemurCms\PageBuilder\Domain\Contract\Clock;
-use LemurCms\PageBuilder\Domain\Document\DocumentEnvelope;
-use LemurCms\PageBuilder\Domain\Document\DocumentWriteValidator;
-use LemurCms\PageBuilder\Infrastructure\SystemClock;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaDB;
+use CeibaCms\Media\Infrastructure\CeibaDbMediaRepository;
+use CeibaCms\PageBuilder\Domain\Contract\Clock;
+use CeibaCms\PageBuilder\Domain\Document\DocumentEnvelope;
+use CeibaCms\PageBuilder\Domain\Document\DocumentWriteValidator;
+use CeibaCms\PageBuilder\Infrastructure\SystemClock;
+use CeibaCms\Support\Helpers\UuidHelper;
 use LogicException;
 use RuntimeException;
 
@@ -28,7 +28,7 @@ final class SavePageDraft
     private readonly Clock $clock;
     private readonly PageRevisionAuditLog $audit;
 
-    public function __construct(private readonly LemurDB $db, private readonly string $siteId, ?Clock $clock = null)
+    public function __construct(private readonly CeibaDB $db, private readonly string $siteId, ?Clock $clock = null)
     {
         $this->clock = $clock ?? new SystemClock();
         $this->audit = new PageRevisionAuditLog($db, $siteId === '' ? '-' : $siteId, $this->clock);
@@ -143,7 +143,7 @@ final class SavePageDraft
             || $document->revision !== $expectedRevision + 1 || !array_key_exists($reason, self::REASONS)) {
             throw new InvalidArgumentException('Invalid draft revision request');
         }
-        $media = new LemurDbMediaRepository($this->db);
+        $media = new CeibaDbMediaRepository($this->db);
         (new DocumentWriteValidator())->validate($document, fn (string $id): bool => $media->findById($id) !== null);
     }
 }

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Support\Validators;
+namespace CeibaCms\Support\Validators;
 
-use LemurCms\Support\Exceptions\InvalidUserException;
+use CeibaCms\Support\Exceptions\InvalidUserException;
 
 class UserValidator
 {

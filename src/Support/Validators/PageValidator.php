@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Support\Validators;
+namespace CeibaCms\Support\Validators;
 
-use LemurCms\Support\Exceptions\InvalidMenuException;
+use CeibaCms\Support\Exceptions\InvalidMenuException;
 
 class PageValidator
 {
@@ -65,7 +65,7 @@ class PageValidator
 
         $content = $data['content'];
         try {
-            (new \LemurCms\PageBuilder\Domain\Document\DocumentWriteValidator())->validatePageContent($content);
+            (new \CeibaCms\PageBuilder\Domain\Document\DocumentWriteValidator())->validatePageContent($content);
         } catch (\InvalidArgumentException $e) {
             throw new InvalidMenuException($e->getMessage());
         }
@@ -73,7 +73,7 @@ class PageValidator
             if (!array_is_list($content)) {
                 throw new InvalidMenuException('Expected a list of page nodes');
             }
-            $validator = new \LemurCms\PageBuilder\Domain\Service\TreeValidator();
+            $validator = new \CeibaCms\PageBuilder\Domain\Service\TreeValidator();
             $errors = $validator->validate($content);
             if (!empty($errors)) {
                 throw new InvalidMenuException('Invalid page tree: ' . implode('; ', $errors));
@@ -89,7 +89,7 @@ class PageValidator
                 if (!is_array($decoded) || !array_is_list($decoded)) {
                     throw new InvalidMenuException('Page content JSON must be an array or object');
                 }
-                $validator = new \LemurCms\PageBuilder\Domain\Service\TreeValidator();
+                $validator = new \CeibaCms\PageBuilder\Domain\Service\TreeValidator();
                 $errors = $validator->validate($decoded);
                 if (!empty($errors)) {
                     throw new InvalidMenuException('Invalid page tree: ' . implode('; ', $errors));

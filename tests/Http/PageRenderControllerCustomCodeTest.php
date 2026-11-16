@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Http;
+namespace CeibaCms\Tests\Http;
 
-use LemurCms\Auth\AuthManager;
-use LemurCms\Http\Controllers\PageRenderController;
-use LemurCms\Page\Application\GetPageBySlug;
-use LemurCms\PageBuilder\Domain\Service\BladeRendererInterface;
-use LemurCms\Settings\Domain\Repository\SettingsRepositoryInterface;
+use CeibaCms\Auth\AuthManager;
+use CeibaCms\Http\Controllers\PageRenderController;
+use CeibaCms\Page\Application\GetPageBySlug;
+use CeibaCms\PageBuilder\Domain\Service\BladeRendererInterface;
+use CeibaCms\Settings\Domain\Repository\SettingsRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -38,7 +38,7 @@ class PageRenderControllerCustomCodeTest extends TestCase
 
         // GetPageBySlug is final — cannot be mocked. Build a real instance
         // backed by an anonymous stub; resolveCustomCode() never calls it.
-        $pageRepo = new class implements \LemurCms\Page\Domain\Repository\PageRepositoryInterface {
+        $pageRepo = new class implements \CeibaCms\Page\Domain\Repository\PageRepositoryInterface {
             public function findBySlug(string $slug): ?array { return null; }
             public function findById(string $id): ?array { return null; }
             public function findPublished(int $limit, int $offset): array { return []; }

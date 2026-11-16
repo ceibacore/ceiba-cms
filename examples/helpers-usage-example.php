@@ -5,9 +5,9 @@
 
 declare(strict_types=1);
 
-use LemurCms\Support\Helpers\StringHelper;
-use LemurCms\Support\Helpers\DateHelper;
-use LemurCms\Support\Helpers\ArrayHelper;
+use CeibaCms\Support\Helpers\StringHelper;
+use CeibaCms\Support\Helpers\DateHelper;
+use CeibaCms\Support\Helpers\ArrayHelper;
 
 // ── StringHelper ─────────────────────────────────────────────────────────────
 

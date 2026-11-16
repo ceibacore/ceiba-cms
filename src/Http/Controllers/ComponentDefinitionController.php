@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Http\Controllers;
+namespace CeibaCms\Http\Controllers;
 
-use LemurCms\PageBuilder\Application\ListComponentDefinitions;
+use CeibaCms\PageBuilder\Application\ListComponentDefinitions;
 
 class ComponentDefinitionController extends BaseController
 {

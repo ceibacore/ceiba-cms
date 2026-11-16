@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Page\Application;
+namespace CeibaCms\Tests\Page\Application;
 
-use LemurDB;
-use LemurCms\Page\Application\PageRevisionConflict;
-use LemurCms\Page\Application\PagePublicationKeyConflict;
-use LemurCms\Page\Application\PublishPageRevision;
+use CeibaDB;
+use CeibaCms\Page\Application\PageRevisionConflict;
+use CeibaCms\Page\Application\PagePublicationKeyConflict;
+use CeibaCms\Page\Application\PublishPageRevision;
 use PHPUnit\Framework\TestCase;
 
 final class PublishPageRevisionTest extends TestCase
@@ -14,7 +14,7 @@ final class PublishPageRevisionTest extends TestCase
     public function testPublishesExactDraftOnceAndRollsBackOnOutboxFailure(): void
     {
         $prefix = 'publish_' . bin2hex(random_bytes(4)) . '_';
-        $db = LemurDB::getInstance(['driver' => 'sqlite', 'db' => ':memory:', 'prefix' => $prefix]);
+        $db = CeibaDB::getInstance(['driver' => 'sqlite', 'db' => ':memory:', 'prefix' => $prefix]);
         $pdo = $db->pdo();
         $pdo->exec("CREATE TABLE {$prefix}pages (id TEXT PRIMARY KEY, content TEXT, status TEXT, published_at TEXT)");
         $pdo->exec("CREATE TABLE {$prefix}page_revision_heads (page_id TEXT PRIMARY KEY, draft_revision_id TEXT, published_revision_id TEXT, next_revision INTEGER, updated_at TEXT)");
@@ -26,7 +26,7 @@ final class PublishPageRevisionTest extends TestCase
         $pdo->prepare("INSERT INTO {$prefix}page_revisions VALUES ('r1','p','site',1,?)")->execute([$snapshot]);
         $pdo->prepare("INSERT INTO {$prefix}page_revisions VALUES ('r2','p','site',2,?)")->execute([$snapshot]);
         $pdo->prepare("INSERT INTO {$prefix}page_revisions VALUES ('r3','p','site',3,?)")->execute([$snapshot]);
-        \LemurCms\Tests\Support\RevisionSchema::upgradeMinimalFixture($db);
+        \CeibaCms\Tests\Support\RevisionSchema::upgradeMinimalFixture($db);
         $publish = new PublishPageRevision($db, 'site');
 
         try {

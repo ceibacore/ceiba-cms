@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\DynamicModule\Infrastructure;
+namespace CeibaCms\DynamicModule\Infrastructure;
 
-use LemurCms\DynamicModule\Domain\Entity\ModuleDefinition;
-use LemurCms\DynamicModule\Domain\Repository\ModuleDefinitionRepositoryInterface;
-use LemurDB;
+use CeibaCms\DynamicModule\Domain\Entity\ModuleDefinition;
+use CeibaCms\DynamicModule\Domain\Repository\ModuleDefinitionRepositoryInterface;
+use CeibaDB;
 
-final class LemurDbModuleDefinitionRepository implements ModuleDefinitionRepositoryInterface
+final class CeibaDbModuleDefinitionRepository implements ModuleDefinitionRepositoryInterface
 {
-    public function __construct(private readonly LemurDB $db) {}
+    public function __construct(private readonly CeibaDB $db) {}
 
     public function findById(string $id): ?ModuleDefinition
     {

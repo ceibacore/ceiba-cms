@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Import\Contract;
+namespace CeibaCms\PageBuilder\Import\Contract;
 
 /**
  * Contract for all HTML-to-PageBuilder conversion rules.

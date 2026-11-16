@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Tests\Auth\Infrastructure;
+namespace CeibaCms\Tests\Auth\Infrastructure;
 
-use LemurCms\Auth\Infrastructure\LemurDbUserRepository;
-use LemurCms\Support\Helpers\UuidHelper;
-use LemurCms\Tests\TestCase;
+use CeibaCms\Auth\Infrastructure\CeibaDbUserRepository;
+use CeibaCms\Support\Helpers\UuidHelper;
+use CeibaCms\Tests\TestCase;
 
-class LemurDbUserRepositoryTest extends TestCase
+class CeibaDbUserRepositoryTest extends TestCase
 {
-    private LemurDbUserRepository $repo;
+    private CeibaDbUserRepository $repo;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repo = new LemurDbUserRepository($this->db);
+        $this->repo = new CeibaDbUserRepository($this->db);
     }
 
     public function testFindByEmailReturnsUser(): void

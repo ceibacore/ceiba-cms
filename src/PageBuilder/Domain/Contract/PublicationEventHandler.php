@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Contract;
+namespace CeibaCms\PageBuilder\Domain\Contract;
 
 /**
  * Host side effects after publication (cache/CDN invalidation, search indexing,

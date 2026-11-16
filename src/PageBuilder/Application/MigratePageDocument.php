@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Application;
+namespace CeibaCms\PageBuilder\Application;
 
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
-use LemurCms\PageBuilder\Domain\Contract\DocumentAuthorization;
-use LemurCms\PageBuilder\Domain\Document\DocumentMigrator;
-use LemurCms\PageBuilder\Domain\Document\HostContext;
-use LemurCms\PageBuilder\Domain\Document\MigrationReport;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Contract\DocumentAuthorization;
+use CeibaCms\PageBuilder\Domain\Document\DocumentMigrator;
+use CeibaCms\PageBuilder\Domain\Document\HostContext;
+use CeibaCms\PageBuilder\Domain\Document\MigrationReport;
 use RuntimeException;
 
 /**

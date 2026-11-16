@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Contract;
+namespace CeibaCms\PageBuilder\Domain\Contract;
 
-use LemurCms\PageBuilder\Domain\Document\HostContext;
+use CeibaCms\PageBuilder\Domain\Document\HostContext;
 
 /**
  * Host policy for revision operations beyond save and publish. Each operation is

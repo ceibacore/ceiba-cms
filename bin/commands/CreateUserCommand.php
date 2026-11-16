@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Commands;
+namespace CeibaCms\Commands;
 
 class CreateUserCommand extends Command
 {
     protected string $signature = 'user:create';
     protected string $description = 'Create a new user';
 
-    public function __construct(private \LemurCms\Auth\Domain\Repository\UserRepositoryInterface $userRepository)
+    public function __construct(private \CeibaCms\Auth\Domain\Repository\UserRepositoryInterface $userRepository)
     {
     }
 

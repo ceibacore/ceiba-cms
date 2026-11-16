@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Domain\Service;
+namespace CeibaCms\Tests\PageBuilder\Domain\Service;
 
-use LemurCms\PageBuilder\Domain\Service\LoopResolver;
-use LemurCms\PageBuilder\Domain\Service\DataProviderInterface;
+use CeibaCms\PageBuilder\Domain\Service\LoopResolver;
+use CeibaCms\PageBuilder\Domain\Service\DataProviderInterface;
 use PHPUnit\Framework\TestCase;
 
 class LoopResolverTest extends TestCase

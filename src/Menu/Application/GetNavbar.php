@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Menu\Application;
+namespace CeibaCms\Menu\Application;
 
-use LemurCms\Menu\Domain\Repository\MenuRepositoryInterface;
-use LemurCms\Menu\Presentation\LemurMenuRenderer;
-use LemurCms\Menu\Presentation\LemurMenuCache;
+use CeibaCms\Menu\Domain\Repository\MenuRepositoryInterface;
+use CeibaCms\Menu\Presentation\CeibaMenuRenderer;
+use CeibaCms\Menu\Presentation\CeibaMenuCache;
 
 /**
  * Renders navbar HTML with caching.
@@ -14,8 +14,8 @@ class GetNavbar
 {
     public function __construct(
         private MenuRepositoryInterface $repo,
-        private LemurMenuRenderer $renderer,
-        private LemurMenuCache $cache,
+        private CeibaMenuRenderer $renderer,
+        private CeibaMenuCache $cache,
     ) {}
 
     public function execute(string $menuSlug, string $activeUrl = ''): string
@@ -31,7 +31,7 @@ class GetNavbar
         if (empty($tree)) return '';
 
         // Render with Bootstrap 5
-        $renderer = new LemurMenuRenderer($activeUrl);
+        $renderer = new CeibaMenuRenderer($activeUrl);
         $html = $renderer->render($tree);
 
         // Cache the rendered HTML

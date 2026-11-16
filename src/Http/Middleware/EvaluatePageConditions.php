@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Http\Middleware;
+namespace CeibaCms\Http\Middleware;
 
-use LemurCms\PageBuilder\Domain\Service\ConditionEngine;
+use CeibaCms\PageBuilder\Domain\Service\ConditionEngine;
 
 class EvaluatePageConditions implements MiddlewareInterface
 {

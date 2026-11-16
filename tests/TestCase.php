@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Tests;
+namespace CeibaCms\Tests;
 
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
 abstract class TestCase extends PHPUnitTestCase
 {
-    protected \LemurDB $db;
+    protected \CeibaDB $db;
 
     protected function setUp(): void
     {
@@ -20,7 +20,7 @@ abstract class TestCase extends PHPUnitTestCase
             $this->markTestSkipped('Set DB_HOST, DB_PORT, DB_NAME, DB_USER and DB_PASS to run database tests.');
         }
 
-        $this->db = \LemurDB::getInstance([
+        $this->db = \CeibaDB::getInstance([
             'driver'   => 'mysql',
             'host'     => $host,
             'port'     => (int) (getenv('DB_PORT') ?: 3306),

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
-use LemurDB;
+use CeibaDB;
 
 /**
  * The revision an editor should open: the working draft when one exists,
@@ -11,7 +11,7 @@ use LemurDB;
  */
 final class GetPageWorkingRevision
 {
-    public function __construct(private readonly LemurDB $db, private readonly string $siteId) {}
+    public function __construct(private readonly CeibaDB $db, private readonly string $siteId) {}
 
     /**
      * @return array{revision: int, etag: string, root: list<mixed>, settings: array<string, mixed>,

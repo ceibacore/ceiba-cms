@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Routing\Application;
+namespace CeibaCms\Tests\Routing\Application;
 
-use LemurCms\Routing\Application\AddReservedPath;
-use LemurCms\Routing\Application\ListReservedPaths;
-use LemurCms\Routing\Application\RemoveReservedPath;
-use LemurCms\Routing\Domain\Repository\ReservedPathRepositoryInterface;
+use CeibaCms\Routing\Application\AddReservedPath;
+use CeibaCms\Routing\Application\ListReservedPaths;
+use CeibaCms\Routing\Application\RemoveReservedPath;
+use CeibaCms\Routing\Domain\Repository\ReservedPathRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class ReservedPathUseCasesTest extends TestCase

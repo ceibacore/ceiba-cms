@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Tests\Page\Infrastructure;
+namespace CeibaCms\Tests\Page\Infrastructure;
 
-use LemurCms\Page\Infrastructure\LemurDbPageRepository;
-use LemurCms\Support\Helpers\UuidHelper;
-use LemurCms\Tests\TestCase;
+use CeibaCms\Page\Infrastructure\CeibaDbPageRepository;
+use CeibaCms\Support\Helpers\UuidHelper;
+use CeibaCms\Tests\TestCase;
 
-class LemurDbPageRepositoryTest extends TestCase
+class CeibaDbPageRepositoryTest extends TestCase
 {
-    private LemurDbPageRepository $repo;
+    private CeibaDbPageRepository $repo;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repo = new LemurDbPageRepository($this->db);
+        $this->repo = new CeibaDbPageRepository($this->db);
     }
 
     public function testFindBySlugReturnsPublishedPage(): void

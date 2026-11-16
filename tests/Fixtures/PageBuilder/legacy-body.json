@@ -1,5 +1,5 @@
 {
-    "source": "src/Page/Infrastructure/LemurDbPageRepository.php:decodePage; ceiba-campus/admin-panel/app/Http/Controllers/Admin/CmsPageController.php:store",
+    "source": "src/Page/Infrastructure/CeibaDbPageRepository.php:decodePage; ceiba-campus/admin-panel/app/Http/Controllers/Admin/CmsPageController.php:store",
     "kind": "synthetic-legacy-shape",
     "tree": [
         {

@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Compatibility;
+namespace CeibaCms\Tests\PageBuilder\Compatibility;
 
-use LemurCms\Media\Domain\Repository\MediaRepositoryInterface;
-use LemurCms\Page\Application\PublishPageRevision;
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
-use LemurCms\PageBuilder\Application\ValidatePageDocument;
-use LemurCms\PageBuilder\Domain\Catalogue\ComponentCatalogue;
-use LemurCms\PageBuilder\Domain\Contract\DocumentAuthorization;
-use LemurCms\PageBuilder\Domain\Contract\PagePublicationAuthorization;
-use LemurCms\PageBuilder\Domain\Document\DocumentMigrator;
-use LemurCms\PageBuilder\Domain\Document\HostContext;
-use LemurCms\PageBuilder\Presentation\Api\EditorApiController;
+use CeibaCms\Media\Domain\Repository\MediaRepositoryInterface;
+use CeibaCms\Page\Application\PublishPageRevision;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
+use CeibaCms\PageBuilder\Application\ValidatePageDocument;
+use CeibaCms\PageBuilder\Domain\Catalogue\ComponentCatalogue;
+use CeibaCms\PageBuilder\Domain\Contract\DocumentAuthorization;
+use CeibaCms\PageBuilder\Domain\Contract\PagePublicationAuthorization;
+use CeibaCms\PageBuilder\Domain\Document\DocumentMigrator;
+use CeibaCms\PageBuilder\Domain\Document\HostContext;
+use CeibaCms\PageBuilder\Presentation\Api\EditorApiController;
 use PHPUnit\Framework\TestCase;
 
 final class EditorPublishRevisionTest extends TestCase
@@ -60,7 +60,7 @@ final class EditorPublishRevisionTest extends TestCase
     private function fixture(array $capabilities, bool $allowed): array
     {
         $prefix = 'api_pub_' . bin2hex(random_bytes(4)) . '_';
-        $db = \LemurDB::getInstance(['driver' => 'sqlite', 'db' => ':memory:', 'prefix' => $prefix]);
+        $db = \CeibaDB::getInstance(['driver' => 'sqlite', 'db' => ':memory:', 'prefix' => $prefix]);
         $pdo = $db->pdo();
         $pdo->exec("CREATE TABLE {$prefix}pages (id TEXT PRIMARY KEY, content TEXT, status TEXT, published_at TEXT)");
         $pdo->exec("CREATE TABLE {$prefix}page_revision_heads (page_id TEXT PRIMARY KEY, draft_revision_id TEXT, published_revision_id TEXT, next_revision INTEGER, updated_at TEXT)");
@@ -71,7 +71,7 @@ final class EditorPublishRevisionTest extends TestCase
         $snapshot = json_encode(['root' => [['id' => 'title', 'type' => 'h1']]], JSON_THROW_ON_ERROR);
         $pdo->prepare("INSERT INTO {$prefix}page_revisions VALUES ('draft-2','page-1','site-1',2,?)")->execute([$snapshot]);
         $pdo->prepare("INSERT INTO {$prefix}page_revisions VALUES ('other-3','page-1','site-1',3,?)")->execute([$snapshot]);
-        \LemurCms\Tests\Support\RevisionSchema::upgradeMinimalFixture($db);
+        \CeibaCms\Tests\Support\RevisionSchema::upgradeMinimalFixture($db);
 
         $pages = $this->createMock(PageRepositoryInterface::class);
         $pages->method('findById')->willReturn(['id' => 'page-1']);

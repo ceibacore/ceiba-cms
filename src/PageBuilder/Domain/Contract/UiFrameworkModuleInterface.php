@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Contract;
+namespace CeibaCms\PageBuilder\Domain\Contract;
 
-use LemurCms\PageBuilder\Domain\Entity\ComponentDefinition;
-use LemurCms\PageBuilder\Import\Contract\RuleInterface;
+use CeibaCms\PageBuilder\Domain\Entity\ComponentDefinition;
+use CeibaCms\PageBuilder\Import\Contract\RuleInterface;
 
 /**
  * Contract for installable UI framework modules (Bootstrap 5, Tailwind, Material UI, etc.).
@@ -15,7 +15,7 @@ use LemurCms\PageBuilder\Import\Contract\RuleInterface;
  *  - its HTML import rules (RuleInterface[])
  *  - the path to its SSR view templates
  *
- * The core of Lemur CMS never depends on a concrete framework; it only
+ * The core of Ceiba CMS never depends on a concrete framework; it only
  * depends on this interface, making the system fully agnostic.
  */
 interface UiFrameworkModuleInterface

@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Seeders;
+namespace CeibaCms\Seeders;
 
-use LemurCms\Seeder\CmsSeeder;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaCms\Seeder\CmsSeeder;
+use CeibaCms\Support\Helpers\UuidHelper;
 
 class SystemRolesSeeder extends CmsSeeder
 {

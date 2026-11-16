@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Support\Helpers;
+namespace CeibaCms\Tests\Support\Helpers;
 
-use LemurCms\Support\Helpers\StringHelper;
-use LemurCms\Support\Helpers\DateHelper;
-use LemurCms\Support\Helpers\ArrayHelper;
+use CeibaCms\Support\Helpers\StringHelper;
+use CeibaCms\Support\Helpers\DateHelper;
+use CeibaCms\Support\Helpers\ArrayHelper;
 use PHPUnit\Framework\TestCase;
 
 class HelpersTest extends TestCase

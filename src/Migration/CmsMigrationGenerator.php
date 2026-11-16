@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Migration;
-use LemurCms\Migration\Dialect\CmsDialectInterface;
-use LemurCms\Migration\Dialect\MySQLDialect;
+namespace CeibaCms\Migration;
+use CeibaCms\Migration\Dialect\CmsDialectInterface;
+use CeibaCms\Migration\Dialect\MySQLDialect;
 
 /**
  * CmsMigrationGenerator
@@ -72,7 +72,7 @@ final class CmsMigrationGenerator
             if (!is_dir($dir)) {
                 mkdir($dir, 0755, true);
             }
-            $header  = "-- Lemur CMS — Generated schema (do not edit manually)\n";
+            $header  = "-- Ceiba CMS — Generated schema (do not edit manually)\n";
             $header .= "-- Generated: " . date('Y-m-d H:i:s') . "\n";
             $header .= "-- Dialect: " . $this->dialect->getName() . "\n\n";
             file_put_contents($outputFile, $header . implode("\n", $allSql));
@@ -120,7 +120,7 @@ final class CmsMigrationGenerator
         }
 
         if ($outputFile !== null && !empty($allSql)) {
-            $header  = "-- Lemur CMS — Rollback script\n";
+            $header  = "-- Ceiba CMS — Rollback script\n";
             $header .= "-- Generated: " . date('Y-m-d H:i:s') . "\n\n";
             file_put_contents($outputFile, $header . implode("\n", $allSql));
         }
@@ -182,7 +182,7 @@ final class CmsMigrationGenerator
 
         $class = $meta['class'];
         if (!class_exists($class)) {
-            $ns = 'LemurCms\\Migrations\\' . $class;
+            $ns = 'CeibaCms\\Migrations\\' . $class;
             if (!class_exists($ns)) {
                 throw new \RuntimeException("Migration class '{$class}' not found in {$meta['file']}");
             }

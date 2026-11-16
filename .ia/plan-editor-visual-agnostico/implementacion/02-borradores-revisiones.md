@@ -36,7 +36,7 @@ Los errores 500 devuelven un mensaje genérico con `requestId`; el host recibe l
 
 ## Runbook operativo por tenant
 
-1. **Migrar** con el runner del host (Campus: `CmsWrapper::initializeTenant` o `php artisan lemur:cms-migrate`). En entornos de desarrollo con datos anteriores, usar `refresh`.
+1. **Migrar** con el runner del host (Campus: `CmsWrapper::initializeTenant` o `php artisan ceiba:cms-migrate`). En entornos de desarrollo con datos anteriores, usar `refresh`.
 2. **Permisos:** `SystemPermissionsSeeder` y `SystemRolesSeeder` crean `pages.restore` y `pages.unpublish`. El rol editor recibe `pages.restore`, pero no `pages.publish` ni `pages.unpublish`.
 3. **Worker del outbox:** el host implementa `PublicationEventHandler` (idempotente por `event->id`) y ejecuta periódicamente `useCases.createPublicationOutboxDispatcher($handler)->execute()`. El FIFO por página es estricto, de modo que un evento en dead-letter bloquea los posteriores de esa página hasta `requeueFailed()`.
 4. **Retención (cron, nunca vía web):** `useCases.purgePageRevisions->execute($policy)` en dry-run; después `execute($policy, false, 'ops:<usuario>')`. Primero archiva en `REVISION_ARCHIVE_PATH` y, si el archivo falla, no borra nada.

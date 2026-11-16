@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Service;
+namespace CeibaCms\PageBuilder\Domain\Service;
 
-use LemurCms\Auth\AuthManager;
+use CeibaCms\Auth\AuthManager;
 
 final class ContextResolver
 {

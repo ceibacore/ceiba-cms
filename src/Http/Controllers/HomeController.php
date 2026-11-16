@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Http\Controllers;
+namespace CeibaCms\Http\Controllers;
 
-use LemurCms\Page\Application\GetPageBySlug;
+use CeibaCms\Page\Application\GetPageBySlug;
 
 class HomeController extends BaseController
 {

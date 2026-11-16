@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Page\Application;
+namespace CeibaCms\Tests\Page\Application;
 
-use LemurCms\Page\Application\PagePublicationKeyConflict;
-use LemurCms\Page\Application\PageRevisionAuditLog;
-use LemurCms\Page\Application\PublicContentDrift;
-use LemurCms\Page\Application\PublishPageRevision;
-use LemurCms\Page\Application\ReconcilePageContent;
-use LemurCms\Page\Application\RestorePageRevision;
-use LemurCms\Page\Application\SavePageDraft;
-use LemurCms\Page\Application\UnpublishPage;
-use LemurCms\Tests\Support\FakeClock;
-use LemurCms\Tests\Support\RevisionSchema;
+use CeibaCms\Page\Application\PagePublicationKeyConflict;
+use CeibaCms\Page\Application\PageRevisionAuditLog;
+use CeibaCms\Page\Application\PublicContentDrift;
+use CeibaCms\Page\Application\PublishPageRevision;
+use CeibaCms\Page\Application\ReconcilePageContent;
+use CeibaCms\Page\Application\RestorePageRevision;
+use CeibaCms\Page\Application\SavePageDraft;
+use CeibaCms\Page\Application\UnpublishPage;
+use CeibaCms\Tests\Support\FakeClock;
+use CeibaCms\Tests\Support\RevisionSchema;
 use PHPUnit\Framework\TestCase;
 
 final class PageRevisionLifecycleTest extends TestCase

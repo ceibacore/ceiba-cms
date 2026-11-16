@@ -1,6 +1,6 @@
-# Lemur CMS
+# Ceiba CMS
 
-Lemur CMS es un motor de gestión de contenidos (CMS) headless y desacoplado, diseñado bajo los principios de **Clean Architecture** y **Hexagonal Architecture**. Es compatible con cualquier aplicación host (como Laravel) y está estructurado en módulos para la gestión de páginas, menús de navegación, elementos multimedia, autenticación y SEO.
+Ceiba CMS es un motor de gestión de contenidos (CMS) headless y desacoplado, diseñado bajo los principios de **Clean Architecture** y **Hexagonal Architecture**. Es compatible con cualquier aplicación host (como Laravel) y está estructurado en módulos para la gestión de páginas, menús de navegación, elementos multimedia, autenticación y SEO.
 
 ---
 

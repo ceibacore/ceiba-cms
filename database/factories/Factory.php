@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Database\Factories;
+namespace CeibaCms\Database\Factories;
 
 abstract class Factory
 {

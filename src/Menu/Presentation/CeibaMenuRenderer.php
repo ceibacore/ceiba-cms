@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Menu\Presentation;
+namespace CeibaCms\Menu\Presentation;
 
 /**
  * Renders menu tree as Bootstrap 5 navbar HTML.
  * Handles dropdowns, mega menus, and accessibility attributes.
  */
-final class LemurMenuRenderer
+final class CeibaMenuRenderer
 {
     public function __construct(
         private readonly string $activeUrl = '',

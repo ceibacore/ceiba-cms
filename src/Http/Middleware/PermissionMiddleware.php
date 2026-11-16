@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Http\Middleware;
+namespace CeibaCms\Http\Middleware;
 
-use LemurDB;
-use LemurCms\Auth\AuthManager;
+use CeibaDB;
+use CeibaCms\Auth\AuthManager;
 
 class PermissionMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private readonly AuthManager $auth,
-        private readonly LemurDB $db
+        private readonly CeibaDB $db
     ) {}
 
     public function handle(\Closure $next, ...$params): mixed

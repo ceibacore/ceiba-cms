@@ -1,21 +1,21 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Infrastructure;
+namespace CeibaCms\Tests\PageBuilder\Infrastructure;
 
-use LemurCms\PageBuilder\Domain\Entity\ComponentDefinition;
-use LemurCms\PageBuilder\Infrastructure\LemurDbComponentDefinitionRepository;
-use LemurCms\Support\Helpers\UuidHelper;
-use LemurCms\Tests\TestCase;
+use CeibaCms\PageBuilder\Domain\Entity\ComponentDefinition;
+use CeibaCms\PageBuilder\Infrastructure\CeibaDbComponentDefinitionRepository;
+use CeibaCms\Support\Helpers\UuidHelper;
+use CeibaCms\Tests\TestCase;
 
-class LemurDbComponentDefinitionRepositoryTest extends TestCase
+class CeibaDbComponentDefinitionRepositoryTest extends TestCase
 {
-    private LemurDbComponentDefinitionRepository $repo;
+    private CeibaDbComponentDefinitionRepository $repo;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repo = new LemurDbComponentDefinitionRepository($this->db);
+        $this->repo = new CeibaDbComponentDefinitionRepository($this->db);
     }
 
     public function testSaveAndFindComponentDefinition(): void

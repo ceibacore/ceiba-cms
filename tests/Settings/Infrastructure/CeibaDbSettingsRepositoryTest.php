@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Settings\Infrastructure;
+namespace CeibaCms\Tests\Settings\Infrastructure;
 
-use LemurCms\Settings\Infrastructure\LemurDbSettingsRepository;
-use LemurCms\Tests\TestCase;
+use CeibaCms\Settings\Infrastructure\CeibaDbSettingsRepository;
+use CeibaCms\Tests\TestCase;
 
-class LemurDbSettingsRepositoryTest extends TestCase
+class CeibaDbSettingsRepositoryTest extends TestCase
 {
-    private LemurDbSettingsRepository $repo;
+    private CeibaDbSettingsRepository $repo;
 
     /** Unique prefix so parallel test runs don't collide. */
     private string $prefix;
@@ -16,7 +16,7 @@ class LemurDbSettingsRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repo   = new LemurDbSettingsRepository($this->db);
+        $this->repo   = new CeibaDbSettingsRepository($this->db);
         $this->prefix = 'test_' . uniqid();
     }
 

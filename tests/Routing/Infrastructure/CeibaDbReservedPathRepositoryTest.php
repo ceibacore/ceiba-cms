@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Routing\Infrastructure;
+namespace CeibaCms\Tests\Routing\Infrastructure;
 
-use LemurCms\Routing\Infrastructure\LemurDbReservedPathRepository;
-use LemurCms\Tests\TestCase;
+use CeibaCms\Routing\Infrastructure\CeibaDbReservedPathRepository;
+use CeibaCms\Tests\TestCase;
 
-class LemurDbReservedPathRepositoryTest extends TestCase
+class CeibaDbReservedPathRepositoryTest extends TestCase
 {
-    private LemurDbReservedPathRepository $repo;
+    private CeibaDbReservedPathRepository $repo;
 
     /** @var string[] */
     private array $createdIds = [];
@@ -16,7 +16,7 @@ class LemurDbReservedPathRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repo = new LemurDbReservedPathRepository($this->db);
+        $this->repo = new CeibaDbReservedPathRepository($this->db);
     }
 
     protected function tearDown(): void

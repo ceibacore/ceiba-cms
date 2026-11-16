@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Migration;
-use LemurCms\Migration\Dialect\CmsDialectInterface;
-use LemurCms\Migration\Dialect\MySQLDialect;
+namespace CeibaCms\Migration;
+use CeibaCms\Migration\Dialect\CmsDialectInterface;
+use CeibaCms\Migration\Dialect\MySQLDialect;
 
 /**
  * DDL builder — NEVER executes SQL against the database.
  * All generated statements accumulate in $sqlLog for export.
- * This is intentional: Lemur CMS generates migration scripts,
+ * This is intentional: Ceiba CMS generates migration scripts,
  * it does NOT auto-apply schema changes to the database.
  */
 final class CmsSchemaBuilder

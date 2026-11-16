@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Import\Rules\Bootstrap;
+namespace CeibaCms\PageBuilder\Import\Rules\Bootstrap;
 
-use LemurCms\PageBuilder\Import\Contract\RuleInterface;
-use LemurCms\PageBuilder\Import\ClassHelper;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaCms\PageBuilder\Import\Contract\RuleInterface;
+use CeibaCms\PageBuilder\Import\ClassHelper;
+use CeibaCms\Support\Helpers\UuidHelper;
 
 /**
  * Converts .carousel into carousel node with carousel_item children.

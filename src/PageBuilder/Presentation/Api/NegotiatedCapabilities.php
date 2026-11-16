@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Presentation\Api;
+namespace CeibaCms\PageBuilder\Presentation\Api;
 
-use LemurCms\PageBuilder\Domain\Catalogue\ComponentCatalogue;
-use LemurCms\PageBuilder\Domain\Document\HostContext;
+use CeibaCms\PageBuilder\Domain\Catalogue\ComponentCatalogue;
+use CeibaCms\PageBuilder\Domain\Document\HostContext;
 
 /**
  * Negotiated capabilities exchanged on editor visual bootstrap.

@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Application;
+namespace CeibaCms\PageBuilder\Application;
 
-use LemurCms\Media\Domain\Repository\MediaRepositoryInterface;
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
-use LemurCms\PageBuilder\Domain\Contract\DocumentAuthorization;
-use LemurCms\PageBuilder\Domain\Document\DocumentEnvelope;
-use LemurCms\PageBuilder\Domain\Document\DocumentWriteValidator;
-use LemurCms\PageBuilder\Domain\Document\HostContext;
+use CeibaCms\Media\Domain\Repository\MediaRepositoryInterface;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Contract\DocumentAuthorization;
+use CeibaCms\PageBuilder\Domain\Document\DocumentEnvelope;
+use CeibaCms\PageBuilder\Domain\Document\DocumentWriteValidator;
+use CeibaCms\PageBuilder\Domain\Document\HostContext;
 use RuntimeException;
 
 /** Construct with the site ID and repositories of the same server-resolved connection. */

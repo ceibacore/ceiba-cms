@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Menu\Presentation;
+namespace CeibaCms\Menu\Presentation;
 
-use LemurCms\Menu\Domain\Repository\MenuRepositoryInterface;
+use CeibaCms\Menu\Domain\Repository\MenuRepositoryInterface;
 
 class BannerRenderer
 {

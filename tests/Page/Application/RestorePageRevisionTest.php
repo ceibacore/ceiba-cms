@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Page\Application;
+namespace CeibaCms\Tests\Page\Application;
 
-use LemurDB;
-use LemurCms\Page\Application\RestorePageRevision;
-use LemurCms\Page\Application\SavePageDraft;
+use CeibaDB;
+use CeibaCms\Page\Application\RestorePageRevision;
+use CeibaCms\Page\Application\SavePageDraft;
 use PHPUnit\Framework\TestCase;
 
 final class RestorePageRevisionTest extends TestCase
@@ -13,7 +13,7 @@ final class RestorePageRevisionTest extends TestCase
     public function testRestoreCreatesNewDraftAndKeepsSourceAndPublication(): void
     {
         $prefix = 'restore_' . bin2hex(random_bytes(4)) . '_';
-        $db = LemurDB::getInstance(['driver' => 'sqlite', 'db' => ':memory:', 'prefix' => $prefix]);
+        $db = CeibaDB::getInstance(['driver' => 'sqlite', 'db' => ':memory:', 'prefix' => $prefix]);
         $pdo = $db->pdo();
         $pdo->exec("CREATE TABLE {$prefix}pages (id TEXT PRIMARY KEY, content TEXT, status TEXT)");
         $pdo->exec("CREATE TABLE {$prefix}page_revisions (id TEXT PRIMARY KEY, page_id TEXT, site_id TEXT, revision INTEGER, schema_version INTEGER, snapshot TEXT, content_hash TEXT, author_id TEXT, reason TEXT, created_at TEXT, UNIQUE(page_id,revision))");
@@ -27,7 +27,7 @@ final class RestorePageRevisionTest extends TestCase
         $insert->execute(['source', 'page-1', 'site-1', 1, 1, $source, hash('sha256', $source), 'actor', 'initial', '2026-11-07 10:00:00']);
         $insert->execute(['current', 'page-1', 'site-1', 2, 1, str_replace('Old', 'Current', $source), 'hash', 'actor', 'edit', '2026-11-07 11:00:00']);
         $pdo->exec("INSERT INTO {$prefix}page_revision_heads VALUES ('page-1','current','source',3,'2026-11-07 11:00:00')");
-        \LemurCms\Tests\Support\RevisionSchema::upgradeMinimalFixture($db);
+        \CeibaCms\Tests\Support\RevisionSchema::upgradeMinimalFixture($db);
 
         $revision = (new RestorePageRevision($db, 'site-1', new SavePageDraft($db, 'site-1')))
             ->execute('page-1', 1, 2, 'actor');

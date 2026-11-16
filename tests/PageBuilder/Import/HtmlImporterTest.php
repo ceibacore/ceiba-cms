@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Import;
+namespace CeibaCms\Tests\PageBuilder\Import;
 
-use LemurCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
-use LemurCms\PageBuilder\Import\HtmlImporter;
-use LemurCms\PageBuilder\Import\ImportResult;
+use CeibaCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
+use CeibaCms\PageBuilder\Import\HtmlImporter;
+use CeibaCms\PageBuilder\Import\ImportResult;
 use PHPUnit\Framework\TestCase;
 
 class HtmlImporterTest extends TestCase

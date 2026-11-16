@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Repository;
+namespace CeibaCms\PageBuilder\Domain\Repository;
 
 interface PageTemplateRepositoryInterface
 {

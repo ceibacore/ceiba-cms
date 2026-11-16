@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
 use InvalidArgumentException;
-use LemurCms\Page\Domain\Repository\AdministrativePageReaderInterface;
+use CeibaCms\Page\Domain\Repository\AdministrativePageReaderInterface;
 
 /** Administrative listing. The host must authorize the caller before invoking it. */
 final class ListAdministrativePages

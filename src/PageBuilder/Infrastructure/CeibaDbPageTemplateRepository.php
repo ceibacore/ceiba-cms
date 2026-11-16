@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Infrastructure;
+namespace CeibaCms\PageBuilder\Infrastructure;
 
-use LemurCms\PageBuilder\Domain\Repository\PageTemplateRepositoryInterface;
-use LemurDB;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaCms\PageBuilder\Domain\Repository\PageTemplateRepositoryInterface;
+use CeibaDB;
+use CeibaCms\Support\Helpers\UuidHelper;
 
-final class LemurDbPageTemplateRepository implements PageTemplateRepositoryInterface
+final class CeibaDbPageTemplateRepository implements PageTemplateRepositoryInterface
 {
-    public function __construct(private readonly LemurDB $db) {}
+    public function __construct(private readonly CeibaDB $db) {}
 
     public function findAll(): array
     {

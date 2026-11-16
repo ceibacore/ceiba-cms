@@ -1,32 +1,32 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Compatibility;
+namespace CeibaCms\Tests\PageBuilder\Compatibility;
 
-use LemurDB;
-use LemurCms\Migration\CmsMigrationGenerator;
-use LemurCms\Migration\CmsMigrationRunner;
-use LemurCms\Migration\CmsSchemaBuilder;
-use LemurCms\Migrations\Migration_20261107000000_CreatePageRevisionTables;
-use LemurCms\Page\Application\CreatePage;
-use LemurCms\Page\Application\DispatchPagePublicationOutbox;
-use LemurCms\Page\Application\PagePreviewTokens;
-use LemurCms\Page\Application\PageRevisionAuditLog;
-use LemurCms\Page\Application\PageRevisionConflict;
-use LemurCms\Page\Application\PageRevisionOperationalMetrics;
-use LemurCms\Page\Application\PageRevisionRetentionPolicy;
-use LemurCms\Page\Application\PublicContentDrift;
-use LemurCms\Page\Application\PublishPageRevision;
-use LemurCms\Page\Application\PurgePageRevisions;
-use LemurCms\Page\Application\SavePageDraft;
-use LemurCms\Page\Application\UnpublishPage;
-use LemurCms\Page\Application\ReconcilePageContent;
-use LemurCms\Page\Infrastructure\LemurDbPageRepository;
-use LemurCms\PageBuilder\Domain\Contract\PublicationEvent;
-use LemurCms\PageBuilder\Domain\Contract\PublicationEventHandler;
-use LemurCms\PageBuilder\Domain\Contract\RevisionArchive;
-use LemurCms\Tests\Support\FakeClock;
-use LemurCms\Tests\Support\RevisionSchema;
+use CeibaDB;
+use CeibaCms\Migration\CmsMigrationGenerator;
+use CeibaCms\Migration\CmsMigrationRunner;
+use CeibaCms\Migration\CmsSchemaBuilder;
+use CeibaCms\Migrations\Migration_20261107000000_CreatePageRevisionTables;
+use CeibaCms\Page\Application\CreatePage;
+use CeibaCms\Page\Application\DispatchPagePublicationOutbox;
+use CeibaCms\Page\Application\PagePreviewTokens;
+use CeibaCms\Page\Application\PageRevisionAuditLog;
+use CeibaCms\Page\Application\PageRevisionConflict;
+use CeibaCms\Page\Application\PageRevisionOperationalMetrics;
+use CeibaCms\Page\Application\PageRevisionRetentionPolicy;
+use CeibaCms\Page\Application\PublicContentDrift;
+use CeibaCms\Page\Application\PublishPageRevision;
+use CeibaCms\Page\Application\PurgePageRevisions;
+use CeibaCms\Page\Application\SavePageDraft;
+use CeibaCms\Page\Application\UnpublishPage;
+use CeibaCms\Page\Application\ReconcilePageContent;
+use CeibaCms\Page\Infrastructure\CeibaDbPageRepository;
+use CeibaCms\PageBuilder\Domain\Contract\PublicationEvent;
+use CeibaCms\PageBuilder\Domain\Contract\PublicationEventHandler;
+use CeibaCms\PageBuilder\Domain\Contract\RevisionArchive;
+use CeibaCms\Tests\Support\FakeClock;
+use CeibaCms\Tests\Support\RevisionSchema;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -36,7 +36,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class MariaDbRevisionContractTest extends TestCase
 {
-    private static ?LemurDB $db = null;
+    private static ?CeibaDB $db = null;
     private static string $prefix = '';
 
     public static function setUpBeforeClass(): void
@@ -45,7 +45,7 @@ final class MariaDbRevisionContractTest extends TestCase
             return;
         }
         self::$prefix = 'ct_' . bin2hex(random_bytes(3)) . '_';
-        self::$db = LemurDB::getInstance(self::config(self::$prefix));
+        self::$db = CeibaDB::getInstance(self::config(self::$prefix));
         (new CmsMigrationRunner(new CmsMigrationGenerator(dirname(__DIR__, 3) . '/migrations', self::$prefix), self::$db, self::$prefix))->up();
     }
 
@@ -113,7 +113,7 @@ final class MariaDbRevisionContractTest extends TestCase
         // Regression: MySQL rowCount() reports changed rows; an identical republication must not fail.
         $identical = json_decode($db->pdo()->query("SELECT snapshot FROM {$p}page_revisions WHERE page_id='mdb-1' AND revision=3")->fetchColumn());
         $identical->revision = 4;
-        $save->execute(\LemurCms\PageBuilder\Domain\Document\DocumentEnvelope::fromJson(json_encode($identical)), 3, 'editor-1');
+        $save->execute(\CeibaCms\PageBuilder\Domain\Document\DocumentEnvelope::fromJson(json_encode($identical)), 3, 'editor-1');
         $publish->execute('mdb-1', 4, 'mdb-pub-3', 'publisher-1');
         self::assertSame(4, (int) $db->pdo()->query("SELECT r.revision FROM {$p}page_revision_heads h JOIN {$p}page_revisions r ON r.id = h.published_revision_id WHERE h.page_id='mdb-1'")->fetchColumn());
 
@@ -226,7 +226,7 @@ final class MariaDbRevisionContractTest extends TestCase
         // Pages created after re-applying are versioned again end to end.
         $this->page('mdb-rb-2', '[]');
         (new SavePageDraft(self::$db, 'site-1'))->execute(RevisionSchema::envelope('mdb-rb-2', 2), 1, 'editor-1');
-        self::assertNotNull((new \LemurCms\Page\Application\PublishPage(self::$db, 'site-1', new PublishPageRevision(self::$db, 'site-1')))->execute('mdb-rb-2', 'publisher-1'));
+        self::assertNotNull((new \CeibaCms\Page\Application\PublishPage(self::$db, 'site-1', new PublishPageRevision(self::$db, 'site-1')))->execute('mdb-rb-2', 'publisher-1'));
     }
 
     public function testAdministrativeSearchEscapesWildcardsOnMariaDb(): void
@@ -238,7 +238,7 @@ final class MariaDbRevisionContractTest extends TestCase
         $insert->execute(['like-3', 'Zeta a_b', 'like-3']);
         $insert->execute(['like-4', 'Zeta axb', 'like-4']);
         $insert->execute(['like-5', "Zeta it's back\\slash!", 'like-5']);
-        $list = new \LemurCms\Page\Application\ListAdministrativePages(new LemurDbPageRepository(self::$db));
+        $list = new \CeibaCms\Page\Application\ListAdministrativePages(new CeibaDbPageRepository(self::$db));
         $ids = static fn (array $rows) => array_column($rows, 'id');
         self::assertSame(['like-1'], $ids($list->execute(null, '100%')));
         self::assertSame(['like-3'], $ids($list->execute(null, 'a_b')));
@@ -254,7 +254,7 @@ final class MariaDbRevisionContractTest extends TestCase
         foreach ([['t1', 'general', 'z', 'Z'], ['t2', 'auth', 'b', 'B'], ['t3', 'general', 'a', 'A'], ['t4', 'auth', 'a', 'A2']] as $row) {
             $insert->execute($row);
         }
-        $rows = (new \LemurCms\Localization\Infrastructure\LemurDbTranslationRepository(self::$db))->getTranslationsForLanguage('lang-ct');
+        $rows = (new \CeibaCms\Localization\Infrastructure\CeibaDbTranslationRepository(self::$db))->getTranslationsForLanguage('lang-ct');
         self::assertSame(['t4', 't2', 't3', 't1'], array_column($rows, 'id'));
     }
 

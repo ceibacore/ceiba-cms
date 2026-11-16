@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Page\Application;
+namespace CeibaCms\Tests\Page\Application;
 
 use InvalidArgumentException;
-use LemurCms\Page\Application\ListAdministrativePages;
-use LemurCms\Page\Domain\Repository\AdministrativePageReaderInterface;
+use CeibaCms\Page\Application\ListAdministrativePages;
+use CeibaCms\Page\Domain\Repository\AdministrativePageReaderInterface;
 use PHPUnit\Framework\TestCase;
 
 final class ListAdministrativePagesTest extends TestCase

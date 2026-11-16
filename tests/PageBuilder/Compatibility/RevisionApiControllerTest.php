@@ -1,28 +1,28 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Compatibility;
+namespace CeibaCms\Tests\PageBuilder\Compatibility;
 
-use LemurCms\Media\Domain\Repository\MediaRepositoryInterface;
-use LemurCms\Page\Application\ReconcilePageContent;
-use LemurCms\Page\Application\PagePreviewTokens;
-use LemurCms\Page\Application\PageRevisionAuditLog;
-use LemurCms\Page\Application\PinPageRevision;
-use LemurCms\Page\Application\PublishPageRevision;
-use LemurCms\Page\Application\RestorePageRevision;
-use LemurCms\Page\Application\SavePageDraft;
-use LemurCms\Page\Application\UnpublishPage;
-use LemurCms\Page\Infrastructure\LemurDbPageRepository;
-use LemurCms\PageBuilder\Application\ValidatePageDocument;
-use LemurCms\PageBuilder\Domain\Catalogue\ComponentCatalogue;
-use LemurCms\PageBuilder\Domain\Contract\DocumentAuthorization;
-use LemurCms\PageBuilder\Domain\Contract\PagePublicationAuthorization;
-use LemurCms\PageBuilder\Domain\Contract\RevisionOperationAuthorization;
-use LemurCms\PageBuilder\Domain\Document\DocumentMigrator;
-use LemurCms\PageBuilder\Domain\Document\HostContext;
-use LemurCms\PageBuilder\Presentation\Api\EditorApiController;
-use LemurCms\PageBuilder\Presentation\Api\RevisionApiController;
-use LemurCms\Tests\Support\RevisionSchema;
+use CeibaCms\Media\Domain\Repository\MediaRepositoryInterface;
+use CeibaCms\Page\Application\ReconcilePageContent;
+use CeibaCms\Page\Application\PagePreviewTokens;
+use CeibaCms\Page\Application\PageRevisionAuditLog;
+use CeibaCms\Page\Application\PinPageRevision;
+use CeibaCms\Page\Application\PublishPageRevision;
+use CeibaCms\Page\Application\RestorePageRevision;
+use CeibaCms\Page\Application\SavePageDraft;
+use CeibaCms\Page\Application\UnpublishPage;
+use CeibaCms\Page\Infrastructure\CeibaDbPageRepository;
+use CeibaCms\PageBuilder\Application\ValidatePageDocument;
+use CeibaCms\PageBuilder\Domain\Catalogue\ComponentCatalogue;
+use CeibaCms\PageBuilder\Domain\Contract\DocumentAuthorization;
+use CeibaCms\PageBuilder\Domain\Contract\PagePublicationAuthorization;
+use CeibaCms\PageBuilder\Domain\Contract\RevisionOperationAuthorization;
+use CeibaCms\PageBuilder\Domain\Document\DocumentMigrator;
+use CeibaCms\PageBuilder\Domain\Document\HostContext;
+use CeibaCms\PageBuilder\Presentation\Api\EditorApiController;
+use CeibaCms\PageBuilder\Presentation\Api\RevisionApiController;
+use CeibaCms\Tests\Support\RevisionSchema;
 use PHPUnit\Framework\TestCase;
 
 final class RevisionApiControllerTest extends TestCase
@@ -169,7 +169,7 @@ final class RevisionApiControllerTest extends TestCase
         };
         $save = new SavePageDraft($db, 'site-1');
         $audit = new PageRevisionAuditLog($db, 'site-1');
-        $pages = new LemurDbPageRepository($db);
+        $pages = new CeibaDbPageRepository($db);
         $media = $this->createMock(MediaRepositoryInterface::class);
         $fixture->db = $db;
         $fixture->api = new RevisionApiController('site-1', $context, $authorization, $audit,

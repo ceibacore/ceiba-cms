@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Auth\Application;
+namespace CeibaCms\Auth\Application;
 
-use LemurCms\Auth\Domain\Repository\UserRepositoryInterface;
+use CeibaCms\Auth\Domain\Repository\UserRepositoryInterface;
 
 final class AssignRole
 {

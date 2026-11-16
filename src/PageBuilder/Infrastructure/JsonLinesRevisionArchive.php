@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Infrastructure;
+namespace CeibaCms\PageBuilder\Infrastructure;
 
 use InvalidArgumentException;
-use LemurCms\PageBuilder\Domain\Contract\RevisionArchive;
+use CeibaCms\PageBuilder\Domain\Contract\RevisionArchive;
 use RuntimeException;
 
 /**

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Auth\Contracts;
+namespace CeibaCms\Auth\Contracts;
 
 /**
  * Interface AuthDriverInterface

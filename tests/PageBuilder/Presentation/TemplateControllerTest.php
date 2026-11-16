@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Presentation;
+namespace CeibaCms\Tests\PageBuilder\Presentation;
 
-use LemurCms\Http\Controllers\TemplateController;
-use LemurCms\PageBuilder\Application\ListTemplates;
-use LemurCms\PageBuilder\Application\GetTemplateById;
-use LemurCms\PageBuilder\Application\CreateTemplate;
-use LemurCms\PageBuilder\Application\DeleteTemplate;
-use LemurCms\PageBuilder\Domain\Repository\TemplateRepositoryInterface;
+use CeibaCms\Http\Controllers\TemplateController;
+use CeibaCms\PageBuilder\Application\ListTemplates;
+use CeibaCms\PageBuilder\Application\GetTemplateById;
+use CeibaCms\PageBuilder\Application\CreateTemplate;
+use CeibaCms\PageBuilder\Application\DeleteTemplate;
+use CeibaCms\PageBuilder\Domain\Repository\TemplateRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class TestTemplateController extends TemplateController

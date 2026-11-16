@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Tests\Seo\Infrastructure;
+namespace CeibaCms\Tests\Seo\Infrastructure;
 
-use LemurCms\Seo\Infrastructure\LemurDbSeoRepository;
-use LemurCms\Support\Helpers\UuidHelper;
-use LemurCms\Tests\TestCase;
+use CeibaCms\Seo\Infrastructure\CeibaDbSeoRepository;
+use CeibaCms\Support\Helpers\UuidHelper;
+use CeibaCms\Tests\TestCase;
 
-class LemurDbSeoRepositoryTest extends TestCase
+class CeibaDbSeoRepositoryTest extends TestCase
 {
-    private LemurDbSeoRepository $repo;
+    private CeibaDbSeoRepository $repo;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repo = new LemurDbSeoRepository($this->db);
+        $this->repo = new CeibaDbSeoRepository($this->db);
     }
 
     public function testFindByEntityReturnsData(): void

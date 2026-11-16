@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Localization\Infrastructure;
+namespace CeibaCms\Localization\Infrastructure;
 
-use LemurCms\Localization\Domain\Repository\LanguageRepositoryInterface;
-use LemurDB;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaCms\Localization\Domain\Repository\LanguageRepositoryInterface;
+use CeibaDB;
+use CeibaCms\Support\Helpers\UuidHelper;
 
-final class LemurDbLanguageRepository implements LanguageRepositoryInterface
+final class CeibaDbLanguageRepository implements LanguageRepositoryInterface
 {
-    public function __construct(private readonly \LemurDB $db) {}
+    public function __construct(private readonly \CeibaDB $db) {}
 
     public function all(): array
     {

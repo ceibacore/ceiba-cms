@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Seo\Infrastructure;
-use LemurCms\Seo\Domain\Repository\SeoRepositoryInterface;
-use LemurDB;
+namespace CeibaCms\Seo\Infrastructure;
+use CeibaCms\Seo\Domain\Repository\SeoRepositoryInterface;
+use CeibaDB;
 /**
- * LemurDB adapter — concrete implementation of SeoRepositoryInterface.
+ * CeibaDB adapter — concrete implementation of SeoRepositoryInterface.
  * Inject via constructor in your bootstrap.
  */
-final class LemurDbSeoRepository implements SeoRepositoryInterface
+final class CeibaDbSeoRepository implements SeoRepositoryInterface
 {
-    public function __construct(private readonly \LemurDB $db) {}
+    public function __construct(private readonly \CeibaDB $db) {}
 
     public function findByEntity(string $entityType, string|int $entityId): ?array
     {
@@ -23,7 +23,7 @@ final class LemurDbSeoRepository implements SeoRepositoryInterface
             $data['updated_at'] = date('Y-m-d H:i:s');
             $this->db->query('seo')->where(['id' => $existing['id']])->update($data);
         } else {
-            $id = \LemurCms\Support\Helpers\UuidHelper::v4();
+            $id = \CeibaCms\Support\Helpers\UuidHelper::v4();
             $this->db->query('seo')->insert(array_merge(['id' => $id, 'entity_type' => $entityType, 'entity_id' => $entityId, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')], $data));
         }
     }

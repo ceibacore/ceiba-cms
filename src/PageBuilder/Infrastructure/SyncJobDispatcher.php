@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Infrastructure;
+namespace CeibaCms\PageBuilder\Infrastructure;
 
-use LemurCms\PageBuilder\Domain\Contract\JobDispatcher;
-use LemurCms\PageBuilder\Domain\Document\HostContext;
+use CeibaCms\PageBuilder\Domain\Contract\JobDispatcher;
+use CeibaCms\PageBuilder\Domain\Document\HostContext;
 
 final class SyncJobDispatcher implements JobDispatcher
 {

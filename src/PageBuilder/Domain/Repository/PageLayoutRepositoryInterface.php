@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Repository;
+namespace CeibaCms\PageBuilder\Domain\Repository;
 
-use LemurCms\PageBuilder\Domain\Entity\PageLayout;
+use CeibaCms\PageBuilder\Domain\Entity\PageLayout;
 
 interface PageLayoutRepositoryInterface
 {

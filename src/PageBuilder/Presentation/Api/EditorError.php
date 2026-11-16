@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Presentation\Api;
+namespace CeibaCms\PageBuilder\Presentation\Api;
 
 /**
  * Structured, sanitized error response contract for editor visual APIs.

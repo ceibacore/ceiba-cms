@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Import\Rules\Semantic;
+namespace CeibaCms\PageBuilder\Import\Rules\Semantic;
 
-use LemurCms\PageBuilder\Import\Contract\RuleInterface;
-use LemurCms\PageBuilder\Import\ClassHelper;
+use CeibaCms\PageBuilder\Import\Contract\RuleInterface;
+use CeibaCms\PageBuilder\Import\ClassHelper;
 
 final class DividerRule implements RuleInterface
 {

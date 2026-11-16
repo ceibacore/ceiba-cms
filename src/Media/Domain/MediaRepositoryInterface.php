@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Media\Domain;
+namespace CeibaCms\Media\Domain;
 
 interface MediaRepositoryInterface
 {

@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Domain\Service;
+namespace CeibaCms\Tests\PageBuilder\Domain\Service;
 
-use LemurCms\PageBuilder\Domain\Service\BladeRenderer;
-use LemurCms\PageBuilder\Domain\Service\LoopResolverInterface;
-use LemurCms\PageBuilder\Domain\Service\VariableInterpolator;
-use LemurCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
-use LemurCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
+use CeibaCms\PageBuilder\Domain\Service\BladeRenderer;
+use CeibaCms\PageBuilder\Domain\Service\LoopResolverInterface;
+use CeibaCms\PageBuilder\Domain\Service\VariableInterpolator;
+use CeibaCms\PageBuilder\Domain\Service\UiFrameworkRegistry;
+use CeibaCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module;
 use PHPUnit\Framework\TestCase;
 
 class BladeRendererTest extends TestCase

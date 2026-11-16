@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Menu\Application;
+namespace CeibaCms\Menu\Application;
 
-use LemurCms\Menu\Domain\Repository\MenuRepositoryInterface;
-use LemurCms\Support\Validators\MenuValidator;
-use LemurCms\Support\Exceptions\InvalidMenuException;
+use CeibaCms\Menu\Domain\Repository\MenuRepositoryInterface;
+use CeibaCms\Support\Validators\MenuValidator;
+use CeibaCms\Support\Exceptions\InvalidMenuException;
 
 /**
  * Versión mejorada de CreateMenuItem con validación
@@ -34,7 +34,7 @@ class CreateMenuItemWithValidation
 
         // 2. PROCESAR datos
         // Aquí podrías limpiar/normalizar datos usando StringHelper
-        $data['url'] = \LemurCms\Support\Helpers\StringHelper::sanitizeUrl($data['url']);
+        $data['url'] = \CeibaCms\Support\Helpers\StringHelper::sanitizeUrl($data['url']);
 
         // 3. GUARDAR
         return $this->repository->saveMenuItem($data);
@@ -46,19 +46,19 @@ class CreateMenuItemWithValidation
  */
 class CreateUserWithValidation
 {
-    public function __construct(private \LemurCms\Auth\Domain\Repository\UserRepositoryInterface $repository)
+    public function __construct(private \CeibaCms\Auth\Domain\Repository\UserRepositoryInterface $repository)
     {
     }
 
     /**
      * @param array<string, mixed> $data
      * @return int ID del usuario creado
-     * @throws \LemurCms\Support\Exceptions\InvalidUserException
+     * @throws \CeibaCms\Support\Exceptions\InvalidUserException
      */
     public function execute(array $data): int
     {
         // 1. VALIDAR datos
-        \LemurCms\Support\Validators\UserValidator::validateCreateUser($data);
+        \CeibaCms\Support\Validators\UserValidator::validateCreateUser($data);
 
         // 2. PREPARAR datos
         $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
@@ -73,27 +73,27 @@ class CreateUserWithValidation
  */
 class CreatePageWithValidation
 {
-    public function __construct(private \LemurCms\Page\Domain\PageRepositoryInterface $repository)
+    public function __construct(private \CeibaCms\Page\Domain\PageRepositoryInterface $repository)
     {
     }
 
     /**
      * @param array<string, mixed> $data
      * @return int ID de la página creada
-     * @throws \LemurCms\Support\Exceptions\InvalidMenuException
+     * @throws \CeibaCms\Support\Exceptions\InvalidMenuException
      */
     public function execute(array $data): int
     {
         // 1. VALIDAR datos
-        \LemurCms\Support\Validators\PageValidator::validatePage($data);
+        \CeibaCms\Support\Validators\PageValidator::validatePage($data);
 
         // 2. AUTO-GENERAR slug si no existe
         if (empty($data['slug'])) {
-            $data['slug'] = \LemurCms\Support\Helpers\StringHelper::slugify($data['title']);
+            $data['slug'] = \CeibaCms\Support\Helpers\StringHelper::slugify($data['title']);
         }
 
         // 3. AUTO-ASIGNAR fecha de creación
-        $data['created_at'] = $data['created_at'] ?? \LemurCms\Support\Helpers\DateHelper::now();
+        $data['created_at'] = $data['created_at'] ?? \CeibaCms\Support\Helpers\DateHelper::now();
 
         // 4. GUARDAR
         return $this->repository->save($data);

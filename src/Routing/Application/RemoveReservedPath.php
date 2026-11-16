@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Routing\Application;
+namespace CeibaCms\Routing\Application;
 
-use LemurCms\Routing\Domain\Repository\ReservedPathRepositoryInterface;
+use CeibaCms\Routing\Domain\Repository\ReservedPathRepositoryInterface;
 
 final class RemoveReservedPath
 {

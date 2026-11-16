@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Domain\Service;
+namespace CeibaCms\Tests\PageBuilder\Domain\Service;
 
-use LemurCms\PageBuilder\Domain\Service\LayoutRenderer;
+use CeibaCms\PageBuilder\Domain\Service\LayoutRenderer;
 use PHPUnit\Framework\TestCase;
 
 class LayoutRendererTest extends TestCase
@@ -67,8 +67,8 @@ class LayoutRendererTest extends TestCase
         );
 
         $this->assertStringContainsString('<style>:root {', $html);
-        $this->assertStringContainsString('--lemur-primary: #e94560;', $html);
-        $this->assertStringContainsString('--lemur-secondary: #ccc;', $html);
+        $this->assertStringContainsString('--ceiba-primary: #e94560;', $html);
+        $this->assertStringContainsString('--ceiba-secondary: #ccc;', $html);
     }
 
     public function testDoesNotInjectPaletteWhenSystemPaletteEnabled(): void

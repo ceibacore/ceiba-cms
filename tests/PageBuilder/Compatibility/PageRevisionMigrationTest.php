@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Compatibility;
+namespace CeibaCms\Tests\PageBuilder\Compatibility;
 
-use LemurCms\Migration\CmsSchemaBuilder;
-use LemurCms\Migrations\Migration_20261107000000_CreatePageRevisionTables;
+use CeibaCms\Migration\CmsSchemaBuilder;
+use CeibaCms\Migrations\Migration_20261107000000_CreatePageRevisionTables;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 3) . '/migrations/20261107000000_create_page_revision_tables.php';
@@ -47,7 +47,7 @@ final class PageRevisionMigrationTest extends TestCase
         $names = [];
         foreach (['site_a_', 'site_b_'] as $prefix) {
             $schema = new CmsSchemaBuilder($prefix);
-            (new \LemurCms\Migrations\Migration_20260522000013_CreateModuleDefinitionsTable($schema))->up();
+            (new \CeibaCms\Migrations\Migration_20260522000013_CreateModuleDefinitionsTable($schema))->up();
             preg_match_all('/CONSTRAINT `([^`]+)`/', implode("\n", $schema->getSqlLog()), $match);
             $names = [...$names, ...$match[1]];
         }

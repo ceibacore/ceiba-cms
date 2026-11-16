@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Support\Validators;
+namespace CeibaCms\Tests\Support\Validators;
 
-use LemurCms\Support\Validators\LayoutValidator;
-use LemurCms\Support\Exceptions\InvalidMenuException;
+use CeibaCms\Support\Validators\LayoutValidator;
+use CeibaCms\Support\Exceptions\InvalidMenuException;
 use PHPUnit\Framework\TestCase;
 
 class LayoutValidatorTest extends TestCase

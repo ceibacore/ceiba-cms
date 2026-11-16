@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Menu\Presentation;
+namespace CeibaCms\Menu\Presentation;
 
 /**
  * Fluent API for programmatic menu construction.
  * Usage:
- *   $builder = new LemurMenuBuilder()
+ *   $builder = new CeibaMenuBuilder()
  *       ->menu('main', 'Main Menu')
  *       ->item('/', 'Home')
  *       ->item('/about', 'About', ['icon' => 'bi bi-info-circle'])
@@ -15,7 +15,7 @@ namespace LemurCms\Menu\Presentation;
  *       ])
  *       ->build();
  */
-final class LemurMenuBuilder
+final class CeibaMenuBuilder
 {
     private ?string $currentMenu = null;
     private array $menus = [];

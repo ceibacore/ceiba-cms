@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
 use InvalidArgumentException;
-use LemurDB;
-use LemurCms\PageBuilder\Domain\Contract\Clock;
-use LemurCms\PageBuilder\Infrastructure\SystemClock;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaDB;
+use CeibaCms\PageBuilder\Domain\Contract\Clock;
+use CeibaCms\PageBuilder\Infrastructure\SystemClock;
+use CeibaCms\Support\Helpers\UuidHelper;
 use RuntimeException;
 
 /**
@@ -21,7 +21,7 @@ final class PublishPageRevision
     private readonly Clock $clock;
     private readonly PageRevisionAuditLog $audit;
 
-    public function __construct(private readonly LemurDB $db, private readonly string $siteId, ?Clock $clock = null)
+    public function __construct(private readonly CeibaDB $db, private readonly string $siteId, ?Clock $clock = null)
     {
         $this->clock = $clock ?? new SystemClock();
         $this->audit = new PageRevisionAuditLog($db, $siteId === '' ? '-' : $siteId, $this->clock);

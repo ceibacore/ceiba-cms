@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Contract;
+namespace CeibaCms\PageBuilder\Domain\Contract;
 
 /** Durable publication event delivered at least once. Handlers deduplicate by $id. */
 final class PublicationEvent

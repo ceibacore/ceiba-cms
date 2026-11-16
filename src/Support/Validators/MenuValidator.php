@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Support\Validators;
+namespace CeibaCms\Support\Validators;
 
-use LemurCms\Support\Exceptions\InvalidMenuException;
+use CeibaCms\Support\Exceptions\InvalidMenuException;
 
 class MenuValidator
 {

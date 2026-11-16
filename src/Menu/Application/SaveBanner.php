@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Menu\Application;
+namespace CeibaCms\Menu\Application;
 
-use LemurCms\Menu\Domain\Repository\MenuRepositoryInterface;
+use CeibaCms\Menu\Domain\Repository\MenuRepositoryInterface;
 
 final class SaveBanner
 {

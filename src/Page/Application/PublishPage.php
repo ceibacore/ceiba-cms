@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
-use LemurDB;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaDB;
+use CeibaCms\Support\Helpers\UuidHelper;
 
 /**
  * Publishes the page's current working draft. A page without unpublished
@@ -13,7 +13,7 @@ use LemurCms\Support\Helpers\UuidHelper;
 final class PublishPage
 {
     public function __construct(
-        private readonly LemurDB $db,
+        private readonly CeibaDB $db,
         private readonly string $siteId,
         private readonly PublishPageRevision $publishRevision,
     ) {}

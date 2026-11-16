@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Domain\Service;
+namespace CeibaCms\PageBuilder\Domain\Service;
 
-use LemurCms\PageBuilder\Domain\Document\DocumentWriteValidator;
+use CeibaCms\PageBuilder\Domain\Document\DocumentWriteValidator;
 
 /**
  * TreeNormalizer

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Infrastructure;
+namespace CeibaCms\PageBuilder\Infrastructure;
 
 use InvalidArgumentException;
-use LemurCms\PageBuilder\Domain\Contract\MediaStorage;
-use LemurCms\PageBuilder\Domain\Document\HostContext;
+use CeibaCms\PageBuilder\Domain\Contract\MediaStorage;
+use CeibaCms\PageBuilder\Domain\Document\HostContext;
 use RuntimeException;
 
 final class LocalMediaStorage implements MediaStorage

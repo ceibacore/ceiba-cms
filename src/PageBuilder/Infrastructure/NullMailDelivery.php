@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Infrastructure;
+namespace CeibaCms\PageBuilder\Infrastructure;
 
-use LemurCms\PageBuilder\Domain\Contract\MailDelivery;
-use LemurCms\PageBuilder\Domain\Document\HostContext;
+use CeibaCms\PageBuilder\Domain\Contract\MailDelivery;
+use CeibaCms\PageBuilder\Domain\Document\HostContext;
 
 final class NullMailDelivery implements MailDelivery
 {

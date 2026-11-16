@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Tests\Seo\Application;
+namespace CeibaCms\Tests\Seo\Application;
 
-use LemurCms\Seo\Application\UpsertSeo;
-use LemurCms\Seo\Domain\Repository\SeoRepositoryInterface;
+use CeibaCms\Seo\Application\UpsertSeo;
+use CeibaCms\Seo\Domain\Repository\SeoRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class UpsertSeoTest extends TestCase

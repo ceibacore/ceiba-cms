@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
 use InvalidArgumentException;
-use LemurDB;
-use LemurCms\PageBuilder\Domain\Contract\Clock;
+use CeibaDB;
+use CeibaCms\PageBuilder\Domain\Contract\Clock;
 
 /** Pins a revision so retention never purges it (audit, legal hold, reference versions). */
 final class PinPageRevision
 {
     private readonly PageRevisionAuditLog $audit;
 
-    public function __construct(private readonly LemurDB $db, private readonly string $siteId, ?Clock $clock = null)
+    public function __construct(private readonly CeibaDB $db, private readonly string $siteId, ?Clock $clock = null)
     {
         $this->audit = new PageRevisionAuditLog($db, $siteId === '' ? '-' : $siteId, $clock);
     }

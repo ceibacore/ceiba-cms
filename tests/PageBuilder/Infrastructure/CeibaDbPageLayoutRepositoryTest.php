@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Infrastructure;
+namespace CeibaCms\Tests\PageBuilder\Infrastructure;
 
-use LemurCms\PageBuilder\Domain\Entity\PageLayout;
-use LemurCms\PageBuilder\Infrastructure\LemurDbPageLayoutRepository;
-use LemurCms\Tests\TestCase;
+use CeibaCms\PageBuilder\Domain\Entity\PageLayout;
+use CeibaCms\PageBuilder\Infrastructure\CeibaDbPageLayoutRepository;
+use CeibaCms\Tests\TestCase;
 
-class LemurDbPageLayoutRepositoryTest extends TestCase
+class CeibaDbPageLayoutRepositoryTest extends TestCase
 {
-    private LemurDbPageLayoutRepository $repo;
+    private CeibaDbPageLayoutRepository $repo;
 
     /** @var string[] IDs created during this test run, cleaned up in tearDown */
     private array $createdIds = [];
@@ -17,7 +17,7 @@ class LemurDbPageLayoutRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repo = new LemurDbPageLayoutRepository($this->db);
+        $this->repo = new CeibaDbPageLayoutRepository($this->db);
     }
 
     protected function tearDown(): void

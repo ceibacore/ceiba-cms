@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Domain\Entity;
+namespace CeibaCms\Tests\PageBuilder\Domain\Entity;
 
-use LemurCms\PageBuilder\Domain\Entity\PageLayout;
+use CeibaCms\PageBuilder\Domain\Entity\PageLayout;
 use PHPUnit\Framework\TestCase;
 
 class PageLayoutTest extends TestCase

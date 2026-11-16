@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Menu\Infrastructure;
+namespace CeibaCms\Menu\Infrastructure;
 
-use LemurCms\Menu\Domain\Repository\MenuRepositoryInterface;
-use LemurDB;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaCms\Menu\Domain\Repository\MenuRepositoryInterface;
+use CeibaDB;
+use CeibaCms\Support\Helpers\UuidHelper;
 
 /**
- * LemurDB adapter — concrete implementation of MenuRepositoryInterface.
+ * CeibaDB adapter — concrete implementation of MenuRepositoryInterface.
  * Inject via constructor in your bootstrap.
  */
-final class LemurDbMenuRepository implements MenuRepositoryInterface
+final class CeibaDbMenuRepository implements MenuRepositoryInterface
 {
-    public function __construct(private readonly \LemurDB $db) {}
+    public function __construct(private readonly \CeibaDB $db) {}
 
     public function getMenuTree(string $slug): array
     {

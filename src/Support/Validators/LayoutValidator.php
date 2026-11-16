@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Support\Validators;
+namespace CeibaCms\Support\Validators;
 
-use LemurCms\Support\Exceptions\InvalidMenuException;
+use CeibaCms\Support\Exceptions\InvalidMenuException;
 
 class LayoutValidator
 {
@@ -60,7 +60,7 @@ class LayoutValidator
             if (!is_array($tree)) {
                 throw new InvalidMenuException('Layout footer_tree must be an array or JSON string');
             }
-            $validator = new \LemurCms\PageBuilder\Domain\Service\TreeValidator();
+            $validator = new \CeibaCms\PageBuilder\Domain\Service\TreeValidator();
             $errors = $validator->validate($tree);
             if (!empty($errors)) {
                 throw new InvalidMenuException('Invalid layout footer_tree: ' . implode('; ', $errors));

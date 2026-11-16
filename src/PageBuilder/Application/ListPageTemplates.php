@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\PageBuilder\Application;
+namespace CeibaCms\PageBuilder\Application;
 
-use LemurCms\PageBuilder\Domain\Repository\PageTemplateRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Repository\PageTemplateRepositoryInterface;
 
 final class ListPageTemplates
 {

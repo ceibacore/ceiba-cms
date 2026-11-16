@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Menu\Presentation;
+namespace CeibaCms\Menu\Presentation;
 
 /**
  * File-based cache for menu data and rendered HTML.
  * Stores cache in storage/cache/menus/ directory.
  */
-final class LemurMenuCache
+final class CeibaMenuCache
 {
     private readonly string $cacheDir;
 

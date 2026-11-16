@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Page\Application;
+namespace CeibaCms\Page\Application;
 
 use InvalidArgumentException;
-use LemurDB;
-use LemurCms\PageBuilder\Domain\Contract\Clock;
-use LemurCms\PageBuilder\Domain\Document\DocumentEnvelope;
-use LemurCms\PageBuilder\Domain\Document\DocumentMigrator;
-use LemurCms\PageBuilder\Domain\Service\TreeNormalizer;
-use LemurCms\PageBuilder\Infrastructure\SystemClock;
-use LemurCms\Support\Helpers\UuidHelper;
+use CeibaDB;
+use CeibaCms\PageBuilder\Domain\Contract\Clock;
+use CeibaCms\PageBuilder\Domain\Document\DocumentEnvelope;
+use CeibaCms\PageBuilder\Domain\Document\DocumentMigrator;
+use CeibaCms\PageBuilder\Domain\Service\TreeNormalizer;
+use CeibaCms\PageBuilder\Infrastructure\SystemClock;
+use CeibaCms\Support\Helpers\UuidHelper;
 
 /**
  * Creates a page with its first revision and revision head in one transaction,
@@ -27,7 +27,7 @@ final class CreatePage
     private readonly PageRevisionAuditLog $audit;
 
     public function __construct(
-        private readonly LemurDB $db,
+        private readonly CeibaDB $db,
         private readonly string $siteId,
         private readonly TreeNormalizer $normalizer = new TreeNormalizer(),
         private readonly DocumentMigrator $migrator = new DocumentMigrator(),

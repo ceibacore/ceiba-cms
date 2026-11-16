@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Http;
+namespace CeibaCms\Tests\Http;
 
-use LemurCms\Http\Router;
+use CeibaCms\Http\Router;
 use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase

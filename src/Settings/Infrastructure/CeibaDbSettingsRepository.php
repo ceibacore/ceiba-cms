@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Settings\Infrastructure;
+namespace CeibaCms\Settings\Infrastructure;
 
-use LemurCms\Settings\Domain\Repository\SettingsRepositoryInterface;
-use LemurDB;
+use CeibaCms\Settings\Domain\Repository\SettingsRepositoryInterface;
+use CeibaDB;
 
-final class LemurDbSettingsRepository implements SettingsRepositoryInterface
+final class CeibaDbSettingsRepository implements SettingsRepositoryInterface
 {
-    public function __construct(private readonly \LemurDB $db) {}
+    public function __construct(private readonly \CeibaDB $db) {}
 
     public function get(string $key, ?string $default = null): ?string
     {

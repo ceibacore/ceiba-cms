@@ -1,6 +1,6 @@
 ## Localización y Traducciones Dinámicas - Completado ✅
 
-Este módulo implementa el soporte para Localization (idiomas) y Traducciones Dinámicas dentro del CMS, permitiendo gestionar de forma autónoma los idiomas activos y su diccionario de traducción a través de base de datos (`LemurDB`), con un sistema de cargado personalizado de Laravel que optimiza el acceso y la invalidación automática en caché.
+Este módulo implementa el soporte para Localization (idiomas) y Traducciones Dinámicas dentro del CMS, permitiendo gestionar de forma autónoma los idiomas activos y su diccionario de traducción a través de base de datos (`CeibaDB`), con un sistema de cargado personalizado de Laravel que optimiza el acceso y la invalidación automática en caché.
 
 ---
 
@@ -63,10 +63,10 @@ interface TranslationRepositoryInterface
 
 ### 3. Capa de Infraestructura (Adapters)
 
-Implementa la persistencia utilizando `LemurDB` e integra la invalidación de caché si Laravel está disponible.
+Implementa la persistencia utilizando `CeibaDB` e integra la invalidación de caché si Laravel está disponible.
 
-- **[`LemurDbLanguageRepository`](../../src/Localization/Infrastructure/LemurDbLanguageRepository.php)**: Administra el guardado y actualización de idiomas en la tabla `languages`.
-- **[`LemurDbTranslationRepository`](../../src/Localization/Infrastructure/LemurDbTranslationRepository.php)**: Guarda traducciones masivas dentro de una transacción de base de datos.
+- **[`CeibaDbLanguageRepository`](../../src/Localization/Infrastructure/CeibaDbLanguageRepository.php)**: Administra el guardado y actualización de idiomas en la tabla `languages`.
+- **[`CeibaDbTranslationRepository`](../../src/Localization/Infrastructure/CeibaDbTranslationRepository.php)**: Guarda traducciones masivas dentro de una transacción de base de datos.
   - **Invalidación Proactiva de Caché**: En cada actualización o eliminación de traducciones, se calculan las claves de caché afectadas `"locale.translations.{$locale}.{$group}"` y se limpian proactivamente usando `Illuminate\Support\Facades\Cache::forget()`.
 
 ---
@@ -115,7 +115,7 @@ Para asegurar que Laravel consuma estas traducciones sin degradar el rendimiento
 
 #### [`TranslationServiceProvider`](../../src/Support/Translation/TranslationServiceProvider.php)
 - Extiende `Illuminate\Translation\TranslationServiceProvider`.
-- Sobrescribe la instanciación de `translation.loader` en el contenedor para utilizar el `DatabaseTranslationLoader` e inyectar el repositorio correspondiente recuperado dinámicamente de `\LemurCms\LemurCms::container()`.
+- Sobrescribe la instanciación de `translation.loader` en el contenedor para utilizar el `DatabaseTranslationLoader` e inyectar el repositorio correspondiente recuperado dinámicamente de `\CeibaCms\CeibaCms::container()`.
 
 ---
 
@@ -125,7 +125,7 @@ Para activar el soporte dinámico en tu aplicación Laravel, edita el archivo de
 
 ```diff
 - Illuminate\Translation\TranslationServiceProvider::class,
-+ LemurCms\Support\Translation\TranslationServiceProvider::class,
++ CeibaCms\Support\Translation\TranslationServiceProvider::class,
 ```
 
 Esto habilitará automáticamente la carga en base de datos para todas las llamadas al helper `__(...)`, `@lang` de Blade e `Inertia` en tu frontend.

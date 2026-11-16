@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-use LemurCms\Http\Router;
-use LemurCms\Http\Controllers\MenuController;
-use LemurCms\Http\Controllers\PageController;
-use LemurCms\Http\Controllers\PageRenderController;
-use LemurCms\Http\Controllers\HomeController;
-use LemurCms\Http\Controllers\LayoutController;
-use LemurCms\Http\Controllers\ReservedPathController;
-use LemurCms\Http\Controllers\CacheController;
-use LemurCms\Http\Controllers\TemplateController;
-use LemurCms\Http\Controllers\ComponentDefinitionController;
-use LemurCms\Http\Controllers\PageBuilderMetadataController;
-use LemurCms\Http\Controllers\SettingsController;
-use LemurCms\Http\Controllers\LanguageController;
+use CeibaCms\Http\Router;
+use CeibaCms\Http\Controllers\MenuController;
+use CeibaCms\Http\Controllers\PageController;
+use CeibaCms\Http\Controllers\PageRenderController;
+use CeibaCms\Http\Controllers\HomeController;
+use CeibaCms\Http\Controllers\LayoutController;
+use CeibaCms\Http\Controllers\ReservedPathController;
+use CeibaCms\Http\Controllers\CacheController;
+use CeibaCms\Http\Controllers\TemplateController;
+use CeibaCms\Http\Controllers\ComponentDefinitionController;
+use CeibaCms\Http\Controllers\PageBuilderMetadataController;
+use CeibaCms\Http\Controllers\SettingsController;
+use CeibaCms\Http\Controllers\LanguageController;
 
 $container = require __DIR__ . '/../bootstrap.php';
 
 $router = new Router();
-$router->aliasMiddleware('auth', fn() => new \LemurCms\Http\Middleware\AuthMiddleware($container['auth']));
-$router->aliasMiddleware('csrf', fn() => new \LemurCms\Http\Middleware\CsrfMiddleware());
-$router->aliasMiddleware('permission', fn() => new \LemurCms\Http\Middleware\PermissionMiddleware($container['auth'], $container['db']));
+$router->aliasMiddleware('auth', fn() => new \CeibaCms\Http\Middleware\AuthMiddleware($container['auth']));
+$router->aliasMiddleware('csrf', fn() => new \CeibaCms\Http\Middleware\CsrfMiddleware());
+$router->aliasMiddleware('permission', fn() => new \CeibaCms\Http\Middleware\PermissionMiddleware($container['auth'], $container['db']));
 
 // ── Menu Routes ──────────────────────────────────────────────────────────────
 $menuController = new MenuController(
@@ -83,7 +83,7 @@ $pageBuilderMetadataController = new PageBuilderMetadataController(
 $router->get('/api/pagebuilder/rules', fn() => $pageBuilderMetadataController->rules(), 'pagebuilder.rules')->middleware('auth');
 
 // ── Visual Builder V1 API Routes ─────────────────────────────────────────────
-/** @var \LemurCms\PageBuilder\Presentation\Api\EditorApiController $editorApiController */
+/** @var \CeibaCms\PageBuilder\Presentation\Api\EditorApiController $editorApiController */
 $editorApiController = $container['presentation']['editorApiController'] ?? $container['services']['editorApiController'];
 $builderPrefix = $editorApiController->prefix;
 
@@ -180,7 +180,7 @@ $router->post("{$builderPrefix}/pages/{id}/migrate", function (string $id) use (
 }, 'builder.pages.migrate')->middleware('auth', 'csrf');
 
 // ── Visual Builder V1 revision operations ────────────────────────────────────
-/** @var \LemurCms\PageBuilder\Presentation\Api\RevisionApiController|null $revisionApiController */
+/** @var \CeibaCms\PageBuilder\Presentation\Api\RevisionApiController|null $revisionApiController */
 $revisionApiController = $container['presentation']['revisionApiController'] ?? null;
 if ($revisionApiController !== null) {
     $sendBuilderJson = static function (array $response, array $headers = []): void {
@@ -240,7 +240,7 @@ if ($revisionApiController !== null) {
     // Public by design: access is granted only by the short-lived, revocable token.
     $router->get("{$builderPrefix}/preview/{token}", fn (string $token) => $sendBuilderJson(
         $revisionApiController->resolvePreview($token),
-        \LemurCms\PageBuilder\Presentation\Api\RevisionApiController::PREVIEW_HEADERS
+        \CeibaCms\PageBuilder\Presentation\Api\RevisionApiController::PREVIEW_HEADERS
     ), 'builder.preview');
 }
 
@@ -278,7 +278,7 @@ $router->post('/api/cache/clear', fn() => $cacheController->clear(), 'cache.clea
 $router->post('/api/cache/menus/{slug}/clear', fn($slug) => $cacheController->clearMenu($slug), 'cache.menu.clear')->middleware('auth', 'csrf');
 
 // ── Import Routes ─────────────────────────────────────────────────────────────
-$importController = new \LemurCms\Http\Controllers\ImportController($container['uiFrameworkRegistry'] ?? null);
+$importController = new \CeibaCms\Http\Controllers\ImportController($container['uiFrameworkRegistry'] ?? null);
 $router->post('/api/import/html', fn() => $importController->importHtml(), 'import.html')->middleware('auth', 'csrf');
 $router->post('/api/import/html/preview', fn() => $importController->previewHtml(), 'import.html.preview')->middleware('auth', 'csrf');
 
@@ -332,7 +332,7 @@ $router->get('/', fn() => $homeController->index(), 'home');
 
 // ── Public Routing — Catch-all (MUST BE LAST) ────────────────────────────────
 $router->get('/{path}', function (string $path) use ($pageRenderController, $container) {
-    /** @var \LemurCms\Routing\Domain\Service\ReservedPathChecker $checker */
+    /** @var \CeibaCms\Routing\Domain\Service\ReservedPathChecker $checker */
     $checker = $container['reservedPathChecker'];
     if ($checker->isReserved($path)) {
         http_response_code(404);

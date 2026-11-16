@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace LemurCms\Page\Domain;
+namespace CeibaCms\Page\Domain;
 
 interface PageRepositoryInterface
 {

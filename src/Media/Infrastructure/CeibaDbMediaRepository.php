@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Media\Infrastructure;
+namespace CeibaCms\Media\Infrastructure;
 
-use LemurCms\Media\Domain\Repository\MediaRepositoryInterface;
-use LemurDB;
+use CeibaCms\Media\Domain\Repository\MediaRepositoryInterface;
+use CeibaDB;
 
 /**
- * LemurDB adapter — concrete implementation of MediaRepositoryInterface.
+ * CeibaDB adapter — concrete implementation of MediaRepositoryInterface.
  * Inject via constructor in your bootstrap.
  */
-final class LemurDbMediaRepository implements MediaRepositoryInterface
+final class CeibaDbMediaRepository implements MediaRepositoryInterface
 {
-    public function __construct(private readonly \LemurDB $db) {}
+    public function __construct(private readonly \CeibaDB $db) {}
 
     public function findById(string $id): ?array
     {
@@ -21,7 +21,7 @@ final class LemurDbMediaRepository implements MediaRepositoryInterface
 
     public function store(array $data): string
     {
-        $id = $data['id'] ?? \LemurCms\Support\Helpers\UuidHelper::v4();
+        $id = $data['id'] ?? \CeibaCms\Support\Helpers\UuidHelper::v4();
         $data['id'] = $id;
         $this->db->query('media')->insert($data);
         return $id;

@@ -1,21 +1,21 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\PageBuilder\Compatibility;
+namespace CeibaCms\Tests\PageBuilder\Compatibility;
 
 use InvalidArgumentException;
-use LemurCms\Page\Application\CreatePage;
-use LemurCms\Page\Application\UpdatePage;
-use LemurCms\Page\Domain\Repository\PageRepositoryInterface;
-use LemurCms\PageBuilder\Domain\Document\DocumentEnvelope;
-use LemurCms\PageBuilder\Domain\Document\DocumentWriteValidator;
+use CeibaCms\Page\Application\CreatePage;
+use CeibaCms\Page\Application\UpdatePage;
+use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
+use CeibaCms\PageBuilder\Domain\Document\DocumentEnvelope;
+use CeibaCms\PageBuilder\Domain\Document\DocumentWriteValidator;
 use PHPUnit\Framework\TestCase;
 
 final class DocumentWriteValidatorTest extends TestCase
 {
     public function testCreateRejectsRecursivePhpTreeAndWritesNothing(): void
     {
-        $db = \LemurCms\Tests\Support\RevisionSchema::create();
+        $db = \CeibaCms\Tests\Support\RevisionSchema::create();
         $tree = [['type' => 'div', 'id' => 'node']];
         $tree[0]['children'] = &$tree;
         try {

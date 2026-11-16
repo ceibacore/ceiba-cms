@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace LemurCms\Tests\Page\Application;
+namespace CeibaCms\Tests\Page\Application;
 
-use LemurDB;
-use LemurCms\Seeders\SystemPermissionsSeeder;
-use LemurCms\Seeders\SystemRolesSeeder;
+use CeibaDB;
+use CeibaCms\Seeders\SystemPermissionsSeeder;
+use CeibaCms\Seeders\SystemRolesSeeder;
 use PHPUnit\Framework\TestCase;
 
 final class RevisionPermissionSeedingTest extends TestCase
@@ -13,7 +13,7 @@ final class RevisionPermissionSeedingTest extends TestCase
     public function testRevisionDutiesAreSeparateAndEditorsCannotPublishOrWithdraw(): void
     {
         $prefix = 'seed_' . bin2hex(random_bytes(4)) . '_';
-        $db = LemurDB::getInstance(['driver' => 'sqlite', 'db' => ':memory:', 'prefix' => $prefix]);
+        $db = CeibaDB::getInstance(['driver' => 'sqlite', 'db' => ':memory:', 'prefix' => $prefix]);
         $pdo = $db->pdo();
         $pdo->exec("CREATE TABLE {$prefix}modules (id TEXT PRIMARY KEY, slug TEXT, is_active INTEGER)");
         $pdo->exec("CREATE TABLE {$prefix}permissions (id TEXT PRIMARY KEY, module_id TEXT, slug TEXT UNIQUE, name TEXT)");
