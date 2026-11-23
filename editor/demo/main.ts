@@ -1,0 +1,27 @@
+import '../src/ui/index';
+import type { CeibaPageBuilder } from '../src/ui/index';
+import { MemoryServer } from './memory-server';
+
+// Two editors on one plain HTML page: they must not share selection, history or sessions (plan 03-B).
+const servers = {
+  a: new MemoryServer('page-a', []),
+  b: new MemoryServer('page-b', [
+    { id: 'hero', type: 'container', props: { fluid: false }, children: [
+      { id: 'title', type: 'heading', props: { text: 'Second page', level: 1 }, children: [] },
+      { id: 'cta', type: 'button', props: { label: 'Go', url: 'https://example.com' }, children: [] },
+      { id: 'legacy', type: 'carousel-pro', props: { speed: 300 }, children: [] },
+      { id: 'embed', type: 'html', props: { content: '<script>alert(1)</script>' }, children: [] },
+    ] },
+  ]),
+};
+const events: string[] = [];
+Object.assign(window, { servers, events });
+
+for (const [key, server] of Object.entries(servers)) {
+  const element = document.querySelector<CeibaPageBuilder>(`#editor-${key}`);
+  if (!element) continue;
+  for (const name of ['ready', 'selection-change', 'dirty-change', 'save-success', 'save-error', 'conflict']) {
+    element.addEventListener(name, (event) => events.push(`${key}:${name}:${JSON.stringify((event as CustomEvent).detail)}`));
+  }
+  element.config = { pageId: `page-${key}`, transport: server.transport(), locale: key === 'a' ? 'es' : 'en' };
+}

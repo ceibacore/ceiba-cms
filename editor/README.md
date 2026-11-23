@@ -1,7 +1,7 @@
 # @ceibacore/page-builder — editor core
 
-Framework-agnostic visual editor for ceiba-cms pages (plan 03). This first part (03-A) is the **core**: no DOM and no
-host routes. The UI (`<ceiba-page-builder>` Web Component) arrives in 03-B on top of it.
+Framework-agnostic visual editor for ceiba-cms pages (plan 03): a **core** without DOM or host routes (03-A) and the
+**`<ceiba-page-builder>` Web Component** on top of it (03-B).
 
 `dist/` is committed and built for every tag, so PHP hosts can serve it without Node.
 
@@ -28,6 +28,29 @@ await editor.save('autosave');            // If-Match: "n", creates revision n +
 A host with its own routes (Campus) implements `Transport` (`load`, `save`, `preview`, `listComponents`,
 `listElementRules`) and keeps its session, CSRF and permissions.
 
+## Web Component
+
+```html
+<ceiba-page-builder id="editor"></ceiba-page-builder>
+<script type="module">
+  import '/vendor/ceiba-cms/editor/dist/ceiba-page-builder.js';   // defines the element
+  import { createHttpTransport } from '/vendor/ceiba-cms/editor/dist/ceiba-page-builder.js';
+  const editor = document.getElementById('editor');
+  editor.config = {
+    pageId: 'page-1', locale: 'es',
+    transport: createHttpTransport({ baseUrl: '/api/builder/v1', headers: () => ({ 'X-CSRF-TOKEN': csrf() }) }),
+    stylesheets: ['/css/bootstrap.min.css'],   // the page's CSS, only inside the canvas
+  };
+  editor.addEventListener('save-success', (e) => console.log(e.detail.revision));
+</script>
+```
+
+- **Layout:** palette, structure tree (WAI-ARIA tree), canvas and inspector, all in its own shadow root.
+- **Keyboard:** arrows navigate; Alt+arrows move and (un)indent; Delete removes; Ctrl+D duplicates; Ctrl+Z / Ctrl+Shift+Z undo and redo, never while typing in a field. Errors are announced in `aria-live`.
+- **Canvas:** an `<iframe sandbox="allow-same-origin">` (no scripts) drawn by the editor. Only safe tags and attributes are created; `javascript:`/`data:` URLs are dropped; links and forms never navigate; `html` embeds and unknown components show a placeholder.
+- **Inspector:** generated from the catalogue (`editorControls`, then `propsSchema`); invalid values (unsafe URL, non-numbers) are refused before they reach the document.
+- **Events** (`ready`, `selection-change`, `dirty-change`, `save-start`, `save-success`, `save-error`, `conflict`) carry ids and state, never content. Removing the element releases the session.
+
 ## Pieces
 
 | Folder | Role |
@@ -39,6 +62,7 @@ A host with its own routes (Campus) implements `Transport` (`load`, `save`, `pre
 | `src/core/history` | Undo/redo; bursts of the same edit merge (500 ms); configurable limit |
 | `src/core/transport` | `Transport` contract and the reference HTTP adapter; errors with stable codes |
 | `src/core/session` | `EditorSession`: states `loading · ready · dirty · saving · conflict · offline · load-error` |
+| `src/ui` | Web Component: `element.ts` (mount/unmount), `Editor.svelte` (layout), `canvas/`, `structure/`, `inspector/`, `palette/`, `toolbar/`, `i18n/` (es, en) |
 
 Limits are the server's (500 nodes, 15 levels, 2 MB). A failed command throws an `EditorError` and leaves the tree
 untouched. A conflict (412) is never resolved automatically: `resolveConflict('keep-mine' | 'take-theirs')`.
@@ -47,8 +71,12 @@ untouched. A conflict (412) is never resolved automatically: `resolveConflict('k
 
 ```bash
 npm ci
-npm run check   # files ≤ 200 lines, types, tests, build
+npm run check   # files ≤ 200 lines, types (tsc + svelte-check), unit tests, build, browser tests
+npm run demo    # two editors on a plain HTML page (demo/), with an in-memory server
 ```
+
+Browser tests (`e2e/`, Playwright) run against the demo: a page built, reordered, edited, undone and saved with the
+keyboard only; two instances on one page; sandboxed canvas; unsafe URLs refused; events without content.
 
 The contract test (`tests/contract`) starts `tests/host/server.php` — the module wired by hand on SQLite, without
 Laravel or the module router — and runs load → edit → save → reload against it. It needs `php` and `composer install`

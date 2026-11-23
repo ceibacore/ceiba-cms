@@ -1,6 +1,6 @@
 {
   "name": "@ceibacore/page-builder",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Framework-agnostic visual editor for ceiba-cms page documents (plan 03).",
   "license": "MIT",
@@ -11,21 +11,33 @@
     ".": {
       "types": "./dist/types/core/index.d.ts",
       "import": "./dist/core.js"
+    },
+    "./element": {
+      "types": "./dist/types/ui/index.d.ts",
+      "import": "./dist/ceiba-page-builder.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=22"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
     "test": "vitest run",
+    "e2e": "playwright test",
     "lines": "node tools/check-lines.mjs",
     "build": "vite build && tsc -p tsconfig.build.json",
-    "check": "npm run lines && npm run typecheck && npm run test && npm run build"
+    "check": "npm run lines && npm run typecheck && npm run test && npm run build && npm run e2e",
+    "demo": "vite --config demo/vite.config.ts"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
     "@types/node": "22.19.1",
+    "svelte": "^5.55.9",
+    "svelte-check": "^4.7.8",
     "typescript": "5.9.3",
     "vite": "8.3.5",
     "vitest": "5.0.5"
