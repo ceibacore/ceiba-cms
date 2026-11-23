@@ -50,6 +50,9 @@ A host with its own routes (Campus) implements `Transport` (`load`, `save`, `pre
 - **Canvas:** an `<iframe sandbox="allow-same-origin">` (no scripts) drawn by the editor. Only safe tags and attributes are created; `javascript:`/`data:` URLs are dropped; links and forms never navigate; `html` embeds and unknown components show a placeholder.
 - **Drag and drop:** drag nodes on the canvas, or components from the palette onto it. A line or a box shows where the drop lands; it turns red when the core refuses it (cycle, placement, limits), and Escape cancels. The keyboard alternative is the structure tree.
 - **Text in place:** double click (or F2 in the tree) edits the text of headings, text blocks, buttons and text tags directly on the canvas. Plain text only; text blocks keep line breaks. Enter (Ctrl+Enter in text blocks) or Escape finishes, and the whole edit is one undo step.
+- **Saving and publishing:** autosave after a quiet moment (2 s; at most every 15 s while typing; retries offline; `autosave: false` turns it off), Ctrl+S, and **Publish** for the saved revision when the server grants `pages.publish`. The toolbar shows the loaded revision and whether it is published.
+- **Conflicts:** when someone else saved first, a dialog takes the focus: keep my changes (saved over theirs), use the server version, or view it. Nothing is decided automatically.
+- **Server view:** the saved revision drawn by the module's own renderer (`GET pages/{id}/revisions/{n}/render`), in a frame without scripts, to check that what will be published matches the canvas.
 - **Inspector:** generated from the catalogue (`editorControls`, then `propsSchema`); invalid values (unsafe URL, non-numbers) are refused before they reach the document.
 - **Events** (`ready`, `selection-change`, `dirty-change`, `save-start`, `save-success`, `save-error`, `conflict`) carry ids and state, never content. Removing the element releases the session.
 

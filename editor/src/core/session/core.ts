@@ -5,6 +5,7 @@ import type { DocumentMeta } from '../document/normalize';
 import type { EditorError } from '../errors';
 import type { HistoryState } from '../history/history';
 import { canRedo, canUndo, emptyHistory } from '../history/history';
+import type { EditorCapabilities } from '../transport/types';
 import type { TreeState } from '../tree/state';
 import { emptyTree } from '../tree/state';
 import { Emitter } from './events';
@@ -26,6 +27,11 @@ export class SessionCore {
   commands: Commands | null = null;
   lastError: EditorError | null = null;
   conflictRevision: number | null = null;
+  /** Negotiated permissions and features; null when the transport does not report them. */
+  capabilities: EditorCapabilities | null = null;
+  /** Revision on the public site; null when never published or unknown. */
+  publishedRevision: number | null = null;
+  publishing = false;
 
   constructor(readonly options: ResolvedOptions) {}
 

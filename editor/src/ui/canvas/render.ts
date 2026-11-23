@@ -36,8 +36,16 @@ const element = (doc: Document, node: NodeRecord, labels: CanvasLabels, known: b
   };
   switch (node.type) {
     case 'container': return make('div', p.fluid ? 'container-fluid' : 'container');
-    case 'row': return make('div', `row g-${safeClass(text(p.gutter)) || '3'}`);
-    case 'col': return make('div', [p.xs ? `col-${Number(p.xs)}` : 'col', p.md ? `col-md-${Number(p.md)}` : ''].join(' '));
+    // Same classes as the server views (Frameworks/Bootstrap5/views/row.php and col.php).
+    case 'row': {
+      const gutter = safeClass(text(p.gutter));
+      return make('div', `row ${/^[0-5]$/.test(gutter) ? `g-${gutter}` : gutter || 'g-0'}`);
+    }
+    case 'col': {
+      const sizes = ['sm', 'md', 'lg', 'xl'].map((bp) => (Number(p[bp]) > 0 ? `col-${bp}-${Number(p[bp])}` : ''));
+      const xs = p.xs === undefined ? 12 : Number(p.xs);
+      return make('div', [xs > 0 ? `col-${xs}` : 'col', ...sizes].join(' ').replace(/\s+/g, ' ').trim());
+    }
     case 'heading': {
       const level = Math.min(6, Math.max(1, Number(p.level) || 2));
       const el = make(`h${level}`);

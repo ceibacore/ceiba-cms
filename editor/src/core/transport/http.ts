@@ -62,6 +62,32 @@ export const createHttpTransport = (options: HttpTransportOptions): Transport =>
       const data = await request(`${base}/components`);
       return (data.components ?? []) as ComponentDescriptorDto[];
     },
+    async capabilities() {
+      const data = await request(`${base}/capabilities`);
+      const permissions = Array.isArray(data.effectivePermissions) ? data.effectivePermissions.map(String) : [];
+      return { permissions, features: (data.features ?? {}) as Record<string, boolean> };
+    },
+    async status(pageId) {
+      const data = await request(`${page(pageId)}/status`);
+      const published = data.publishedRevision;
+      return {
+        revision: Number(data.revision),
+        publishedRevision: typeof published === 'number' ? published : null,
+        hasUnpublishedChanges: data.hasUnpublishedChanges === true,
+      };
+    },
+    async publish(pageId, revision, idempotencyKey) {
+      const data = await request(`${page(pageId)}/publish-revision`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey },
+        body: JSON.stringify({ revision }),
+      });
+      return { revision: Number(data.revision) };
+    },
+    async render(pageId, revision) {
+      const data = await request(`${page(pageId)}/revisions/${revision}/render`);
+      return typeof data.html === 'string' ? data.html : '';
+    },
     async listElementRules() {
       if (!options.rulesUrl) return [];
       const data = await request(options.rulesUrl);

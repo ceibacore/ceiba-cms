@@ -47,7 +47,7 @@ test('a page is created, edited and saved with the keyboard only', async ({ page
 
   await editor.getByRole('button', { name: 'Guardar' }).focus();
   await page.keyboard.press('Enter');
-  await expect(editor.getByText('Revisión 2', { exact: true })).toBeVisible();
+  await expect(editor.getByText(/^Revisión 2 ·/)).toBeVisible();
   const saved = await page.evaluate(() => (window as unknown as { servers: { a: { latest(): unknown } } }).servers.a.latest());
   expect(JSON.stringify(saved)).toContain('"text":"Hola mundo"');
   expect((saved as { root: { type: string; children: { type: string }[] }[] }).root[0]?.children.map((c) => c.type))

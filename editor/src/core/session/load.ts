@@ -10,9 +10,13 @@ export const loadSession = async (core: SessionCore): Promise<void> => {
   const { transport, pageId, ids, limits } = core.options;
   core.setStatus('loading');
   try {
-    const [components, rules, draft] = await Promise.all([
+    const [components, rules, draft, capabilities, status] = await Promise.all([
       transport.listComponents(), transport.listElementRules(), transport.load(pageId),
+      transport.capabilities?.().catch(() => null) ?? null,
+      transport.status?.(pageId).catch(() => null) ?? null,
     ]);
+    core.capabilities = capabilities;
+    core.publishedRevision = status?.publishedRevision ?? null;
     core.catalogue = createCatalogue(components, rules);
     core.commands = createCommands({ catalogue: core.catalogue, limits, ids });
     const loaded = fromDocument(draft.document, ids);

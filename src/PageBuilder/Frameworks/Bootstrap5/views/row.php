@@ -1,5 +1,9 @@
 <?php
-$gutter = $props['gutter'] ?? 'g-0';
+$gutter = (string) ($props['gutter'] ?? 'g-0');
+// The catalogue offers the gutter as a number (1-5): it is the Bootstrap class g-{n}.
+if (preg_match('/^[0-5]$/', $gutter)) {
+    $gutter = 'g-' . $gutter;
+}
 $align = $props['align'] ?? '';
 $justify = $props['justify'] ?? '';
 $class = $props['class'] ?? '';

@@ -3,6 +3,7 @@ import type { Commands } from '../commands';
 import type { DocumentMeta } from '../document/normalize';
 import type { EditorError } from '../errors';
 import type { HistoryState } from '../history/history';
+import type { EditorCapabilities } from '../transport/types';
 import type { TreeState } from '../tree/state';
 import { Emitter } from './events';
 import type { ResolvedOptions } from './options';
@@ -23,6 +24,11 @@ export declare class SessionCore {
     commands: Commands | null;
     lastError: EditorError | null;
     conflictRevision: number | null;
+    /** Negotiated permissions and features; null when the transport does not report them. */
+    capabilities: EditorCapabilities | null;
+    /** Revision on the public site; null when never published or unknown. */
+    publishedRevision: number | null;
+    publishing: boolean;
     constructor(options: ResolvedOptions);
     get dirty(): boolean;
     setStatus(status: SessionStatus): void;
