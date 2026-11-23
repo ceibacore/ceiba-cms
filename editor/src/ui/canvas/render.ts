@@ -1,4 +1,5 @@
 import type { Catalogue, NodeRecord, TreeState } from '../../core';
+import { isMultiline } from './inline-edit';
 import { safeClass, safeUrl, text } from './sanitize';
 
 /** HTML tags the canvas may create. Anything else (script, iframe, form, object…) becomes a placeholder. */
@@ -89,6 +90,7 @@ export const renderCanvas = (
     const el = element(doc, node, labels, catalogue.has(node.type));
     el.dataset.ceibaId = id;
     if (id === selection) el.dataset.ceibaSelected = '';
+    if (isMultiline(node.type)) el.dataset.ceibaMultiline = '';
     if (el.className !== 'ceiba-placeholder' && el.tagName !== 'IMG') {
       for (const child of node.children) {
         const built = build(child);

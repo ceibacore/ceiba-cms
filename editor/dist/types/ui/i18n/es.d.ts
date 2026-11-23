@@ -16,7 +16,7 @@ export declare const es: {
     readonly 'palette.insert': "Insertar {label}";
     readonly 'structure.title': "Estructura";
     readonly 'structure.empty': "La página está vacía. Inserta un componente.";
-    readonly 'structure.help': "Flechas para navegar · Alt+flechas para mover · Supr para borrar · Ctrl+D para duplicar";
+    readonly 'structure.help': "Flechas para navegar · Alt+flechas para mover · F2 para editar el texto · Supr para borrar · Ctrl+D para duplicar";
     readonly 'canvas.title': "Lienzo de la página";
     readonly 'canvas.unknown': "Componente no disponible: {type}";
     readonly 'canvas.html': "HTML incrustado (no se muestra mientras se edita)";
@@ -34,6 +34,10 @@ export declare const es: {
     readonly 'announce.removed': "Elemento eliminado";
     readonly 'announce.moved': "Elemento movido";
     readonly 'announce.saved': "Guardado como revisión {revision}";
+    readonly 'announce.dragCancelled': "Arrastre cancelado";
+    readonly 'announce.editing': "Editando el texto. Intro o Escape para terminar.";
+    readonly 'announce.editDone': "Texto actualizado";
+    readonly 'canvas.help': "Arrastra para mover; doble clic en un texto para editarlo. Con teclado: el árbol de estructura (F2 edita el texto).";
     readonly 'error.NODE_NOT_FOUND': "El elemento ya no existe.";
     readonly 'error.INVALID_TARGET': "Destino no válido.";
     readonly 'error.CYCLE': "No se puede mover un elemento dentro de sí mismo.";

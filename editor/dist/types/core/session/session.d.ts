@@ -1,4 +1,4 @@
-import type { Command } from '../commands/types';
+import type { Command, CommandContext } from '../commands/types';
 import type { PageDocument } from '../document/types';
 import { EditorError } from '../errors';
 import type { TreeState } from '../tree/state';
@@ -22,6 +22,8 @@ export declare class EditorSession {
     get lastError(): EditorError | null;
     get canUndo(): boolean;
     get canRedo(): boolean;
+    /** Catalogue, limits and ids of the loaded page, to try a command without applying it (drop targets). */
+    get commandContext(): CommandContext | null;
     load(): Promise<void>;
     /** Applies a command. On error the tree is unchanged and the EditorError is thrown. */
     dispatch(command: Command): void;
