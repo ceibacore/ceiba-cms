@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { EditorStore } from '../model/store.svelte';
+  import StylesPanel from '../styles/StylesPanel.svelte';
   import Advanced from './advanced/Advanced.svelte';
   import Field from './Field.svelte';
   import { fieldsFor } from './fields';
@@ -54,7 +55,7 @@
             onChange={(value) => setProp(field.key, value)} />
         {/each}
       {/if}
-      {#if rule}<Advanced {store} {node} {uid} />{/if}
+      {#if rule}<StylesPanel {store} {node} {uid} /><Advanced {store} {node} {uid} />{/if}
       <div class="actions">
         <button type="button" onclick={() => node && store.run({ kind: 'duplicate', id: node.id })}>{t('inspector.duplicate')}</button>
         {#if canTemplates}<button type="button" onclick={onSaveTemplate}>{t('inspector.saveTemplate')}</button>{/if}

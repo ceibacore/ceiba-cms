@@ -1,4 +1,5 @@
-import type { Catalogue, Command, EditorSession, SessionStatus, TreeState } from '../../core';
+import type { Catalogue, Command, DesignDocument, EditorSession, SessionStatus, TreeState } from '../../core';
+import { SiteDesignSession } from '../../core';
 import type { MessageKey, Translate } from '../i18n';
 /**
  * Reactive view of an EditorSession for the Svelte components. Every change goes through the session;
@@ -19,6 +20,13 @@ export declare class EditorStore {
     canPublish: boolean;
     publishing: boolean;
     conflictRevision: number | null;
+    /** Site design (plan 04): working copy shown on the canvas, and the width/state the style controls edit. */
+    readonly designSession: SiteDesignSession;
+    design: DesignDocument;
+    designDirty: boolean;
+    /** Breakpoint id the canvas shows and the style controls edit; null = base (smallest screens). */
+    viewport: string | null;
+    styleState: string | null;
     /** Polite announcement (results) and assertive one (errors). */
     message: string;
     alert: string;
@@ -37,6 +45,7 @@ export declare class EditorStore {
     redo(): void;
     select(id: string | null): void;
     save(): Promise<void>;
+    loadDesign(): Promise<void>;
     destroy(): void;
     private guard;
 }

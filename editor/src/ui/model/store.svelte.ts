@@ -1,5 +1,5 @@
-import type { Catalogue, Command, EditorSession, SessionStatus, TreeState } from '../../core';
-import { EditorError } from '../../core';
+import type { Catalogue, Command, DesignDocument, EditorSession, SessionStatus, TreeState } from '../../core';
+import { EditorError, SiteDesignSession, defaultDesign } from '../../core';
 import type { MessageKey, Translate } from '../i18n';
 
 /**
@@ -19,12 +19,24 @@ export class EditorStore {
   canPublish = $state(false);
   publishing = $state(false);
   conflictRevision = $state<number | null>(null);
+  /** Site design (plan 04): working copy shown on the canvas, and the width/state the style controls edit. */
+  readonly designSession: SiteDesignSession;
+  design = $state.raw<DesignDocument>(defaultDesign());
+  designDirty = $state(false);
+  /** Breakpoint id the canvas shows and the style controls edit; null = base (smallest screens). */
+  viewport = $state<string | null>(null);
+  styleState = $state<string | null>(null);
   /** Polite announcement (results) and assertive one (errors). */
   message = $state('');
   alert = $state('');
   private readonly stops: (() => void)[] = [];
 
   constructor(readonly session: EditorSession, readonly t: Translate) {
+    this.designSession = new SiteDesignSession(session.transport);
+    this.stops.push(this.designSession.events.on('change', () => {
+      this.design = this.designSession.design;
+      this.designDirty = this.designSession.dirty;
+    }));
     for (const event of ['status-change', 'dirty-change', 'history-change', 'selection-change', 'ready',
       'save-success', 'conflict', 'publish-start', 'publish-success', 'publish-error'] as const) {
       this.stops.push(session.events.on(event, () => this.sync()));
@@ -119,6 +131,10 @@ export class EditorStore {
       this.sync();
       this.fail(error);
     }
+  }
+
+  async loadDesign(): Promise<void> {
+    await this.designSession.load();
   }
 
   destroy(): void {
