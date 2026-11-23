@@ -84,4 +84,20 @@ describe('HTTP transport (module /api/builder/v1)', () => {
     const transport = createHttpTransport({ baseUrl: '/b', fetch: fakeFetch(409, { error: { code: 'PUBLIC_CONTENT_DRIFT' } }) });
     await expect(transport.publish?.('page-1', 2, 'k')).rejects.toMatchObject({ code: 'PUBLIC_CONTENT_DRIFT' });
   });
+
+  it('lists and saves templates and imports HTML through the server', async () => {
+    const calls: Call[] = [];
+    const reply = (data: unknown) => createHttpTransport({ baseUrl: '/b', fetch: fakeFetch(200, { success: true, data }, calls) });
+    const template = { id: 't1', name: 'Hero', category: 'general', nodes: [{ type: 'div', children: [] }] };
+    expect(await reply({ templates: [template] }).listTemplates?.()).toEqual([template]);
+    expect(await reply({ template }).saveTemplate?.({ name: 'Hero', category: 'general', nodes: [] })).toEqual(template);
+    expect(await reply({ nodes: [{ type: 'p' }], warnings: ['w'] }).importHtml?.('<p>x</p>'))
+      .toEqual({ nodes: [{ type: 'p' }], warnings: ['w'] });
+    expect(calls.map((c) => [c.init.method ?? 'GET', c.url, c.init.body ?? null])).toEqual([
+      ['GET', '/b/templates', null],
+      ['POST', '/b/templates', '{"name":"Hero","category":"general","nodes":[]}'],
+      ['POST', '/b/import-html', '{"html":"<p>x</p>"}'],
+    ]);
+  });
 });
+

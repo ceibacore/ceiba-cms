@@ -1,10 +1,13 @@
 <script lang="ts">
   import type { ElementRule } from '../../core';
   import { defaultNode, insertTarget } from '../model/insert';
+  import type { ContentActions } from '../content/actions.svelte';
   import type { DragController } from '../drag/controller';
   import type { EditorStore } from '../model/store.svelte';
 
-  let { store, drag, onInserted }: { store: EditorStore; drag: DragController; onInserted: (id: string) => void } = $props();
+  let { store, drag, content, onInserted, onImport }: {
+    store: EditorStore; drag: DragController; content: ContentActions; onInserted: (id: string) => void; onImport: () => void;
+  } = $props();
   const t = $derived(store.t);
 
   /** Components of the module plus the HTML tags people reach for; the rest stay in the catalogue for imports. */
@@ -32,6 +35,21 @@
 
 <section class="palette" aria-labelledby="cpb-palette-title">
   <h2 id="cpb-palette-title">{t('palette.title')}</h2>
+  {#if content.canImport}
+    <button type="button" class="wide" onclick={onImport}>{t('palette.import')}</button>
+  {/if}
+  {#if content.canTemplates && content.templates.length > 0}
+    <h3>{t('palette.templates')}</h3>
+    <ul>
+      {#each content.templates as template (template.id)}
+        <li>
+          <button type="button" aria-label={t('palette.insertTemplate', { name: template.name })}
+            onclick={() => { if (content.insertNodes(template.nodes, template.name) && store.selection) onInserted(store.selection); }}
+          >{template.name}</button>
+        </li>
+      {/each}
+    </ul>
+  {/if}
   {#each groups as [category, rules] (category)}
     <h3>{category.replace(/_/g, ' ')}</h3>
     <ul>
@@ -53,5 +71,6 @@
   ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: .25rem; }
   button { touch-action: none; width: 100%; font: inherit; font-size: .8rem; padding: .35rem; border: 1px solid var(--cpb-border); border-radius: 6px; background: var(--cpb-surface); color: inherit; cursor: pointer; text-align: left; }
   button:hover { border-color: var(--cpb-accent); }
+  .wide { margin-bottom: .5rem; text-align: center; }
   button:focus-visible { outline: 2px solid var(--cpb-accent); outline-offset: 1px; }
 </style>

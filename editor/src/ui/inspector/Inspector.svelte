@@ -1,9 +1,12 @@
 <script lang="ts">
   import type { EditorStore } from '../model/store.svelte';
+  import Advanced from './advanced/Advanced.svelte';
   import Field from './Field.svelte';
   import { fieldsFor } from './fields';
 
-  let { store, uid, onRemoved }: { store: EditorStore; uid: string; onRemoved: () => void } = $props();
+  let { store, uid, canTemplates = false, onRemoved, onSaveTemplate }: {
+    store: EditorStore; uid: string; canTemplates?: boolean; onRemoved: () => void; onSaveTemplate: () => void;
+  } = $props();
   const t = $derived(store.t);
   const node = $derived(store.selection ? store.tree.nodes[store.selection] : undefined);
   const rule = $derived(node ? store.catalogue?.get(node.type) : undefined);
@@ -51,8 +54,10 @@
             onChange={(value) => setProp(field.key, value)} />
         {/each}
       {/if}
+      {#if rule}<Advanced {store} {node} {uid} />{/if}
       <div class="actions">
         <button type="button" onclick={() => node && store.run({ kind: 'duplicate', id: node.id })}>{t('inspector.duplicate')}</button>
+        {#if canTemplates}<button type="button" onclick={onSaveTemplate}>{t('inspector.saveTemplate')}</button>{/if}
         <button type="button" class="danger" onclick={remove}>{t('inspector.remove')}</button>
       </div>
     {/key}
@@ -68,7 +73,7 @@
   .field { display: grid; gap: .25rem; margin-bottom: .75rem; }
   label { font-size: .8rem; font-weight: 600; }
   input { font: inherit; font-size: .875rem; padding: .35rem .5rem; border: 1px solid var(--cpb-border); border-radius: 6px; background: var(--cpb-surface); color: inherit; }
-  .actions { display: flex; gap: .5rem; margin-top: 1rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
   button { font: inherit; font-size: .8rem; padding: .35rem .75rem; border: 1px solid var(--cpb-border); border-radius: 6px; background: var(--cpb-surface); color: inherit; cursor: pointer; }
   button.danger { color: var(--cpb-danger); }
   button:focus-visible, input:focus-visible { outline: 2px solid var(--cpb-accent); outline-offset: 1px; }

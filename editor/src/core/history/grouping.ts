@@ -8,6 +8,8 @@ export const groupKeyOf = (command: Command): string | null => {
   switch (command.kind) {
     case 'updateProps':
       return `props:${command.id}:${[...Object.keys(command.set), ...(command.unset ?? [])].sort().join(',')}`;
+    case 'updateFields':
+      return `fields:${command.id}:${[...Object.keys(command.set), ...(command.unset ?? [])].sort().join(',')}`;
     case 'rename':
       return `rename:${command.id}`;
     default:

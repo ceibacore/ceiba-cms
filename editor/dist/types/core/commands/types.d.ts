@@ -38,6 +38,11 @@ export type Command = {
     readonly name: string | null;
     readonly label: string | null;
 } | {
+    readonly kind: 'updateFields';
+    readonly id: string;
+    readonly set: Readonly<Record<string, unknown>>;
+    readonly unset?: readonly string[];
+} | {
     readonly kind: 'replace';
     readonly id: string;
     readonly node: RawNode;

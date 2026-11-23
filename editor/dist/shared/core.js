@@ -150,6 +150,7 @@ var e = class extends Error {
 }), E = (e) => {
 	switch (e.kind) {
 		case "updateProps": return `props:${e.id}:${[...Object.keys(e.set), ...e.unset ?? []].sort().join(",")}`;
+		case "updateFields": return `fields:${e.id}:${[...Object.keys(e.set), ...e.unset ?? []].sort().join(",")}`;
 		case "rename": return `rename:${e.id}`;
 		default: return null;
 	}
@@ -465,7 +466,36 @@ var e = class extends Error {
 		},
 		focus: s.id
 	};
-}, de = (e) => typeof e == "object" && e && !Array.isArray(e) ? { ...e } : {}, fe = {
+}, J = [
+	"loop",
+	"condition",
+	"bindings"
+], de = (e, n, r) => {
+	let i = c(e, n.id);
+	R(r.catalogue, i.type);
+	let o = [...Object.keys(n.set), ...n.unset ?? []], s = o.find((e) => !J.includes(e));
+	s !== void 0 && t("INVALID_TARGET", `${s} cannot be changed here`, { field: s });
+	let l = {
+		...i.fields,
+		...n.set
+	};
+	for (let e of n.unset ?? []) delete l[e];
+	let u = {}, d = [];
+	for (let e of o) e in i.fields ? u[e] = i.fields[e] : d.push(e);
+	return {
+		state: a(e, {
+			...i,
+			fields: l
+		}),
+		inverse: {
+			kind: "updateFields",
+			id: n.id,
+			set: u,
+			unset: d
+		},
+		focus: n.id
+	};
+}, fe = (e) => typeof e == "object" && e && !Array.isArray(e) ? { ...e } : {}, pe = {
 	insert: oe,
 	restore: se,
 	remove: K,
@@ -474,7 +504,7 @@ var e = class extends Error {
 	updateProps: (e, t, n) => {
 		let r = c(e, t.id);
 		R(n.catalogue, r.type);
-		let i = de(r.fields.props), o = {
+		let i = fe(r.fields.props), o = {
 			...i,
 			...t.set
 		};
@@ -498,15 +528,16 @@ var e = class extends Error {
 			focus: t.id
 		};
 	},
+	updateFields: de,
 	rename: le,
 	replace: ue
-}, J = (e, t, n) => {
-	let r = fe[t.kind];
+}, Y = (e, t, n) => {
+	let r = pe[t.kind];
 	return r(e, t, n);
-}, Y = (e) => ({
+}, X = (e) => ({
 	context: e,
-	apply: (t, n) => J(t, n, e)
-}), X = async (t) => {
+	apply: (t, n) => Y(t, n, e)
+}), Z = async (t) => {
 	let { transport: n, pageId: r, ids: i, limits: a } = t.options;
 	t.setStatus("loading");
 	try {
@@ -517,7 +548,7 @@ var e = class extends Error {
 			n.capabilities?.().catch(() => null) ?? null,
 			n.status?.(r).catch(() => null) ?? null
 		]);
-		t.capabilities = c, t.publishedRevision = l?.publishedRevision ?? null, t.catalogue = P(e, o), t.commands = Y({
+		t.capabilities = c, t.publishedRevision = l?.publishedRevision ?? null, t.catalogue = P(e, o), t.commands = X({
 			catalogue: t.catalogue,
 			limits: a,
 			ids: i
@@ -530,46 +561,46 @@ var e = class extends Error {
 	} catch (n) {
 		throw t.lastError = n instanceof e ? n : new e("SERVER", String(n)), t.setStatus("load-error"), t.lastError;
 	}
-}, Z = () => {
+}, Q = () => {
 	let e = /* @__PURE__ */ new Uint8Array(8);
 	return globalThis.crypto.getRandomValues(e), "n" + Array.from(e, (e) => e.toString(36).padStart(2, "0")).join("").slice(0, 12);
-}, pe = (e = "n") => {
+}, me = (e = "n") => {
 	let t = 0;
 	return () => `${e}${++t}`;
-}, me = (e) => ({
+}, he = (e) => ({
 	pageId: e.pageId,
 	transport: e.transport,
-	ids: e.ids ?? Z,
+	ids: e.ids ?? Q,
 	limits: e.limits ?? B,
 	history: {
 		...D,
 		...e.history
 	},
 	now: e.now ?? (() => Date.now())
-}), Q = (e) => {
+}), $ = (e) => {
 	if (!e.options.transport.publish) return !1;
 	let t = e.capabilities;
 	return t ? t.features.revisionPublish ?? t.permissions.includes("pages.publish") : !0;
-}, he = () => {
+}, ge = () => {
 	let e = /* @__PURE__ */ new Uint8Array(16);
 	return globalThis.crypto.getRandomValues(e), Array.from(e, (e) => e.toString(16).padStart(2, "0")).join("");
-}, ge = async (t) => {
+}, _e = async (t) => {
 	let n = t.options.transport.publish;
-	if (!n || !Q(t)) throw new e("AUTHORIZATION_DENIED", "Publishing is not allowed here");
+	if (!n || !$(t)) throw new e("AUTHORIZATION_DENIED", "Publishing is not allowed here");
 	if (t.status !== "ready" || t.dirty) throw new e("NOTHING_TO_PUBLISH", "Save the changes before publishing", { status: t.status });
 	if (t.publishedRevision === t.baseRevision) throw new e("NOTHING_TO_PUBLISH", "This revision is already published");
 	if (t.publishing) throw new e("SAVE_IN_PROGRESS", "Publishing is already running");
 	let r = t.baseRevision;
 	t.publishing = !0, t.events.emit("publish-start", { revision: r });
 	try {
-		return await n(t.options.pageId, r, he()), t.publishedRevision = r, t.events.emit("publish-success", { revision: r }), r;
+		return await n(t.options.pageId, r, ge()), t.publishedRevision = r, t.events.emit("publish-success", { revision: r }), r;
 	} catch (n) {
 		let r = n instanceof e ? n : new e("SERVER", String(n));
 		throw t.lastError = r, t.events.emit("publish-error", { error: r }), r;
 	} finally {
 		t.publishing = !1;
 	}
-}, _e = async (t, n) => {
+}, ve = async (t, n) => {
 	if (t.status === "loading" || t.status === "load-error") throw new e("INVALID_DOCUMENT", "Nothing loaded to save");
 	if (t.status === "saving") throw new e("SAVE_IN_PROGRESS", "A save is already running");
 	if (t.status === "conflict") throw new e("REVISION_CONFLICT", "Resolve the conflict before saving", { currentRevision: String(t.conflictRevision ?? "") });
@@ -598,12 +629,12 @@ var e = class extends Error {
 		} else t.setStatus(r.code === "NETWORK" ? "offline" : a === "offline" ? "dirty" : a), t.events.emit("save-error", { error: r });
 		throw r;
 	}
-}, ve = async (e, t) => {
-	e.status === "conflict" && (t === "take-theirs" ? await X(e) : (e.baseRevision = e.conflictRevision ?? (await e.options.transport.load(e.options.pageId)).revision, e.conflictRevision = null, e.setStatus("dirty"), await _e(e, "edit")));
-}, ye = class {
+}, ye = async (e, t) => {
+	e.status === "conflict" && (t === "take-theirs" ? await Z(e) : (e.baseRevision = e.conflictRevision ?? (await e.options.transport.load(e.options.pageId)).revision, e.conflictRevision = null, e.setStatus("dirty"), await ve(e, "edit")));
+}, be = class {
 	core;
 	constructor(e) {
-		this.core = new re(me(e));
+		this.core = new re(he(e));
 	}
 	get events() {
 		return this.core.events;
@@ -645,7 +676,7 @@ var e = class extends Error {
 		return this.core.publishedRevision;
 	}
 	get canPublish() {
-		return Q(this.core);
+		return $(this.core);
 	}
 	get publishing() {
 		return this.core.publishing;
@@ -660,7 +691,7 @@ var e = class extends Error {
 		return this.core.options.transport;
 	}
 	load() {
-		return X(this.core);
+		return Z(this.core);
 	}
 	dispatch(e) {
 		let t = this.editable().apply(this.core.tree, e);
@@ -682,13 +713,13 @@ var e = class extends Error {
 		this.core.select(e);
 	}
 	save(e = "edit") {
-		return _e(this.core, e);
+		return ve(this.core, e);
 	}
 	publish() {
-		return ge(this.core);
+		return _e(this.core);
 	}
 	resolveConflict(e) {
-		return ve(this.core, e);
+		return ye(this.core, e);
 	}
 	toDocument() {
 		return T(this.core.tree, this.core.meta, this.core.baseRevision + 1);
@@ -700,7 +731,7 @@ var e = class extends Error {
 		if (!this.core.commands || this.core.status === "loading" || this.core.status === "load-error" || this.core.status === "saving") throw new e("INVALID_DOCUMENT", `The editor cannot change the page while ${this.core.status}`);
 		return this.core.commands;
 	}
-}, be = (e, t) => {
+}, xe = (e, t) => {
 	let n = [], r = /* @__PURE__ */ new Set(), i = (a, o, s, c) => {
 		if (c.has(a)) {
 			n.push({
@@ -744,16 +775,16 @@ var e = class extends Error {
 		code: "MAX_NODES",
 		id: ""
 	}), n;
-}, xe = (e) => {
+}, Se = (e) => {
 	let t = {};
 	if (typeof e == "object" && e) for (let [n, r] of Object.entries(e)) (typeof r == "string" || typeof r == "number") && (t[n] = String(r));
 	return t;
-}, Se = (e, t) => t === "PUBLIC_CONTENT_DRIFT" ? "PUBLIC_CONTENT_DRIFT" : e === 412 || t === "REVISION_CONFLICT" ? "REVISION_CONFLICT" : e === 403 || e === 401 ? "AUTHORIZATION_DENIED" : e === 422 || e === 400 ? "VALIDATION_FAILED" : e === 404 ? "NODE_NOT_FOUND" : "SERVER", Ce = (t, n) => {
-	let r = n?.error ?? {}, i = typeof r.code == "string" ? r.code : "", a = xe(r.fieldErrors);
+}, Ce = (e, t) => t === "PUBLIC_CONTENT_DRIFT" ? "PUBLIC_CONTENT_DRIFT" : e === 412 || t === "REVISION_CONFLICT" ? "REVISION_CONFLICT" : e === 403 || e === 401 ? "AUTHORIZATION_DENIED" : e === 422 || e === 400 ? "VALIDATION_FAILED" : e === 404 ? "NODE_NOT_FOUND" : "SERVER", we = (t, n) => {
+	let r = n?.error ?? {}, i = typeof r.code == "string" ? r.code : "", a = Se(r.fieldErrors);
 	typeof r.requestId == "string" && (a.requestId = r.requestId), i !== "" && (a.apiCode = i), a.status = String(t);
 	let o = typeof r.message == "string" ? r.message : `HTTP ${t}`;
-	return new e(Se(t, i), o, a);
-}, we = (t) => new e("NETWORK", t instanceof Error ? t.message : "Network error"), Te = (t) => {
+	return new e(Ce(t, i), o, a);
+}, Te = (t) => new e("NETWORK", t instanceof Error ? t.message : "Network error"), Ee = (t) => {
 	let n = t.fetch ?? globalThis.fetch.bind(globalThis), r = t.baseUrl.replace(/\/+$/, ""), i = (e) => `${r}/pages/${encodeURIComponent(e)}`, a = async (r, i = {}) => {
 		let a;
 		try {
@@ -767,10 +798,10 @@ var e = class extends Error {
 				}
 			});
 		} catch (e) {
-			throw we(e);
+			throw Te(e);
 		}
 		let o = await a.json().catch(() => null);
-		if (!a.ok) throw Ce(a.status, o);
+		if (!a.ok) throw we(a.status, o);
 		let s = o?.data;
 		if (typeof s != "object" || !s) throw new e("SERVER", "Unexpected response", { status: String(a.status) });
 		return s;
@@ -830,13 +861,35 @@ var e = class extends Error {
 			let n = await a(`${i(e)}/revisions/${t}/render`);
 			return typeof n.html == "string" ? n.html : "";
 		},
+		async listTemplates() {
+			let e = await a(`${r}/templates`);
+			return Array.isArray(e.templates) ? e.templates : [];
+		},
+		async saveTemplate(e) {
+			return (await a(`${r}/templates`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(e)
+			})).template;
+		},
+		async importHtml(e) {
+			let t = await a(`${r}/import-html`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ html: e })
+			});
+			return {
+				nodes: Array.isArray(t.nodes) ? t.nodes : [],
+				warnings: Array.isArray(t.warnings) ? t.warnings.map(String) : []
+			};
+		},
 		async listElementRules() {
 			if (!t.rulesUrl) return [];
 			let e = await a(t.rulesUrl);
 			return Object.values(e.html_tags ?? {});
 		}
 	};
-}, $ = {
+}, De = {
 	idleMs: 2e3,
 	maxWaitMs: 15e3,
 	retryMs: [
@@ -845,11 +898,11 @@ var e = class extends Error {
 		15e3,
 		3e4
 	]
-}, Ee = {
+}, Oe = {
 	set: (e, t) => setTimeout(e, t),
 	clear: (e) => clearTimeout(e),
 	now: () => Date.now()
-}, De = class {
+}, ke = class {
 	session;
 	options;
 	timers;
@@ -857,7 +910,7 @@ var e = class extends Error {
 	firstChange = null;
 	retries = 0;
 	stops = [];
-	constructor(e, t = $, n = Ee) {
+	constructor(e, t = De, n = Oe) {
 		this.session = e, this.options = t, this.timers = n;
 	}
 	start() {
@@ -898,7 +951,7 @@ var e = class extends Error {
 	reset() {
 		this.timer !== null && this.timers.clear(this.timer), this.timer = null, this.firstChange = null, this.session.status !== "offline" && (this.retries = 0);
 	}
-}, Oe = (e) => new ye(e);
-export { w as A, p as B, N as C, O as D, A as E, y as F, n as G, m as H, v as I, a as J, s as K, d as L, T as M, b as N, k as O, _ as P, c as R, D as S, j as T, l as U, u as V, r as W, e as X, o as Y, t as Z, R as _, Ce as a, I as b, Z as c, J as d, G as f, U as g, V as h, Te as i, C as j, E as k, pe as l, H as m, De as n, be as o, B as p, i as q, $ as r, ye as s, Oe as t, Y as u, L as v, M as w, P as x, z as y, f as z };
+}, Ae = (e) => new be(e);
+export { E as A, f as B, D as C, A as D, j as E, _ as F, r as G, u as H, y as I, i as J, n as K, v as L, C as M, T as N, O, b as P, t as Q, d as R, P as S, M as T, m as U, p as V, l as W, o as X, a as Y, e as Z, U as _, we as a, z as b, Q as c, Y as d, J as f, V as g, H as h, Ee as i, w as j, k, me as l, B as m, ke as n, xe as o, G as p, s as q, De as r, be as s, Ae as t, X as u, R as v, N as w, I as x, L as y, c as z };
 
 //# sourceMappingURL=core.js.map

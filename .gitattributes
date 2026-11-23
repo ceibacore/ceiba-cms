@@ -1,0 +1,15 @@
+# Composer installs only the built editor (editor/dist); its sources and tooling stay in the repository.
+/editor/src export-ignore
+/editor/tests export-ignore
+/editor/e2e export-ignore
+/editor/demo export-ignore
+/editor/tools export-ignore
+/editor/.npmrc export-ignore
+/editor/.gitignore export-ignore
+/editor/package-lock.json export-ignore
+/editor/playwright.config.ts export-ignore
+/editor/svelte.config.js export-ignore
+/editor/tsconfig.json export-ignore
+/editor/tsconfig.build.json export-ignore
+/editor/vite.config.ts export-ignore
+/.ia export-ignore

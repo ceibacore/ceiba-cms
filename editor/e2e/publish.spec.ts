@@ -40,12 +40,12 @@ test('a conflict asks what to do: keep mine overwrites, server version reloads',
   await b.getByRole('treeitem', { name: 'Button' }).click();
   await page.keyboard.press('Delete');
   await page.evaluate(() => (window as unknown as Demo).servers.b?.saveElsewhere());
-  await b.getByRole('button', { name: 'Save' }).click();
+  await b.getByRole('button', { name: 'Save', exact: true }).click();
 
   const dialog = b.getByRole('alertdialog', { name: 'Someone else saved this page' });
   await expect(dialog).toBeFocused();
   await expect(dialog).toContainText('The server has revision 2 and you started from 1.');
-  await expect(b.getByRole('button', { name: 'Save' })).toBeDisabled();
+  await expect(b.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
   await dialog.getByRole('button', { name: 'Use the server version' }).click();
   await expect(dialog).toHaveCount(0);
   await expect(b.getByRole('treeitem', { name: 'Button' })).toBeVisible();
@@ -54,7 +54,7 @@ test('a conflict asks what to do: keep mine overwrites, server version reloads',
   await b.getByRole('treeitem', { name: 'Text Block' }).click();
   await page.keyboard.press('Delete');
   await page.evaluate(() => (window as unknown as Demo).servers.b?.saveElsewhere());
-  await b.getByRole('button', { name: 'Save' }).click();
+  await b.getByRole('button', { name: 'Save', exact: true }).click();
   await b.getByRole('button', { name: 'Keep my changes' }).click();
   await expect(b.getByText(/^Revision 4 ·/)).toBeVisible();
   const saved = await page.evaluate(() => JSON.stringify((window as unknown as Demo).servers.b?.latest()));

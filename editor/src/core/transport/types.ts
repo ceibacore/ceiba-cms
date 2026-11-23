@@ -1,5 +1,5 @@
 import type { ComponentDescriptorDto, HtmlTagRuleDto } from '../catalogue/types';
-import type { PageDocument } from '../document/types';
+import type { PageDocument, RawNode } from '../document/types';
 
 export type SaveReason = 'edit' | 'autosave';
 
@@ -28,6 +28,17 @@ export interface Transport {
   publish?(pageId: string, revision: number, idempotencyKey: string): Promise<{ revision: number }>;
   /** HTML of a stored revision drawn by the server renderer (content only). */
   render?(pageId: string, revision: number): Promise<string>;
+  /** Optional (03-E2): reusable blocks of the site, and HTML turned into nodes by the server importer. */
+  listTemplates?(): Promise<TemplateSummary[]>;
+  saveTemplate?(template: { name: string; category: string; nodes: RawNode[] }): Promise<TemplateSummary>;
+  importHtml?(html: string): Promise<{ nodes: RawNode[]; warnings: string[] }>;
+}
+
+export interface TemplateSummary {
+  readonly id: string;
+  readonly name: string;
+  readonly category: string;
+  readonly nodes: readonly RawNode[];
 }
 
 /** Permissions and features negotiated with the server (GET {prefix}/capabilities). */

@@ -2,7 +2,8 @@ import type { ComponentDescriptorDto, HtmlTagRuleDto } from '../catalogue/types'
 import { parseDocument } from '../document/normalize';
 import { EditorError } from '../errors';
 import { errorFromResponse, networkError } from './errors';
-import type { Transport } from './types';
+import type { RawNode } from '../document/types';
+import type { TemplateSummary, Transport } from './types';
 
 export interface HttpTransportOptions {
   /** Prefix of the editor API, e.g. "/api/builder/v1" or "https://cms.test/api/builder/v1". */
@@ -87,6 +88,25 @@ export const createHttpTransport = (options: HttpTransportOptions): Transport =>
     async render(pageId, revision) {
       const data = await request(`${page(pageId)}/revisions/${revision}/render`);
       return typeof data.html === 'string' ? data.html : '';
+    },
+    async listTemplates() {
+      const data = await request(`${base}/templates`);
+      return (Array.isArray(data.templates) ? data.templates : []) as TemplateSummary[];
+    },
+    async saveTemplate(template) {
+      const data = await request(`${base}/templates`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(template),
+      });
+      return data.template as TemplateSummary;
+    },
+    async importHtml(html) {
+      const data = await request(`${base}/import-html`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ html }),
+      });
+      return {
+        nodes: (Array.isArray(data.nodes) ? data.nodes : []) as RawNode[],
+        warnings: Array.isArray(data.warnings) ? data.warnings.map(String) : [],
+      };
     },
     async listElementRules() {
       if (!options.rulesUrl) return [];

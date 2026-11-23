@@ -45,7 +45,7 @@ test('a page is created, edited and saved with the keyboard only', async ({ page
   await page.keyboard.press('Enter');
   await expect(canvas.locator('h2')).toHaveText('Hola mundo');
 
-  await editor.getByRole('button', { name: 'Guardar' }).focus();
+  await editor.getByRole('button', { name: 'Guardar', exact: true }).focus();
   await page.keyboard.press('Enter');
   await expect(editor.getByText(/^Revisión 2 ·/)).toBeVisible();
   const saved = await page.evaluate(() => (window as unknown as { servers: { a: { latest(): unknown } } }).servers.a.latest());

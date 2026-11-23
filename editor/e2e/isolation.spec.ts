@@ -35,7 +35,7 @@ test('the canvas is sandboxed, never navigates and refuses unsafe URLs', async (
   await expect(b.getByText('Use an http, https, mailto or tel address, or a site path.')).toBeVisible();
   await expect(field).toHaveAttribute('aria-invalid', 'true');
   await expect(b.frameLocator('iframe').getByText('Go')).toHaveAttribute('href', 'https://example.com');
-  await expect(b.getByRole('button', { name: 'Save' })).toBeDisabled();
+  await expect(b.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
 
   await b.getByRole('treeitem', { name: 'carousel-pro' }).click();
   await expect(b.getByRole('note')).toHaveText('This component is not in the catalogue: it is kept but cannot be edited.');
@@ -50,7 +50,7 @@ test('events carry ids and state, never page content; removing the element relea
   await expect(b.getByText('Saved')).toBeVisible();
   await b.getByRole('treeitem', { name: 'Heading' }).click();
   await b.getByLabel('Text', { exact: true }).fill('Secret draft title');
-  await b.getByRole('button', { name: 'Save' }).click();
+  await b.getByRole('button', { name: 'Save', exact: true }).click();
   await expect(b.getByText(/^Revision 2 ·/)).toBeVisible();
 
   const events = await page.evaluate(() => (window as unknown as DemoWindow).events);
