@@ -20,7 +20,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "lines": "node scripts/check-lines.mjs",
+    "lines": "node tools/check-lines.mjs",
     "build": "vite build && tsc -p tsconfig.build.json",
     "check": "npm run lines && npm run typecheck && npm run test && npm run build"
   },
