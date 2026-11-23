@@ -47,6 +47,15 @@ final class CustomCodeTest extends TestCase
         self::assertSame('.p{}', (new CustomCode(null))->resolve(['custom_css_without_session' => '.p{}'], false)['pageCss']);
     }
 
+    public function testTheCommonGlobalCodeAppliesToEveryVisitorBeforeTheSessionVariant(): void
+    {
+        $settings = $this->settings(['global_css' => '.all{}', 'global_js' => 'all()', 'custom_css_global_session' => '.member{}']);
+        $member = (new CustomCode($settings))->resolve([], true);
+        $anonymous = (new CustomCode($settings))->resolve([], false);
+        self::assertSame([".all{}\n.member{}", 'all()'], [$member['globalCss'], $member['globalJs']]);
+        self::assertSame(['.all{}', 'all()'], [$anonymous['globalCss'], $anonymous['globalJs']]);
+    }
+
     public function testClosingTagsCannotEndTheStyleOrScriptElement(): void
     {
         self::assertSame('a{}<\/style><script>x()</script>', CustomCode::css('a{}</style><script>x()</script>'));
