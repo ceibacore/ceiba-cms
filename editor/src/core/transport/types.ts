@@ -1,0 +1,24 @@
+import type { ComponentDescriptorDto, HtmlTagRuleDto } from '../catalogue/types';
+import type { PageDocument } from '../document/types';
+
+export type SaveReason = 'edit' | 'autosave';
+
+export interface LoadedDraft {
+  /** Working revision the editor starts from; saves send If-Match with it. */
+  readonly revision: number;
+  readonly document: PageDocument;
+}
+
+/**
+ * What the editor needs from the host (plan 03). Credentials stay inside the adapter: they never reach the
+ * document, the session or the events. Errors are EditorError with a stable code.
+ */
+export interface Transport {
+  load(pageId: string): Promise<LoadedDraft>;
+  /** Creates revision baseRevision + 1; REVISION_CONFLICT (details.currentRevision) when the base is stale. */
+  save(document: PageDocument, baseRevision: number, reason: SaveReason): Promise<{ revision: number }>;
+  /** A stored revision, for the server preview and conflict resolution. */
+  preview(pageId: string, revision: number): Promise<PageDocument>;
+  listComponents(): Promise<ComponentDescriptorDto[]>;
+  listElementRules(): Promise<HtmlTagRuleDto[]>;
+}
