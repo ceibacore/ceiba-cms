@@ -29,6 +29,9 @@
       {store.publishing ? t('toolbar.publishing') : t('toolbar.publish')}
     </button>
   {/if}
+  {#if store.designAvailable}
+    <button type="button" aria-pressed={store.designOpen} onclick={() => { store.designOpen = !store.designOpen; }}>{t('design.open')}</button>
+  {/if}
   {#if onServerView}
     <button type="button" aria-pressed={serverView} onclick={onServerView}>{t('toolbar.serverView')}</button>
   {/if}

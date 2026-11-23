@@ -51,5 +51,5 @@ test('a text block keeps line breaks; Ctrl+Enter finishes', async ({ page }) => 
   await page.keyboard.press('Enter');
   await page.keyboard.type('Second line');
   await page.keyboard.press('Control+Enter');
-  await expect(b.getByLabel('Content')).toHaveValue('First line\nSecond line');
+  await expect(b.getByLabel('Content', { exact: true })).toHaveValue('First line\nSecond line');
 });

@@ -73,6 +73,7 @@ export class CeibaPageBuilder extends HTMLElement {
     this.#app = mount(Editor, { target: root, props: { store, uid: this.#uid, stylesheets: config.stylesheets ?? [] } });
     session.load().then(() => {
       store.sync();
+      void store.loadDesign();
       if (config.autosave !== false && session.capabilities?.features.autosave !== false) {
         this.#autosave = new Autosave(session, { ...DEFAULT_AUTOSAVE, ...(config.autosave ?? {}) });
         this.#autosave.start();

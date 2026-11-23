@@ -5,10 +5,10 @@ import { withNode } from '../tree/state';
 import type { CommandHandler } from './types';
 
 /**
- * Node fields the editor may change besides props: dynamic content of the module (Node::loop, bindings) and the
- * render condition. Everything else (id, type, name, children, extensions) is out of reach of this command.
+ * Node fields the editor may change besides props: dynamic content of the module (Node::loop, bindings), the
+ * render condition and the node styles (plan 04). Everything else (id, type, name, children, extensions) is out of reach of this command.
  */
-export const EDITABLE_FIELDS: readonly string[] = ['loop', 'condition', 'bindings'];
+export const EDITABLE_FIELDS: readonly string[] = ['loop', 'condition', 'bindings', 'styles'];
 
 /** Sets or removes loop / condition / bindings; the inverse restores exactly the previous keys. */
 export const updateFields: CommandHandler<'updateFields'> = (state, command, context) => {

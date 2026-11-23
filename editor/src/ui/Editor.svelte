@@ -2,6 +2,7 @@
   import Canvas from './canvas/Canvas.svelte';
   import { ContentActions } from './content/actions.svelte';
   import ImportDialog from './content/ImportDialog.svelte';
+  import DesignPanel from './design/DesignPanel.svelte';
   import TemplateDialog from './content/TemplateDialog.svelte';
   import { DragController } from './drag/controller';
   import Inspector from './inspector/Inspector.svelte';
@@ -64,8 +65,12 @@
       <Canvas {store} {drag} {uid} {stylesheets} bind:this={canvas}
         onEditEnd={(id, byKeyboard) => { if (byKeyboard) void tree?.focusItem(id); }} />
     {/if}
-    <Inspector {store} {uid} canTemplates={content.canTemplates} onRemoved={() => tree?.focusItem(store.selection)}
-      onSaveTemplate={() => { templating = true; }} />
+    {#if store.designOpen}
+      <DesignPanel {store} {uid} />
+    {:else}
+      <Inspector {store} {uid} canTemplates={content.canTemplates} onRemoved={() => tree?.focusItem(store.selection)}
+        onSaveTemplate={() => { templating = true; }} />
+    {/if}
   </div>
   <ImportDialog {store} {content} {uid} bind:open={importing} />
   <TemplateDialog {store} {content} {uid} nodeId={store.selection} bind:open={templating} />

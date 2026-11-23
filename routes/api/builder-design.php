@@ -27,6 +27,9 @@ if ($designApiController !== null) {
     $router->post("{$builderPrefix}/design/publish", fn () => $sendDesignJson(
         $designApiController->publish($designBody())
     ), 'builder.design.publish')->middleware('auth', 'csrf');
+    $router->get("{$builderPrefix}/design/usages", fn () => $sendDesignJson($designApiController->usages(
+        isset($_GET['class']) ? 'class' : 'token', (string) ($_GET['class'] ?? $_GET['token'] ?? '')
+    )), 'builder.design.usages')->middleware('auth');
     $router->get("{$builderPrefix}/design/revisions/{revision}", fn (string $revision) => $sendDesignJson(
         $designApiController->revision((int) $revision)
     ), 'builder.design.revision')->middleware('auth');

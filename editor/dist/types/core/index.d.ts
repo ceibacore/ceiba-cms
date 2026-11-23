@@ -15,3 +15,4 @@ export * from './history';
 export * from './transport';
 export * from './session';
 export * from './styles';
+export * from './design';

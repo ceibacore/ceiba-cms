@@ -35,6 +35,7 @@ export interface StyleClass {
 
 /** Site design document (tokens, breakpoints, classes). */
 export interface DesignDocument {
+  readonly schemaVersion?: number;
   readonly breakpoints: readonly Breakpoint[];
   readonly tokens: Readonly<Record<string, DesignToken>>;
   readonly classes: Readonly<Record<string, StyleClass>>;

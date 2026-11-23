@@ -2,6 +2,7 @@ import { EditorError } from '../src/core';
 import type { PageDocument, RawNode, Transport } from '../src/core';
 import { COMPONENTS, HTML_TAGS } from './catalogue';
 import { importHtml, TemplateStore } from './content';
+import { DesignStore } from './design';
 
 const escape = (value: unknown): string =>
   String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -26,6 +27,7 @@ export class MemoryServer {
   published: number | null = 1;
   readonly revisions = new Map<number, PageDocument>();
   readonly templates = new TemplateStore();
+  readonly design = new DesignStore();
 
   constructor(pageId: string, root: PageDocument['root'], readonly permissions: string[]) {
     this.revisions.set(1, { schemaVersion: 1, documentId: pageId, revision: 1, root, settings: {}, resources: [] });
@@ -64,6 +66,10 @@ export class MemoryServer {
         this.published = revision;
         return { revision };
       },
+      loadDesign: async () => this.design.state(),
+      saveDesign: async (design, base) => this.design.save(design, base),
+      publishDesign: async (revision) => this.design.publish(revision),
+      designUsages: async (kind, id) => this.design.usages(this.latest(), kind, id),
       listTemplates: async () => structuredClone(this.templates.templates),
       saveTemplate: async (template) => this.templates.save(structuredClone(template)),
       importHtml: async (html) => importHtml(html),

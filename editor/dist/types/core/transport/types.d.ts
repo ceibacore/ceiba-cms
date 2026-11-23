@@ -1,5 +1,6 @@
 import type { ComponentDescriptorDto, HtmlTagRuleDto } from '../catalogue/types';
 import type { PageDocument, RawNode } from '../document/types';
+import type { DesignDocument } from '../styles/types';
 export type SaveReason = 'edit' | 'autosave';
 export interface LoadedDraft {
     /** Working revision the editor starts from; saves send If-Match with it. */
@@ -43,6 +44,25 @@ export interface Transport {
         nodes: RawNode[];
         warnings: string[];
     }>;
+    /** Optional (plan 04): the site design — working revision for the editor, drafts and publication. */
+    loadDesign?(): Promise<DesignState>;
+    saveDesign?(design: DesignDocument, baseRevision: number): Promise<{
+        revision: number;
+    }>;
+    publishDesign?(revision: number): Promise<{
+        revision: number;
+    }>;
+    /** Pages (and the design) that use a token or a class, before deleting it. */
+    designUsages?(kind: 'token' | 'class', id: string): Promise<DesignUsage[]>;
+}
+export interface DesignState {
+    readonly revision: number;
+    readonly publishedRevision: number | null;
+    readonly design: DesignDocument;
+}
+export interface DesignUsage {
+    readonly pageId: string;
+    readonly title: string;
 }
 export interface TemplateSummary {
     readonly id: string;

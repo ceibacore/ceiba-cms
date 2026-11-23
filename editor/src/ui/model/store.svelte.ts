@@ -1,5 +1,5 @@
-import type { Catalogue, Command, EditorSession, SessionStatus, TreeState } from '../../core';
-import { EditorError } from '../../core';
+import type { Catalogue, Command, DesignDocument, EditorSession, SessionStatus, TreeState } from '../../core';
+import { EditorError, SiteDesignSession, defaultDesign } from '../../core';
 import type { MessageKey, Translate } from '../i18n';
 
 /**
@@ -19,12 +19,32 @@ export class EditorStore {
   canPublish = $state(false);
   publishing = $state(false);
   conflictRevision = $state<number | null>(null);
+  /** Site design (plan 04): working copy shown on the canvas, and the width/state the style controls edit. */
+  readonly designSession: SiteDesignSession;
+  design = $state.raw<DesignDocument>(defaultDesign());
+  designDirty = $state(false);
+  /** Breakpoint id the canvas shows and the style controls edit; null = base (smallest screens). */
+  viewport = $state<string | null>(null);
+  styleState = $state<string | null>(null);
+  /** The site design panel replaces the inspector while open (plan 04-D). */
+  designOpen = $state(false);
+  designAvailable = $state(false);
+  designRevision = $state(0);
+  designPublished = $state<number | null>(null);
   /** Polite announcement (results) and assertive one (errors). */
   message = $state('');
   alert = $state('');
   private readonly stops: (() => void)[] = [];
 
   constructor(readonly session: EditorSession, readonly t: Translate) {
+    this.designSession = new SiteDesignSession(session.transport);
+    this.stops.push(this.designSession.events.on('change', () => {
+      this.design = this.designSession.design;
+      this.designDirty = this.designSession.dirty;
+      this.designRevision = this.designSession.revision;
+      this.designPublished = this.designSession.publishedRevision;
+      this.designAvailable = this.designSession.available;
+    }));
     for (const event of ['status-change', 'dirty-change', 'history-change', 'selection-change', 'ready',
       'save-success', 'conflict', 'publish-start', 'publish-success', 'publish-error'] as const) {
       this.stops.push(session.events.on(event, () => this.sync()));
@@ -117,6 +137,24 @@ export class EditorStore {
       if (revision !== null) this.announce('announce.saved', { revision });
     } catch (error) {
       this.sync();
+      this.fail(error);
+    }
+  }
+
+  async loadDesign(): Promise<void> {
+    await this.designSession.load();
+  }
+
+  /** Saves or publishes the site design; errors (conflict, validation) are announced, never thrown at the UI. */
+  async designAction(action: 'save' | 'publish' | 'reload'): Promise<void> {
+    try {
+      if (action === 'reload') await this.designSession.reload();
+      const revision = action === 'save' ? await this.designSession.save()
+        : action === 'publish' ? await this.designSession.publish() : this.designSession.revision;
+      this.designRevision = this.designSession.revision;
+      this.designPublished = this.designSession.publishedRevision;
+      this.announce(action === 'publish' ? 'design.published' : action === 'save' ? 'design.saved' : 'design.reloaded', { revision });
+    } catch (error) {
       this.fail(error);
     }
   }
