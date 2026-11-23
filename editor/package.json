@@ -1,0 +1,33 @@
+{
+  "name": "@ceibacore/page-builder",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Framework-agnostic visual editor for ceiba-cms page documents (plan 03).",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/core.js",
+  "types": "./dist/types/core/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/core/index.d.ts",
+      "import": "./dist/core.js"
+    }
+  },
+  "files": ["dist"],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lines": "node scripts/check-lines.mjs",
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "check": "npm run lines && npm run typecheck && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.1",
+    "typescript": "5.9.3",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}
