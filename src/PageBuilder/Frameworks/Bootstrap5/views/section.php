@@ -3,7 +3,8 @@
  * Renders a generic HTML container (div) preserving ALL props as HTML attributes.
  * Also used by SemanticSectionRule nodes until the type is migrated to 'node'.
  */
-$tag  = $props['tag'] ?? 'div';
+// A node of type "section" is a <section> (as without a UI framework); semantic rules may set another tag.
+$tag  = $props['tag'] ?? 'section';
 $skip = ['tag'];
 
 $attrStr = '';
