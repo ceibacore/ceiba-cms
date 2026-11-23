@@ -60,4 +60,28 @@ describe('HTTP transport (module /api/builder/v1)', () => {
     await transport.load('a/b?c');
     expect(calls.map((c) => c.url)).toEqual(['/b/pages/a%2Fb%3Fc/draft']);
   });
+
+  it('publishes with an idempotency key and reads status, capabilities and the server render', async () => {
+    const calls: Call[] = [];
+    const reply = (data: unknown) => createHttpTransport({ baseUrl: '/b', fetch: fakeFetch(200, { success: true, data }, calls) });
+    expect(await reply({ revision: 4, revisionId: 'r' }).publish?.('page-1', 4, 'key-1')).toEqual({ revision: 4 });
+    expect(await reply({ revision: 5, publishedRevision: 4, hasUnpublishedChanges: true }).status?.('page-1'))
+      .toEqual({ revision: 5, publishedRevision: 4, hasUnpublishedChanges: true });
+    expect(await reply({ revision: 5, publishedRevision: null, hasUnpublishedChanges: true }).status?.('page-1'))
+      .toMatchObject({ publishedRevision: null });
+    expect(await reply({ effectivePermissions: ['pages.read'], features: { autosave: true } }).capabilities?.())
+      .toEqual({ permissions: ['pages.read'], features: { autosave: true } });
+    expect(await reply({ revision: 2, html: '<h1>x</h1>' }).render?.('page-1', 2)).toBe('<h1>x</h1>');
+    expect(calls.map((c) => [c.init.method ?? 'GET', c.url])).toEqual([
+      ['POST', '/b/pages/page-1/publish-revision'], ['GET', '/b/pages/page-1/status'], ['GET', '/b/pages/page-1/status'],
+      ['GET', '/b/capabilities'], ['GET', '/b/pages/page-1/revisions/2/render'],
+    ]);
+    expect((calls[0]?.init.headers as Record<string, string>)['Idempotency-Key']).toBe('key-1');
+    expect(calls[0]?.init.body).toBe('{"revision":4}');
+  });
+
+  it('maps the public content drift refusal of a publication', async () => {
+    const transport = createHttpTransport({ baseUrl: '/b', fetch: fakeFetch(409, { error: { code: 'PUBLIC_CONTENT_DRIFT' } }) });
+    await expect(transport.publish?.('page-1', 2, 'k')).rejects.toMatchObject({ code: 'PUBLIC_CONTENT_DRIFT' });
+  });
 });

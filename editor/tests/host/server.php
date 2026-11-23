@@ -22,7 +22,12 @@ use CeibaCms\PageBuilder\Domain\Contract\RevisionOperationAuthorization;
 use CeibaCms\PageBuilder\Domain\Document\DocumentMigrator;
 use CeibaCms\PageBuilder\Domain\Document\HostContext;
 use CeibaCms\PageBuilder\Domain\Service\HtmlSemanticRulesProvider;
+use CeibaCms\Page\Application\GetPageWorkingRevision;
+use CeibaCms\PageBuilder\Domain\Service\BladeRenderer;
+use CeibaCms\PageBuilder\Domain\Service\LoopResolver;
+use CeibaCms\PageBuilder\Domain\Service\VariableInterpolator;
 use CeibaCms\PageBuilder\Presentation\Api\EditorApiController;
+use CeibaCms\PageBuilder\Presentation\Api\EditorPreviewController;
 use CeibaCms\PageBuilder\Presentation\Api\RevisionApiController;
 use CeibaCms\Tests\Support\RevisionSchema;
 
@@ -70,6 +75,13 @@ $revisions = new RevisionApiController(SITE, $context, $allowRevisions, $audit,
     new RestorePageRevision($db, SITE, $save), new ReconcilePageContent($db, SITE, $save), new UnpublishPage($db, SITE),
     new PagePreviewTokens($db, SITE), new PinPageRevision($db, SITE), $db, $reporter);
 
+// The server renderer as a Bootstrap 5 site uses it (bootstrap.php registers the module; the host activates it).
+$frameworks = new \CeibaCms\PageBuilder\Domain\Service\UiFrameworkRegistry();
+$frameworks->register(new \CeibaCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module());
+$frameworks->setActive('bootstrap5');
+$preview = new EditorPreviewController($editor, $revisions, new GetPageWorkingRevision($db, SITE),
+    new BladeRenderer(new LoopResolver(), new VariableInterpolator(), $frameworks));
+
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $path = (string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $body = (string) file_get_contents('php://input');
@@ -84,6 +96,12 @@ $response = match (true) {
         => $editor->saveDraft($m[1], $body, $_SERVER['HTTP_IF_MATCH'] ?? null, $_GET['reason'] ?? null),
     $method === 'GET' && preg_match('~^/api/builder/v1/pages/([\w-]+)/revisions/(\d+)$~', $path, $m) === 1
         => $revisions->showRevision($m[1], (int) $m[2]),
+    $method === 'GET' && $path === '/api/builder/v1/capabilities' => $editor->capabilities(),
+    $method === 'GET' && preg_match('~^/api/builder/v1/pages/([\w-]+)/status$~', $path, $m) === 1 => $preview->status($m[1]),
+    $method === 'GET' && preg_match('~^/api/builder/v1/pages/([\w-]+)/revisions/(\d+)/render$~', $path, $m) === 1
+        => $preview->render($m[1], (int) $m[2]),
+    $method === 'POST' && preg_match('~^/api/builder/v1/pages/([\w-]+)/publish-revision$~', $path, $m) === 1
+        => $editor->publishRevision($m[1], $body, $_SERVER['HTTP_IDEMPOTENCY_KEY'] ?? null),
     default => ['success' => false, 'status' => 404, 'error' => ['code' => 'NOT_FOUND', 'message' => 'Not found']],
 };
 http_response_code((int) ($response['status'] ?? 200));

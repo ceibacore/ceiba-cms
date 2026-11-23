@@ -264,6 +264,9 @@ var e = class extends Error {
 	commands = null;
 	lastError = null;
 	conflictRevision = null;
+	capabilities = null;
+	publishedRevision = null;
+	publishing = !1;
 	constructor(e) {
 		this.options = e;
 	}
@@ -507,20 +510,22 @@ var e = class extends Error {
 	let { transport: n, pageId: r, ids: i, limits: a } = t.options;
 	t.setStatus("loading");
 	try {
-		let [e, o, s] = await Promise.all([
+		let [e, o, s, c, l] = await Promise.all([
 			n.listComponents(),
 			n.listElementRules(),
-			n.load(r)
+			n.load(r),
+			n.capabilities?.().catch(() => null) ?? null,
+			n.status?.(r).catch(() => null) ?? null
 		]);
-		t.catalogue = P(e, o), t.commands = Y({
+		t.capabilities = c, t.publishedRevision = l?.publishedRevision ?? null, t.catalogue = P(e, o), t.commands = Y({
 			catalogue: t.catalogue,
 			limits: a,
 			ids: i
 		});
-		let c = w(s.document, i);
-		t.meta = c.meta, t.tree = c.tree, t.markSaved(c.tree, s.revision), t.setHistory(O()), t.conflictRevision = null, t.lastError = null, t.setStatus("ready"), t.events.emit("ready", {
+		let u = w(s.document, i);
+		t.meta = u.meta, t.tree = u.tree, t.markSaved(u.tree, s.revision), t.setHistory(O()), t.conflictRevision = null, t.lastError = null, t.setStatus("ready"), t.events.emit("ready", {
 			revision: s.revision,
-			repairedIds: c.repairedIds
+			repairedIds: u.repairedIds
 		});
 	} catch (n) {
 		throw t.lastError = n instanceof e ? n : new e("SERVER", String(n)), t.setStatus("load-error"), t.lastError;
@@ -541,7 +546,30 @@ var e = class extends Error {
 		...e.history
 	},
 	now: e.now ?? (() => Date.now())
-}), Q = async (t, n) => {
+}), Q = (e) => {
+	if (!e.options.transport.publish) return !1;
+	let t = e.capabilities;
+	return t ? t.features.revisionPublish ?? t.permissions.includes("pages.publish") : !0;
+}, he = () => {
+	let e = /* @__PURE__ */ new Uint8Array(16);
+	return globalThis.crypto.getRandomValues(e), Array.from(e, (e) => e.toString(16).padStart(2, "0")).join("");
+}, ge = async (t) => {
+	let n = t.options.transport.publish;
+	if (!n || !Q(t)) throw new e("AUTHORIZATION_DENIED", "Publishing is not allowed here");
+	if (t.status !== "ready" || t.dirty) throw new e("NOTHING_TO_PUBLISH", "Save the changes before publishing", { status: t.status });
+	if (t.publishedRevision === t.baseRevision) throw new e("NOTHING_TO_PUBLISH", "This revision is already published");
+	if (t.publishing) throw new e("SAVE_IN_PROGRESS", "Publishing is already running");
+	let r = t.baseRevision;
+	t.publishing = !0, t.events.emit("publish-start", { revision: r });
+	try {
+		return await n(t.options.pageId, r, he()), t.publishedRevision = r, t.events.emit("publish-success", { revision: r }), r;
+	} catch (n) {
+		let r = n instanceof e ? n : new e("SERVER", String(n));
+		throw t.lastError = r, t.events.emit("publish-error", { error: r }), r;
+	} finally {
+		t.publishing = !1;
+	}
+}, _e = async (t, n) => {
 	if (t.status === "loading" || t.status === "load-error") throw new e("INVALID_DOCUMENT", "Nothing loaded to save");
 	if (t.status === "saving") throw new e("SAVE_IN_PROGRESS", "A save is already running");
 	if (t.status === "conflict") throw new e("REVISION_CONFLICT", "Resolve the conflict before saving", { currentRevision: String(t.conflictRevision ?? "") });
@@ -570,9 +598,9 @@ var e = class extends Error {
 		} else t.setStatus(r.code === "NETWORK" ? "offline" : a === "offline" ? "dirty" : a), t.events.emit("save-error", { error: r });
 		throw r;
 	}
-}, he = async (e, t) => {
-	e.status === "conflict" && (t === "take-theirs" ? await X(e) : (e.baseRevision = e.conflictRevision ?? (await e.options.transport.load(e.options.pageId)).revision, e.conflictRevision = null, e.setStatus("dirty"), await Q(e, "edit")));
-}, ge = class {
+}, ve = async (e, t) => {
+	e.status === "conflict" && (t === "take-theirs" ? await X(e) : (e.baseRevision = e.conflictRevision ?? (await e.options.transport.load(e.options.pageId)).revision, e.conflictRevision = null, e.setStatus("dirty"), await _e(e, "edit")));
+}, ye = class {
 	core;
 	constructor(e) {
 		this.core = new re(me(e));
@@ -610,33 +638,57 @@ var e = class extends Error {
 	get commandContext() {
 		return this.core.commands?.context ?? null;
 	}
+	get capabilities() {
+		return this.core.capabilities;
+	}
+	get publishedRevision() {
+		return this.core.publishedRevision;
+	}
+	get canPublish() {
+		return Q(this.core);
+	}
+	get publishing() {
+		return this.core.publishing;
+	}
+	get conflictRevision() {
+		return this.core.conflictRevision;
+	}
+	get pageId() {
+		return this.core.options.pageId;
+	}
+	get transport() {
+		return this.core.options.transport;
+	}
 	load() {
 		return X(this.core);
 	}
 	dispatch(e) {
 		let t = this.editable().apply(this.core.tree, e);
-		this.core.setHistory(k(this.core.history, e, t.inverse, this.core.options.now(), this.core.options.history)), this.core.commitTree(t.state, t.focus);
+		this.core.commitTree(t.state, t.focus), this.core.setHistory(k(this.core.history, e, t.inverse, this.core.options.now(), this.core.options.history));
 	}
 	undo() {
 		let e = this.editable(), t = this.core.history.past[this.core.history.past.length - 1];
 		if (!t) return;
 		let n = e.apply(this.core.tree, t.undo);
-		this.core.setHistory(M(this.core.history, n.inverse)), this.core.commitTree(n.state, n.focus);
+		this.core.commitTree(n.state, n.focus), this.core.setHistory(M(this.core.history, n.inverse));
 	}
 	redo() {
 		let e = this.editable(), t = this.core.history.future[this.core.history.future.length - 1];
 		if (!t) return;
 		let n = e.apply(this.core.tree, t.redo);
-		this.core.setHistory(N(this.core.history, n.inverse)), this.core.commitTree(n.state, n.focus);
+		this.core.commitTree(n.state, n.focus), this.core.setHistory(N(this.core.history, n.inverse));
 	}
 	select(e) {
 		this.core.select(e);
 	}
 	save(e = "edit") {
-		return Q(this.core, e);
+		return _e(this.core, e);
+	}
+	publish() {
+		return ge(this.core);
 	}
 	resolveConflict(e) {
-		return he(this.core, e);
+		return ve(this.core, e);
 	}
 	toDocument() {
 		return T(this.core.tree, this.core.meta, this.core.baseRevision + 1);
@@ -648,7 +700,7 @@ var e = class extends Error {
 		if (!this.core.commands || this.core.status === "loading" || this.core.status === "load-error" || this.core.status === "saving") throw new e("INVALID_DOCUMENT", `The editor cannot change the page while ${this.core.status}`);
 		return this.core.commands;
 	}
-}, _e = (e, t) => {
+}, be = (e, t) => {
 	let n = [], r = /* @__PURE__ */ new Set(), i = (a, o, s, c) => {
 		if (c.has(a)) {
 			n.push({
@@ -692,16 +744,16 @@ var e = class extends Error {
 		code: "MAX_NODES",
 		id: ""
 	}), n;
-}, ve = (e) => {
+}, xe = (e) => {
 	let t = {};
 	if (typeof e == "object" && e) for (let [n, r] of Object.entries(e)) (typeof r == "string" || typeof r == "number") && (t[n] = String(r));
 	return t;
-}, ye = (e, t) => e === 412 || t === "REVISION_CONFLICT" ? "REVISION_CONFLICT" : e === 403 || e === 401 ? "AUTHORIZATION_DENIED" : e === 422 || e === 400 ? "VALIDATION_FAILED" : e === 404 ? "NODE_NOT_FOUND" : "SERVER", $ = (t, n) => {
-	let r = n?.error ?? {}, i = typeof r.code == "string" ? r.code : "", a = ve(r.fieldErrors);
+}, Se = (e, t) => t === "PUBLIC_CONTENT_DRIFT" ? "PUBLIC_CONTENT_DRIFT" : e === 412 || t === "REVISION_CONFLICT" ? "REVISION_CONFLICT" : e === 403 || e === 401 ? "AUTHORIZATION_DENIED" : e === 422 || e === 400 ? "VALIDATION_FAILED" : e === 404 ? "NODE_NOT_FOUND" : "SERVER", Ce = (t, n) => {
+	let r = n?.error ?? {}, i = typeof r.code == "string" ? r.code : "", a = xe(r.fieldErrors);
 	typeof r.requestId == "string" && (a.requestId = r.requestId), i !== "" && (a.apiCode = i), a.status = String(t);
 	let o = typeof r.message == "string" ? r.message : `HTTP ${t}`;
-	return new e(ye(t, i), o, a);
-}, be = (t) => new e("NETWORK", t instanceof Error ? t.message : "Network error"), xe = (t) => {
+	return new e(Se(t, i), o, a);
+}, we = (t) => new e("NETWORK", t instanceof Error ? t.message : "Network error"), Te = (t) => {
 	let n = t.fetch ?? globalThis.fetch.bind(globalThis), r = t.baseUrl.replace(/\/+$/, ""), i = (e) => `${r}/pages/${encodeURIComponent(e)}`, a = async (r, i = {}) => {
 		let a;
 		try {
@@ -715,10 +767,10 @@ var e = class extends Error {
 				}
 			});
 		} catch (e) {
-			throw be(e);
+			throw we(e);
 		}
 		let o = await a.json().catch(() => null);
-		if (!a.ok) throw $(a.status, o);
+		if (!a.ok) throw Ce(a.status, o);
 		let s = o?.data;
 		if (typeof s != "object" || !s) throw new e("SERVER", "Unexpected response", { status: String(a.status) });
 		return s;
@@ -748,13 +800,105 @@ var e = class extends Error {
 		async listComponents() {
 			return (await a(`${r}/components`)).components ?? [];
 		},
+		async capabilities() {
+			let e = await a(`${r}/capabilities`);
+			return {
+				permissions: Array.isArray(e.effectivePermissions) ? e.effectivePermissions.map(String) : [],
+				features: e.features ?? {}
+			};
+		},
+		async status(e) {
+			let t = await a(`${i(e)}/status`), n = t.publishedRevision;
+			return {
+				revision: Number(t.revision),
+				publishedRevision: typeof n == "number" ? n : null,
+				hasUnpublishedChanges: t.hasUnpublishedChanges === !0
+			};
+		},
+		async publish(e, t, n) {
+			let r = await a(`${i(e)}/publish-revision`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"Idempotency-Key": n
+				},
+				body: JSON.stringify({ revision: t })
+			});
+			return { revision: Number(r.revision) };
+		},
+		async render(e, t) {
+			let n = await a(`${i(e)}/revisions/${t}/render`);
+			return typeof n.html == "string" ? n.html : "";
+		},
 		async listElementRules() {
 			if (!t.rulesUrl) return [];
 			let e = await a(t.rulesUrl);
 			return Object.values(e.html_tags ?? {});
 		}
 	};
-}, Se = (e) => new ge(e);
-export { T as A, m as B, j as C, E as D, k as E, d as F, i as G, r as H, c as I, e as J, a as K, f as L, _ as M, y as N, w as O, v as P, p as R, M as S, O as T, n as U, l as V, s as W, t as Y, z as _, ge as a, D as b, Y as c, B as d, H as f, L as g, R as h, _e as i, b as j, C as k, J as l, U as m, xe as n, Z as o, V as p, o as q, $ as r, pe as s, Se as t, G as u, I as v, A as w, N as x, P as y, u as z };
+}, $ = {
+	idleMs: 2e3,
+	maxWaitMs: 15e3,
+	retryMs: [
+		2e3,
+		5e3,
+		15e3,
+		3e4
+	]
+}, Ee = {
+	set: (e, t) => setTimeout(e, t),
+	clear: (e) => clearTimeout(e),
+	now: () => Date.now()
+}, De = class {
+	session;
+	options;
+	timers;
+	timer = null;
+	firstChange = null;
+	retries = 0;
+	stops = [];
+	constructor(e, t = $, n = Ee) {
+		this.session = e, this.options = t, this.timers = n;
+	}
+	start() {
+		this.stops.push(this.session.events.on("history-change", () => this.changed()), this.session.events.on("status-change", ({ status: e }) => {
+			(e === "ready" || e === "conflict" || e === "loading") && this.reset();
+		}));
+	}
+	stop() {
+		for (let e of this.stops.splice(0)) e();
+		this.reset();
+	}
+	changed() {
+		if (!this.session.dirty || this.session.status === "conflict") return;
+		let e = this.timers.now();
+		this.firstChange ??= e;
+		let t = this.session.status === "offline" ? this.retryWait() : Math.min(this.options.idleMs, Math.max(0, this.firstChange + this.options.maxWaitMs - e));
+		this.schedule(t);
+	}
+	schedule(e) {
+		this.timer !== null && this.timers.clear(this.timer), this.timer = this.timers.set(() => void this.fire(), e);
+	}
+	async fire() {
+		this.timer = null;
+		let e = this.session.status;
+		if (!(!this.session.dirty || e !== "dirty" && e !== "offline")) {
+			this.firstChange = null;
+			try {
+				await this.session.save("autosave"), this.retries = 0, this.session.dirty && this.changed();
+			} catch {
+				(this.session.status === "offline" || this.session.status === "dirty") && (this.schedule(this.retryWait()), this.retries++);
+			}
+		}
+	}
+	retryWait() {
+		let e = this.options.retryMs;
+		return e[Math.min(this.retries, e.length - 1)] ?? this.options.idleMs;
+	}
+	reset() {
+		this.timer !== null && this.timers.clear(this.timer), this.timer = null, this.firstChange = null, this.session.status !== "offline" && (this.retries = 0);
+	}
+}, Oe = (e) => new ye(e);
+export { w as A, p as B, N as C, O as D, A as E, y as F, n as G, m as H, v as I, a as J, s as K, d as L, T as M, b as N, k as O, _ as P, c as R, D as S, j as T, l as U, u as V, r as W, e as X, o as Y, t as Z, R as _, Ce as a, I as b, Z as c, J as d, G as f, U as g, V as h, Te as i, C as j, E as k, pe as l, H as m, De as n, be as o, B as p, i as q, $ as r, ye as s, Oe as t, Y as u, L as v, M as w, P as x, z as y, f as z };
 
 //# sourceMappingURL=core.js.map

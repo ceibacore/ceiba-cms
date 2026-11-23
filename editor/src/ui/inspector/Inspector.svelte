@@ -19,10 +19,11 @@
     else store.run({ kind: 'updateProps', id: node.id, set: { [key]: value } });
   }
 
+  /** The structure label lives in `label`: the server picks the component view by `name`, so it is never touched here. */
   function rename(value: string): void {
     if (!node) return;
-    const label = typeof node.fields.label === 'string' ? node.fields.label : null;
-    store.run({ kind: 'rename', id: node.id, name: value.trim() === '' ? null : value, label });
+    const name = typeof node.fields.name === 'string' ? node.fields.name : null;
+    store.run({ kind: 'rename', id: node.id, name, label: value.trim() === '' ? null : value });
   }
 
   function remove(): void {
@@ -39,7 +40,7 @@
       <p class="type">{rule?.label ?? node.type}</p>
       <div class="field">
         <label for={`${uid}-name`}>{t('inspector.name')}</label>
-        <input id={`${uid}-name`} type="text" value={typeof node.fields.name === 'string' ? node.fields.name : ''}
+        <input id={`${uid}-name`} type="text" value={typeof node.fields.label === 'string' ? node.fields.label : ''}
           oninput={(e) => rename(e.currentTarget.value)} />
       </div>
       {#if !rule}

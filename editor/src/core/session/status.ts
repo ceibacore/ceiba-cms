@@ -14,4 +14,7 @@ export type SessionEvents = {
   'save-success': { revision: number };
   'save-error': { error: EditorError };
   'conflict': { baseRevision: number; currentRevision: number | null };
+  'publish-start': { revision: number };
+  'publish-success': { revision: number };
+  'publish-error': { error: EditorError };
 };

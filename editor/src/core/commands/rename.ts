@@ -4,7 +4,11 @@ import type { CommandHandler } from './types';
 
 const text = (value: unknown): string | null => (typeof value === 'string' ? value : null);
 
-/** Changes the name and label shown in the structure navigator. null removes them. Allowed on unknown types too. */
+/**
+ * Changes `name` and `label`; null removes them. Allowed on unknown types too.
+ * In the module, `name` picks the server view of a component (BladeRenderer renders `name ?? type`), so the UI only
+ * changes `label`, the text shown in the structure navigator.
+ */
 export const rename: CommandHandler<'rename'> = (state, command) => {
   const node = getNode(state, command.id);
   const fields: Record<string, unknown> = { ...node.fields };

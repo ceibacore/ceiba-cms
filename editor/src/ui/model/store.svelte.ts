@@ -15,6 +15,10 @@ export class EditorStore {
   canUndo = $state(false);
   canRedo = $state(false);
   revision = $state(0);
+  publishedRevision = $state<number | null>(null);
+  canPublish = $state(false);
+  publishing = $state(false);
+  conflictRevision = $state<number | null>(null);
   /** Polite announcement (results) and assertive one (errors). */
   message = $state('');
   alert = $state('');
@@ -22,7 +26,7 @@ export class EditorStore {
 
   constructor(readonly session: EditorSession, readonly t: Translate) {
     for (const event of ['status-change', 'dirty-change', 'history-change', 'selection-change', 'ready',
-      'save-success', 'conflict'] as const) {
+      'save-success', 'conflict', 'publish-start', 'publish-success', 'publish-error'] as const) {
       this.stops.push(session.events.on(event, () => this.sync()));
     }
     this.sync();
@@ -38,6 +42,37 @@ export class EditorStore {
     this.canUndo = s.canUndo;
     this.canRedo = s.canRedo;
     this.revision = s.baseRevision;
+    this.publishedRevision = s.publishedRevision;
+    this.canPublish = s.canPublish;
+    this.publishing = s.publishing;
+    this.conflictRevision = s.conflictRevision;
+  }
+
+  /** Something on the server is not public yet (or local edits are pending). */
+  get unpublished(): boolean {
+    return this.dirty || this.publishedRevision !== this.revision;
+  }
+
+  async publish(): Promise<void> {
+    try {
+      const revision = await this.session.publish();
+      this.sync();
+      this.announce('announce.published', { revision });
+    } catch (error) {
+      this.sync();
+      this.fail(error);
+    }
+  }
+
+  async resolve(choice: 'keep-mine' | 'take-theirs'): Promise<void> {
+    try {
+      await this.session.resolveConflict(choice);
+      this.sync();
+      this.announce(choice === 'keep-mine' ? 'announce.keptMine' : 'announce.tookTheirs', { revision: this.revision });
+    } catch (error) {
+      this.sync();
+      this.fail(error);
+    }
   }
 
   announce(key: MessageKey, params: Record<string, string | number> = {}): void {

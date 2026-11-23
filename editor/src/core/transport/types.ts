@@ -21,4 +21,23 @@ export interface Transport {
   preview(pageId: string, revision: number): Promise<PageDocument>;
   listComponents(): Promise<ComponentDescriptorDto[]>;
   listElementRules(): Promise<HtmlTagRuleDto[]>;
+  /** Optional (03-D): hosts without them get an editor without publishing or server preview. */
+  capabilities?(): Promise<EditorCapabilities>;
+  status?(pageId: string): Promise<PublicationStatus>;
+  /** Publishes an exact revision; the key makes retries idempotent. */
+  publish?(pageId: string, revision: number, idempotencyKey: string): Promise<{ revision: number }>;
+  /** HTML of a stored revision drawn by the server renderer (content only). */
+  render?(pageId: string, revision: number): Promise<string>;
+}
+
+/** Permissions and features negotiated with the server (GET {prefix}/capabilities). */
+export interface EditorCapabilities {
+  readonly permissions: readonly string[];
+  readonly features: Readonly<Record<string, boolean>>;
+}
+
+export interface PublicationStatus {
+  readonly revision: number;
+  readonly publishedRevision: number | null;
+  readonly hasUnpublishedChanges: boolean;
 }

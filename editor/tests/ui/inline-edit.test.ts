@@ -21,6 +21,6 @@ describe('inline text editing', () => {
     expect(cleanText('a\nb', false)).toBe('a b');
     expect(cleanText('x\u0000\u0007y\tz', false)).toBe('xyz');
     expect(cleanText('<b>x</b>', false)).toBe('<b>x</b>');
-    expect([isMultiline('text'), isMultiline('p'), isMultiline('heading')]).toEqual([true, true, false]);
+    expect([isMultiline('text'), isMultiline('p'), isMultiline('heading')]).toEqual([true, false, false]);
   });
 });

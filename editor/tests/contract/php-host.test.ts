@@ -72,8 +72,8 @@ describe.skipIf(!available)('editor core against a minimal PHP host', () => {
     const second = createEditor({ pageId: 'page-1', transport: transport() });
     await first.load();
     await second.load();
-    first.dispatch({ kind: 'rename', id: 'c1', name: 'First', label: null });
-    second.dispatch({ kind: 'rename', id: 'c1', name: 'Second', label: null });
+    first.dispatch({ kind: 'rename', id: 'c1', name: null, label: 'First' });
+    second.dispatch({ kind: 'rename', id: 'c1', name: null, label: 'Second' });
     const revision = await first.save('autosave');
     await expect(second.save()).rejects.toMatchObject({ code: 'REVISION_CONFLICT' });
     expect(second.status).toBe('conflict');
@@ -81,7 +81,7 @@ describe.skipIf(!available)('editor core against a minimal PHP host', () => {
     expect(second.baseRevision).toBe((revision as number) + 1);
     const check = createEditor({ pageId: 'page-1', transport: transport() });
     await check.load();
-    expect(check.tree.nodes.c1?.fields.name).toBe('Second');
+    expect(check.tree.nodes.c1?.fields.label).toBe('Second');
   });
 
   it('server validation and missing pages come back as editor errors with stable codes', async () => {
@@ -92,4 +92,28 @@ describe.skipIf(!available)('editor core against a minimal PHP host', () => {
     await expect(transport().save(document, editor.baseRevision, 'edit'))
       .rejects.toMatchObject({ code: 'VALIDATION_FAILED', details: { status: '422' } });
   });
+
+  it('reports the publication state, publishes the saved revision and renders it with the server views', async () => {
+    const editor = createEditor({ pageId: 'page-1', transport: transport() });
+    await editor.load();
+    expect(editor.canPublish).toBe(true);
+    const before = editor.publishedRevision;
+    editor.dispatch({ kind: 'insert', parent: 'c1', index: 0,
+      node: { type: 'heading', props: { text: 'Release <notes>', level: 1 } } });
+    editor.dispatch({ kind: 'insert', parent: 'c1', index: 1, node: { type: 'button', props: { label: 'Go', url: '/start' } } });
+    editor.dispatch({ kind: 'insert', parent: 'c1', index: 2, node: { type: 'text', props: { content: 'One\nTwo' } } });
+    const revision = (await editor.save()) as number;
+    expect(editor.publishedRevision).toBe(before);
+    expect(await transport().status?.('page-1')).toEqual({ revision, publishedRevision: before, hasUnpublishedChanges: true });
+
+    expect(await editor.publish()).toBe(revision);
+    expect(await transport().status?.('page-1')).toEqual({ revision, publishedRevision: revision, hasUnpublishedChanges: false });
+
+    const html = (await transport().render?.('page-1', revision)) ?? '';
+    expect(html).toContain('<h1>Release &lt;notes&gt;</h1>');
+    expect(html).toContain('<a href="/start" class="btn btn-primary">Go</a>');
+    expect(html).toContain('<p>One<br>');
+    expect(html).toContain('<div class="container">');
+  });
 });
+

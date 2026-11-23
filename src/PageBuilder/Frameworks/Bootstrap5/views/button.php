@@ -1,6 +1,11 @@
 <?php
 $label = $props['label'] ?? 'Click aquí';
-$href = $props['href'] ?? '#';
+// The module catalogue stores the link in `url`; imported trees may use `href`.
+$href = (string) ($props['href'] ?? $props['url'] ?? '#');
+// Active schemes never reach the public page (same rule as the editor canvas).
+if (preg_match('/^\s*(javascript|data|vbscript):/i', preg_replace('/[\x00-\x20]+/', '', $href))) {
+    $href = '#';
+}
 $variant = $props['variant'] ?? 'primary';
 $size = $props['size'] ?? '';
 $target = $props['target'] ?? '_self';

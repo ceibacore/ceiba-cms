@@ -1,8 +1,15 @@
 <script lang="ts">
   import type { EditorStore } from '../model/store.svelte';
 
-  let { store }: { store: EditorStore } = $props();
+  let { store, serverView, onServerView }: {
+    store: EditorStore; serverView: boolean; onServerView: (() => void) | null;
+  } = $props();
   const t = $derived(store.t);
+  const publication = $derived(
+    store.publishedRevision === null ? t('publication.none')
+      : store.unpublished ? t('publication.pending', { revision: store.publishedRevision })
+        : t('publication.current'),
+  );
 </script>
 
 <div class="toolbar" role="toolbar" aria-label={t('editor.label')}>
@@ -12,19 +19,31 @@
   <button type="button" onclick={() => store.redo()} disabled={!store.canRedo} aria-keyshortcuts="Control+Shift+Z">
     {t('toolbar.redo')}
   </button>
-  <button type="button" class="primary" onclick={() => store.save()}
+  <button type="button" onclick={() => store.save()} aria-keyshortcuts="Control+S"
     disabled={!store.dirty || store.status === 'saving' || store.status === 'conflict'}>
     {t('toolbar.save')}
   </button>
+  {#if store.canPublish}
+    <button type="button" class="primary" onclick={() => store.publish()}
+      disabled={store.publishing || store.status !== 'ready' || !store.unpublished}>
+      {store.publishing ? t('toolbar.publishing') : t('toolbar.publish')}
+    </button>
+  {/if}
+  {#if onServerView}
+    <button type="button" aria-pressed={serverView} onclick={onServerView}>{t('toolbar.serverView')}</button>
+  {/if}
   <span class="status" data-status={store.status}>{t(`status.${store.status}`)}</span>
-  {#if store.revision > 0}<span class="revision">{t('toolbar.revision', { revision: store.revision })}</span>{/if}
+  {#if store.revision > 0}
+    <span class="revision">{t('toolbar.revision', { revision: store.revision })} · <span data-publication>{publication}</span></span>
+  {/if}
 </div>
 
 <style>
-  .toolbar { display: flex; gap: .5rem; align-items: center; padding: .5rem .75rem; border-bottom: 1px solid var(--cpb-border); }
+  .toolbar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; padding: .5rem .75rem; border-bottom: 1px solid var(--cpb-border); }
   button { font: inherit; padding: .35rem .75rem; border: 1px solid var(--cpb-border); border-radius: 6px; background: var(--cpb-surface); color: inherit; cursor: pointer; }
   button:disabled { opacity: .5; cursor: not-allowed; }
   button.primary { background: var(--cpb-accent); border-color: var(--cpb-accent); color: #fff; }
+  button[aria-pressed='true'] { background: var(--cpb-accent-soft); border-color: var(--cpb-accent); }
   button:focus-visible { outline: 2px solid var(--cpb-accent); outline-offset: 2px; }
   .status { margin-left: auto; font-size: .875rem; }
   .status[data-status='conflict'], .status[data-status='offline'], .status[data-status='load-error'] { color: var(--cpb-danger); font-weight: 600; }

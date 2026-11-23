@@ -15,12 +15,20 @@ export declare class EditorStore {
     canUndo: boolean;
     canRedo: boolean;
     revision: number;
+    publishedRevision: number | null;
+    canPublish: boolean;
+    publishing: boolean;
+    conflictRevision: number | null;
     /** Polite announcement (results) and assertive one (errors). */
     message: string;
     alert: string;
     private readonly stops;
     constructor(session: EditorSession, t: Translate);
     sync(): void;
+    /** Something on the server is not public yet (or local edits are pending). */
+    get unpublished(): boolean;
+    publish(): Promise<void>;
+    resolve(choice: 'keep-mine' | 'take-theirs'): Promise<void>;
     announce(key: MessageKey, params?: Record<string, string | number>): void;
     fail(error: unknown, code?: import("..").EditorErrorCode): void;
     /** Runs a command; returns false (and announces why) when the core refuses it. */

@@ -32,5 +32,5 @@ foreach ($props as $key => $value) {
         . '"';
 }
 ?>
-<<?php echo $tag; ?><?php echo $attrStr; ?>><?php echo htmlspecialchars((string) $content, ENT_QUOTES, 'UTF-8'); ?></<?php echo $tag; ?>>
+<<?php echo $tag; ?><?php echo $attrStr; ?>><?php echo nl2br(htmlspecialchars((string) $content, ENT_QUOTES, 'UTF-8'), false); ?></<?php echo $tag; ?>>
 

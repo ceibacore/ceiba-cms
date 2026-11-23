@@ -1,6 +1,6 @@
 import { mount, unmount } from 'svelte';
-import type { SessionEvents, SessionOptions } from '../core';
-import { EditorSession } from '../core';
+import type { AutosaveOptions, SessionEvents, SessionOptions } from '../core';
+import { Autosave, DEFAULT_AUTOSAVE, EditorSession } from '../core';
 import Editor from './Editor.svelte';
 import { translator } from './i18n';
 import { EditorStore } from './model/store.svelte';
@@ -10,11 +10,13 @@ export interface PageBuilderConfig extends SessionOptions {
   readonly locale?: string;
   /** The page's own CSS (e.g. Bootstrap 5) for the canvas; http(s) or same-origin paths. */
   readonly stylesheets?: readonly string[];
+  /** Autosave (on by default when the server allows it); false turns it off. */
+  readonly autosave?: false | Partial<AutosaveOptions>;
 }
 
 /** Events re-dispatched on the element (bubbling, composed). They carry ids and state, never content or credentials. */
 export const PUBLIC_EVENTS = ['ready', 'selection-change', 'dirty-change', 'save-start', 'save-success', 'save-error',
-  'conflict'] as const satisfies readonly (keyof SessionEvents)[];
+  'conflict', 'publish-success', 'publish-error'] as const satisfies readonly (keyof SessionEvents)[];
 
 let instances = 0;
 
@@ -27,6 +29,7 @@ export class CeibaPageBuilder extends HTMLElement {
   #app: Record<string, unknown> | null = null;
   #session: EditorSession | null = null;
   #store: EditorStore | null = null;
+  #autosave: Autosave | null = null;
   readonly #uid = `cpb${++instances}`;
 
   get config(): PageBuilderConfig | null {
@@ -59,7 +62,8 @@ export class CeibaPageBuilder extends HTMLElement {
     const session = new EditorSession(config);
     for (const name of PUBLIC_EVENTS) {
       session.events.on(name, (detail) => {
-        const safe = name === 'save-error' ? { code: (detail as SessionEvents['save-error']).error.code } : detail;
+        const safe = name === 'save-error' || name === 'publish-error'
+          ? { code: (detail as SessionEvents['save-error']).error.code } : detail;
         this.dispatchEvent(new CustomEvent(name, { detail: safe, bubbles: true, composed: true }));
       });
     }
@@ -67,10 +71,18 @@ export class CeibaPageBuilder extends HTMLElement {
     this.#session = session;
     this.#store = store;
     this.#app = mount(Editor, { target: root, props: { store, uid: this.#uid, stylesheets: config.stylesheets ?? [] } });
-    session.load().then(() => store.sync(), (error: unknown) => { store.sync(); store.fail(error); });
+    session.load().then(() => {
+      store.sync();
+      if (config.autosave !== false && session.capabilities?.features.autosave !== false) {
+        this.#autosave = new Autosave(session, { ...DEFAULT_AUTOSAVE, ...(config.autosave ?? {}) });
+        this.#autosave.start();
+      }
+    }, (error: unknown) => { store.sync(); store.fail(error); });
   }
 
   #unmount(): void {
+    this.#autosave?.stop();
+    this.#autosave = null;
     if (this.#app) void unmount(this.#app);
     this.#store?.destroy();
     this.#session?.destroy();

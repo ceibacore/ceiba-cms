@@ -12,7 +12,7 @@
   const labelOf = (id: string): string => {
     const node = store.tree.nodes[id];
     if (!node) return id;
-    const name = typeof node.fields.name === 'string' && node.fields.name !== '' ? node.fields.name : null;
+    const name = typeof node.fields.label === 'string' && node.fields.label !== '' ? node.fields.label : null;
     const rule = store.catalogue?.get(node.type);
     return name ? `${name} (${rule?.label ?? node.type})` : rule?.label ?? node.type;
   };

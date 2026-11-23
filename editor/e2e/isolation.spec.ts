@@ -51,7 +51,7 @@ test('events carry ids and state, never page content; removing the element relea
   await b.getByRole('treeitem', { name: 'Heading' }).click();
   await b.getByLabel('Text', { exact: true }).fill('Secret draft title');
   await b.getByRole('button', { name: 'Save' }).click();
-  await expect(b.getByText('Revision 2', { exact: true })).toBeVisible();
+  await expect(b.getByText(/^Revision 2 ·/)).toBeVisible();
 
   const events = await page.evaluate(() => (window as unknown as DemoWindow).events);
   expect(events).toContain('b:save-success:{"revision":2}');

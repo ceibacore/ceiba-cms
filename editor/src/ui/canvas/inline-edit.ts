@@ -2,8 +2,9 @@ import type { Catalogue, NodeRecord } from '../../core';
 
 /** Tags whose text is a single line: Enter finishes the edit instead of adding a line break. */
 const SINGLE_LINE = new Set(['heading', 'button', 'a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'li', 'strong', 'em',
-  'small', 'label', 'figcaption']);
-const MULTI_LINE = new Set(['text', 'p', 'blockquote', 'code']);
+  'small', 'label', 'figcaption', 'p', 'blockquote', 'code']);
+/** Only the text block keeps line breaks: its server view turns them into <br> (views/text.php). */
+const MULTI_LINE = new Set(['text']);
 
 /**
  * Prop that holds the visible text of a node, or null when it cannot be edited in place (containers, nodes with

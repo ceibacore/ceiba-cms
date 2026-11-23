@@ -9,6 +9,9 @@ export class MemoryServer {
   current = 3;
   failNext: EditorError | null = null;
   saves: { reason: string; base: number }[] = [];
+  published: number | null = 3;
+  permissions = ['pages.read', 'pages.update', 'pages.publish'];
+  publishKeys: string[] = [];
 
   /** Someone else saves a revision (another tab, another author). */
   saveElsewhere(): void {
@@ -40,6 +43,18 @@ export class MemoryServer {
       preview: async (_page, revision) => structuredClone(this.revisions.get(revision) as PageDocument),
       listComponents: async () => COMPONENTS,
       listElementRules: async () => HTML_TAGS,
+      capabilities: async () => ({ permissions: this.permissions,
+        features: { revisionPublish: this.permissions.includes('pages.publish'), autosave: true } }),
+      status: async () => ({ revision: this.current, publishedRevision: this.published,
+        hasUnpublishedChanges: this.published !== this.current }),
+      publish: async (_page, revision, key) => {
+        this.publishKeys.push(key);
+        if (!this.permissions.includes('pages.publish')) throw new EditorError('AUTHORIZATION_DENIED', 'no');
+        if (revision !== this.current) throw new EditorError('REVISION_CONFLICT', 'stale', { currentRevision: String(this.current) });
+        this.published = revision;
+        return { revision };
+      },
+      render: async (_page, revision) => `<p>revision ${revision}</p>`,
     };
   }
 }
