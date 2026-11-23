@@ -34,6 +34,9 @@ return [
         'revisionApiController'  => $revisionApiController,
     ],
     'services' => [
+        'pageAssembler'        => $pageAssembler,
+        'customCode'           => $customCode,
+        'designApiController'  => $designApiController,
         'loopResolver'         => $loopResolver,
         'variableInterpolator' => $variableInterpolator,
         'bladeRenderer'        => $bladeRenderer,
@@ -72,6 +75,9 @@ return [
     'queryEngine'         => $queryEngine,
     'pageBuilderMetadataService' => $pageBuilderMetadataService,
     'useCases' => [
+        'getSiteDesign' => $getSiteDesign,
+        'saveSiteDesignDraft' => $saveSiteDesignDraft,
+        'publishSiteDesign' => $publishSiteDesign,
         'savePageContent' => $savePageContent,
         'getPageWorkingRevision' => $getPageWorkingRevision,
         'savePageDraft' => $savePageDraft,

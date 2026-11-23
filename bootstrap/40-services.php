@@ -75,6 +75,7 @@ $builderContextResolver    = static function () use ($siteId, $authManager, $che
     foreach ([
         'pages.view' => 'pages.read', 'pages.update' => 'pages.update', 'pages.publish' => 'pages.publish',
         'pages.restore' => 'pages.restore', 'pages.unpublish' => 'pages.unpublish',
+        'design.update' => 'design.update', 'design.publish' => 'design.publish',
     ] as $permission => $capability) {
         if ($checkPermission->execute($actorId, $permission)) {
             $capabilities[] = $capability;

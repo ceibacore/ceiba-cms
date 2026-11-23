@@ -859,7 +859,10 @@ var e = class extends Error {
 		},
 		async render(e, t) {
 			let n = await a(`${i(e)}/revisions/${t}/render`);
-			return typeof n.html == "string" ? n.html : "";
+			return {
+				html: typeof n.html == "string" ? n.html : "",
+				css: typeof n.css == "string" ? n.css : ""
+			};
 		},
 		async listTemplates() {
 			let e = await a(`${r}/templates`);

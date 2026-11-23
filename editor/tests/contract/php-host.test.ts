@@ -109,11 +109,23 @@ describe.skipIf(!available)('editor core against a minimal PHP host', () => {
     expect(await editor.publish()).toBe(revision);
     expect(await transport().status?.('page-1')).toEqual({ revision, publishedRevision: revision, hasUnpublishedChanges: false });
 
-    const html = (await transport().render?.('page-1', revision)) ?? '';
+    const { html } = (await transport().render?.('page-1', revision)) ?? { html: '' };
     expect(html).toContain('<h1>Release &lt;notes&gt;</h1>');
     expect(html).toContain('<a href="/start" class="btn btn-primary">Go</a>');
     expect(html).toContain('<p>One<br>');
     expect(html).toContain('<div class="container">');
+  });
+
+  it('the server view carries the CSS of styled nodes (plan 04-B)', async () => {
+    const editor = createEditor({ pageId: 'page-1', transport: transport() });
+    await editor.load();
+    const raw = editor.toDocument();
+    raw.root[0] = { ...raw.root[0]!, styles: { base: { paddingBlock: '3rem' }, breakpoints: { lg: { paddingBlock: '5rem' } } } };
+    const saved = await transport().save({ ...raw, revision: editor.baseRevision + 1 }, editor.baseRevision, 'edit');
+    const rendered = await transport().render?.('page-1', saved.revision);
+    expect(rendered?.html).toContain('class="container cms-n-c1"');
+    expect(rendered?.css).toContain('.cms-n-c1.cms-n-c1{padding-block:3rem}');
+    expect(rendered?.css).toContain('@media (min-width:992px){');
   });
 });
 

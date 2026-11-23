@@ -54,7 +54,7 @@ export class MemoryServer {
         this.published = revision;
         return { revision };
       },
-      render: async (_page, revision) => `<p>revision ${revision}</p>`,
+      render: async (_page, revision) => ({ html: `<p>revision ${revision}</p>`, css: '' }),
     };
   }
 }

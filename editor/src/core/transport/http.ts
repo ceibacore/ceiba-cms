@@ -87,7 +87,7 @@ export const createHttpTransport = (options: HttpTransportOptions): Transport =>
     },
     async render(pageId, revision) {
       const data = await request(`${page(pageId)}/revisions/${revision}/render`);
-      return typeof data.html === 'string' ? data.html : '';
+      return { html: typeof data.html === 'string' ? data.html : '', css: typeof data.css === 'string' ? data.css : '' };
     },
     async listTemplates() {
       const data = await request(`${base}/templates`);

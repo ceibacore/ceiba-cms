@@ -71,7 +71,7 @@ describe('HTTP transport (module /api/builder/v1)', () => {
       .toMatchObject({ publishedRevision: null });
     expect(await reply({ effectivePermissions: ['pages.read'], features: { autosave: true } }).capabilities?.())
       .toEqual({ permissions: ['pages.read'], features: { autosave: true } });
-    expect(await reply({ revision: 2, html: '<h1>x</h1>' }).render?.('page-1', 2)).toBe('<h1>x</h1>');
+    expect(await reply({ revision: 2, html: '<h1>x</h1>', css: '.a{}' }).render?.('page-1', 2)).toEqual({ html: '<h1>x</h1>', css: '.a{}' });
     expect(calls.map((c) => [c.init.method ?? 'GET', c.url])).toEqual([
       ['POST', '/b/pages/page-1/publish-revision'], ['GET', '/b/pages/page-1/status'], ['GET', '/b/pages/page-1/status'],
       ['GET', '/b/capabilities'], ['GET', '/b/pages/page-1/revisions/2/render'],

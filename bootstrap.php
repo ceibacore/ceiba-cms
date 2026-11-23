@@ -8,7 +8,7 @@ declare(strict_types=1);
  * returns the container built by the last one. Split to keep every file under 200 lines.
  */
 
-foreach (['00-environment', '10-classes-core', '11-classes-pagebuilder', '20-database', '30-use-cases', '40-services'] as $part) {
+foreach (['00-environment', '10-classes-core', '11-classes-pagebuilder', '20-database', '30-use-cases', '40-services', '45-design'] as $part) {
     require __DIR__ . "/bootstrap/{$part}.php";
 }
 
