@@ -1,0 +1,57 @@
+{
+  "name": "11-whitespace",
+  "design": {
+    "breakpoints": [
+      {
+        "id": "sm",
+        "minWidth": 576
+      },
+      {
+        "id": "md",
+        "minWidth": 768
+      },
+      {
+        "id": "lg",
+        "minWidth": 992
+      },
+      {
+        "id": "xl",
+        "minWidth": 1200
+      }
+    ],
+    "tokens": {
+      "font.ui": {
+        "type": "fontFamily",
+        "value": "  Inter\t,\nsystem-ui ,  Segoe   UI "
+      }
+    },
+    "classes": {}
+  },
+  "nodes": [
+    {
+      "id": "w",
+      "styles": {
+        "base": {
+          "maxWidth": "\t10px\n",
+          "fontSize": " 1rem",
+          "margin": "1px\t\t2px",
+          "padding": "1px 2px",
+          "fontFamily": {
+            "token": "font.ui"
+          }
+        }
+      }
+    }
+  ],
+  "css": ":root{--cms-t-font_ui:Inter, system-ui, \"Segoe UI\"}\n.cms-n-w.cms-n-w{max-width:10px;margin:1px 2px;font-family:var(--cms-t-font_ui)}",
+  "diagnostics": [
+    {
+      "path": "nodes.w.styles.base.fontSize",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.w.styles.base.padding",
+      "code": "INVALID_VALUE"
+    }
+  ]
+}

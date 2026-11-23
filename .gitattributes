@@ -13,3 +13,4 @@
 /editor/tsconfig.build.json export-ignore
 /editor/vite.config.ts export-ignore
 /.ia export-ignore
+/fixtures export-ignore

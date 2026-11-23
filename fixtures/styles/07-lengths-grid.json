@@ -1,0 +1,83 @@
+{
+  "name": "07-lengths-grid",
+  "design": {
+    "breakpoints": [
+      {
+        "id": "sm",
+        "minWidth": 576
+      },
+      {
+        "id": "md",
+        "minWidth": 768
+      },
+      {
+        "id": "lg",
+        "minWidth": 992
+      },
+      {
+        "id": "xl",
+        "minWidth": 1200
+      }
+    ],
+    "tokens": {},
+    "classes": {}
+  },
+  "nodes": [
+    {
+      "id": "g",
+      "styles": {
+        "base": {
+          "margin": "-1rem auto 0 auto",
+          "marginInline": "auto",
+          "gap": "1rem 2rem",
+          "padding": "1px 2px 3px 4px 5px",
+          "gridTemplateColumns": "repeat(3, 1fr)",
+          "gridColumn": "span 2",
+          "lineHeight": 1.5,
+          "fontWeight": 700,
+          "opacity": 0.333333,
+          "flexGrow": 2,
+          "fontSize": "1.25rem",
+          "borderRadius": ".5rem",
+          "width": "calc(100% - 1rem)"
+        },
+        "breakpoints": {
+          "md": {
+            "gridTemplateColumns": "200px 1fr min-content",
+            "gridColumn": "1 / -1",
+            "lineHeight": "24px"
+          }
+        }
+      }
+    },
+    {
+      "id": "h",
+      "styles": {
+        "base": {
+          "gridTemplateColumns": "repeat(13, 1fr)",
+          "gridColumn": "span 13",
+          "height": "  12px  "
+        }
+      }
+    }
+  ],
+  "css": ".cms-n-g.cms-n-g{flex-grow:2;gap:1rem 2rem;grid-template-columns:repeat(3, 1fr);grid-column:span 2;margin:-1rem auto 0 auto;margin-inline:auto;font-size:1.25rem;font-weight:700;line-height:1.5;border-radius:.5rem;opacity:0.3333}\n.cms-n-h.cms-n-h{height:12px}\n@media (min-width:768px){\n.cms-n-g.cms-n-g{grid-template-columns:200px 1fr min-content;grid-column:1 / -1;line-height:24px}\n}",
+  "diagnostics": [
+    {
+      "path": "nodes.g.styles.base.padding",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.g.styles.base.width",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.h.styles.base.gridTemplateColumns",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.h.styles.base.gridColumn",
+      "code": "INVALID_VALUE"
+    }
+  ]
+}

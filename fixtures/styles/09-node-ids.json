@@ -1,0 +1,56 @@
+{
+  "name": "09-node-ids",
+  "design": {
+    "breakpoints": [
+      {
+        "id": "sm",
+        "minWidth": 576
+      },
+      {
+        "id": "md",
+        "minWidth": 768
+      },
+      {
+        "id": "lg",
+        "minWidth": 992
+      },
+      {
+        "id": "xl",
+        "minWidth": 1200
+      }
+    ],
+    "tokens": {},
+    "classes": {}
+  },
+  "nodes": [
+    {
+      "id": "a b",
+      "styles": {
+        "base": {
+          "color": "#fff"
+        }
+      }
+    },
+    {
+      "id": "3f2a9c1e-77aa-4c2b-9d1e-1234567890ab",
+      "styles": {
+        "base": {
+          "color": "#000"
+        }
+      }
+    },
+    {
+      "id": "n_1-x",
+      "styles": {
+        "base": {}
+      }
+    }
+  ],
+  "css": ".cms-n-3f2a9c1e-77aa-4c2b-9d1e-1234567890ab.cms-n-3f2a9c1e-77aa-4c2b-9d1e-1234567890ab{color:#000}",
+  "diagnostics": [
+    {
+      "path": "nodes.a b",
+      "code": "INVALID_ID"
+    }
+  ]
+}

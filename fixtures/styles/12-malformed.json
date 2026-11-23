@@ -1,0 +1,116 @@
+{
+  "name": "12-malformed",
+  "design": {
+    "breakpoints": [
+      {
+        "id": "sm",
+        "minWidth": 576
+      },
+      {
+        "id": "md",
+        "minWidth": 768
+      }
+    ],
+    "tokens": {
+      "t": "not-an-object",
+      "u": {
+        "type": "color"
+      },
+      "v": {
+        "type": "nope",
+        "value": "#fff"
+      }
+    },
+    "classes": {
+      "a": "text",
+      "b": {
+        "styles": "x"
+      },
+      "c": {
+        "styles": {
+          "base": [
+            "width"
+          ]
+        }
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": "m",
+      "styles": {
+        "classes": "a",
+        "base": "red",
+        "states": [
+          "hover"
+        ],
+        "breakpoints": {
+          "sm": null,
+          "md": {
+            "width": null,
+            "height": true,
+            "color": [
+              "#fff"
+            ],
+            "opacity": "0.5"
+          }
+        }
+      }
+    },
+    {
+      "id": "k",
+      "styles": {
+        "classes": [
+          1,
+          "c"
+        ],
+        "base": {
+          "display": "block"
+        }
+      }
+    }
+  ],
+  "css": ".cms-n-k.cms-n-k{display:block}",
+  "diagnostics": [
+    {
+      "path": "design.tokens.t",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "design.tokens.u",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "design.tokens.v",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "design.classes.c.styles.base.0",
+      "code": "UNKNOWN_PROPERTY"
+    },
+    {
+      "path": "nodes.m.styles.states.0",
+      "code": "UNKNOWN_STATE"
+    },
+    {
+      "path": "nodes.m.styles.breakpoints.md.width",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.m.styles.breakpoints.md.height",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.m.styles.breakpoints.md.color",
+      "code": "UNKNOWN_TOKEN"
+    },
+    {
+      "path": "nodes.m.styles.breakpoints.md.opacity",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.k.styles.classes.0",
+      "code": "UNKNOWN_CLASS"
+    }
+  ]
+}

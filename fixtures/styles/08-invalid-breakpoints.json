@@ -1,0 +1,43 @@
+{
+  "name": "08-invalid-breakpoints",
+  "design": {
+    "breakpoints": [
+      {
+        "id": "md",
+        "minWidth": 768
+      },
+      {
+        "id": "sm",
+        "minWidth": 576
+      }
+    ],
+    "tokens": {},
+    "classes": {}
+  },
+  "nodes": [
+    {
+      "id": "n",
+      "styles": {
+        "base": {
+          "display": "flex"
+        },
+        "breakpoints": {
+          "md": {
+            "display": "block"
+          }
+        }
+      }
+    }
+  ],
+  "css": ".cms-n-n.cms-n-n{display:flex}",
+  "diagnostics": [
+    {
+      "path": "design.breakpoints",
+      "code": "INVALID_BREAKPOINTS"
+    },
+    {
+      "path": "nodes.n.styles.breakpoints.md",
+      "code": "UNKNOWN_BREAKPOINT"
+    }
+  ]
+}

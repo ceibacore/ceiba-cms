@@ -1,0 +1,58 @@
+{
+  "name": "03-states",
+  "design": {
+    "breakpoints": [
+      {
+        "id": "sm",
+        "minWidth": 576
+      },
+      {
+        "id": "md",
+        "minWidth": 768
+      },
+      {
+        "id": "lg",
+        "minWidth": 992
+      },
+      {
+        "id": "xl",
+        "minWidth": 1200
+      }
+    ],
+    "tokens": {},
+    "classes": {}
+  },
+  "nodes": [
+    {
+      "id": "cta",
+      "styles": {
+        "base": {
+          "backgroundColor": "#2563eb"
+        },
+        "states": {
+          "active": {
+            "opacity": 0.8
+          },
+          "hover": {
+            "backgroundColor": "#1d4ed8"
+          },
+          "visited": {
+            "color": "red"
+          },
+          "focus-visible": {
+            "borderWidth": "2px",
+            "borderStyle": "solid",
+            "borderColor": "currentColor"
+          }
+        }
+      }
+    }
+  ],
+  "css": ".cms-n-cta.cms-n-cta{background-color:#2563eb}\n.cms-n-cta.cms-n-cta:hover{background-color:#1d4ed8}\n.cms-n-cta.cms-n-cta:focus-visible{border-width:2px;border-style:solid;border-color:currentColor}\n.cms-n-cta.cms-n-cta:active{opacity:0.8}",
+  "diagnostics": [
+    {
+      "path": "nodes.cta.styles.states.visited",
+      "code": "UNKNOWN_STATE"
+    }
+  ]
+}

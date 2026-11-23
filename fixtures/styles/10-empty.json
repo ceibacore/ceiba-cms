@@ -1,0 +1,28 @@
+{
+  "name": "10-empty",
+  "design": {
+    "breakpoints": [
+      {
+        "id": "sm",
+        "minWidth": 576
+      },
+      {
+        "id": "md",
+        "minWidth": 768
+      },
+      {
+        "id": "lg",
+        "minWidth": 992
+      },
+      {
+        "id": "xl",
+        "minWidth": 1200
+      }
+    ],
+    "tokens": {},
+    "classes": {}
+  },
+  "nodes": [],
+  "css": "",
+  "diagnostics": []
+}

@@ -1,0 +1,150 @@
+{
+  "name": "04-tokens",
+  "design": {
+    "breakpoints": [
+      {
+        "id": "sm",
+        "minWidth": 576
+      },
+      {
+        "id": "md",
+        "minWidth": 768
+      },
+      {
+        "id": "lg",
+        "minWidth": 992
+      },
+      {
+        "id": "xl",
+        "minWidth": 1200
+      }
+    ],
+    "tokens": {
+      "color.primary": {
+        "type": "color",
+        "value": "#2563eb"
+      },
+      "color.link": {
+        "type": "color",
+        "value": {
+          "token": "color.primary"
+        }
+      },
+      "space.lg": {
+        "type": "length",
+        "value": "2rem"
+      },
+      "font.body": {
+        "type": "fontFamily",
+        "value": "Open Sans, Arial, sans-serif"
+      },
+      "shadow.card": {
+        "type": "shadow",
+        "value": "0 1px 2px rgba(0, 0, 0, 0.2), inset 0 0 0 1px #e2e8f0"
+      },
+      "weight.bold": {
+        "type": "fontWeight",
+        "value": "700"
+      },
+      "loop.a": {
+        "type": "color",
+        "value": {
+          "token": "loop.b"
+        }
+      },
+      "loop.b": {
+        "type": "color",
+        "value": {
+          "token": "loop.a"
+        }
+      },
+      "bad.color": {
+        "type": "color",
+        "value": "red; background:url(x)"
+      },
+      "mixed": {
+        "type": "length",
+        "value": {
+          "token": "color.primary"
+        }
+      },
+      "Bad_Id": {
+        "type": "color",
+        "value": "#fff"
+      },
+      "speed": {
+        "type": "duration",
+        "value": "150ms"
+      }
+    },
+    "classes": {}
+  },
+  "nodes": [
+    {
+      "id": "card",
+      "styles": {
+        "base": {
+          "color": {
+            "token": "color.link"
+          },
+          "padding": {
+            "token": "space.lg"
+          },
+          "fontFamily": {
+            "token": "font.body"
+          },
+          "boxShadow": {
+            "token": "shadow.card"
+          },
+          "fontWeight": {
+            "token": "weight.bold"
+          },
+          "margin": {
+            "token": "color.primary"
+          },
+          "backgroundColor": {
+            "token": "nope"
+          },
+          "borderColor": {
+            "token": "loop.a"
+          }
+        }
+      }
+    }
+  ],
+  "css": ":root{--cms-t-color_link:var(--cms-t-color_primary);--cms-t-color_primary:#2563eb;--cms-t-font_body:\"Open Sans\", Arial, sans-serif;--cms-t-shadow_card:0 1px 2px rgba(0, 0, 0, 0.2), inset 0 0 0 1px #e2e8f0;--cms-t-space_lg:2rem;--cms-t-speed:150ms;--cms-t-weight_bold:700}\n.cms-n-card.cms-n-card{padding:var(--cms-t-space_lg);font-family:var(--cms-t-font_body);font-weight:var(--cms-t-weight_bold);color:var(--cms-t-color_link);box-shadow:var(--cms-t-shadow_card)}",
+  "diagnostics": [
+    {
+      "path": "design.tokens.Bad_Id",
+      "code": "INVALID_ID"
+    },
+    {
+      "path": "design.tokens.bad.color",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "design.tokens.loop.a",
+      "code": "TOKEN_CYCLE"
+    },
+    {
+      "path": "design.tokens.loop.b",
+      "code": "TOKEN_CYCLE"
+    },
+    {
+      "path": "design.tokens.mixed",
+      "code": "TOKEN_TYPE"
+    },
+    {
+      "path": "nodes.card.styles.base.margin",
+      "code": "TOKEN_TYPE"
+    },
+    {
+      "path": "nodes.card.styles.base.backgroundColor",
+      "code": "UNKNOWN_TOKEN"
+    },
+    {
+      "path": "nodes.card.styles.base.borderColor",
+      "code": "UNKNOWN_TOKEN"
+    }
+  ]
+}

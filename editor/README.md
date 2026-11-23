@@ -68,6 +68,7 @@ A host with its own routes (Campus) implements `Transport` (`load`, `save`, `pre
 | `src/core/history` | Undo/redo; bursts of the same edit merge (500 ms); configurable limit |
 | `src/core/transport` | `Transport` contract and the reference HTTP adapter; errors with stable codes |
 | `src/core/session` | `EditorSession`: states `loading · ready · dirty · saving · conflict · offline · load-error` |
+| `src/core/styles` | Plan 04: style matrix (mirror of `schemas/style-properties-v1.json`), value grammar, tokens and the CSS compiler shared with PHP through `fixtures/styles` |
 | `src/ui` | Web Component: `element.ts` (mount/unmount), `Editor.svelte` (layout), `canvas/`, `structure/`, `inspector/`, `palette/`, `toolbar/`, `i18n/` (es, en) |
 
 Limits are the server's (500 nodes, 15 levels, 2 MB). A failed command throws an `EditorError` and leaves the tree
