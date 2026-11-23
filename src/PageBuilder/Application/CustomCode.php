@@ -13,7 +13,10 @@ use CeibaCms\Settings\Domain\Repository\SettingsRepositoryInterface;
  */
 final class CustomCode
 {
-    /** Settings keys of the global code. */
+    /** Settings keys of the global code for every visitor (what hosts such as Campus edit in their CMS settings). */
+    public const COMMON_KEYS = ['css' => 'global_css', 'js' => 'global_js'];
+
+    /** Settings keys of the global code per visitor kind (with / without session), applied after the common one. */
     public const GLOBAL_KEYS = [
         'css' => ['custom_css_global_session', 'custom_css_global_no_session'],
         'js' => ['custom_js_global_session', 'custom_js_global_no_session'],
@@ -31,7 +34,8 @@ final class CustomCode
     public function resolve(array $page, bool $hasSession): array
     {
         $variant = $hasSession ? 0 : 1;
-        $setting = fn (string $kind): string => (string) ($this->settings?->get(self::GLOBAL_KEYS[$kind][$variant], '') ?? '');
+        $get = fn (string $key): string => trim((string) ($this->settings?->get($key, '') ?? ''));
+        $setting = fn (string $kind): string => trim($get(self::COMMON_KEYS[$kind]) . "\n" . $get(self::GLOBAL_KEYS[$kind][$variant]));
         $column = fn (string $kind): string => is_string($page[self::PAGE_COLUMNS[$kind][$variant]] ?? null)
             ? $page[self::PAGE_COLUMNS[$kind][$variant]] : '';
         return [
