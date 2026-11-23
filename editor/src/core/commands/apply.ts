@@ -6,10 +6,11 @@ import { remove } from './remove';
 import { rename } from './rename';
 import { replace } from './replace';
 import type { Command, CommandContext, CommandHandler, CommandResult } from './types';
+import { updateFields } from './update-fields';
 import { updateProps } from './update-props';
 
 const handlers: { [K in Command['kind']]: CommandHandler<K> } = {
-  insert, restore, remove, move, duplicate, updateProps, rename, replace,
+  insert, restore, remove, move, duplicate, updateProps, updateFields, rename, replace,
 };
 
 /** Runs a command. It either returns a new state or throws an EditorError leaving the given state untouched. */

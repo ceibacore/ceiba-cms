@@ -1,6 +1,7 @@
 import { EditorError } from '../src/core';
 import type { PageDocument, RawNode, Transport } from '../src/core';
 import { COMPONENTS, HTML_TAGS } from './catalogue';
+import { importHtml, TemplateStore } from './content';
 
 const escape = (value: unknown): string =>
   String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -24,6 +25,7 @@ export class MemoryServer {
   current = 1;
   published: number | null = 1;
   readonly revisions = new Map<number, PageDocument>();
+  readonly templates = new TemplateStore();
 
   constructor(pageId: string, root: PageDocument['root'], readonly permissions: string[]) {
     this.revisions.set(1, { schemaVersion: 1, documentId: pageId, revision: 1, root, settings: {}, resources: [] });
@@ -54,7 +56,7 @@ export class MemoryServer {
       listComponents: async () => COMPONENTS,
       listElementRules: async () => HTML_TAGS,
       capabilities: async () => ({ permissions: this.permissions,
-        features: { revisionPublish: this.permissions.includes('pages.publish'), autosave: true } }),
+        features: { revisionPublish: this.permissions.includes('pages.publish'), autosave: true, templates: true, htmlImport: true } }),
       status: async () => ({ revision: this.current, publishedRevision: this.published,
         hasUnpublishedChanges: this.published !== this.current }),
       publish: async (_id, revision) => {
@@ -62,6 +64,9 @@ export class MemoryServer {
         this.published = revision;
         return { revision };
       },
+      listTemplates: async () => structuredClone(this.templates.templates),
+      saveTemplate: async (template) => this.templates.save(structuredClone(template)),
+      importHtml: async (html) => importHtml(html),
       render: async (_id, revision) => (this.revisions.get(revision)?.root ?? []).map(renderNode).join(''),
     };
   }

@@ -15,6 +15,8 @@ export type Command =
   | { readonly kind: 'updateProps'; readonly id: string; readonly set: Readonly<Record<string, unknown>>;
       readonly unset?: readonly string[] }
   | { readonly kind: 'rename'; readonly id: string; readonly name: string | null; readonly label: string | null }
+  | { readonly kind: 'updateFields'; readonly id: string; readonly set: Readonly<Record<string, unknown>>;
+      readonly unset?: readonly string[] }
   | { readonly kind: 'replace'; readonly id: string; readonly node: RawNode; readonly keepIds?: boolean };
 
 export interface CommandContext {
