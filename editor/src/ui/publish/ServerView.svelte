@@ -6,20 +6,23 @@
     store: EditorStore; revision: number; stylesheets?: readonly string[]; onBack: () => void;
   } = $props();
   const t = $derived(store.t);
-  let html = $state<string | null>(null);
+  let rendered = $state<{ html: string; css: string } | null>(null);
 
   /** The page as the public renderer draws it, in a frame that can run nothing (sandbox without permissions). */
   $effect(() => {
     const render = store.session.transport.render;
     const target = revision;
-    html = null;
+    rendered = null;
     if (!render) return;
     render.call(store.session.transport, store.session.pageId, target)
-      .then((value) => { if (target === revision) html = value; })
+      .then((value) => { if (target === revision) rendered = value; })
       .catch((error: unknown) => store.fail(error));
   });
 
-  const srcdoc = $derived(html === null ? '' : canvasDocument(stylesheets).replace('<body></body>', `<body>${html}</body>`));
+  /** The page CSS goes in its own <style> (custom CSS may contain anything; the frame runs no scripts). */
+  const srcdoc = $derived(rendered === null ? '' : canvasDocument(stylesheets)
+    .replace('</head>', `<style data-cms-page>${rendered.css.replace(/<\/style/gi, '<\\/style')}</style></head>`)
+    .replace('<body></body>', `<body>${rendered.html}</body>`));
 </script>
 
 <div class="server">
@@ -28,7 +31,7 @@
     <button type="button" onclick={onBack}>{t('server.back')}</button>
   </div>
   {#if store.dirty}<p class="note">{t('server.dirty')}</p>{/if}
-  {#if html === null}
+  {#if rendered === null}
     <p class="note" role="status">{t('server.loading')}</p>
   {:else}
     <iframe title={t('server.frame')} sandbox="" {srcdoc}></iframe>

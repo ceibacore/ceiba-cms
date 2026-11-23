@@ -48,6 +48,9 @@ class SystemPermissionsSeeder extends CmsSeeder
                     'pages.publish' => 'Publish Pages',
                     'pages.unpublish' => 'Unpublish Pages',
                     'pages.restore' => 'Restore Page Revisions',
+                    // Site design (plan 04): tokens, breakpoints and classes shared by every page.
+                    'design.update' => 'Edit Site Design',
+                    'design.publish' => 'Publish Site Design',
                 ] as $permissionSlug => $permissionName) {
                     $this->firstOrCreate('permissions', ['slug' => $permissionSlug], [
                         'id' => UuidHelper::v4(),

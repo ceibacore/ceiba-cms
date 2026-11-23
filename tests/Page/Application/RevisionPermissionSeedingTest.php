@@ -26,12 +26,16 @@ final class RevisionPermissionSeedingTest extends TestCase
         (new SystemRolesSeeder($db, $prefix))->run();
 
         $slugs = $pdo->query("SELECT slug FROM {$prefix}permissions ORDER BY slug")->fetchAll(\PDO::FETCH_COLUMN);
-        self::assertSame(['pages.create', 'pages.delete', 'pages.publish', 'pages.restore', 'pages.unpublish', 'pages.update', 'pages.view'], $slugs);
+        self::assertSame(['design.publish', 'design.update', 'pages.create', 'pages.delete', 'pages.publish', 'pages.restore',
+            'pages.unpublish', 'pages.update', 'pages.view'], $slugs);
         $granted = static fn (string $role) => $pdo->query("SELECT p.slug FROM {$prefix}role_permissions rp
             JOIN {$prefix}roles r ON r.id = rp.role_id JOIN {$prefix}permissions p ON p.id = rp.permission_id
             WHERE r.slug = '{$role}' ORDER BY p.slug")->fetchAll(\PDO::FETCH_COLUMN);
         self::assertSame(['pages.create', 'pages.delete', 'pages.restore', 'pages.update', 'pages.view'], $granted('editor'));
         self::assertContains('pages.unpublish', $granted('admin'));
         self::assertContains('pages.restore', $granted('admin'));
+        // The site design is shared by every page: administrators only (plan 04-B).
+        self::assertContains('design.update', $granted('admin'));
+        self::assertContains('design.publish', $granted('admin'));
     }
 }

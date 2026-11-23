@@ -1,0 +1,52 @@
+<?php
+
+declare(strict_types=1);
+
+namespace CeibaCms\PageBuilder\Application;
+
+use CeibaCms\PageBuilder\Application\Design\GetSiteDesign;
+use CeibaCms\PageBuilder\Domain\Service\BladeRendererInterface;
+use CeibaCms\PageBuilder\Domain\Style\StyleClassDecorator;
+use CeibaCms\PageBuilder\Domain\Style\StyleCompiler;
+use CeibaCms\PageBuilder\Domain\Style\StyledNodes;
+
+/**
+ * What a published page carries (plan 04-B), the same for every host and preview:
+ * - html: the tree with its style classes, drawn by the renderer;
+ * - css: site design (compiled), then global custom CSS, then the page's own CSS (each may override the previous);
+ * - js: global custom JS, then the page's own JS.
+ */
+final class PageAssembler
+{
+    public function __construct(
+        private readonly BladeRendererInterface $renderer,
+        private readonly GetSiteDesign $designs,
+        private readonly CustomCode $customCode,
+    ) {}
+
+    /**
+     * @param list<mixed> $tree page content (root nodes)
+     * @param array<string, mixed> $page page row (custom code columns)
+     * @param array<string, mixed>|null $design design to use; the published one when null
+     * @param array<string, mixed> $context renderer context (loops, variables)
+     * @return array{html: string, css: string, js: string, diagnostics: list<array{path: string, code: string}>}
+     */
+    public function assemble(array $tree, array $page, bool $hasSession, ?array $design = null, array $context = []): array
+    {
+        $design ??= $this->designs->published();
+        $compiled = StyleCompiler::compile($design, StyledNodes::collect($tree));
+        $code = $this->customCode->resolve($page, $hasSession);
+        $css = array_filter([
+            $compiled->css === '' ? '' : "/* cms:design */\n" . $compiled->css,
+            $code['globalCss'] === '' ? '' : "/* cms:global */\n" . $code['globalCss'],
+            $code['pageCss'] === '' ? '' : "/* cms:page */\n" . $code['pageCss'],
+        ]);
+        $js = array_filter([$code['globalJs'], $code['pageJs']]);
+        return [
+            'html' => $this->renderer->renderPage(StyleClassDecorator::apply($tree, $design), $context),
+            'css' => implode("\n", $css),
+            'js' => implode(";\n", $js),
+            'diagnostics' => $compiled->diagnostics,
+        ];
+    }
+}

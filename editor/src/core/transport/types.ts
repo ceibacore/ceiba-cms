@@ -26,8 +26,8 @@ export interface Transport {
   status?(pageId: string): Promise<PublicationStatus>;
   /** Publishes an exact revision; the key makes retries idempotent. */
   publish?(pageId: string, revision: number, idempotencyKey: string): Promise<{ revision: number }>;
-  /** HTML of a stored revision drawn by the server renderer (content only). */
-  render?(pageId: string, revision: number): Promise<string>;
+  /** A stored revision drawn by the server: content HTML and the CSS it carries (design + custom code). */
+  render?(pageId: string, revision: number): Promise<{ html: string; css: string }>;
   /** Optional (03-E2): reusable blocks of the site, and HTML turned into nodes by the server importer. */
   listTemplates?(): Promise<TemplateSummary[]>;
   saveTemplate?(template: { name: string; category: string; nodes: RawNode[] }): Promise<TemplateSummary>;
