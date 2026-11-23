@@ -51,4 +51,11 @@ final class CatalogueViewsTest extends TestCase
     {
         self::assertSame("<p>One<br>\nTwo &amp;</p>", $this->render(['type' => 'text', 'props' => ['content' => "One\nTwo &"]]));
     }
+
+    public function testSectionKeepsItsTagUnlessASemanticRuleSetsAnother(): void
+    {
+        self::assertSame('<section class="hero"><h1>Hi</h1></section>',
+            $this->render(['type' => 'section', 'props' => ['class' => 'hero'], 'children' => [['type' => 'h1', 'props' => ['content' => 'Hi'], 'children' => []]]]));
+        self::assertStringStartsWith('<main>', $this->render(['type' => 'section', 'props' => ['tag' => 'main']]));
+    }
 }
