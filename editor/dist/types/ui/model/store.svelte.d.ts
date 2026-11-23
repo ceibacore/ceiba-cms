@@ -22,7 +22,7 @@ export declare class EditorStore {
     constructor(session: EditorSession, t: Translate);
     sync(): void;
     announce(key: MessageKey, params?: Record<string, string | number>): void;
-    fail(error: unknown): void;
+    fail(error: unknown, code?: import("..").EditorErrorCode): void;
     /** Runs a command; returns false (and announces why) when the core refuses it. */
     run(command: Command, announce?: [MessageKey, Record<string, string | number>?]): boolean;
     undo(): void;

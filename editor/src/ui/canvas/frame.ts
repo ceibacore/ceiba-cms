@@ -18,6 +18,9 @@ export const canvasDocument = (stylesheets: readonly string[]): string => {
     + '<style>body{margin:0;padding:12px;min-height:100vh;box-sizing:border-box}'
     + '[data-ceiba-id]{cursor:default}[data-ceiba-id]:hover{outline:1px dashed #94a3b8}'
     + '[data-ceiba-selected]{outline:2px solid #2563eb!important;outline-offset:2px}'
+    + '[data-ceiba-multiline]{white-space:pre-line}'
+    + '[contenteditable]{outline:2px solid #16a34a!important;outline-offset:2px;cursor:text}'
+    + '.ceiba-dragging,.ceiba-dragging *{user-select:none!important;cursor:grabbing!important}'
     + '.ceiba-placeholder{padding:12px;border:1px dashed #94a3b8;color:#475569;font:13px system-ui;background:#f8fafc}'
     + '@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}</style>'
     + '</head><body></body></html>';

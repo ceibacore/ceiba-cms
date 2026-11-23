@@ -4,7 +4,7 @@
   import type { EditorStore } from '../model/store.svelte';
   import { treeAction } from './keyboard';
 
-  let { store }: { store: EditorStore } = $props();
+  let { store, onEdit }: { store: EditorStore; onEdit: (id: string) => boolean } = $props();
   const t = $derived(store.t);
   const items = $derived(flatten(store.tree));
   let list: HTMLElement | undefined = $state();
@@ -25,6 +25,10 @@
   }
 
   async function onkeydown(event: KeyboardEvent): Promise<void> {
+    if ((event.key === 'F2' || event.key === 'Enter') && store.selection && !event.altKey) {
+      if (onEdit(store.selection)) event.preventDefault();
+      return;
+    }
     const action = treeAction(store.tree, store.selection, event);
     if (!action) return;
     event.preventDefault();

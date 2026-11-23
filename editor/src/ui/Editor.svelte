@@ -1,5 +1,6 @@
 <script lang="ts">
   import Canvas from './canvas/Canvas.svelte';
+  import { DragController } from './drag/controller';
   import Inspector from './inspector/Inspector.svelte';
   import type { EditorStore } from './model/store.svelte';
   import Palette from './palette/Palette.svelte';
@@ -9,6 +10,8 @@
 
   let { store, uid, stylesheets = [] }: { store: EditorStore; uid: string; stylesheets?: readonly string[] } = $props();
   let tree: { focusItem: (id: string | null) => Promise<void> } | undefined = $state();
+  let canvas: { startEditing: (id: string) => boolean } | undefined = $state();
+  const drag = $derived(new DragController(store));
 
   /** Undo/redo anywhere in the editor except while typing in a field (plan 03: shortcuts never steal typing). */
   function onkeydown(event: KeyboardEvent): void {
@@ -27,10 +30,11 @@
   <Toolbar {store} />
   <div class="body">
     <aside class="left">
-      <Palette {store} onInserted={(id) => tree?.focusItem(id)} />
-      <StructureTree {store} bind:this={tree} />
+      <Palette {store} {drag} onInserted={(id) => tree?.focusItem(id)} />
+      <StructureTree {store} bind:this={tree} onEdit={(id) => canvas?.startEditing(id) ?? false} />
     </aside>
-    <Canvas {store} {stylesheets} />
+    <Canvas {store} {drag} {uid} {stylesheets} bind:this={canvas}
+      onEditEnd={(id, byKeyboard) => { if (byKeyboard) void tree?.focusItem(id); }} />
     <Inspector {store} {uid} onRemoved={() => tree?.focusItem(store.selection)} />
   </div>
   <div class="sr-only" aria-live="polite">{store.message}</div>

@@ -45,8 +45,7 @@ export class EditorStore {
     this.alert = '';
   }
 
-  fail(error: unknown): void {
-    const code = error instanceof EditorError ? error.code : 'SERVER';
+  fail(error: unknown, code = error instanceof EditorError ? error.code : 'SERVER'): void {
     this.alert = this.t(`error.${code}` as MessageKey);
   }
 

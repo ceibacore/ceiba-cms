@@ -607,6 +607,9 @@ var e = class extends Error {
 	get canRedo() {
 		return j(this.core.history);
 	}
+	get commandContext() {
+		return this.core.commands?.context ?? null;
+	}
 	load() {
 		return X(this.core);
 	}

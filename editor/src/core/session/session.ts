@@ -1,4 +1,4 @@
-import type { Command } from '../commands/types';
+import type { Command, CommandContext } from '../commands/types';
 import { toDocument } from '../document/normalize';
 import type { PageDocument } from '../document/types';
 import { EditorError } from '../errors';
@@ -33,6 +33,8 @@ export class EditorSession {
   get lastError(): EditorError | null { return this.core.lastError; }
   get canUndo(): boolean { return canUndo(this.core.history); }
   get canRedo(): boolean { return canRedo(this.core.history); }
+  /** Catalogue, limits and ids of the loaded page, to try a command without applying it (drop targets). */
+  get commandContext(): CommandContext | null { return this.core.commands?.context ?? null; }
 
   load(): Promise<void> {
     return loadSession(this.core);
