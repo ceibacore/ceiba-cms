@@ -51,7 +51,7 @@ final class EditorPreviewControllerTest extends TestCase
     {
         [$preview] = $this->fixture(['pages.read', 'pages.update']);
         $rendered = $preview->render('page-1', 1);
-        self::assertSame(['revision' => 1, 'html' => '<h1>Live</h1>'], $rendered['data']);
+        self::assertSame(['revision' => 1, 'html' => '<h1>Live</h1>', 'css' => ''], $rendered['data']);
         self::assertSame(404, $preview->render('page-1', 9)['status']);
     }
 

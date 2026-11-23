@@ -51,6 +51,11 @@ final class RevisionSchema
             site_id TEXT NOT NULL, page_id TEXT NOT NULL REFERENCES {$p}pages(id) ON DELETE CASCADE,
             revision_id TEXT NOT NULL REFERENCES {$p}page_revisions(id) ON DELETE CASCADE,
             token_hash TEXT NOT NULL UNIQUE, created_by TEXT NOT NULL, expires_at TEXT NOT NULL, revoked_at TEXT, created_at TEXT NOT NULL)");
+        // Site design (plan 04-B, migration 20261124000000).
+        $pdo->exec("CREATE TABLE {$p}design_revisions (id TEXT PRIMARY KEY, site_id TEXT NOT NULL, revision INTEGER NOT NULL,
+            snapshot TEXT NOT NULL, content_hash TEXT NOT NULL, author_id TEXT, created_at TEXT NOT NULL, UNIQUE(site_id, revision))");
+        $pdo->exec("CREATE TABLE {$p}design_heads (site_id TEXT PRIMARY KEY, draft_revision INTEGER, published_revision INTEGER,
+            next_revision INTEGER NOT NULL DEFAULT 1, updated_at TEXT NOT NULL)");
     }
 
     /**

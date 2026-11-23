@@ -67,7 +67,7 @@ export class MemoryServer {
       listTemplates: async () => structuredClone(this.templates.templates),
       saveTemplate: async (template) => this.templates.save(structuredClone(template)),
       importHtml: async (html) => importHtml(html),
-      render: async (_id, revision) => (this.revisions.get(revision)?.root ?? []).map(renderNode).join(''),
+      render: async (_id, revision) => ({ html: (this.revisions.get(revision)?.root ?? []).map(renderNode).join(''), css: '' }),
     };
   }
 }

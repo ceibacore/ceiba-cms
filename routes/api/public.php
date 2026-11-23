@@ -24,6 +24,7 @@ $pageRenderController = new PageRenderController(
     $container['auth'],
     $container['repositories']['settings'],
     $container['repositories']['seo'],
+    $container['services']['pageAssembler'] ?? null,
 );
 
 $homeController = new HomeController(

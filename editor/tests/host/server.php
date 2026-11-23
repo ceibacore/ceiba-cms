@@ -79,8 +79,11 @@ $revisions = new RevisionApiController(SITE, $context, $allowRevisions, $audit,
 $frameworks = new \CeibaCms\PageBuilder\Domain\Service\UiFrameworkRegistry();
 $frameworks->register(new \CeibaCms\PageBuilder\Frameworks\Bootstrap5\Bootstrap5Module());
 $frameworks->setActive('bootstrap5');
-$preview = new EditorPreviewController($editor, $revisions, new GetPageWorkingRevision($db, SITE),
-    new BladeRenderer(new LoopResolver(), new VariableInterpolator(), $frameworks));
+$renderer = new BladeRenderer(new LoopResolver(), new VariableInterpolator(), $frameworks);
+$assembler = new \CeibaCms\PageBuilder\Application\PageAssembler($renderer,
+    new \CeibaCms\PageBuilder\Application\Design\GetSiteDesign(new \CeibaCms\PageBuilder\Application\Design\SiteDesignStore($db, SITE)),
+    new \CeibaCms\PageBuilder\Application\CustomCode(null));
+$preview = new EditorPreviewController($editor, $revisions, new GetPageWorkingRevision($db, SITE), $renderer, $assembler, $pages);
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $path = (string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);

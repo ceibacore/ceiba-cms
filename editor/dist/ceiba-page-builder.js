@@ -3314,7 +3314,7 @@ function ss(e, t) {
 			n === t.revision && I(i, e, !0);
 		}).catch((e) => t.store.fail(e));
 	});
-	let a = /* @__PURE__ */ P(() => G(i) === null ? "" : Ea(n()).replace("<body></body>", `<body>${G(i)}</body>`));
+	let a = /* @__PURE__ */ P(() => G(i) === null ? "" : Ea(n()).replace("</head>", `<style data-cms-page>${G(i).css.replace(/<\/style/gi, "<\\/style")}</style></head>`).replace("<body></body>", `<body>${G(i).html}</body>`));
 	var o = as(), s = L(o), c = L(s), l = L(c, !0);
 	O(c);
 	var u = R(c, 2), d = L(u, !0);
