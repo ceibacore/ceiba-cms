@@ -1,0 +1,71 @@
+import type { ComponentDescriptorDto, HtmlTagRuleDto } from '../catalogue/types';
+import { parseDocument } from '../document/normalize';
+import { EditorError } from '../errors';
+import { errorFromResponse, networkError } from './errors';
+import type { Transport } from './types';
+
+export interface HttpTransportOptions {
+  /** Prefix of the editor API, e.g. "/api/builder/v1" or "https://cms.test/api/builder/v1". */
+  readonly baseUrl: string;
+  /** HTML tag rules; the module serves them at /api/pagebuilder/rules. Without it only components are known. */
+  readonly rulesUrl?: string;
+  /** Host headers for each request (CSRF token…). Called per request, never stored by the editor. */
+  readonly headers?: () => Record<string, string>;
+  readonly fetch?: typeof fetch;
+}
+
+/** Reference transport for the module's own HTTP adapter (/api/builder/v1). */
+export const createHttpTransport = (options: HttpTransportOptions): Transport => {
+  const send = options.fetch ?? globalThis.fetch.bind(globalThis);
+  const base = options.baseUrl.replace(/\/+$/, '');
+  const page = (id: string): string => `${base}/pages/${encodeURIComponent(id)}`;
+
+  const request = async (url: string, init: RequestInit = {}): Promise<Record<string, unknown>> => {
+    let response: Response;
+    try {
+      response = await send(url, {
+        ...init,
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json', ...options.headers?.(), ...(init.headers as Record<string, string>) },
+      });
+    } catch (cause) {
+      throw networkError(cause);
+    }
+    const body: unknown = await response.json().catch(() => null);
+    if (!response.ok) throw errorFromResponse(response.status, body);
+    const data = (body as { data?: unknown } | null)?.data;
+    if (typeof data !== 'object' || data === null) {
+      throw new EditorError('SERVER', 'Unexpected response', { status: String(response.status) });
+    }
+    return data as Record<string, unknown>;
+  };
+
+  return {
+    async load(pageId) {
+      const data = await request(`${page(pageId)}/draft`);
+      return { revision: Number(data.revision), document: parseDocument(data.snapshot) };
+    },
+    async save(document, baseRevision, reason) {
+      const query = reason === 'autosave' ? '?reason=autosave' : '';
+      const data = await request(`${page(document.documentId)}/draft${query}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'If-Match': `"${baseRevision}"` },
+        body: JSON.stringify(document),
+      });
+      return { revision: Number(data.revision) };
+    },
+    async preview(pageId, revision) {
+      const data = await request(`${page(pageId)}/revisions/${revision}`);
+      return parseDocument(data.snapshot);
+    },
+    async listComponents() {
+      const data = await request(`${base}/components`);
+      return (data.components ?? []) as ComponentDescriptorDto[];
+    },
+    async listElementRules() {
+      if (!options.rulesUrl) return [];
+      const data = await request(options.rulesUrl);
+      return Object.values((data.html_tags ?? {}) as Record<string, HtmlTagRuleDto>);
+    },
+  };
+};

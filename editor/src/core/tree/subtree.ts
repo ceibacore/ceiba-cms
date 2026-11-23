@@ -36,7 +36,10 @@ export const attachRaw = (
   const original = typeof raw.id === 'string' && raw.id !== '' ? raw.id : typeof raw._id === 'string' ? raw._id : '';
   const id = mode === 'keep' && original !== '' && !state.nodes[original] ? original : ids();
   if (original !== '') renamed.set(original, id);
-  let next = withNode(state, { id, type: raw.type, parent, children: [], fields: fieldsOf(raw) });
+  const fields = fieldsOf(raw);
+  // The module stores `_id` as an alias of `id`; it must follow the node's id or copies would repeat it.
+  if ('_id' in fields) fields._id = id;
+  let next = withNode(state, { id, type: raw.type, parent, children: [], fields });
   const children: string[] = [];
   for (const child of raw.children ?? []) {
     const attached = attachRaw(next, child, id, ids, mode, renamed);

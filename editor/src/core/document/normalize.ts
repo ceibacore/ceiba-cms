@@ -31,13 +31,15 @@ export const parseDocument = (value: unknown): PageDocument => {
   if (!isObject(value) || value.schemaVersion !== SCHEMA_VERSION) {
     throw new EditorError('INVALID_DOCUMENT', 'Unsupported document schema version');
   }
-  const { documentId, revision, root, settings, resources } = value;
+  const { documentId, revision, root, resources } = value;
+  // PHP's json_decode(..., true) turns an empty object into [], so the server may send "settings": [].
+  const settings = Array.isArray(value.settings) && value.settings.length === 0 ? {} : value.settings;
   if (typeof documentId !== 'string' || documentId === '' || typeof revision !== 'number' || !Array.isArray(root)
       || !isObject(settings) || !Array.isArray(resources)) {
     throw new EditorError('INVALID_DOCUMENT', 'Invalid document envelope');
   }
   root.forEach((node, i) => checkNode(node, `root[${i}]`));
-  return value as unknown as PageDocument;
+  return { ...value, settings } as unknown as PageDocument;
 };
 
 /**
