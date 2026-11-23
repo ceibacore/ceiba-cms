@@ -1,0 +1,44 @@
+name: Editor
+
+# Visual editor package (editor/, plan 03). git-flow pushes only, no pull requests.
+on:
+  push:
+    branches: [develop, main, 'feature/**', 'release/**', 'hotfix/**']
+    tags: ['v*.*.*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: editor-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  editor:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: editor
+    steps:
+      - uses: actions/checkout@v4
+
+      # The contract test runs the editor core against the module on a minimal PHP host (SQLite).
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo, pdo_sqlite, json
+          coverage: none
+      - name: Module dependencies
+        working-directory: .
+        run: composer install --prefer-dist --no-progress
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: editor/package-lock.json
+      - run: npm ci
+      - name: Files within 200 lines, types, tests (unit + PHP host contract), build
+        run: npm run check
+      - name: Published dist/ matches the sources
+        run: git diff --exit-code -- dist || (echo "::error::Run npm run build in editor/ and commit dist/" && exit 1)
