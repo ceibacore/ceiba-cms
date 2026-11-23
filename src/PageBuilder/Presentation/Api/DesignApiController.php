@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CeibaCms\PageBuilder\Presentation\Api;
 
 use CeibaCms\PageBuilder\Application\Design\DesignRevisionConflict;
+use CeibaCms\PageBuilder\Application\Design\FindDesignUsages;
 use CeibaCms\PageBuilder\Application\Design\GetSiteDesign;
 use CeibaCms\PageBuilder\Application\Design\PublishSiteDesign;
 use CeibaCms\PageBuilder\Application\Design\SaveSiteDesignDraft;
@@ -27,6 +28,7 @@ final class DesignApiController
         private readonly GetSiteDesign $designs,
         private readonly SaveSiteDesignDraft $save,
         private readonly PublishSiteDesign $publish,
+        private readonly ?FindDesignUsages $usages = null,
     ) {
         $this->contextResolver = $contextResolver;
     }
@@ -45,6 +47,15 @@ final class DesignApiController
             return $design === null ? $this->error('REVISION_NOT_FOUND', 'Design revision unavailable', 404)
                 : ['success' => true, 'data' => ['revision' => $revision, 'design' => $design]];
         });
+    }
+
+    /** GET {prefix}/design/usages?token=id | ?class=id — pages using it, before deleting it. @return array<string, mixed> */
+    public function usages(string $kind, string $id): array
+    {
+        if (!in_array($kind, ['token', 'class'], true) || $id === '' || $this->usages === null) {
+            return $this->error('VALIDATION_FAILED', 'Give a token or a class', 422);
+        }
+        return $this->guarded('pages.read', fn () => ['success' => true, 'data' => ['pages' => $this->usages->execute($kind, $id)]]);
     }
 
     /** PUT {prefix}/design with If-Match: "n" — saves revision n + 1. @return array<string, mixed> */

@@ -1,15 +1,18 @@
 <script lang="ts">
-  import type { NodeRecord, NodeStyles, PropertySpec, StyleTarget, StyleValue } from '../../core';
+  import type { NodeStyles, PropertySpec, StyleTarget, StyleValue } from '../../core';
   import { acceptedTokenType, effectiveValue, literal, setDeclaration, STYLE_MATRIX } from '../../core';
   import type { EditorStore } from '../model/store.svelte';
   import { propertyLabel, typedValue } from './groups';
 
-  /** One style property at the current target: literal or token, effective value and its origin, remove. */
-  let { store, node, target, spec, id }: {
-    store: EditorStore; node: NodeRecord; target: StyleTarget; spec: PropertySpec; id: string;
+  /**
+   * One style property at the current target (of a node or of a site class): literal or token, effective value and
+   * its origin, remove. onSet receives the new styles (null when nothing is left).
+   */
+  let { store, styles, target, spec, id, onSet }: {
+    store: EditorStore; styles: NodeStyles | undefined; target: StyleTarget; spec: PropertySpec; id: string;
+    onSet: (next: NodeStyles | null) => void;
   } = $props();
   const t = $derived(store.t);
-  const styles = $derived(node.fields.styles as NodeStyles | undefined);
   const effective = $derived(effectiveValue(styles, store.design, target, spec.name));
   const own = $derived(effective?.origin === 'own' ? effective.value : undefined);
   const tokenType = $derived(acceptedTokenType(spec));
@@ -28,9 +31,7 @@
       return;
     }
     error = null;
-    const next = setDeclaration(styles, target, spec.name, value);
-    store.run(next === null ? { kind: 'updateFields', id: node.id, set: {}, unset: ['styles'] }
-      : { kind: 'updateFields', id: node.id, set: { styles: next } });
+    onSet(setDeclaration(styles, target, spec.name, value));
   }
 
   const fromText = (raw: string): void => set(raw.trim() === '' ? null : typedValue(spec.kind, raw));

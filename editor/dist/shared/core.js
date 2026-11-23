@@ -1399,21 +1399,21 @@ var e = class extends Error {
 		case "lineHeight": return nt(n, {});
 		default: return null;
 	}
-}, ot = (e) => e.kind === "color" ? "color" : e.kind === "length" ? "length" : e.tokenType ?? null, st = /^[a-z][a-z0-9-]*(?:\.[a-z0-9-]+)*$/, ct = /^[A-Za-z0-9 -]{1,60}$/, lt = /^\d{1,5}(?:ms|s)$/, G = (e) => `--cms-t-${e.replace(/\./g, "_")}`, K = (e, t) => {
+}, ot = (e) => e.kind === "color" ? "color" : e.kind === "length" ? "length" : e.tokenType ?? null, st = /^[a-z][a-z0-9-]*(?:\.[a-z0-9-]+)*$/, ct = /^[A-Za-z0-9 -]{1,60}$/, lt = /^\d{1,5}(?:ms|s)$/, G = (e) => `--cms-t-${e.replace(/\./g, "_")}`, ut = (e, t) => {
 	let n = [], r = 0, i = "";
 	for (let a of e) a === "(" && r++, a === ")" && r--, a === t && r === 0 ? (n.push(i.trim()), i = "") : i += a;
 	return n.push(i.trim()), n;
-}, ut = (e) => {
-	let t = K(e, ",");
+}, dt = (e) => {
+	let t = ut(e, ",");
 	if (t.length > 3) return null;
 	for (let e of t) {
-		let t = K(e, " ").filter((e) => e !== "");
+		let t = ut(e, " ").filter((e) => e !== "");
 		t[0] === "inset" && t.shift();
 		let n = t[t.length - 1] ?? "", r = U(n) !== null && H(n, !1, !0) === null ? t.slice(0, -1) : t;
 		if (r.length < 2 || r.length > 4 || r.some((e) => e.endsWith("%") || H(e, !1, !0) === null)) return null;
 	}
 	return e;
-}, dt = (e, t) => {
+}, ft = (e, t) => {
 	if (e === "fontFamily") {
 		let e = t.split(",").map((e) => e.replace(/^[ \t\n\r\f\v]+|[ \t\n\r\f\v]+$/g, "").replace(/[ \t\n\r\f\v]+/g, " "));
 		return e.length > 8 || !e.every((e) => ct.test(e)) ? null : e.map((e) => e.includes(" ") ? `"${e}"` : e).join(", ");
@@ -1424,11 +1424,11 @@ var e = class extends Error {
 		case "color": return U(n);
 		case "length": return H(n);
 		case "fontWeight": return B.keywords.fontWeight?.includes(n) ? n : null;
-		case "shadow": return ut(n);
+		case "shadow": return dt(n);
 		case "duration": return lt.test(n) ? n : null;
 		default: return null;
 	}
-}, ft = (e, t) => {
+}, pt = (e, t) => {
 	let n = /* @__PURE__ */ new Map(), r = Object.keys(e).sort();
 	if (r.length > B.limits.tokens) return t.push({
 		path: "design.tokens",
@@ -1441,7 +1441,7 @@ var e = class extends Error {
 		let r = e[t];
 		if (typeof r != "object" || !r || !st.test(t) || t.length > 64 || typeof r.type != "string" || !B.tokenTypes.includes(r.type)) return null;
 		if (typeof r.value == "string") {
-			let e = dt(r.type, r.value);
+			let e = ft(r.type, r.value);
 			return e === null ? null : {
 				type: r.type,
 				css: e
@@ -1480,8 +1480,8 @@ var e = class extends Error {
 		table: n,
 		root: i.length > 0 ? `:root{${i.join(";")}}` : ""
 	};
-}, pt = /^[A-Za-z0-9_-]{1,64}$/, mt = /^[a-z][a-z0-9-]{0,40}$/, ht = new Map(B.properties.map((e, t) => [e.name, t])), q = (e) => typeof e == "object" && e ? e : {}, J = (e) => `cms-n-${e}`, Y = (e) => `cms-c-${e}`, X = (e, t, n) => {
-	let r = Object.entries(q(e));
+}, mt = /^[A-Za-z0-9_-]{1,64}$/, ht = /^[a-z][a-z0-9-]{0,40}$/, gt = new Map(B.properties.map((e, t) => [e.name, t])), K = (e) => typeof e == "object" && e ? e : {}, q = (e) => `cms-n-${e}`, J = (e) => `cms-c-${e}`, Y = (e, t, n) => {
+	let r = Object.entries(K(e));
 	if (r.length > B.limits.declarations) return n.diagnostics.push({
 		path: t,
 		code: "LIMIT"
@@ -1518,23 +1518,23 @@ var e = class extends Error {
 		s === null ? n.diagnostics.push({
 			path: o,
 			code: "INVALID_VALUE"
-		}) : i.push([ht.get(e) ?? 0, `${r.css}:${s}`]);
+		}) : i.push([gt.get(e) ?? 0, `${r.css}:${s}`]);
 	}
 	return i.sort((e, t) => e[0] - t[0]).map(([, e]) => e).join(";");
-}, gt = (e, t, n, r, i) => {
-	let a = q(t), o = X(a.base, `${n}.base`, r);
+}, _t = (e, t, n, r, i) => {
+	let a = K(t), o = Y(a.base, `${n}.base`, r);
 	o !== "" && i.rules.push(`${e}{${o}}`);
-	let s = q(a.states);
+	let s = K(a.states);
 	for (let e of Object.keys(s)) B.states.includes(e) || r.diagnostics.push({
 		path: `${n}.states.${e}`,
 		code: "UNKNOWN_STATE"
 	});
 	for (let t of B.states) {
 		if (!(t in s)) continue;
-		let a = X(s[t], `${n}.states.${t}`, r);
+		let a = Y(s[t], `${n}.states.${t}`, r);
 		a !== "" && i.rules.push(`${e}:${t}{${a}}`);
 	}
-	let c = q(a.breakpoints);
+	let c = K(a.breakpoints);
 	for (let t of Object.keys(c)) {
 		if (!r.breakpoints.some((e) => e.id === t)) {
 			r.diagnostics.push({
@@ -1543,90 +1543,90 @@ var e = class extends Error {
 			});
 			continue;
 		}
-		let a = X(c[t], `${n}.breakpoints.${t}`, r);
+		let a = Y(c[t], `${n}.breakpoints.${t}`, r);
 		a !== "" && i.media.get(t)?.push(`${e}{${a}}`);
 	}
-}, _t = (e, t) => {
+}, vt = (e, t) => {
 	let n = Array.isArray(e) && e.length <= B.limits.breakpoints && e.every((t, n) => typeof t == "object" && !!t && typeof t.id == "string" && /^[a-z][a-z0-9-]{0,15}$/.test(t.id) && Number.isInteger(t.minWidth) && t.minWidth >= 1 && t.minWidth <= B.limits.minWidth && (n === 0 || t.minWidth > e[n - 1].minWidth) && e.findIndex((e) => e.id === t.id) === n);
 	return n || t.push({
 		path: "design.breakpoints",
 		code: "INVALID_BREAKPOINTS"
 	}), n ? e : [];
-}, vt = (e, t, n) => {
+}, yt = (e, t, n) => {
 	n.push(...e.rules);
 	for (let r of t) {
 		let t = e.media.get(r.id) ?? [];
 		t.length > 0 && n.push(`@media (min-width:${r.minWidth}px){\n${t.join("\n")}\n}`);
 	}
-}, yt = (e, t) => {
-	let n = [], { table: r, root: i } = ft(q(e.tokens), n), a = _t(e.breakpoints ?? [], n), o = {
+}, bt = (e, t) => {
+	let n = [], { table: r, root: i } = pt(K(e.tokens), n), a = vt(e.breakpoints ?? [], n), o = {
 		tokens: r,
 		breakpoints: a,
 		diagnostics: n
 	}, s = () => ({
 		rules: [],
 		media: new Map(a.map((e) => [e.id, []]))
-	}), c = s(), l = q(e.classes), u = Object.keys(l);
+	}), c = s(), l = K(e.classes), u = Object.keys(l);
 	u.length > B.limits.classes && n.push({
 		path: "design.classes",
 		code: "LIMIT"
 	});
-	for (let e of u.length > B.limits.classes ? [] : u) mt.test(e) ? gt(`.${Y(e)}`, q(l[e]).styles, `design.classes.${e}.styles`, o, c) : n.push({
+	for (let e of u.length > B.limits.classes ? [] : u) ht.test(e) ? _t(`.${J(e)}`, K(l[e]).styles, `design.classes.${e}.styles`, o, c) : n.push({
 		path: `design.classes.${e}`,
 		code: "INVALID_ID"
 	});
 	let d = s();
 	for (let e of t) {
-		if (!pt.test(e.id)) {
+		if (!mt.test(e.id)) {
 			n.push({
 				path: `nodes.${e.id}`,
 				code: "INVALID_ID"
 			});
 			continue;
 		}
-		let t = q(e.styles).classes;
+		let t = K(e.styles).classes;
 		(Array.isArray(t) ? t : []).forEach((t, r) => {
-			typeof t == "string" && u.includes(t) && mt.test(t) || n.push({
+			typeof t == "string" && u.includes(t) && ht.test(t) || n.push({
 				path: `nodes.${e.id}.styles.classes.${r}`,
 				code: "UNKNOWN_CLASS"
 			});
-		}), gt(`.${J(e.id)}.${J(e.id)}`, e.styles, `nodes.${e.id}.styles`, o, d);
+		}), _t(`.${q(e.id)}.${q(e.id)}`, e.styles, `nodes.${e.id}.styles`, o, d);
 	}
 	let f = i === "" ? [] : [i];
-	return vt(c, a, f), vt(d, a, f), {
+	return yt(c, a, f), yt(d, a, f), {
 		css: f.join("\n"),
 		diagnostics: n
 	};
-}, bt = (e) => typeof e == "object" && !!e && !Array.isArray(e), xt = (e) => {
+}, xt = (e) => typeof e == "object" && !!e && !Array.isArray(e), St = (e) => {
 	let t = [], n = (e) => {
 		for (let r of e) {
 			let e = typeof r.id == "string" ? r.id : typeof r._id == "string" ? r._id : "";
-			e !== "" && bt(r.styles) && t.push({
+			e !== "" && xt(r.styles) && t.push({
 				id: e,
 				styles: r.styles
 			}), n(r.children ?? []);
 		}
 	};
 	return n(e), t;
-}, St = (e) => [
+}, Ct = (e) => [
 	e.base,
 	...Object.values(e.states ?? {}),
 	...Object.values(e.breakpoints ?? {})
-].some((e) => e !== void 0 && Object.keys(e).length > 0), Ct = (e, t, n) => [...(t.classes ?? []).filter((e) => e in (n.classes ?? {})).map(Y), ...St(t) && /^[A-Za-z0-9_-]{1,64}$/.test(e) ? [J(e)] : []], Z = {
+].some((e) => e !== void 0 && Object.keys(e).length > 0), wt = (e, t, n) => [...(t.classes ?? []).filter((e) => e in (n.classes ?? {})).map(J), ...Ct(t) && /^[A-Za-z0-9_-]{1,64}$/.test(e) ? [q(e)] : []], X = {
 	breakpoint: null,
 	state: null
-}, Q = (e, t) => {
+}, Z = (e, t) => {
 	if (e) return t.state === null ? t.breakpoint === null ? e.base : e.breakpoints?.[t.breakpoint] : e.states?.[t.state];
-}, $ = (e) => Object.keys(e).length === 0 ? void 0 : e, wt = (e, t, n, r) => {
-	let i = { ...Q(e, t) ?? {} };
+}, Q = (e) => Object.keys(e).length === 0 ? void 0 : e, Tt = (e, t, n, r) => {
+	let i = { ...Z(e, t) ?? {} };
 	r === null ? delete i[n] : i[n] = r;
 	let a = { ...e ?? {} };
-	t.state === null ? t.breakpoint === null ? a.base = $(i) : a.breakpoints = $({
+	t.state === null ? t.breakpoint === null ? a.base = Q(i) : a.breakpoints = Q({
 		...e?.breakpoints ?? {},
-		[t.breakpoint]: $(i)
-	}) : a.states = $({
+		[t.breakpoint]: Q(i)
+	}) : a.states = Q({
 		...e?.states ?? {},
-		[t.state]: $(i)
+		[t.state]: Q(i)
 	});
 	for (let e of Object.keys(a)) {
 		let t = a[e];
@@ -1637,23 +1637,23 @@ var e = class extends Error {
 		}
 	}
 	return Array.isArray(a.classes) && a.classes.length === 0 && delete a.classes, Object.keys(a).length === 0 ? null : a;
-}, Tt = (e, t) => {
+}, Et = (e, t) => {
 	let n = {
 		...e ?? {},
 		classes: [...t]
 	};
 	return t.length === 0 && delete n.classes, Object.keys(n).length === 0 ? null : n;
-}, Et = (e, t) => {
-	if (t.state !== null) return [t, Z];
+}, Dt = (e, t) => {
+	if (t.state !== null) return [t, X];
 	let n = e.breakpoints.map((e) => e.id), r = t.breakpoint === null ? -1 : n.indexOf(t.breakpoint);
 	return [...n.slice(0, r + 1).reverse().map((e) => ({
 		breakpoint: e,
 		state: null
-	})), Z];
-}, Dt = (e, t, n, r) => {
-	let i = Et(t, n);
+	})), X];
+}, Ot = (e, t, n, r) => {
+	let i = Dt(t, n);
 	for (let [t, n] of i.entries()) {
-		let i = Q(e, n)?.[r];
+		let i = Z(e, n)?.[r];
 		if (i !== void 0) return {
 			value: i,
 			origin: t === 0 ? "own" : "inherited",
@@ -1663,7 +1663,7 @@ var e = class extends Error {
 	for (let n of [...e?.classes ?? []].reverse()) {
 		let e = t.classes[n]?.styles;
 		for (let t of i) {
-			let i = Q(e, t)?.[r];
+			let i = Z(e, t)?.[r];
 			if (i !== void 0) return {
 				value: i,
 				origin: "class",
@@ -1672,7 +1672,7 @@ var e = class extends Error {
 		}
 	}
 	return null;
-}, Ot = () => ({
+}, $ = () => ({
 	schemaVersion: 1,
 	breakpoints: Ge,
 	tokens: {},
@@ -1680,7 +1680,7 @@ var e = class extends Error {
 }), kt = class {
 	transport;
 	events = new le();
-	design = Ot();
+	design = $();
 	saved = this.design;
 	revision = 0;
 	publishedRevision = null;
@@ -1695,7 +1695,7 @@ var e = class extends Error {
 		return this.available && typeof this.transport.saveDesign == "function";
 	}
 	get diagnostics() {
-		return yt(this.design, []).diagnostics;
+		return bt(this.design, []).diagnostics;
 	}
 	async load() {
 		let e = await this.transport.loadDesign?.().catch(() => null);
@@ -1721,6 +1721,6 @@ var e = class extends Error {
 		await this.load();
 	}
 }, At = (e) => new Pe(e);
-export { y as $, he as A, C as B, Fe as C, F as D, ke as E, A as F, w as G, ae as H, de as I, ne as J, ie as K, j as L, M, pe as N, P as O, me as P, _ as Q, k as R, Re as S, L as T, E as U, oe as V, T as W, S as X, x as Y, ee as Z, B as _, Dt as a, u as at, He as b, xt as c, r as ct, J as d, i as dt, v as et, Y as f, a as ft, Ke as g, W as h, t as ht, Z as i, p as it, fe as j, Te as k, Ct as l, n as lt, ot as m, e as mt, kt as n, c as nt, Tt as o, m as ot, G as p, o as pt, re as q, Ot as r, f as rt, wt as s, l as st, At as t, d as tt, yt as u, s as ut, Ge as v, Pe as w, Ve as x, We as y, D as z };
+export { _ as $, Te as A, D as B, Re as C, ke as D, L as E, me as F, T as G, oe as H, A as I, re as J, w as K, de as L, fe as M, M as N, F as O, pe as P, ee as Q, j as R, Ve as S, Pe as T, ae as U, C as V, E as W, x as X, ne as Y, S as Z, Ke as _, Ot as a, p as at, We as b, St as c, l as ct, q as d, s as dt, y as et, J as f, i as ft, W as g, t as gt, ot as h, e as ht, X as i, f as it, he as j, P as k, wt as l, r as lt, G as m, o as mt, kt as n, d as nt, Et as o, u as ot, ft as p, a as pt, ie as q, $ as r, c as rt, Tt as s, m as st, At as t, v as tt, bt as u, n as ut, B as v, Fe as w, He as x, Ge as y, k as z };
 
 //# sourceMappingURL=core.js.map

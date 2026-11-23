@@ -27,6 +27,11 @@ export declare class EditorStore {
     /** Breakpoint id the canvas shows and the style controls edit; null = base (smallest screens). */
     viewport: string | null;
     styleState: string | null;
+    /** The site design panel replaces the inspector while open (plan 04-D). */
+    designOpen: boolean;
+    designAvailable: boolean;
+    designRevision: number;
+    designPublished: number | null;
     /** Polite announcement (results) and assertive one (errors). */
     message: string;
     alert: string;
@@ -46,6 +51,8 @@ export declare class EditorStore {
     select(id: string | null): void;
     save(): Promise<void>;
     loadDesign(): Promise<void>;
+    /** Saves or publishes the site design; errors (conflict, validation) are announced, never thrown at the UI. */
+    designAction(action: 'save' | 'publish' | 'reload'): Promise<void>;
     destroy(): void;
     private guard;
 }

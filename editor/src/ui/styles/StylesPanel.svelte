@@ -1,8 +1,7 @@
 <script lang="ts">
-  import type { NodeRecord, StyleTarget } from '../../core';
+  import type { NodeStyles, StyleTarget } from '../../core';
   import { PROPERTY_BY_NAME, STYLE_MATRIX } from '../../core';
   import type { EditorStore } from '../model/store.svelte';
-  import ClassPicker from './ClassPicker.svelte';
   import { STYLE_GROUPS } from './groups';
   import StyleField from './StyleField.svelte';
 
@@ -10,14 +9,17 @@
    * Styles of the selected node (plan 04-C). The width being edited is the canvas width (store.viewport), so what
    * the controls change is what the canvas shows; states apply on base only.
    */
-  let { store, node, uid }: { store: EditorStore; node: NodeRecord; uid: string } = $props();
+  let { store, styles, uid, title, onSet, children }: {
+    store: EditorStore; styles: NodeStyles | undefined; uid: string; title?: string;
+    onSet: (next: NodeStyles | null) => void; children?: import('svelte').Snippet;
+  } = $props();
   const t = $derived(store.t);
   const target = $derived<StyleTarget>(store.styleState !== null ? { breakpoint: null, state: store.styleState }
     : { breakpoint: store.viewport, state: null });
 </script>
 
 <details class="styles" open>
-  <summary>{t('styles.title')}</summary>
+  <summary>{title ?? t('styles.title')}</summary>
   <div class="target">
     <label for={`${uid}-bp`}>{t('styles.target')}</label>
     <select id={`${uid}-bp`} value={store.viewport ?? ''} onchange={(e) => { store.viewport = e.currentTarget.value || null; store.styleState = null; }}>
@@ -31,13 +33,13 @@
       {#each STYLE_MATRIX.states as state (state)}<option value={state}>{state}</option>{/each}
     </select>
   </div>
-  <ClassPicker {store} {node} {uid} />
+  {@render children?.()}
   {#each STYLE_GROUPS as group (group.key)}
     <details class="group">
       <summary>{t(group.key)}</summary>
       {#each group.properties as name (name)}
         {@const spec = PROPERTY_BY_NAME.get(name)}
-        {#if spec}<StyleField {store} {node} {target} {spec} id={`${uid}-style-${name}`} />{/if}
+        {#if spec}<StyleField {store} {styles} {target} {spec} {onSet} id={`${uid}-style-${name}`} />{/if}
       {/each}
     </details>
   {/each}

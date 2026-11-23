@@ -10,6 +10,7 @@ foreach ([
     'PageBuilder/Domain/Style/SiteDesign.php', 'PageBuilder/Application/Design/DesignRevisionConflict.php',
     'PageBuilder/Application/Design/SiteDesignStore.php', 'PageBuilder/Application/Design/GetSiteDesign.php',
     'PageBuilder/Application/Design/SaveSiteDesignDraft.php', 'PageBuilder/Application/Design/PublishSiteDesign.php',
+    'PageBuilder/Application/Design/FindDesignUsages.php',
     'PageBuilder/Application/CustomCode.php', 'PageBuilder/Application/PageAssembler.php',
     'PageBuilder/Presentation/Api/DesignApiController.php', 'Http/Controllers/PublicPageResponses.php',
 ] as $classFile) {
@@ -23,5 +24,6 @@ $publishSiteDesign   = new \CeibaCms\PageBuilder\Application\Design\PublishSiteD
 $customCode          = new \CeibaCms\PageBuilder\Application\CustomCode($settingsRepository);
 $pageAssembler       = new \CeibaCms\PageBuilder\Application\PageAssembler($bladeRenderer, $getSiteDesign, $customCode);
 $designApiController = new \CeibaCms\PageBuilder\Presentation\Api\DesignApiController(
-    $siteId, $builderContextResolver, $getSiteDesign, $saveSiteDesignDraft, $publishSiteDesign
+    $siteId, $builderContextResolver, $getSiteDesign, $saveSiteDesignDraft, $publishSiteDesign,
+    new \CeibaCms\PageBuilder\Application\Design\FindDesignUsages($db, $getPageWorkingRevision)
 );

@@ -7,3 +7,4 @@ export { tokenVariable } from './tokens';
 export { BASE, effectiveValue, setClasses, setDeclaration } from './edit';
 export type { EffectiveValue, StyleTarget } from './edit';
 export { acceptedTokenType, literal } from './values';
+export { tokenLiteral } from './tokens';

@@ -26,6 +26,11 @@ export class EditorStore {
   /** Breakpoint id the canvas shows and the style controls edit; null = base (smallest screens). */
   viewport = $state<string | null>(null);
   styleState = $state<string | null>(null);
+  /** The site design panel replaces the inspector while open (plan 04-D). */
+  designOpen = $state(false);
+  designAvailable = $state(false);
+  designRevision = $state(0);
+  designPublished = $state<number | null>(null);
   /** Polite announcement (results) and assertive one (errors). */
   message = $state('');
   alert = $state('');
@@ -36,6 +41,9 @@ export class EditorStore {
     this.stops.push(this.designSession.events.on('change', () => {
       this.design = this.designSession.design;
       this.designDirty = this.designSession.dirty;
+      this.designRevision = this.designSession.revision;
+      this.designPublished = this.designSession.publishedRevision;
+      this.designAvailable = this.designSession.available;
     }));
     for (const event of ['status-change', 'dirty-change', 'history-change', 'selection-change', 'ready',
       'save-success', 'conflict', 'publish-start', 'publish-success', 'publish-error'] as const) {
@@ -135,6 +143,20 @@ export class EditorStore {
 
   async loadDesign(): Promise<void> {
     await this.designSession.load();
+  }
+
+  /** Saves or publishes the site design; errors (conflict, validation) are announced, never thrown at the UI. */
+  async designAction(action: 'save' | 'publish' | 'reload'): Promise<void> {
+    try {
+      if (action === 'reload') await this.designSession.reload();
+      const revision = action === 'save' ? await this.designSession.save()
+        : action === 'publish' ? await this.designSession.publish() : this.designSession.revision;
+      this.designRevision = this.designSession.revision;
+      this.designPublished = this.designSession.publishedRevision;
+      this.announce(action === 'publish' ? 'design.published' : action === 'save' ? 'design.saved' : 'design.reloaded', { revision });
+    } catch (error) {
+      this.fail(error);
+    }
   }
 
   destroy(): void {
