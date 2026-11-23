@@ -1,0 +1,115 @@
+{
+  "name": "06-injection",
+  "design": {
+    "breakpoints": [
+      {
+        "id": "sm",
+        "minWidth": 576
+      },
+      {
+        "id": "md",
+        "minWidth": 768
+      },
+      {
+        "id": "lg",
+        "minWidth": 992
+      },
+      {
+        "id": "xl",
+        "minWidth": 1200
+      }
+    ],
+    "tokens": {},
+    "classes": {}
+  },
+  "nodes": [
+    {
+      "id": "x",
+      "styles": {
+        "base": {
+          "color": "red;}body{display:none",
+          "backgroundColor": "url(javascript:alert(1))",
+          "width": "expression(alert(1))",
+          "height": "10px !important",
+          "margin": "1px\\9",
+          "padding": "1px /* x */",
+          "maxWidth": "<script>",
+          "minWidth": "'1px'",
+          "background": "red",
+          "fontSize": "99999px",
+          "marginTop": "-5px",
+          "paddingTop": "-5px",
+          "display": "contents",
+          "opacity": 1.5,
+          "flexGrow": "1",
+          "lineHeight": {
+            "token": 1
+          }
+        }
+      }
+    }
+  ],
+  "css": ".cms-n-x.cms-n-x{margin-top:-5px}",
+  "diagnostics": [
+    {
+      "path": "nodes.x.styles.base.color",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.x.styles.base.backgroundColor",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.x.styles.base.width",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.x.styles.base.height",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.x.styles.base.margin",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.x.styles.base.padding",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.x.styles.base.maxWidth",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.x.styles.base.minWidth",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.x.styles.base.background",
+      "code": "UNKNOWN_PROPERTY"
+    },
+    {
+      "path": "nodes.x.styles.base.fontSize",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.x.styles.base.paddingTop",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.x.styles.base.display",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.x.styles.base.opacity",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.x.styles.base.flexGrow",
+      "code": "INVALID_VALUE"
+    },
+    {
+      "path": "nodes.x.styles.base.lineHeight",
+      "code": "UNKNOWN_TOKEN"
+    }
+  ]
+}

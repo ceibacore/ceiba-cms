@@ -1,0 +1,41 @@
+{
+  "name": "01-base-order",
+  "design": {
+    "breakpoints": [
+      {
+        "id": "sm",
+        "minWidth": 576
+      },
+      {
+        "id": "md",
+        "minWidth": 768
+      },
+      {
+        "id": "lg",
+        "minWidth": 992
+      },
+      {
+        "id": "xl",
+        "minWidth": 1200
+      }
+    ],
+    "tokens": {},
+    "classes": {}
+  },
+  "nodes": [
+    {
+      "id": "hero",
+      "styles": {
+        "base": {
+          "color": "#1E293B",
+          "marginTop": "2rem",
+          "margin": "0 auto",
+          "display": "grid",
+          "padding": "1rem 2rem"
+        }
+      }
+    }
+  ],
+  "css": ".cms-n-hero.cms-n-hero{display:grid;margin:0 auto;margin-top:2rem;padding:1rem 2rem;color:#1E293B}",
+  "diagnostics": []
+}

@@ -1,0 +1,105 @@
+{
+  "name": "05-classes-cascade",
+  "design": {
+    "breakpoints": [
+      {
+        "id": "sm",
+        "minWidth": 576
+      },
+      {
+        "id": "md",
+        "minWidth": 768
+      },
+      {
+        "id": "lg",
+        "minWidth": 992
+      },
+      {
+        "id": "xl",
+        "minWidth": 1200
+      }
+    ],
+    "tokens": {
+      "color.primary": {
+        "type": "color",
+        "value": "#2563eb"
+      }
+    },
+    "classes": {
+      "hero": {
+        "name": "Hero",
+        "styles": {
+          "base": {
+            "paddingBlock": "4rem",
+            "color": {
+              "token": "color.primary"
+            }
+          },
+          "breakpoints": {
+            "lg": {
+              "paddingBlock": "6rem"
+            }
+          },
+          "states": {
+            "hover": {
+              "color": "#000"
+            }
+          }
+        }
+      },
+      "rounded": {
+        "styles": {
+          "base": {
+            "borderRadius": "12px"
+          }
+        }
+      },
+      "Bad Class": {
+        "styles": {
+          "base": {
+            "color": "#fff"
+          }
+        }
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": "s1",
+      "styles": {
+        "classes": [
+          "hero",
+          "rounded",
+          "ghost"
+        ],
+        "base": {
+          "paddingBlock": "1rem"
+        },
+        "breakpoints": {
+          "lg": {
+            "paddingBlock": "2rem"
+          }
+        }
+      }
+    },
+    {
+      "id": "s2",
+      "styles": {
+        "classes": [
+          "rounded"
+        ]
+      }
+    }
+  ],
+  "css": ":root{--cms-t-color_primary:#2563eb}\n.cms-c-hero{padding-block:4rem;color:var(--cms-t-color_primary)}\n.cms-c-hero:hover{color:#000}\n.cms-c-rounded{border-radius:12px}\n@media (min-width:992px){\n.cms-c-hero{padding-block:6rem}\n}\n.cms-n-s1.cms-n-s1{padding-block:1rem}\n@media (min-width:992px){\n.cms-n-s1.cms-n-s1{padding-block:2rem}\n}",
+  "diagnostics": [
+    {
+      "path": "design.classes.Bad Class",
+      "code": "INVALID_ID"
+    },
+    {
+      "path": "nodes.s1.styles.classes.2",
+      "code": "UNKNOWN_CLASS"
+    }
+  ]
+}

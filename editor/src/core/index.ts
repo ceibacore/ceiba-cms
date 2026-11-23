@@ -16,3 +16,4 @@ export * from './commands';
 export * from './history';
 export * from './transport';
 export * from './session';
+export * from './styles';

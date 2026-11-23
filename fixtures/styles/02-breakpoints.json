@@ -1,0 +1,63 @@
+{
+  "name": "02-breakpoints",
+  "design": {
+    "breakpoints": [
+      {
+        "id": "sm",
+        "minWidth": 576
+      },
+      {
+        "id": "md",
+        "minWidth": 768
+      },
+      {
+        "id": "lg",
+        "minWidth": 992
+      },
+      {
+        "id": "xl",
+        "minWidth": 1200
+      }
+    ],
+    "tokens": {},
+    "classes": {}
+  },
+  "nodes": [
+    {
+      "id": "n1",
+      "styles": {
+        "base": {
+          "width": "100%"
+        },
+        "breakpoints": {
+          "md": {
+            "width": "50%"
+          },
+          "sm": {
+            "width": "75%"
+          },
+          "xxl": {
+            "width": "10%"
+          }
+        }
+      }
+    },
+    {
+      "id": "n2",
+      "styles": {
+        "breakpoints": {
+          "sm": {
+            "display": "none"
+          }
+        }
+      }
+    }
+  ],
+  "css": ".cms-n-n1.cms-n-n1{width:100%}\n@media (min-width:576px){\n.cms-n-n1.cms-n-n1{width:75%}\n.cms-n-n2.cms-n-n2{display:none}\n}\n@media (min-width:768px){\n.cms-n-n1.cms-n-n1{width:50%}\n}",
+  "diagnostics": [
+    {
+      "path": "nodes.n1.styles.breakpoints.xxl",
+      "code": "UNKNOWN_BREAKPOINT"
+    }
+  ]
+}
