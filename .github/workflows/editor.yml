@@ -38,7 +38,9 @@ jobs:
           cache: npm
           cache-dependency-path: editor/package-lock.json
       - run: npm ci
-      - name: Files within 200 lines, types, tests (unit + PHP host contract), build
+      - name: Chromium for the browser tests
+        run: npx playwright install --with-deps chromium
+      - name: Files within 200 lines, types, tests (unit, PHP host contract, browser), build
         run: npm run check
       - name: Published dist/ matches the sources
         run: git diff --exit-code -- dist || (echo "::error::Run npm run build in editor/ and commit dist/" && exit 1)
