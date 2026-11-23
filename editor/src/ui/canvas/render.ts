@@ -1,4 +1,5 @@
-import type { Catalogue, NodeRecord, TreeState } from '../../core';
+import type { Catalogue, DesignDocument, NodeRecord, NodeStyles, TreeState } from '../../core';
+import { styleClassNames } from '../../core';
 import { isMultiline } from './inline-edit';
 import { safeClass, safeUrl, text } from './sanitize';
 
@@ -91,12 +92,17 @@ export const renderCanvas = (
   catalogue: Catalogue,
   selection: string | null,
   labels: CanvasLabels,
+  design?: DesignDocument,
 ): void => {
   const build = (id: string): HTMLElement | null => {
     const node = tree.nodes[id];
     if (!node) return null;
     const el = element(doc, node, labels, catalogue.has(node.type));
     el.dataset.ceibaId = id;
+    const styles = node.fields.styles;
+    if (design && typeof styles === 'object' && styles !== null && !Array.isArray(styles)) {
+      el.classList.add(...styleClassNames(id, styles as NodeStyles, design));
+    }
     if (id === selection) el.dataset.ceibaSelected = '';
     if (isMultiline(node.type)) el.dataset.ceibaMultiline = '';
     if (el.className !== 'ceiba-placeholder' && el.tagName !== 'IMG') {

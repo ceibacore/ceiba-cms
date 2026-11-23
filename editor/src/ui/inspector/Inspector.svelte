@@ -1,5 +1,8 @@
 <script lang="ts">
   import type { EditorStore } from '../model/store.svelte';
+  import type { NodeStyles } from '../../core';
+  import ClassPicker from '../styles/ClassPicker.svelte';
+  import StylesPanel from '../styles/StylesPanel.svelte';
   import Advanced from './advanced/Advanced.svelte';
   import Field from './Field.svelte';
   import { fieldsFor } from './fields';
@@ -29,6 +32,12 @@
     store.run({ kind: 'rename', id: node.id, name, label: value.trim() === '' ? null : value });
   }
 
+  function setStyles(next: NodeStyles | null): void {
+    if (!node) return;
+    store.run(next === null ? { kind: 'updateFields', id: node.id, set: {}, unset: ['styles'] }
+      : { kind: 'updateFields', id: node.id, set: { styles: next } });
+  }
+
   function remove(): void {
     if (node && store.run({ kind: 'remove', id: node.id }, ['announce.removed'])) onRemoved();
   }
@@ -54,7 +63,12 @@
             onChange={(value) => setProp(field.key, value)} />
         {/each}
       {/if}
-      {#if rule}<Advanced {store} {node} {uid} />{/if}
+      {#if rule}
+        <StylesPanel {store} {uid} styles={node.fields.styles as NodeStyles | undefined} onSet={(next) => setStyles(next)}>
+          <ClassPicker {store} {node} {uid} />
+        </StylesPanel>
+        <Advanced {store} {node} {uid} />
+      {/if}
       <div class="actions">
         <button type="button" onclick={() => node && store.run({ kind: 'duplicate', id: node.id })}>{t('inspector.duplicate')}</button>
         {#if canTemplates}<button type="button" onclick={onSaveTemplate}>{t('inspector.saveTemplate')}</button>{/if}

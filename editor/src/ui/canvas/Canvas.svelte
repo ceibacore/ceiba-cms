@@ -3,7 +3,9 @@
   import type { EditorStore } from '../model/store.svelte';
   import { CANVAS_SANDBOX, canvasDocument } from './frame';
   import { caretAtEnd, cleanText, isMultiline, textKey } from './inline-edit';
+  import { collectStyledNodes, compileStyles } from '../../core';
   import { renderCanvas } from './render';
+  import Viewport from './Viewport.svelte';
 
   let { store, drag, uid, stylesheets = [], onEditEnd }: {
     store: EditorStore; drag: DragController; uid: string; stylesheets?: readonly string[];
@@ -15,6 +17,20 @@
   /** Node whose text is being edited in place; the canvas is not redrawn meanwhile (it would lose the caret). */
   let editing = $state<string | null>(null);
   const srcdoc = $derived(canvasDocument(stylesheets));
+  /** Base is drawn at a phone width; each breakpoint at its min-width, so the site's media queries apply. */
+  const width = $derived(store.viewport === null ? 375
+    : store.design.breakpoints.find((b) => b.id === store.viewport)?.minWidth ?? 375);
+
+  /** Styles of the page with the working design (the published site uses the published one). */
+  function applyStyles(doc: Document): void {
+    let style = doc.head.querySelector<HTMLStyleElement>('style[data-cms-design]');
+    if (!style) {
+      style = doc.createElement('style');
+      style.dataset.cmsDesign = '';
+      doc.head.append(style);
+    }
+    style.textContent = compileStyles(store.design, collectStyledNodes(store.session.toDocument().root)).css;
+  }
 
   const nodeElement = (target: EventTarget | null): HTMLElement | null =>
     (target as Element | null)?.closest?.('[data-ceiba-id]') as HTMLElement | null;
@@ -89,24 +105,30 @@
     const catalogue = store.catalogue;
     const tree = store.tree;
     const selection = store.selection;
+    const design = store.design;
     if (!ready || !doc || !catalogue || editing !== null) return;
     renderCanvas(doc, tree, catalogue, selection, {
       unknown: (type) => t('canvas.unknown', { type }),
       html: t('canvas.html'),
       emptyImage: t('canvas.emptyImage'),
-    });
+    }, design);
+    applyStyles(doc);
     if (selection) doc.querySelector(`[data-ceiba-id="${CSS.escape(selection)}"]`)?.scrollIntoView({ block: 'nearest' });
   });
 </script>
 
 <div class="canvas">
   <p class="help" id={`${uid}-canvas-help`}>{t('canvas.help')}</p>
-  <iframe bind:this={frame} title={t('canvas.title')} sandbox={CANVAS_SANDBOX} {srcdoc} {onload}
-    aria-describedby={`${uid}-canvas-help`}></iframe>
+  <Viewport {store} />
+  <div class="stage">
+    <iframe bind:this={frame} title={t('canvas.title')} sandbox={CANVAS_SANDBOX} {srcdoc} {onload}
+      aria-describedby={`${uid}-canvas-help`} style:width={`${width}px`}></iframe>
+  </div>
 </div>
 
 <style>
   .canvas { background: var(--cpb-canvas); padding: .5rem 1rem 1rem; min-height: 0; display: flex; flex-direction: column; }
   .help { margin: 0 0 .5rem; font-size: .75rem; color: var(--cpb-muted); }
-  iframe { flex: 1; width: 100%; min-height: 480px; border: 1px solid var(--cpb-border); border-radius: 8px; background: #fff; }
+  .stage { flex: 1; overflow: auto; display: flex; justify-content: center; min-height: 0; }
+  iframe { flex: none; max-width: none; min-height: 480px; height: 100%; border: 1px solid var(--cpb-border); border-radius: 8px; background: #fff; }
 </style>
