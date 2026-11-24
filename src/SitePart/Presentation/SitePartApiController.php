@@ -48,7 +48,10 @@ final class SitePartApiController
     public function index(): array
     {
         return $this->guarded('pages.read', fn () => $this->ok(['parts' => $this->manage->list(), 'kinds' => SitePartKind::ALL,
-            'routes' => $this->routes->routes === [] ? new \stdClass() : $this->routes->routes]));
+            'routes' => $this->routes->routes === [] ? new \stdClass() : $this->routes->routes,
+            // Published pages, as contexts for the preview and as targets of rules.
+            'pages' => array_slice(array_map(fn (array $p): array => ['id' => $p['pageId'], 'path' => $p['path'], 'layoutId' => $p['layoutId'],
+                'isHome' => $p['isHome']], $this->pages->list()), 0, 500)]));
     }
 
     /** POST {prefix}/site-parts {"kind", "name", "sourceId"?} @return array<string, mixed> */
