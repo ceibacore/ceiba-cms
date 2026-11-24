@@ -5,6 +5,7 @@
   import { caretAtEnd, cleanText, isMultiline, textKey } from './inline-edit';
   import { collectAssetIds, collectStyledNodes, compileStyles } from '../../core';
   import { renderCanvas } from './render';
+  import { COMPONENT_CSS } from './components';
   import Viewport from './Viewport.svelte';
 
   let { store, drag, uid, stylesheets = [], onEditEnd }: {
@@ -29,7 +30,8 @@
       style.dataset.cmsDesign = '';
       doc.head.append(style);
     }
-    style.textContent = compileStyles(store.design, collectStyledNodes(store.session.toDocument().root), store.media.assetUrls).css;
+    // Component CSS first, then the design: the same order as PageAssembler on the public page.
+    style.textContent = `${COMPONENT_CSS}\n${compileStyles(store.design, collectStyledNodes(store.session.toDocument().root), store.media.assetUrls).css}`;
   }
 
   const nodeElement = (target: EventTarget | null): HTMLElement | null =>

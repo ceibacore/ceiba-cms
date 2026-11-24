@@ -1,5 +1,6 @@
 import { parseVideo } from '../../../core';
 import type { VNode } from './vnode';
+import { INTERACTIVE_VIEWS } from './interactive';
 import { h, SLOT } from './vnode';
 import { backgroundImage, cls, img, int, lines, oneOf, phpTrim, str, text, url } from './values';
 
@@ -7,6 +8,7 @@ type Props = Record<string, unknown>;
 
 /** Markup of the module's components, twin of Frameworks/Bootstrap5/views (fixtures/components holds both). */
 export const COMPONENT_VIEWS: Readonly<Record<string, (p: Props) => VNode | null>> = {
+  ...INTERACTIVE_VIEWS,
   image(p) {
     const classes = [p.fluid ?? true ? 'img-fluid' : '', p.rounded ? 'rounded' : '', phpTrim(str(p.class))].filter((c) => c !== '');
     const sizes = phpTrim(str(p.sizes));

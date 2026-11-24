@@ -43,6 +43,8 @@ const element = (doc: Document, node: NodeRecord, labels: CanvasLabels, known: b
     if (vnode === null) return placeholder(doc, node.type === 'image' ? labels.emptyImage : labels.empty(node.type));
     const { el, slot } = toDom(doc, vnode);
     if (slot.parent !== el || slot.before !== null) slots.set(el, slot);
+    // Editing only: every accordion item stays open so its content can be selected (the page keeps `open` as set).
+    if (el.tagName === 'DETAILS') el.setAttribute('open', '');
     return el;
   }
   const make = (tag: string, className = ''): HTMLElement => {

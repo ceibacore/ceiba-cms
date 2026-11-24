@@ -50,10 +50,11 @@ final class ComponentDescriptor
             'version'         => $this->version,
             'label'           => $this->label,
             'category'        => $this->category,
-            'propsSchema'     => $this->propsSchema,
+            // Maps stay JSON objects when empty ({} rather than []), as the editor reads them.
+            'propsSchema'     => $this->propsSchema === [] ? new \stdClass() : $this->propsSchema,
             'allowedChildren' => $this->allowedChildren,
             'allowedParents'  => $this->allowedParents,
-            'editorControls'  => $this->editorControls,
+            'editorControls'  => $this->editorControls === [] ? new \stdClass() : $this->editorControls,
             'capabilities'    => $this->capabilities,
             'isContainer'     => $this->isContainer,
         ];

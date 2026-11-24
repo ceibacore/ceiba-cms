@@ -7,6 +7,6 @@ resolved with `media`; `tests/PageBuilder/Components/ComponentFixturesTest.php` 
 between tags.
 
 - `media`: `{id: {url, width, height, alt, variants: [{url, width}]}}`, as the host's `MediaResolver` gives them.
-- `cases`: `[{node, html}]`; an empty `html` means the component draws nothing (the canvas shows a placeholder).
+- `cases`: `[{node, html}]`, where `node` may have children (drawn where the component puts its slot); an empty `html` means the component draws nothing (the canvas shows a placeholder).
 
 Expected values are written and reviewed by hand; never copy one side's output without reading it.

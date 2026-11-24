@@ -1,0 +1,79 @@
+{
+  "name": "10-accordion",
+  "media": {
+    "m1": {
+      "url": "/m/1600.webp",
+      "width": 1600,
+      "height": 800,
+      "alt": "Sea",
+      "variants": [
+        {
+          "url": "/m/480.webp",
+          "width": 480
+        },
+        {
+          "url": "/m/1600.webp",
+          "width": 1600
+        }
+      ]
+    },
+    "m2": {
+      "url": "/m/b.jpg",
+      "width": 800,
+      "height": 600,
+      "alt": "B",
+      "variants": []
+    }
+  },
+  "cases": [
+    {
+      "node": {
+        "id": "a",
+        "type": "disclosures",
+        "props": {},
+        "children": [
+          {
+            "id": "d1",
+            "type": "disclosure",
+            "props": {
+              "title": "Q1 <x>",
+              "open": true
+            },
+            "children": [
+              {
+                "id": "l",
+                "type": "list",
+                "props": {
+                  "items": [
+                    "a"
+                  ]
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "d2",
+            "type": "disclosure",
+            "props": {
+              "title": "Q2"
+            },
+            "children": []
+          }
+        ]
+      },
+      "html": "<div class=\"cms-accordion\" data-cms-single=\"1\"><details class=\"cms-accordion-item\" open><summary class=\"cms-accordion-title\">Q1 &lt;x&gt;</summary><div class=\"cms-accordion-body\"><ul class=\"cms-list\"><li>a</li></ul></div></details><details class=\"cms-accordion-item\"><summary class=\"cms-accordion-title\">Q2</summary><div class=\"cms-accordion-body\"></div></details></div>"
+    },
+    {
+      "node": {
+        "id": "b",
+        "type": "disclosures",
+        "props": {
+          "single": false
+        },
+        "children": []
+      },
+      "html": "<div class=\"cms-accordion\"></div>"
+    }
+  ]
+}
