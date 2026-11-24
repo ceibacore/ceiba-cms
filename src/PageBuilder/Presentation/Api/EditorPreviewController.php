@@ -8,6 +8,12 @@ use CeibaCms\Page\Application\GetPageWorkingRevision;
 use CeibaCms\Page\Domain\Repository\PageRepositoryInterface;
 use CeibaCms\PageBuilder\Application\PageAssembler;
 use CeibaCms\PageBuilder\Domain\Service\BladeRendererInterface;
+use CeibaCms\PageBuilder\Application\GetDefaultLayout;
+use CeibaCms\PageBuilder\Application\GetLayoutById;
+use CeibaCms\SitePart\Application\AssembleSitePage;
+use CeibaCms\SitePart\Domain\RenderContext;
+use CeibaCms\Menu\Application\GetNavbar;
+use CeibaCms\Settings\Domain\Repository\SettingsRepositoryInterface;
 use Throwable;
 
 /**
@@ -23,6 +29,11 @@ final class EditorPreviewController
         private readonly BladeRendererInterface $renderer,
         private readonly ?PageAssembler $assembler = null,
         private readonly ?PageRepositoryInterface $pages = null,
+        private readonly ?AssembleSitePage $sitePage = null,
+        private readonly ?GetLayoutById $layouts = null,
+        private readonly ?GetDefaultLayout $defaultLayout = null,
+        private readonly ?GetNavbar $navbar = null,
+        private readonly ?SettingsRepositoryInterface $settings = null,
     ) {}
 
     /**
@@ -63,11 +74,35 @@ final class EditorPreviewController
                 return ['success' => true, 'data' => ['revision' => $revision, 'html' => $this->renderer->renderPage($root), 'css' => '']];
             }
             // As an anonymous visitor sees it once published: published design, global and page custom CSS.
-            $assembled = $this->assembler->assemble($root, $this->pages?->findById($pageId) ?? [], false);
+            $page = $this->pages?->findById($pageId) ?? [];
+            if ($this->sitePage !== null && ($page['kind'] ?? 'page') === 'page') {
+                return $this->renderPage($revision, $root, $page);
+            }
+            $assembled = $this->assembler->assemble($root, $page, false);
             return ['success' => true, 'data' => ['revision' => $revision, 'html' => $assembled['html'], 'css' => $assembled['css']]];
         } catch (Throwable $error) {
             error_log('[ceiba-cms] preview render failed: ' . $error->getMessage());
             return ['success' => false, 'status' => 500, ...EditorError::create('RENDER_FAILED', 'Unable to render the revision')->toArray()];
         }
+    }
+
+    private function renderPage(int $revision, array $root, array $page): array
+    {
+        $layout = !empty($page['layout_id']) ? $this->layouts?->execute((string) $page['layout_id']) : null;
+        $layout ??= $this->defaultLayout?->execute();
+        $path = '/' . ltrim((string) ($page['slug'] ?? ''), '/');
+        $context = RenderContext::forPage([...$page, 'layout_id' => $layout?->id], $path,
+            $this->settings?->get('site_language', 'es') ?? 'es', false);
+        $assembled = $this->sitePage->page($root, $page, $context, $layout?->footerTree ?? []);
+        $header = $assembled['header'];
+        if ($header === null && $layout !== null && $layout->menuSlug && $this->navbar !== null) {
+            try {
+                $header = $this->navbar->execute($layout->menuSlug);
+            } catch (Throwable) {
+                $header = '';
+            }
+        }
+        return ['success' => true, 'data' => ['revision' => $revision,
+            'html' => ($header ?? '') . $assembled['html'] . $assembled['footer'], 'css' => $assembled['css']]];
     }
 }

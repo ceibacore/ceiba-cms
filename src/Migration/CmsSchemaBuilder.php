@@ -117,7 +117,9 @@ final class CmsSchemaBuilder
     private function buildColumnDef(string $column, string $type, array $options): CmsColumnDef
     {
         $col = new CmsColumnDef($column, $type);
-        if ($options['nullable']       ?? false) $col->nullable();
+        if (array_key_exists('nullable', $options)) {
+            $options['nullable'] ? $col->nullable() : $col->notNull();
+        }
         if ($options['unsigned']       ?? false) $col->unsigned();
         if ($options['auto_increment'] ?? false) $col->autoIncrement();
         if (array_key_exists('default', $options)) $col->default($options['default']);

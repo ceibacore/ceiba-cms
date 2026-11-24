@@ -4,6 +4,7 @@ import { Autosave, DEFAULT_AUTOSAVE, EditorSession } from '../core';
 import Editor from './Editor.svelte';
 import { translator } from './i18n';
 import { EditorStore } from './model/store.svelte';
+import { SitePartState, sitePartTransport } from './site-parts/state.svelte';
 
 export interface PageBuilderConfig extends SessionOptions {
   /** UI language ("es" by default). */
@@ -12,6 +13,8 @@ export interface PageBuilderConfig extends SessionOptions {
   readonly stylesheets?: readonly string[];
   /** Autosave (on by default when the server allows it); false turns it off. */
   readonly autosave?: false | Partial<AutosaveOptions>;
+  /** The document is a site part (header, footer, 404 — plan 06): rules panel, in-context preview, set publication. */
+  readonly sitePart?: boolean;
 }
 
 /** Events re-dispatched on the element (bubbling, composed). They carry ids and state, never content or credentials. */
@@ -59,7 +62,8 @@ export class CeibaPageBuilder extends HTMLElement {
     const config = this.#config;
     if (!config) return;
     const root = this.shadowRoot ?? this.attachShadow({ mode: 'open' });
-    const session = new EditorSession(config);
+    const part = config.sitePart && config.transport.publishSiteParts ? new SitePartState(config.transport, config.pageId) : null;
+    const session = new EditorSession(part ? { ...config, transport: sitePartTransport(config.transport, part) } : config);
     for (const name of PUBLIC_EVENTS) {
       session.events.on(name, (detail) => {
         const safe = name === 'save-error' || name === 'publish-error'
@@ -68,6 +72,11 @@ export class CeibaPageBuilder extends HTMLElement {
       });
     }
     const store = new EditorStore(session, translator(config.locale ?? 'es'));
+    if (part) {
+      part.store = store;
+      store.part = part;
+      void part.load().catch((error: unknown) => store.fail(error));
+    }
     this.#session = session;
     this.#store = store;
     this.#app = mount(Editor, { target: root, props: { store, uid: this.#uid, stylesheets: config.stylesheets ?? [] } });

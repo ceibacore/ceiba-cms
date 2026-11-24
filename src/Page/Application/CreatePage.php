@@ -72,7 +72,7 @@ final class CreatePage
         $row['created_at'] ??= $now;
         $row['updated_at'] ??= $now;
 
-        return $this->db->transaction(function () use ($row, $pageId, $status, $documentJson, $publicContent, $now, $actorId): string {
+        $create = function () use ($row, $pageId, $status, $documentJson, $publicContent, $now, $actorId): string {
             $prefix = $this->db->getPrefix();
             $pdo = $this->db->pdo();
             $this->db->query('pages')->insert($row);
@@ -96,6 +96,7 @@ final class CreatePage
             }
             $this->audit->record($pageId, 'create', 'success', $actorId, null, $revisionId, ['status' => $status]);
             return $pageId;
-        });
+        };
+        return $this->db->pdo()->inTransaction() ? $create() : $this->db->transaction($create);
     }
 }

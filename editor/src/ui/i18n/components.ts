@@ -1,6 +1,7 @@
 /** Texts of the content components (plan 05-B), merged into es.ts and en.ts. */
 export const componentsEs = {
   'canvas.empty': '{type}: nada que mostrar todavía',
+  'canvas.menu': 'Menú «{slug}» (los enlaces se ven en la página publicada)',
   'gallery.add': 'Añadir imagen',
   'gallery.empty': 'Sin imágenes.',
   'gallery.item': 'Imagen {n}',
@@ -12,6 +13,7 @@ export const componentsEs = {
 
 export const componentsEn: Record<keyof typeof componentsEs, string> = {
   'canvas.empty': '{type}: nothing to show yet',
+  'canvas.menu': 'Menu «{slug}» (links show on the published page)',
   'gallery.add': 'Add image',
   'gallery.empty': 'No images.',
   'gallery.item': 'Image {n}',

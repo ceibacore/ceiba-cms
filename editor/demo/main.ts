@@ -18,6 +18,8 @@ const servers = {
 };
 // ?autosave=ms turns autosave on with that quiet time (off by default so the other tests stay deterministic).
 const autosaveMs = Number(new URLSearchParams(location.search).get('autosave'));
+// ?sitePart=1 opens editor b as a site part (plan 06-C).
+const sitePart = new URLSearchParams(location.search).get('sitePart') === '1';
 const events: string[] = [];
 Object.assign(window, { servers, events });
 
@@ -28,7 +30,7 @@ for (const [key, server] of Object.entries(servers)) {
     element.addEventListener(name, (event) => events.push(`${key}:${name}:${JSON.stringify((event as CustomEvent).detail)}`));
   }
   element.config = {
-    pageId: `page-${key}`, transport: server.transport(), locale: key === 'a' ? 'es' : 'en',
+    pageId: `page-${key}`, transport: server.transport(), locale: key === 'a' ? 'es' : 'en', sitePart: sitePart && key === 'b',
     autosave: autosaveMs > 0 ? { idleMs: autosaveMs, maxWaitMs: autosaveMs * 5 } : false,
   };
 }

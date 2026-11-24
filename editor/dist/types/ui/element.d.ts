@@ -7,6 +7,8 @@ export interface PageBuilderConfig extends SessionOptions {
     readonly stylesheets?: readonly string[];
     /** Autosave (on by default when the server allows it); false turns it off. */
     readonly autosave?: false | Partial<AutosaveOptions>;
+    /** The document is a site part (header, footer, 404 — plan 06): rules panel, in-context preview, set publication. */
+    readonly sitePart?: boolean;
 }
 /** Events re-dispatched on the element (bubbling, composed). They carry ids and state, never content or credentials. */
 export declare const PUBLIC_EVENTS: readonly ["ready", "selection-change", "dirty-change", "save-start", "save-success", "save-error", "conflict", "publish-success", "publish-error"];

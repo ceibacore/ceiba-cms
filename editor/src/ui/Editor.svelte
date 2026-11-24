@@ -7,6 +7,7 @@
   import { DragController } from './drag/controller';
   import Inspector from './inspector/Inspector.svelte';
   import MediaDialog from './media/MediaDialog.svelte';
+  import RulesPanel from './site-parts/RulesPanel.svelte';
   import type { EditorStore } from './model/store.svelte';
   import Palette from './palette/Palette.svelte';
   import ConflictBanner from './publish/ConflictBanner.svelte';
@@ -66,7 +67,9 @@
       <Canvas {store} {drag} {uid} {stylesheets} bind:this={canvas}
         onEditEnd={(id, byKeyboard) => { if (byKeyboard) void tree?.focusItem(id); }} />
     {/if}
-    {#if store.designOpen}
+    {#if store.part?.open}
+      <RulesPanel {store} {uid} />
+    {:else if store.designOpen}
       <DesignPanel {store} {uid} />
     {:else}
       <Inspector {store} {uid} canTemplates={content.canTemplates} onRemoved={() => tree?.focusItem(store.selection)}

@@ -4,6 +4,7 @@ import { COMPONENTS, HTML_TAGS } from './catalogue';
 import { importHtml, TemplateStore } from './content';
 import { DesignStore } from './design';
 import { MediaStore } from './media';
+import { SitePartsStore } from './site-parts';
 import type { MediaMap } from '../src/ui/canvas/components';
 import { COMPONENT_VIEWS, resolveProps, toHtml } from '../src/ui/canvas/components';
 
@@ -38,9 +39,11 @@ export class MemoryServer {
   readonly templates = new TemplateStore();
   readonly design = new DesignStore();
   readonly media = new MediaStore();
+  readonly siteParts: SitePartsStore;
 
   constructor(pageId: string, root: PageDocument['root'], readonly permissions: string[]) {
     this.revisions.set(1, { schemaVersion: 1, documentId: pageId, revision: 1, root, settings: {}, resources: [] });
+    this.siteParts = new SitePartsStore(pageId);
   }
 
   latest(): PageDocument {
@@ -101,6 +104,16 @@ export class MemoryServer {
       saveTemplate: async (template) => this.templates.save(structuredClone(template)),
       importHtml: async (html) => importHtml(html),
       ...this.mediaTransport(),
+      listSiteParts: async () => this.siteParts.catalog(),
+      saveSitePartRules: async (id, rules, version) => this.siteParts.save(id, rules, version),
+      sitePartImpact: async (ids) => this.siteParts.impact(ids),
+      previewSitePart: async (id, revision, pageId) => ({ css: '', applies: this.siteParts.applies(id, pageId),
+        html: (this.revisions.get(revision)?.root ?? []).map((n) => renderNode(n)).join('') + `<p>Page ${pageId ?? '404'}</p>` }),
+      publishSiteParts: async (changes) => {
+        this.siteParts.publish(changes.map((c) => c.id));
+        this.published = changes[0]?.revision ?? this.published;
+        return Object.fromEntries(changes.map((c) => [c.id, `rev-${c.revision}`]));
+      },
       render: async (_id, revision) => {
         const media = Object.fromEntries(this.media.items.map((i) => [i.id, i]));
         return { html: (this.revisions.get(revision)?.root ?? []).map((n) => renderNode(n, media)).join(''), css: '' };

@@ -18,7 +18,8 @@ final class CeibaDbPageRepository implements PageRepositoryInterface, Administra
 
     public function findBySlug(string $slug): ?array
     {
-        $res = $this->db->query('pages')->where(['slug' => $slug, 'status' => 'published'])->first();
+        // Site parts (plan 06) are documents of `pages` too, but never pages of their own.
+        $res = $this->db->query('pages')->where(['slug' => $slug, 'status' => 'published', 'kind' => 'page'])->first();
         return $this->decodePage($res);
     }
 
@@ -31,7 +32,7 @@ final class CeibaDbPageRepository implements PageRepositoryInterface, Administra
     public function findPublished(int $limit, int $offset): array
     {
         $rows = $this->db->query('pages')
-            ->where(['status' => 'published'])
+            ->where(['status' => 'published', 'kind' => 'page'])
             ->orderBy('sort_order', 'ASC')
             ->limit($limit, $offset)
             ->get();
@@ -42,7 +43,7 @@ final class CeibaDbPageRepository implements PageRepositoryInterface, Administra
     {
         // Explicit SQL: the query builder keeps only the last orderBy(), and the listing
         // needs a deterministic two-column order.
-        $where = [];
+        $where = ["`kind` = 'page'"];
         $params = [];
         if ($status !== null) {
             $where[] = '`status` = ?';
@@ -55,7 +56,7 @@ final class CeibaDbPageRepository implements PageRepositoryInterface, Administra
             array_push($params, $pattern, $pattern);
         }
         $sql = "SELECT * FROM `{$this->db->getPrefix()}pages`"
-            . ($where === [] ? '' : ' WHERE ' . implode(' AND ', $where))
+            . ' WHERE ' . implode(' AND ', $where)
             . ' ORDER BY `sort_order` ASC, `id` ASC LIMIT ' . max(0, $limit) . ' OFFSET ' . max(0, $offset);
         $query = $this->db->pdo()->prepare($sql);
         $query->execute($params);

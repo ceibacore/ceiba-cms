@@ -64,8 +64,17 @@ final class EditorPreviewControllerTest extends TestCase
         self::assertSame(404, $preview->status('missing')['status']);
     }
 
+    public function testServerPreviewIncludesPublishedSiteParts(): void
+    {
+        [$preview] = $this->fixture(['pages.read'], true);
+        $html = $preview->render('page-1', 1)['data']['html'];
+        self::assertStringContainsString('<h2>Header</h2>', $html);
+        self::assertStringContainsString('<h1>Live</h1>', $html);
+        self::assertLessThan(strpos($html, '<h1>Live</h1>'), strpos($html, '<h2>Header</h2>'));
+    }
+
     /** @param list<string> $capabilities @return array{EditorPreviewController, EditorApiController} */
-    private function fixture(array $capabilities): array
+    private function fixture(array $capabilities, bool $withPart = false): array
     {
         $db = RevisionSchema::create();
         RevisionSchema::page($db, 'site-1', 'page-1', self::LIVE);
@@ -96,6 +105,22 @@ final class EditorPreviewControllerTest extends TestCase
         $revisions = new RevisionApiController('site-1', $context, $allow, $audit, new RestorePageRevision($db, 'site-1', $save),
             new ReconcilePageContent($db, 'site-1', $save), new UnpublishPage($db, 'site-1'), new PagePreviewTokens($db, 'site-1'),
             new PinPageRevision($db, 'site-1'), $db, null);
-        return [new EditorPreviewController($editor, $revisions, new GetPageWorkingRevision($db, 'site-1'), $renderer), $editor];
+        if (!$withPart) {
+            return [new EditorPreviewController($editor, $revisions, new GetPageWorkingRevision($db, 'site-1'), $renderer), $editor];
+        }
+        $store = new \CeibaCms\SitePart\Infrastructure\SitePartStore($db, 'site-1');
+        $part = (new \CeibaCms\Page\Application\CreatePage($db, 'site-1'))->execute([
+            'kind' => 'header', 'title' => 'Header', 'slug' => '__header',
+            'content' => [['id' => 'header', 'type' => 'h2', 'props' => ['content' => 'Header'], 'children' => []]],
+        ]);
+        $store->insertRules($part, \CeibaCms\SitePart\Domain\SitePartRules::default(), null, '2026-01-01');
+        (new PublishPageRevision($db, 'site-1'))->execute($part, 1, 'preview-header');
+        $store->publishRules($part);
+        $designs = new \CeibaCms\PageBuilder\Application\Design\GetSiteDesign(
+            new \CeibaCms\PageBuilder\Application\Design\SiteDesignStore($db, 'site-1'));
+        $assembler = new \CeibaCms\PageBuilder\Application\PageAssembler($renderer, $designs,
+            new \CeibaCms\PageBuilder\Application\CustomCode(null));
+        return [new EditorPreviewController($editor, $revisions, new GetPageWorkingRevision($db, 'site-1'), $renderer,
+            $assembler, $pages, new \CeibaCms\SitePart\Application\AssembleSitePage($assembler, $store)), $editor];
     }
 }
