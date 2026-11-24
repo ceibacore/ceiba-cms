@@ -1,4 +1,5 @@
 export { COMPONENT_VIEWS } from './content';
+export { COMPONENT_CSS } from './styles';
 export { resolveProps } from './resolve';
 export type { MediaMap } from './resolve';
 export { toDom, toHtml } from './vnode';

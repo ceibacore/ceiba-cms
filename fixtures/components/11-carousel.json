@@ -1,0 +1,77 @@
+{
+  "name": "11-carousel",
+  "media": {
+    "m1": {
+      "url": "/m/1600.webp",
+      "width": 1600,
+      "height": 800,
+      "alt": "Sea",
+      "variants": [
+        {
+          "url": "/m/480.webp",
+          "width": 480
+        },
+        {
+          "url": "/m/1600.webp",
+          "width": 1600
+        }
+      ]
+    },
+    "m2": {
+      "url": "/m/b.jpg",
+      "width": 800,
+      "height": 600,
+      "alt": "B",
+      "variants": []
+    }
+  },
+  "cases": [
+    {
+      "node": {
+        "id": "c",
+        "type": "slideshow",
+        "props": {
+          "autoplay": true,
+          "interval": 99,
+          "label": "News",
+          "nextLabel": "Sig|uiente"
+        },
+        "children": [
+          {
+            "id": "s1",
+            "type": "slide",
+            "props": {},
+            "children": [
+              {
+                "id": "i",
+                "type": "image",
+                "props": {
+                  "src": {
+                    "asset": "m2"
+                  }
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "s2",
+            "type": "slide",
+            "props": {},
+            "children": []
+          }
+        ]
+      },
+      "html": "<div class=\"cms-carousel\" role=\"region\" aria-label=\"News\" data-cms-carousel=\"15000\" data-cms-labels=\"Previous|Siguiente|Pause|Play\"><div class=\"cms-carousel-track\"><div class=\"cms-carousel-slide\"><img src=\"/m/b.jpg\" alt=\"B\" class=\"img-fluid\" width=\"800\" height=\"600\" loading=\"lazy\" decoding=\"async\"></div><div class=\"cms-carousel-slide\"></div></div></div>"
+    },
+    {
+      "node": {
+        "id": "d",
+        "type": "slideshow",
+        "props": {},
+        "children": []
+      },
+      "html": "<div class=\"cms-carousel\" role=\"region\" aria-label=\"Carousel\" data-cms-carousel=\"0\" data-cms-labels=\"Previous|Next|Pause|Play\"><div class=\"cms-carousel-track\"></div></div>"
+    }
+  ]
+}

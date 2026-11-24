@@ -16,7 +16,8 @@ use CeibaCms\PageBuilder\Domain\Style\StyledNodes;
 /**
  * What a published page carries (plan 04-B), the same for every host and preview:
  * - html: the tree with its style classes and its {asset} references resolved by the host (plan 05-A);
- * - css: site design (compiled), then global custom CSS, then the page's own CSS (each may override the previous);
+ * - css: component CSS (plan 05-C), site design (compiled), global custom CSS, the page's own CSS (each may override
+ *   the previous);
  * - js: scripts of the components used (plan 05-B), global custom JS, then the page's own JS.
  */
 final class PageAssembler
@@ -42,7 +43,9 @@ final class PageAssembler
         $assets = array_map(fn ($media) => $media->url, $resolved);
         $compiled = StyleCompiler::compile($design, StyledNodes::collect($tree), $assets);
         $code = $this->customCode->resolve($page, $hasSession);
+        $components = ComponentScripts::css($tree);
         $css = array_filter([
+            $components === '' ? '' : "/* cms:components */\n" . $components,
             $compiled->css === '' ? '' : "/* cms:design */\n" . $compiled->css,
             $code['globalCss'] === '' ? '' : "/* cms:global */\n" . $code['globalCss'],
             $code['pageCss'] === '' ? '' : "/* cms:page */\n" . $code['pageCss'],

@@ -1,0 +1,67 @@
+{
+  "name": "09-tabs",
+  "media": {
+    "m1": {
+      "url": "/m/1600.webp",
+      "width": 1600,
+      "height": 800,
+      "alt": "Sea",
+      "variants": [
+        {
+          "url": "/m/480.webp",
+          "width": 480
+        },
+        {
+          "url": "/m/1600.webp",
+          "width": 1600
+        }
+      ]
+    },
+    "m2": {
+      "url": "/m/b.jpg",
+      "width": 800,
+      "height": 600,
+      "alt": "B",
+      "variants": []
+    }
+  },
+  "cases": [
+    {
+      "node": {
+        "id": "t",
+        "type": "tabs",
+        "props": {
+          "label": "Plans"
+        },
+        "children": [
+          {
+            "id": "p1",
+            "type": "tab_panel",
+            "props": {
+              "title": "Basic"
+            },
+            "children": [
+              {
+                "id": "q",
+                "type": "quote",
+                "props": {
+                  "text": "A"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "p2",
+            "type": "tab_panel",
+            "props": {
+              "title": ""
+            },
+            "children": []
+          }
+        ]
+      },
+      "html": "<div class=\"cms-tabs\" data-cms-tabs=\"1\" data-cms-label=\"Plans\"><section class=\"cms-tab-panel\"><h3 class=\"cms-tab-title\">Basic</h3><figure class=\"cms-quote\"><blockquote class=\"blockquote\"><p>A</p></blockquote></figure></section><section class=\"cms-tab-panel\"><h3 class=\"cms-tab-title\">Tab</h3></section></div>"
+    }
+  ]
+}
