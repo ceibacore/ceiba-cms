@@ -3,6 +3,7 @@
   import { acceptedTokenType, effectiveValue, literal, setDeclaration, STYLE_MATRIX } from '../../core';
   import type { EditorStore } from '../model/store.svelte';
   import { propertyLabel, typedValue } from './groups';
+  import AssetPicker from '../media/AssetPicker.svelte';
 
   /**
    * One style property at the current target (of a node or of a site class): literal or token, effective value and
@@ -18,9 +19,10 @@
   const tokenType = $derived(acceptedTokenType(spec));
   const tokens = $derived(Object.entries(store.design.tokens).filter(([, token]) => token.type === tokenType).map(([key]) => key));
   const keywords = $derived(spec.kind === 'keyword' ? STYLE_MATRIX.keywords[spec.name] ?? [] : []);
-  const ownToken = $derived(typeof own === 'object' && own !== null ? own.token : '');
+  const ownToken = $derived(typeof own === 'object' && own !== null && 'token' in own ? own.token : '');
   const ownText = $derived(own === undefined || typeof own === 'object' ? '' : String(own));
-  const shown = (value: StyleValue): string => (typeof value === 'object' ? `{${value.token}}` : String(value));
+  const shown = (value: StyleValue): string =>
+    typeof value !== 'object' ? String(value) : 'token' in value ? `{${value.token}}` : t('media.asset');
   const origin = $derived(!effective || effective.origin === 'own' ? null
     : effective.origin === 'class' ? t('styles.fromClass', { from: effective.from }) : t('styles.inherited', { from: effective.from }));
   let error = $state<string | null>(null);
@@ -37,6 +39,12 @@
   const fromText = (raw: string): void => set(raw.trim() === '' ? null : typedValue(spec.kind, raw));
 </script>
 
+{#if spec.kind === 'image'}
+  {#if store.media.available}
+    <AssetPicker {store} {id} label={propertyLabel(spec.name)} value={own}
+      onChange={(next) => set(next === null || typeof next === 'string' ? null : { asset: next.asset })} />
+  {/if}
+{:else}
 <div class="field">
   <label for={id}>{propertyLabel(spec.name)}</label>
   <div class="row">
@@ -69,6 +77,7 @@
   {#if error}<p class="error" id={`${id}-error`} role="alert">{error}</p>
   {:else if origin}<p class="origin" id={`${id}-origin`}>{origin}</p>{/if}
 </div>
+{/if}
 
 <style>
   .field { display: grid; gap: .2rem; margin: .4rem 0; }

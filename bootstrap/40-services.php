@@ -76,6 +76,7 @@ $builderContextResolver    = static function () use ($siteId, $authManager, $che
         'pages.view' => 'pages.read', 'pages.update' => 'pages.update', 'pages.publish' => 'pages.publish',
         'pages.restore' => 'pages.restore', 'pages.unpublish' => 'pages.unpublish',
         'design.update' => 'design.update', 'design.publish' => 'design.publish',
+        'media.view' => 'media.read', 'media.create' => 'media.create', 'media.update' => 'media.update', 'media.delete' => 'media.delete',
     ] as $permission => $capability) {
         if ($checkPermission->execute($actorId, $permission)) {
             $capabilities[] = $capability;

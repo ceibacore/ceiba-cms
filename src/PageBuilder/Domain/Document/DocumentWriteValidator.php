@@ -17,7 +17,9 @@ final class DocumentWriteValidator
     {
         self::checkBytes($document->toJson());
         $this->validateTree($document->root(), true);
-        foreach ($document->resources() as $id) {
+        $root = json_decode($document->toJson(), true, 512, JSON_THROW_ON_ERROR)['root'];
+        $references = \CeibaCms\Media\Domain\MediaReferences::collect(is_array($root) ? $root : []);
+        foreach (array_unique([...$document->resources(), ...$references]) as $id) {
             if ($resourceBelongsToSite($id) !== true) {
                 throw new InvalidArgumentException('Resource is unavailable for this site');
             }

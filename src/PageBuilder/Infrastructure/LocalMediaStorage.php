@@ -48,6 +48,16 @@ final class LocalMediaStorage implements MediaStorage
         }
     }
 
+    /** Absolute file of a key written by this storage, or null (used to serve the files, plan 05-A). */
+    public function absolutePath(string $siteId, string $storageKey): ?string
+    {
+        if ($storageKey === '' || basename($storageKey) !== $storageKey || !preg_match('/^[a-f0-9]{32}\.[a-z]{3,4}$/', $storageKey)) {
+            return null;
+        }
+        $file = $this->resolveSiteDirectory($siteId) . DIRECTORY_SEPARATOR . $storageKey;
+        return is_file($file) ? $file : null;
+    }
+
     private function resolveSiteDirectory(string $siteId): string
     {
         $safeSiteId = preg_replace('/[^a-zA-Z0-9_-]/', '_', $siteId);

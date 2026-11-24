@@ -5,6 +5,7 @@
   import StylesPanel from '../styles/StylesPanel.svelte';
   import Advanced from './advanced/Advanced.svelte';
   import Field from './Field.svelte';
+  import AssetPicker from '../media/AssetPicker.svelte';
   import { fieldsFor } from './fields';
 
   let { store, uid, canTemplates = false, onRemoved, onSaveTemplate }: {
@@ -59,8 +60,13 @@
         <p class="locked" role="note">{t('inspector.locked')}</p>
       {:else}
         {#each fields as field (field.key)}
-          <Field {field} {t} id={`${uid}-prop-${field.key}`} value={values[field.key]}
-            onChange={(value) => setProp(field.key, value)} />
+          {#if field.control === 'media' && store.media.available}
+            <AssetPicker {store} id={`${uid}-prop-${field.key}`} label={field.label} value={values[field.key]}
+              withAlt={field.key === 'src' || field.key === 'image'} onChange={(value) => setProp(field.key, value)} />
+          {:else}
+            <Field {field} {t} id={`${uid}-prop-${field.key}`} value={values[field.key]}
+              onChange={(value) => setProp(field.key, value)} />
+          {/if}
         {/each}
       {/if}
       {#if rule}

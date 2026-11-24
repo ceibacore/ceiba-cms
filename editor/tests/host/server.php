@@ -4,7 +4,6 @@
 // only the routes the reference transport uses. Run: CMS_EDITOR_DB=/tmp/x.sqlite php -S 127.0.0.1:8099 server.php
 declare(strict_types=1);
 
-use CeibaCms\Media\Domain\Repository\MediaRepositoryInterface;
 use CeibaCms\Page\Application\PagePreviewTokens;
 use CeibaCms\Page\Application\PageRevisionAuditLog;
 use CeibaCms\Page\Application\PinPageRevision;
@@ -55,12 +54,7 @@ $allowPublish = new class implements PagePublicationAuthorization {
 $allowRevisions = new class implements RevisionOperationAuthorization {
     public function canPerform(HostContext $context, string $pageId, string $operation): bool { return true; }
 };
-$media = new class implements MediaRepositoryInterface {
-    public function findById(string $id): ?array { return null; }
-    public function store(array $data): string { return ''; }
-    public function delete(string $id): void {}
-    public function findAll(int $limit, int $offset): array { return []; }
-};
+$media = new \CeibaCms\Media\Infrastructure\CeibaDbMediaRepository($db);
 $reporter = static function (string $requestId, Throwable $error): void {
     error_log("[{$requestId}] " . $error->getMessage());
 };
@@ -82,13 +76,14 @@ $frameworks->setActive('bootstrap5');
 $renderer = new BladeRenderer(new LoopResolver(), new VariableInterpolator(), $frameworks);
 $assembler = new \CeibaCms\PageBuilder\Application\PageAssembler($renderer,
     new \CeibaCms\PageBuilder\Application\Design\GetSiteDesign(new \CeibaCms\PageBuilder\Application\Design\SiteDesignStore($db, SITE)),
-    new \CeibaCms\PageBuilder\Application\CustomCode(null));
+    new \CeibaCms\PageBuilder\Application\CustomCode(null), new \CeibaCms\Media\Infrastructure\CeibaDbMediaResolver($db, '/cms-media'));
+$mediaRoutes = require __DIR__ . '/media.php';
 $preview = new EditorPreviewController($editor, $revisions, new GetPageWorkingRevision($db, SITE), $renderer, $assembler, $pages);
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $path = (string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $body = (string) file_get_contents('php://input');
-$response = match (true) {
+$response = $mediaRoutes($method, $path, $body) ?? match (true) {
     $method === 'GET' && $path === '/api/builder/v1/components' => $editor->components(),
     $method === 'GET' && $path === '/api/pagebuilder/rules' => [
         'success' => true, 'data' => ['html_tags' => (new HtmlSemanticRulesProvider())->getRules()],

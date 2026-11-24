@@ -1,0 +1,65 @@
+{
+  "name": "13-background-images",
+  "design": {
+    "breakpoints": [{"id": "md", "minWidth": 768}],
+    "tokens": {},
+    "classes": {
+      "banner": {"styles": {"base": {"backgroundImage": {"asset": "7"}, "backgroundSize": "cover"}}}
+    }
+  },
+  "assets": {
+    "7": "/storage/cms/hero.webp",
+    "8": "https://cdn.example.test/img/a.jpg?v=2",
+    "9": "javascript:alert(1)",
+    "10": "/x\")}body{color:red",
+    "11": "//evil.test/x.jpg",
+    "12": "/storage/a b.jpg"
+  },
+  "nodes": [
+    {
+      "id": "hero",
+      "styles": {
+        "classes": ["banner"],
+        "base": {
+          "backgroundImage": {"asset": "8"},
+          "backgroundPosition": "center top",
+          "backgroundRepeat": "no-repeat",
+          "backgroundColor": "#0F172A"
+        },
+        "breakpoints": {"md": {"backgroundImage": {"asset": "7"}, "backgroundSize": "contain"}}
+      }
+    },
+    {
+      "id": "bad",
+      "styles": {
+        "base": {
+          "backgroundImage": {"asset": "missing"},
+          "color": {"asset": "7"},
+          "backgroundSize": "url(x)",
+          "backgroundPosition": "middle"
+        },
+        "states": {"hover": {"backgroundImage": "url(/storage/cms/hero.webp)"}}
+      }
+    },
+    {"id": "js", "styles": {"base": {"backgroundImage": {"asset": "9"}}}},
+    {"id": "esc", "styles": {"base": {"backgroundImage": {"asset": "10"}}}},
+    {"id": "proto", "styles": {"base": {"backgroundImage": {"asset": "11"}}}},
+    {"id": "space", "styles": {"base": {"backgroundImage": {"asset": "12"}}}},
+    {"id": "num", "styles": {"base": {"backgroundImage": {"asset": 7}}}},
+    {"id": "own", "styles": {"base": {"backgroundImage": {"asset": "toString"}}}}
+  ],
+  "css": ".cms-c-banner{background-image:url(\"/storage/cms/hero.webp\");background-size:cover}\n.cms-n-hero.cms-n-hero{background-color:#0F172A;background-image:url(\"https://cdn.example.test/img/a.jpg?v=2\");background-position:center top;background-repeat:no-repeat}\n@media (min-width:768px){\n.cms-n-hero.cms-n-hero{background-image:url(\"/storage/cms/hero.webp\");background-size:contain}\n}",
+  "diagnostics": [
+    {"path":"nodes.bad.styles.base.backgroundImage","code":"UNKNOWN_ASSET"},
+    {"path":"nodes.bad.styles.base.color","code":"INVALID_VALUE"},
+    {"path":"nodes.bad.styles.base.backgroundSize","code":"INVALID_VALUE"},
+    {"path":"nodes.bad.styles.base.backgroundPosition","code":"INVALID_VALUE"},
+    {"path":"nodes.bad.styles.states.hover.backgroundImage","code":"INVALID_VALUE"},
+    {"path":"nodes.js.styles.base.backgroundImage","code":"INVALID_VALUE"},
+    {"path":"nodes.esc.styles.base.backgroundImage","code":"INVALID_VALUE"},
+    {"path":"nodes.proto.styles.base.backgroundImage","code":"INVALID_VALUE"},
+    {"path":"nodes.space.styles.base.backgroundImage","code":"INVALID_VALUE"},
+    {"path":"nodes.num.styles.base.backgroundImage","code":"UNKNOWN_ASSET"},
+    {"path":"nodes.own.styles.base.backgroundImage","code":"UNKNOWN_ASSET"}
+  ]
+}

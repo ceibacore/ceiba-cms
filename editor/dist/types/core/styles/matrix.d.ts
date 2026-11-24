@@ -1,11 +1,11 @@
 /**
  * Mirror of schemas/style-properties-v1.json (the source of truth, read as is by the PHP compiler).
- * tests/styles/matrix.test.ts fails when they differ.
+ * tests/styles/fixtures.test.ts fails when they differ.
  */
 export interface PropertySpec {
     readonly name: string;
     readonly css: string;
-    readonly kind: 'keyword' | 'number' | 'length' | 'tracks' | 'gridColumn' | 'token' | 'lineHeight' | 'color';
+    readonly kind: 'keyword' | 'number' | 'length' | 'tracks' | 'gridColumn' | 'token' | 'lineHeight' | 'color' | 'image';
     readonly parts?: number;
     readonly auto?: boolean;
     readonly negative?: boolean;

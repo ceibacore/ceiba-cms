@@ -11,7 +11,10 @@
     "alignSelf": ["auto", "stretch", "flex-start", "flex-end", "center", "baseline", "start", "end"],
     "textAlign": ["left", "right", "center", "justify", "start", "end"],
     "fontWeight": ["normal", "bold", "100", "200", "300", "400", "500", "600", "700", "800", "900"],
-    "borderStyle": ["none", "solid", "dashed", "dotted", "double"]
+    "borderStyle": ["none", "solid", "dashed", "dotted", "double"],
+    "backgroundSize": ["auto", "cover", "contain"],
+    "backgroundPosition": ["center", "top", "bottom", "left", "right", "center top", "center bottom", "left top", "right top", "left bottom", "right bottom"],
+    "backgroundRepeat": ["no-repeat", "repeat", "repeat-x", "repeat-y"]
   },
   "properties": [
     {"name": "display", "css": "display", "kind": "keyword"},
@@ -52,6 +55,10 @@
     {"name": "textAlign", "css": "text-align", "kind": "keyword"},
     {"name": "color", "css": "color", "kind": "color"},
     {"name": "backgroundColor", "css": "background-color", "kind": "color"},
+    {"name": "backgroundImage", "css": "background-image", "kind": "image"},
+    {"name": "backgroundSize", "css": "background-size", "kind": "keyword"},
+    {"name": "backgroundPosition", "css": "background-position", "kind": "keyword"},
+    {"name": "backgroundRepeat", "css": "background-repeat", "kind": "keyword"},
     {"name": "borderWidth", "css": "border-width", "kind": "length", "parts": 4},
     {"name": "borderStyle", "css": "border-style", "kind": "keyword"},
     {"name": "borderColor", "css": "border-color", "kind": "color"},

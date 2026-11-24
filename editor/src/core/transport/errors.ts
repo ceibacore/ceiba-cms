@@ -18,6 +18,7 @@ const strings = (value: unknown): Record<string, string> => {
 
 const codeFor = (status: number, apiCode: string): EditorErrorCode => {
   if (apiCode === 'PUBLIC_CONTENT_DRIFT') return 'PUBLIC_CONTENT_DRIFT';
+  if (status === 409 && apiCode === 'MEDIA_IN_USE') return 'MEDIA_IN_USE';
   if (status === 412 || apiCode === 'REVISION_CONFLICT') return 'REVISION_CONFLICT';
   if (status === 403 || status === 401) return 'AUTHORIZATION_DENIED';
   if (status === 422 || status === 400) return 'VALIDATION_FAILED';

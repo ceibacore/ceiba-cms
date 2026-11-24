@@ -1,6 +1,7 @@
 import type { Catalogue, Command, DesignDocument, EditorSession, SessionStatus, TreeState } from '../../core';
 import { SiteDesignSession } from '../../core';
 import type { MessageKey, Translate } from '../i18n';
+import { MediaState } from '../media/media.svelte';
 /**
  * Reactive view of an EditorSession for the Svelte components. Every change goes through the session;
  * errors are announced (aria-live) instead of thrown at the UI.
@@ -22,6 +23,8 @@ export declare class EditorStore {
     conflictRevision: number | null;
     /** Site design (plan 04): working copy shown on the canvas, and the width/state the style controls edit. */
     readonly designSession: SiteDesignSession;
+    /** Media library (plan 05-A): resolved asset URLs and the media dialog request. */
+    readonly media: MediaState;
     design: DesignDocument;
     designDirty: boolean;
     /** Breakpoint id the canvas shows and the style controls edit; null = base (smallest screens). */
