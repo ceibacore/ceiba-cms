@@ -8,6 +8,7 @@ use CeibaCms\Migrations\Migration_20261126000000_CreateSiteParts;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/migrations/20261126000000_create_site_parts.php';
+require_once dirname(__DIR__, 2) . '/migrations/20261127000000_create_site_part_publication_batches.php';
 
 final class SitePartMigrationTest extends TestCase
 {
@@ -27,5 +28,19 @@ final class SitePartMigrationTest extends TestCase
         $sql = implode("\n", $down->getSqlLog());
         self::assertStringContainsString('DROP TABLE IF EXISTS `tenant_site_part_rules`', $sql);
         self::assertStringContainsString('DROP COLUMN `kind`', $sql);
+    }
+
+    public function testPublicationBatchMigrationCreatesSiteScopedIdempotencyKey(): void
+    {
+        $schema = new CmsSchemaBuilder('tenant_');
+        (new \CeibaCms\Migrations\Migration_20261127000000_CreateSitePartPublicationBatches($schema))->up();
+        $sql = implode("\n", $schema->getSqlLog());
+        self::assertStringContainsString('`tenant_site_part_publication_locks`', $sql);
+        self::assertStringContainsString('`tenant_site_part_publication_batches`', $sql);
+        self::assertStringContainsString('`site_id`, `idempotency_key`', $sql);
+        self::assertStringContainsString('UNIQUE INDEX', $sql);
+        $down = new CmsSchemaBuilder('tenant_');
+        (new \CeibaCms\Migrations\Migration_20261127000000_CreateSitePartPublicationBatches($down))->down();
+        self::assertSame(2, count($down->getSqlLog()));
     }
 }
