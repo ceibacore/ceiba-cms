@@ -21,6 +21,8 @@ final class StyleCompiler
     private array $tokens = [];
     /** @var list<array{id: string, minWidth: int}> */
     private array $breakpoints = [];
+    /** @var array<string, string> asset id => URL resolved by the host */
+    private array $assets = [];
 
     public static function nodeClass(string $id): string
     {
@@ -35,10 +37,13 @@ final class StyleCompiler
     /**
      * @param array<string, mixed> $design breakpoints, tokens, classes
      * @param list<array{id: string, styles: mixed}> $nodes styled nodes in document order
+     * @param array<string, string> $assets asset id => public URL (background images, plan 05)
      */
-    public static function compile(array $design, array $nodes): CompiledStyles
+    public static function compile(array $design, array $nodes, array $assets = []): CompiledStyles
     {
-        return (new self())->run($design, $nodes);
+        $compiler = new self();
+        $compiler->assets = $assets;
+        return $compiler->run($design, $nodes);
     }
 
     /** @return array<array-key, mixed> */
@@ -163,7 +168,7 @@ final class StyleCompiler
         }
         $out = [];
         foreach ($entries as $name => $value) {
-            $css = (new StyleDeclaration($this->tokens))->css((string) $name, $value);
+            $css = (new StyleDeclaration($this->tokens, $this->assets))->css((string) $name, $value);
             if (is_string($css)) {
                 $out[] = [StyleMatrix::order((string) $name), StyleMatrix::property((string) $name)['css'] . ':' . $css];
             } else {

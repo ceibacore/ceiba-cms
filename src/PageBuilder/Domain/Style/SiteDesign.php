@@ -39,7 +39,9 @@ final class SiteDesign
             || !is_array($design['breakpoints'] ?? null) || !is_array($design['tokens'] ?? null) || !is_array($design['classes'] ?? null)) {
             throw new InvalidArgumentException('Invalid design document');
         }
-        $diagnostics = StyleCompiler::compile($design, [])->diagnostics;
+        // Asset references are checked for shape here; whether the files exist is checked by the caller (plan 05-A).
+        $assets = array_fill_keys(\CeibaCms\Media\Domain\MediaReferences::inValues($design['classes']), '/asset');
+        $diagnostics = StyleCompiler::compile($design, [], $assets)->diagnostics;
         if ($diagnostics !== []) {
             $first = $diagnostics[0];
             throw new InvalidDesign($first['path'], $first['code'], $diagnostics);

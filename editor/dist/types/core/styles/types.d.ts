@@ -1,6 +1,8 @@
 /** A declaration value: a literal string/number or a reference to a design token. */
 export type StyleValue = string | number | {
     readonly token: string;
+} | {
+    readonly asset: string;
 };
 export type Declarations = Readonly<Record<string, StyleValue>>;
 /** Styles of a node or of a site class (plan 04, mobile-first). */
@@ -41,7 +43,7 @@ export interface StyledNode {
     readonly id: string;
     readonly styles: NodeStyles;
 }
-export type StyleDiagnosticCode = 'INVALID_ID' | 'UNKNOWN_PROPERTY' | 'INVALID_VALUE' | 'UNKNOWN_TOKEN' | 'TOKEN_TYPE' | 'TOKEN_CYCLE' | 'UNKNOWN_BREAKPOINT' | 'UNKNOWN_STATE' | 'UNKNOWN_CLASS' | 'INVALID_BREAKPOINTS' | 'LIMIT';
+export type StyleDiagnosticCode = 'INVALID_ID' | 'UNKNOWN_PROPERTY' | 'INVALID_VALUE' | 'UNKNOWN_TOKEN' | 'TOKEN_TYPE' | 'TOKEN_CYCLE' | 'UNKNOWN_BREAKPOINT' | 'UNKNOWN_STATE' | 'UNKNOWN_CLASS' | 'INVALID_BREAKPOINTS' | 'LIMIT' | 'UNKNOWN_ASSET';
 export interface StyleDiagnostic {
     readonly path: string;
     readonly code: StyleDiagnosticCode;

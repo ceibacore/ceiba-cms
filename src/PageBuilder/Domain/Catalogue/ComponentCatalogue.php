@@ -146,10 +146,10 @@ final class ComponentCatalogue
             version: 1,
             label: 'Image',
             category: 'media',
-            propsSchema: ['src' => ['type' => 'string', 'default' => ''], 'alt' => ['type' => 'string', 'default' => '']],
+            propsSchema: ['src' => ['type' => 'media', 'default' => ''], 'alt' => ['type' => 'string', 'default' => ''], 'sizes' => ['type' => 'string', 'default' => '']],
             allowedChildren: [],
             allowedParents: ['*'],
-            editorControls: ['src' => ['type' => 'media_picker'], 'alt' => ['type' => 'text']],
+            editorControls: ['src' => ['type' => 'media_picker', 'label' => 'Image'], 'alt' => ['type' => 'text', 'label' => 'Alt text']],
             capabilities: ['media', 'responsive', 'lazy'],
             isContainer: false,
         ));

@@ -1,7 +1,7 @@
 import type { ElementRule } from '../../core';
 import { safeUrl } from '../canvas/sanitize';
 
-export type Control = 'text' | 'textarea' | 'number' | 'checkbox' | 'select' | 'url';
+export type Control = 'text' | 'textarea' | 'number' | 'checkbox' | 'select' | 'url' | 'media';
 
 export interface FieldSpec {
   readonly key: string;
@@ -12,7 +12,7 @@ export interface FieldSpec {
 
 const CONTROL_ALIASES: Record<string, Control> = {
   text: 'text', string: 'text', textarea: 'textarea', richtext: 'textarea', number: 'number', integer: 'number',
-  switch: 'checkbox', boolean: 'checkbox', checkbox: 'checkbox', select: 'select', url: 'url', media_picker: 'url',
+  switch: 'checkbox', boolean: 'checkbox', checkbox: 'checkbox', select: 'select', url: 'url', media_picker: 'media', media: 'media',
 };
 
 const TEXT_TAGS = new Set(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'a', 'li', 'blockquote', 'strong', 'em',
@@ -60,7 +60,7 @@ export const parseField = (field: FieldSpec, input: string | boolean): { value: 
     const number = Number(value);
     return Number.isFinite(number) ? { value: number } : { error: 'field.number' };
   }
-  if (field.control === 'url' && value.trim() !== '' && safeUrl(value) === '') return { error: 'field.url' };
+  if ((field.control === 'url' || field.control === 'media') && value.trim() !== '' && safeUrl(value) === '') return { error: 'field.url' };
   if (field.control === 'select' && field.options && !field.options.includes(value)) return { error: 'field.option' };
   if (field.control === 'select' && field.options?.every((o) => /^\d+$/.test(o))) return { value: Number(value) };
   return { value };

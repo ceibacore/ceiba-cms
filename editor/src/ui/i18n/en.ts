@@ -1,7 +1,9 @@
 import type { MessageKey } from './es';
+import { mediaEn } from './media';
 
 /** English texts of the editor UI. */
 export const en: Record<MessageKey, string> = {
+  ...mediaEn,
   'editor.label': 'Page editor',
   'toolbar.undo': 'Undo',
   'toolbar.redo': 'Redo',

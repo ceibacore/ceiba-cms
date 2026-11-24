@@ -1,5 +1,5 @@
-import type { Catalogue, DesignDocument, NodeRecord, NodeStyles, TreeState } from '../../core';
-import { styleClassNames } from '../../core';
+import type { Catalogue, DesignDocument, NodeRecord, NodeStyles, ResolvedMedia, TreeState } from '../../core';
+import { isAssetRef, styleClassNames } from '../../core';
 import { isMultiline } from './inline-edit';
 import { safeClass, safeUrl, text } from './sanitize';
 
@@ -26,8 +26,19 @@ const placeholder = (doc: Document, label: string): HTMLElement => {
   return box;
 };
 
+type MediaMap = Readonly<Record<string, ResolvedMedia>>;
+
+/** src and alt of an image prop: a library asset (resolved URL, per-use alt, else node alt, else library alt) or a URL. */
+const image = (p: Record<string, unknown>, media: MediaMap): { src: string; alt: string } => {
+  const ref = p.src;
+  if (!isAssetRef(ref)) return { src: safeUrl(ref), alt: text(p.alt) };
+  const found = media[ref.asset];
+  const alt = ref.alt !== undefined ? ref.alt : text(p.alt) !== '' ? text(p.alt) : found?.alt ?? '';
+  return { src: found ? safeUrl(found.url) : '', alt };
+};
+
 /** One node as an element (without children); null children slot means the element takes no children. */
-const element = (doc: Document, node: NodeRecord, labels: CanvasLabels, known: boolean): HTMLElement => {
+const element = (doc: Document, node: NodeRecord, labels: CanvasLabels, known: boolean, media: MediaMap): HTMLElement => {
   const p = propsOf(node);
   const make = (tag: string, className = ''): HTMLElement => {
     const el = doc.createElement(tag);
@@ -59,11 +70,11 @@ const element = (doc: Document, node: NodeRecord, labels: CanvasLabels, known: b
       return el;
     }
     case 'image': case 'img': {
-      const src = safeUrl(p.src);
+      const { src, alt } = image(p, media);
       if (src === '') return placeholder(doc, labels.emptyImage);
-      const img = make('img', 'img-fluid') as HTMLImageElement;
+      const img = make('img', node.type === 'image' ? 'img-fluid' : '') as HTMLImageElement;
       img.src = src;
-      img.alt = text(p.alt);
+      img.alt = alt;
       return img;
     }
     case 'button': {
@@ -77,10 +88,6 @@ const element = (doc: Document, node: NodeRecord, labels: CanvasLabels, known: b
   if (!known || !SAFE_TAGS.has(node.type)) return placeholder(doc, labels.unknown(node.type));
   const el = make(node.type);
   if (node.type === 'a') (el as HTMLAnchorElement).href = safeUrl(p.href) || '#';
-  if (node.type === 'img') {
-    (el as HTMLImageElement).src = safeUrl(p.src);
-    (el as HTMLImageElement).alt = text(p.alt);
-  }
   if (p.content !== undefined) el.append(doc.createTextNode(text(p.content)));
   return el;
 };
@@ -93,11 +100,12 @@ export const renderCanvas = (
   selection: string | null,
   labels: CanvasLabels,
   design?: DesignDocument,
+  media: MediaMap = {},
 ): void => {
   const build = (id: string): HTMLElement | null => {
     const node = tree.nodes[id];
     if (!node) return null;
-    const el = element(doc, node, labels, catalogue.has(node.type));
+    const el = element(doc, node, labels, catalogue.has(node.type), media);
     el.dataset.ceibaId = id;
     const styles = node.fields.styles;
     if (design && typeof styles === 'object' && styles !== null && !Array.isArray(styles)) {

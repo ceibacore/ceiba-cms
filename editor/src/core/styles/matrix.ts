@@ -1,11 +1,11 @@
 /**
  * Mirror of schemas/style-properties-v1.json (the source of truth, read as is by the PHP compiler).
- * tests/styles/matrix.test.ts fails when they differ.
+ * tests/styles/fixtures.test.ts fails when they differ.
  */
 export interface PropertySpec {
   readonly name: string;
   readonly css: string;
-  readonly kind: 'keyword' | 'number' | 'length' | 'tracks' | 'gridColumn' | 'token' | 'lineHeight' | 'color';
+  readonly kind: 'keyword' | 'number' | 'length' | 'tracks' | 'gridColumn' | 'token' | 'lineHeight' | 'color' | 'image';
   readonly parts?: number;
   readonly auto?: boolean;
   readonly negative?: boolean;
@@ -28,6 +28,9 @@ export const STYLE_MATRIX = {
     textAlign: ["left", "right", "center", "justify", "start", "end"],
     fontWeight: ["normal", "bold", "100", "200", "300", "400", "500", "600", "700", "800", "900"],
     borderStyle: ["none", "solid", "dashed", "dotted", "double"],
+    backgroundSize: ["auto", "cover", "contain"],
+    backgroundPosition: ["center", "top", "bottom", "left", "right", "center top", "center bottom", "left top", "right top", "left bottom", "right bottom"],
+    backgroundRepeat: ["no-repeat", "repeat", "repeat-x", "repeat-y"],
   } as Record<string, readonly string[]>,
   properties: [
     { name: "display", css: "display", kind: "keyword" },
@@ -68,6 +71,10 @@ export const STYLE_MATRIX = {
     { name: "textAlign", css: "text-align", kind: "keyword" },
     { name: "color", css: "color", kind: "color" },
     { name: "backgroundColor", css: "background-color", kind: "color" },
+    { name: "backgroundImage", css: "background-image", kind: "image" },
+    { name: "backgroundSize", css: "background-size", kind: "keyword" },
+    { name: "backgroundPosition", css: "background-position", kind: "keyword" },
+    { name: "backgroundRepeat", css: "background-repeat", kind: "keyword" },
     { name: "borderWidth", css: "border-width", kind: "length", parts: 4 },
     { name: "borderStyle", css: "border-style", kind: "keyword" },
     { name: "borderColor", css: "border-color", kind: "color" },

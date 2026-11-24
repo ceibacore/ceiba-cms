@@ -2,7 +2,7 @@ import { PROPERTY_BY_NAME, STYLE_MATRIX } from './matrix';
 import type { ResolvedToken } from './tokens';
 import { resolveTokens } from './tokens';
 import type { Breakpoint, CompiledStyles, Declarations, DesignDocument, StyleBlock, StyleDiagnostic, StyledNode } from './types';
-import { acceptedTokenType, literal } from './values';
+import { acceptedTokenType, assetUrl, literal } from './values';
 
 /**
  * CSS compiler of plan 04 (mirrored by src/PageBuilder/Domain/Style/StyleCompiler.php; fixtures/styles keeps both
@@ -23,6 +23,8 @@ export const siteClass = (id: string): string => `cms-c-${id}`;
 
 interface Context {
   readonly tokens: Map<string, ResolvedToken>;
+  /** Asset id → public URL, resolved by the host (background images, plan 05). */
+  readonly assets: Readonly<Record<string, string>>;
   readonly breakpoints: readonly Breakpoint[];
   readonly diagnostics: StyleDiagnostic[];
 }
@@ -47,7 +49,19 @@ const declarationBlock = (declarations: Declarations | undefined, path: string, 
       continue;
     }
     let css: string | null;
-    if (typeof value === 'object' && value !== null) {
+    if (typeof value === 'object' && value !== null && 'asset' in value) {
+      if (spec.kind !== 'image') {
+        context.diagnostics.push({ path: at, code: 'INVALID_VALUE' });
+        continue;
+      }
+      const id = (value as { asset?: unknown }).asset;
+      const url = typeof id === 'string' && Object.hasOwn(context.assets, id) ? context.assets[id] : undefined;
+      if (typeof url !== 'string') {
+        context.diagnostics.push({ path: at, code: 'UNKNOWN_ASSET' });
+        continue;
+      }
+      css = assetUrl(url);
+    } else if (typeof value === 'object' && value !== null) {
       const ref = (value as { token?: unknown }).token;
       const token = typeof ref === 'string' ? context.tokens.get(ref) : undefined;
       if (!token) {
@@ -109,11 +123,15 @@ const emit = (output: Output, breakpoints: readonly Breakpoint[], chunks: string
   }
 };
 
-export const compileStyles = (design: DesignDocument, nodes: readonly StyledNode[]): CompiledStyles => {
+export const compileStyles = (
+  design: DesignDocument,
+  nodes: readonly StyledNode[],
+  assets: Readonly<Record<string, string>> = {},
+): CompiledStyles => {
   const diagnostics: StyleDiagnostic[] = [];
   const { table, root } = resolveTokens(map(design.tokens), diagnostics);
   const breakpoints = validBreakpoints(design.breakpoints ?? [], diagnostics);
-  const context: Context = { tokens: table, breakpoints, diagnostics };
+  const context: Context = { tokens: table, breakpoints, diagnostics, assets };
   const fresh = (): Output => ({ rules: [], media: new Map(breakpoints.map((b) => [b.id, []])) });
 
   const classes = fresh();

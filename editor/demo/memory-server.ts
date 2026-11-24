@@ -1,8 +1,9 @@
 import { EditorError } from '../src/core';
-import type { PageDocument, RawNode, Transport } from '../src/core';
+import type { MediaUsages, PageDocument, RawNode, Transport } from '../src/core';
 import { COMPONENTS, HTML_TAGS } from './catalogue';
 import { importHtml, TemplateStore } from './content';
 import { DesignStore } from './design';
+import { MediaStore } from './media';
 
 const escape = (value: unknown): string =>
   String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -28,6 +29,7 @@ export class MemoryServer {
   readonly revisions = new Map<number, PageDocument>();
   readonly templates = new TemplateStore();
   readonly design = new DesignStore();
+  readonly media = new MediaStore();
 
   constructor(pageId: string, root: PageDocument['root'], readonly permissions: string[]) {
     this.revisions.set(1, { schemaVersion: 1, documentId: pageId, revision: 1, root, settings: {}, resources: [] });
@@ -43,6 +45,23 @@ export class MemoryServer {
     doc.root.push({ id: `other-${this.current}`, type: 'text', props: { content: text }, children: [] });
     this.current++;
     this.revisions.set(this.current, { ...doc, revision: this.current });
+  }
+
+  private usages(id: string): MediaUsages {
+    return this.media.usages(id, this.latest(), this.design.state().design);
+  }
+
+  private mediaTransport(): Partial<Transport> {
+    const pick = (ids: readonly string[]) => Object.fromEntries(this.media.items.filter((i) => ids.includes(i.id)).map((i) => [i.id, i]));
+    return {
+      listMedia: async (search, page) => this.media.list(search, page),
+      uploadMedia: async (file, options) => this.media.upload(file, options),
+      resolveMedia: async (ids) => pick(ids),
+      mediaSettings: async () => this.media.settings,
+      describeMedia: async (id, alt) => this.media.describe(id, alt),
+      mediaUsages: async (id) => this.usages(id),
+      deleteMedia: async (id) => this.media.remove(id, this.usages(id)),
+    };
   }
 
   transport(): Transport {
@@ -73,6 +92,7 @@ export class MemoryServer {
       listTemplates: async () => structuredClone(this.templates.templates),
       saveTemplate: async (template) => this.templates.save(structuredClone(template)),
       importHtml: async (html) => importHtml(html),
+      ...this.mediaTransport(),
       render: async (_id, revision) => ({ html: (this.revisions.get(revision)?.root ?? []).map(renderNode).join(''), css: '' }),
     };
   }

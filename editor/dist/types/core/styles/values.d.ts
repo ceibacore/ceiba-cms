@@ -10,5 +10,6 @@ export declare const tracks: (value: string) => string | null;
 export declare const inRange: (n: number, spec: Pick<PropertySpec, "min" | "max">) => string | null;
 /** A literal value of a property (token references are handled by the caller). */
 export declare const literal: (spec: PropertySpec, raw: string | number) => string | null;
+export declare const assetUrl: (url: unknown) => string | null;
 /** Token type a property accepts in a {token} reference, or null. */
 export declare const acceptedTokenType: (spec: PropertySpec) => string | null;

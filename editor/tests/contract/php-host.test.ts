@@ -127,5 +127,27 @@ describe.skipIf(!available)('editor core against a minimal PHP host', () => {
     expect(rendered?.css).toContain('.cms-n-c1.cms-n-c1{padding-block:3rem}');
     expect(rendered?.css).toContain('@media (min-width:992px){');
   });
-});
 
+  it('media: upload with variants, reference by id, render with srcset, refuse deleting it while used (plan 05-A)', async () => {
+    const png = spawnSync('php', ['-r', '$i=imagecreatetruecolor(1000,500);imagepng($i);']).stdout;
+    const media = transport();
+    const fake = media.uploadMedia!(new File(['<svg/>'], 'x.png', { type: 'image/png' }), { alt: '', widths: [], optimize: false, webp: false });
+    await expect(fake).rejects.toMatchObject({ code: 'VALIDATION_FAILED', details: { file: 'TYPE' } });
+    const item = await media.uploadMedia!(new File([png], 'sea.png', { type: 'image/png' }), { alt: 'Sea', widths: [480], optimize: true, webp: true });
+    expect([item.alt, item.originalWidth, item.mime]).toEqual(['Sea', 1000, 'image/png']);
+    expect(item.srcset).toMatch(/^\/cms-media\/\w+\.webp 480w, \/cms-media\/\w+\.webp 1000w$/);
+    expect(Object.keys(await media.resolveMedia!([item.id, 'nope']))).toEqual([item.id]);
+
+    const editor = createEditor({ pageId: 'page-1', transport: media });
+    await editor.load();
+    editor.dispatch({ kind: 'insert', parent: 'c1', index: 0, node: { type: 'image', props: { src: { asset: item.id } } } });
+    const revision = (await editor.save()) as number;
+    const { html } = (await media.render?.('page-1', revision)) ?? { html: '' };
+    expect(html).toContain(`alt="Sea" srcset="${item.srcset}" sizes="100vw" class="img-fluid" width="1000" height="500"`);
+
+    await expect(media.deleteMedia!(item.id)).rejects.toMatchObject({ code: 'MEDIA_IN_USE' });
+    expect((await media.mediaUsages!(item.id)).pages.map((p) => p.pageId)).toEqual(['page-1']);
+    editor.dispatch({ kind: 'insert', parent: 'c1', index: 0, node: { type: 'image', props: { src: { asset: 'ghost' } } } });
+    await expect(editor.save()).rejects.toMatchObject({ code: 'VALIDATION_FAILED' });
+  });
+});

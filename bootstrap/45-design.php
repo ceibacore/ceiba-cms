@@ -22,7 +22,6 @@ $getSiteDesign       = new \CeibaCms\PageBuilder\Application\Design\GetSiteDesig
 $saveSiteDesignDraft = new \CeibaCms\PageBuilder\Application\Design\SaveSiteDesignDraft($siteDesignStore);
 $publishSiteDesign   = new \CeibaCms\PageBuilder\Application\Design\PublishSiteDesign($siteDesignStore);
 $customCode          = new \CeibaCms\PageBuilder\Application\CustomCode($settingsRepository);
-$pageAssembler       = new \CeibaCms\PageBuilder\Application\PageAssembler($bladeRenderer, $getSiteDesign, $customCode);
 $designApiController = new \CeibaCms\PageBuilder\Presentation\Api\DesignApiController(
     $siteId, $builderContextResolver, $getSiteDesign, $saveSiteDesignDraft, $publishSiteDesign,
     new \CeibaCms\PageBuilder\Application\Design\FindDesignUsages($db, $getPageWorkingRevision)

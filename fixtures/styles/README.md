@@ -7,6 +7,9 @@ fail otherwise.
 
 - `design`: `{breakpoints: [{id, minWidth}], tokens: {id: {type, value}}, classes: {id: {name?, styles}}}`
 - `nodes`: styled nodes in document order, `{id, styles: {classes?, base?, states?, breakpoints?}}`
+- `assets` (optional, plan 05): `{id: url}` as the host's `MediaResolver` gives them; `{"asset": id}` values
+  compile to `url("…")` only for `image` properties and only when the URL is http(s) or a site path made of
+  URL-safe ASCII.
 - `diagnostics`: `{path, code}` in processing order; the declaration at `path` was left out of the CSS.
 
 Expected values are reviewed by hand. When a rule changes, change both compilers, then the fixtures, and review

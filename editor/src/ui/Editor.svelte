@@ -6,6 +6,7 @@
   import TemplateDialog from './content/TemplateDialog.svelte';
   import { DragController } from './drag/controller';
   import Inspector from './inspector/Inspector.svelte';
+  import MediaDialog from './media/MediaDialog.svelte';
   import type { EditorStore } from './model/store.svelte';
   import Palette from './palette/Palette.svelte';
   import ConflictBanner from './publish/ConflictBanner.svelte';
@@ -74,6 +75,7 @@
   </div>
   <ImportDialog {store} {content} {uid} bind:open={importing} />
   <TemplateDialog {store} {content} {uid} nodeId={store.selection} bind:open={templating} />
+  {#if store.media.available}<MediaDialog {store} {uid} />{/if}
   <div class="sr-only" aria-live="polite">{store.message}</div>
   <div class="sr-only" aria-live="assertive" role="alert">{store.alert}</div>
 </div>

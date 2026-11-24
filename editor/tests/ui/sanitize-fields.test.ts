@@ -25,7 +25,7 @@ describe('inspector fields', () => {
 
   it('come from editorControls, then propsSchema, then HTML defaults', () => {
     expect(keys('heading')).toEqual(['text:text', 'level:select']);
-    expect(keys('image')).toEqual(['src:url', 'alt:text']);
+    expect(keys('image')).toEqual(['src:media', 'alt:text']);
     expect(keys('container')).toEqual(['fluid:checkbox']);
     expect(keys('a')).toEqual(['content:textarea', 'href:url', 'class:text']);
     expect(keys('div')).toEqual(['class:text']);

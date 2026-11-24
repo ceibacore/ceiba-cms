@@ -29,7 +29,8 @@ final class RevisionSchema
             published_at TEXT, deleted_at TEXT, created_at TEXT, updated_at TEXT, layout_id TEXT, template_id TEXT,
             query_config TEXT, conditions TEXT, custom_css_with_session TEXT, custom_css_without_session TEXT,
             custom_js_with_session TEXT, custom_js_without_session TEXT)");
-        $pdo->exec("CREATE TABLE {$p}media (id TEXT PRIMARY KEY, filename TEXT, path TEXT, mime_type TEXT, size INTEGER, created_at TEXT)");
+        $pdo->exec("CREATE TABLE {$p}media (id TEXT PRIMARY KEY, disk TEXT, filename TEXT, path TEXT, mime_type TEXT, size INTEGER,
+            width INTEGER, height INTEGER, alt_text TEXT, title TEXT, conversions TEXT, created_at TEXT, updated_at TEXT)");
         $pdo->exec("CREATE TABLE {$p}page_revisions (id TEXT PRIMARY KEY, page_id TEXT NOT NULL, site_id TEXT NOT NULL,
             revision INTEGER NOT NULL, schema_version INTEGER NOT NULL, snapshot TEXT NOT NULL, content_hash TEXT NOT NULL,
             author_id TEXT, reason TEXT NOT NULL DEFAULT 'edit', created_at TEXT NOT NULL, pinned INTEGER NOT NULL DEFAULT 0,

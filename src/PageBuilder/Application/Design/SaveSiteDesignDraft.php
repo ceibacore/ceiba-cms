@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace CeibaCms\PageBuilder\Application\Design;
 
+use CeibaCms\Media\Domain\MediaReferences;
+use CeibaCms\PageBuilder\Domain\Style\InvalidDesign;
 use CeibaCms\PageBuilder\Domain\Style\SiteDesign;
 
 /** Saves the site design as revision n + 1 when the editor stands on n (optimistic concurrency, like pages). */
@@ -15,6 +17,11 @@ final class SaveSiteDesignDraft
     public function execute(mixed $design, int $expectedRevision, ?string $actorId): int
     {
         $valid = SiteDesign::validate($design);
+        foreach (MediaReferences::inValues($valid['classes']) as $assetId) {
+            if ($this->store->db()->query('media')->where(['id' => $assetId])->first() === null) {
+                throw new InvalidDesign('classes', 'UNKNOWN_ASSET', [['path' => 'classes', 'code' => 'UNKNOWN_ASSET']]);
+            }
+        }
         return $this->store->db()->transaction(function () use ($valid, $expectedRevision, $actorId): int {
             $head = $this->store->lockedHead();
             $current = $head['draft_revision'] ?? $head['published_revision'] ?? 0;

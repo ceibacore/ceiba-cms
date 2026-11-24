@@ -16,3 +16,4 @@ export * from './transport';
 export * from './session';
 export * from './styles';
 export * from './design';
+export * from './media';

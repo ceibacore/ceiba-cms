@@ -79,6 +79,12 @@ export const literal = (spec: PropertySpec, raw: string | number): string | null
   }
 };
 
+/** URL of a media asset resolved by the host: http(s) or a site path, nothing that could leave url("…"). */
+const ASSET_URL = /^(?:https?:\/\/[A-Za-z0-9._~:/?#[\]@!$&*+,;=%-]{1,490}|\/(?!\/)[A-Za-z0-9._~:/?#[\]@!$&*+,;=%-]{0,490})$/;
+
+export const assetUrl = (url: unknown): string | null =>
+  typeof url === 'string' && ASSET_URL.test(url) ? `url("${url}")` : null;
+
 /** Token type a property accepts in a {token} reference, or null. */
 export const acceptedTokenType = (spec: PropertySpec): string | null =>
   spec.kind === 'color' ? 'color' : spec.kind === 'length' ? 'length' : spec.tokenType ?? null;

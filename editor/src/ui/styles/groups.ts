@@ -7,7 +7,7 @@ export const STYLE_GROUPS: readonly { key: MessageKey; properties: readonly stri
   { key: 'styles.group.spacing', properties: ['margin', 'marginBlock', 'marginInline', 'padding', 'paddingBlock', 'paddingInline'] },
   { key: 'styles.group.size', properties: ['width', 'minWidth', 'maxWidth', 'height', 'minHeight', 'maxHeight'] },
   { key: 'styles.group.typography', properties: ['fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'textAlign', 'color'] },
-  { key: 'styles.group.background', properties: ['backgroundColor'] },
+  { key: 'styles.group.background', properties: ['backgroundColor', 'backgroundImage', 'backgroundSize', 'backgroundPosition', 'backgroundRepeat'] },
   { key: 'styles.group.border', properties: ['borderWidth', 'borderStyle', 'borderColor', 'borderRadius', 'boxShadow'] },
   { key: 'styles.group.effects', properties: ['opacity'] },
 ];

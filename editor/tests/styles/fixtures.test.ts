@@ -11,10 +11,10 @@ const fixtures = readdirSync(`${root}fixtures/styles`).filter((f) => f.endsWith(
 
 describe('style compiler fixtures', () => {
   it.each(fixtures.map((f) => [f.name, f]))('%s', (_name, fixture) => {
-    const compiled = compileStyles(fixture.design, fixture.nodes);
+    const compiled = compileStyles(fixture.design, fixture.nodes, fixture.assets ?? {});
     expect(compiled.css).toBe(fixture.css);
     expect(compiled.diagnostics).toEqual(fixture.diagnostics);
-    expect(compileStyles(fixture.design, fixture.nodes)).toEqual(compiled);
+    expect(compileStyles(fixture.design, fixture.nodes, fixture.assets ?? {})).toEqual(compiled);
   });
 
   it('the property matrix mirrors schemas/style-properties-v1.json', () => {

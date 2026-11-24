@@ -25,7 +25,7 @@ final class StyleFixturesTest extends TestCase
     #[DataProvider('fixtures')]
     public function testCompilerMatchesTheSharedFixture(array $fixture): void
     {
-        $compiled = StyleCompiler::compile($fixture['design'], $fixture['nodes']);
+        $compiled = StyleCompiler::compile($fixture['design'], $fixture['nodes'], $fixture['assets'] ?? []);
         self::assertSame($fixture['css'], $compiled->css);
         self::assertSame($fixture['diagnostics'], $compiled->diagnostics);
     }
@@ -33,8 +33,8 @@ final class StyleFixturesTest extends TestCase
     public function testTheSameInputAlwaysGivesTheSameOutput(): void
     {
         foreach (self::fixtures() as [$fixture]) {
-            self::assertEquals(StyleCompiler::compile($fixture['design'], $fixture['nodes']),
-                StyleCompiler::compile($fixture['design'], $fixture['nodes']));
+            self::assertEquals(StyleCompiler::compile($fixture['design'], $fixture['nodes'], $fixture['assets'] ?? []),
+                StyleCompiler::compile($fixture['design'], $fixture['nodes'], $fixture['assets'] ?? []));
         }
     }
 

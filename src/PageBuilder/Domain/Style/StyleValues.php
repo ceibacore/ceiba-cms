@@ -125,6 +125,13 @@ final class StyleValues
         };
     }
 
+    /** URL of a media asset resolved by the host: http(s) or a site path, nothing that could leave url("…"). */
+    public static function assetUrl(mixed $url): ?string
+    {
+        return is_string($url) && preg_match('~^(?:https?://[A-Za-z0-9._\~:/?#\[\]@!$&*+,;=%-]{1,490}|/(?!/)[A-Za-z0-9._\~:/?#\[\]@!$&*+,;=%-]{0,490})\z~', $url)
+            ? 'url("' . $url . '")' : null;
+    }
+
     /** @param array<string, mixed> $spec */
     public static function acceptedTokenType(array $spec): ?string
     {

@@ -7,7 +7,7 @@
     field: FieldSpec; value: unknown; id: string; t: Translate; onChange: (value: unknown) => void;
   } = $props();
   let error = $state<string | null>(null);
-  const shown = $derived(value === null || value === undefined ? '' : String(value));
+  const shown = $derived(value === null || value === undefined || typeof value === 'object' ? '' : String(value));
 
   function change(input: string | boolean): void {
     const parsed = parseField(field, input);
@@ -33,7 +33,7 @@
         {#each field.options ?? [] as option (option)}<option value={option}>{option}</option>{/each}
       </select>
     {:else}
-      <input {id} type={field.control === 'number' ? 'number' : field.control === 'url' ? 'url' : 'text'} value={shown}
+      <input {id} type={field.control === 'number' ? 'number' : field.control === 'url' || field.control === 'media' ? 'url' : 'text'} value={shown}
         oninput={(e) => change(e.currentTarget.value)} aria-invalid={error !== null}
         aria-describedby={error ? `${id}-error` : undefined} />
     {/if}

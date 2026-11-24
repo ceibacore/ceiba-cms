@@ -18,6 +18,7 @@ export type EditorErrorCode =
   | 'NOTHING_TO_PUBLISH'
   | 'VALIDATION_FAILED'
   | 'AUTHORIZATION_DENIED'
+  | 'MEDIA_IN_USE'
   | 'NETWORK'
   | 'SERVER';
 
