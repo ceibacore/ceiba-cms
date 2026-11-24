@@ -47,6 +47,25 @@ final class ManageSiteParts
             $rules = SitePartRules::from($source['rules'], $kind, $this->routes->names());
             $root = $this->working->execute($sourceId)['root'] ?? [];
         }
+        return $this->insert($kind, $name, $root, $rules, $actor);
+    }
+
+    /**
+     * Creates a draft part with a given document and rules (the layout migrator, plan 06-D).
+     * @param list<mixed> $root
+     * @throws InvalidRules
+     */
+    public function import(string $kind, string $name, array $root, mixed $rules, ?string $actor): string
+    {
+        if (!SitePartKind::valid($kind) || trim($name) === '' || mb_strlen(trim($name)) > 200) {
+            throw new InvalidRules('kind', 'INVALID_VALUE');
+        }
+        return $this->insert($kind, trim($name), array_values($root), SitePartRules::from($rules, $kind, $this->routes->names()), $actor);
+    }
+
+    /** @param list<mixed> $root */
+    private function insert(string $kind, string $name, array $root, SitePartRules $rules, ?string $actor): string
+    {
         $id = UuidHelper::v4();
         $this->store->transaction(function () use ($id, $kind, $name, $root, $actor, $rules): void {
             $this->pages->execute(['id' => $id, 'kind' => $kind, 'title' => $name, 'slug' => '__part-' . $id, 'status' => 'draft',

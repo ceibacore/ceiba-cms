@@ -10,7 +10,7 @@ foreach ([
     'Application/HostRoutes.php', 'Application/RulesConflict.php', 'Application/SitePartsInConflict.php',
     'Application/ManageSiteParts.php', 'Application/BuildPublicationCandidates.php', 'Application/PublicationGuard.php',
     'Application/ContextConflictGuard.php', 'Application/PublishSiteParts.php', 'Application/SitePartImpact.php',
-    'Application/AssembleSitePage.php', 'Application/SitePartPreview.php', 'Presentation/SitePartApiController.php',
+    'Application/AssembleSitePage.php', 'Application/SitePartPreview.php', 'Application/MigrateLayoutsToParts.php', 'Presentation/SitePartApiController.php',
 ] as $classFile) {
     require_once dirname(__DIR__) . '/src/SitePart/' . $classFile;
 }
@@ -38,3 +38,4 @@ $sitePartApiController = new \CeibaCms\SitePart\Presentation\SitePartApiControll
     new \CeibaCms\SitePart\Application\SitePartPreview($db, $siteId, $sitePartStore, $assembleSitePage, $pageRepository,
         $getLayoutById, $getDefaultLayout, $hostRoutes, (string) ($settingsRepository?->get('site_language', 'es') ?? 'es'))
 );
+$migrateLayoutsToParts = new \CeibaCms\SitePart\Application\MigrateLayoutsToParts($manageSiteParts, $sitePartStore, $publishSiteParts);

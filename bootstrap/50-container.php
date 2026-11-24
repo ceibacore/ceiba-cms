@@ -39,6 +39,7 @@ return [
         'sitePartStore'        => $sitePartStore,
         'manageSiteParts'      => $manageSiteParts,
         'publishSiteParts'     => $publishSiteParts,
+        'migrateLayoutsToParts' => $migrateLayoutsToParts,
         'sitePartApiController' => $sitePartApiController,
         'hostRoutes'           => $hostRoutes,
         'customCode'           => $customCode,
