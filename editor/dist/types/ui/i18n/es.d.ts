@@ -196,6 +196,7 @@ export declare const es: {
     readonly 'media.deleted': "Archivo eliminado";
     readonly 'media.usedIn': "No se puede eliminar: se usa en {where}.";
     readonly 'media.design': "el diseño del sitio";
+    readonly 'media.layout': "el pie de la plantilla «{name}»";
     readonly 'media.file': "Archivo";
     readonly 'media.sizes': "Tamaños a generar";
     readonly 'media.recommended': "{width} px (recomendado)";

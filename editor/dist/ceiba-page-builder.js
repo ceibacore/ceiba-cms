@@ -4476,8 +4476,12 @@ var rl = class {
 				await this.transport.deleteMedia(e.id);
 			} catch (t) {
 				if (t instanceof Ge && t.code === "MEDIA_IN_USE" && this.transport.mediaUsages) {
-					let t = await this.transport.mediaUsages(e.id), n = [...t.pages.map((e) => `«${e.title || e.pageId}»`), ...t.design ? [this.store.t("media.design")] : []];
-					this.error = this.store.t("media.usedIn", { where: n.join(", ") });
+					let t = await this.transport.mediaUsages(e.id), n = this.store.t, r = [
+						...t.pages.map((e) => `«${e.title || e.pageId}»`),
+						...(t.layouts ?? []).map((e) => n("media.layout", { name: e.name || e.layoutId })),
+						...t.design ? [n("media.design")] : []
+					];
+					this.error = this.store.t("media.usedIn", { where: r.join(", ") });
 					return;
 				}
 				throw t;
@@ -5348,6 +5352,7 @@ var ou = {
 	"media.deleted": "Archivo eliminado",
 	"media.usedIn": "No se puede eliminar: se usa en {where}.",
 	"media.design": "el diseño del sitio",
+	"media.layout": "el pie de la plantilla «{name}»",
 	"media.file": "Archivo",
 	"media.sizes": "Tamaños a generar",
 	"media.recommended": "{width} px (recomendado)",
@@ -5385,6 +5390,7 @@ var ou = {
 	"media.deleted": "File deleted",
 	"media.usedIn": "Cannot delete: used in {where}.",
 	"media.design": "the site design",
+	"media.layout": "the footer of the layout «{name}»",
 	"media.file": "File",
 	"media.sizes": "Sizes to generate",
 	"media.recommended": "{width} px (recommended)",

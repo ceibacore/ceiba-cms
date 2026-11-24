@@ -57,6 +57,21 @@ final class PageAssemblerMediaTest extends TestCase
         self::assertSame([], $page['diagnostics']);
     }
 
+    public function testTheLayoutFooterIsDrawnWithTheSameMediaStylesAndScripts(): void
+    {
+        $page = $this->assembler()->assemble([['id' => 'p', 'type' => 'text', 'props' => ['content' => 'Body'], 'children' => []]], [], false, null, [], [
+            ['id' => 'logo', 'type' => 'image', 'props' => ['src' => ['asset' => 'm1']], 'styles' => ['base' => ['maxWidth' => '8rem']], 'children' => []],
+            ['id' => 'v', 'type' => 'video', 'props' => ['url' => 'https://youtu.be/dQw4w9WgXcQ'], 'children' => []],
+        ]);
+        self::assertStringContainsString('<p>Body</p>', $page['html']);
+        self::assertStringNotContainsString('<img', $page['html']);
+        self::assertStringContainsString('<img src="/m/1600.webp" alt="Sea &amp; sky"', $page['footer']);
+        self::assertStringContainsString('class="img-fluid cms-n-logo"', $page['footer']);
+        self::assertStringContainsString('.cms-n-logo.cms-n-logo{max-width:8rem}', $page['css']);
+        self::assertStringContainsString('window.__cmsVideo', $page['js']);
+        self::assertSame('', $this->assembler()->assemble([], [], false)['footer']);
+    }
+
     public function testTextSourcesStillWork(): void
     {
         $page = $this->assembler()->assemble([['id' => 'i', 'type' => 'image', 'props' => ['src' => '/legacy.png', 'alt' => 'Old'], 'children' => []]], [], false);

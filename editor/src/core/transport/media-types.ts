@@ -51,6 +51,8 @@ export interface UploadOptions {
 
 export interface MediaUsages {
   readonly pages: readonly DesignUsage[];
+  /** Layouts whose footer shows the file (hosts without layouts send none). */
+  readonly layouts?: readonly { readonly layoutId: string; readonly name: string }[];
   readonly design: boolean;
 }
 

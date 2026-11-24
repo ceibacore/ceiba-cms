@@ -52,7 +52,7 @@ export class MediaStore {
 
   usages(id: string, page: PageDocument, design: DesignDocument): MediaUsages {
     const needle = `"asset":"${id}"`;
-    return { pages: JSON.stringify(page.root).includes(needle) ? [{ pageId: page.documentId, title: page.documentId }] : [],
+    return { pages: JSON.stringify(page.root).includes(needle) ? [{ pageId: page.documentId, title: page.documentId }] : [], layouts: [],
       design: JSON.stringify(design.classes).includes(needle) };
   }
 

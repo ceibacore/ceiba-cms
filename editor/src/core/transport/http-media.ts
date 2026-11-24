@@ -35,7 +35,8 @@ export const mediaMethods = (base: string, request: Request): Required<MediaMeth
     },
     async mediaUsages(id) {
       const data = await request(`${one(id)}/usages`);
-      return { pages: Array.isArray(data.pages) ? data.pages : [], design: data.design === true } as MediaUsages;
+      return { pages: Array.isArray(data.pages) ? data.pages : [], layouts: Array.isArray(data.layouts) ? data.layouts : [],
+        design: data.design === true } as MediaUsages;
     },
     async deleteMedia(id) {
       await request(one(id), { method: 'DELETE' });

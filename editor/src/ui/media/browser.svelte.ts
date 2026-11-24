@@ -86,7 +86,9 @@ export class MediaBrowser {
       } catch (error) {
         if (error instanceof EditorError && error.code === 'MEDIA_IN_USE' && this.transport.mediaUsages) {
           const usages = await this.transport.mediaUsages(current.id);
-          const where = [...usages.pages.map((p) => `«${p.title || p.pageId}»`), ...(usages.design ? [this.store.t('media.design')] : [])];
+          const t = this.store.t;
+          const where = [...usages.pages.map((p) => `«${p.title || p.pageId}»`),
+            ...(usages.layouts ?? []).map((l) => t('media.layout', { name: l.name || l.layoutId })), ...(usages.design ? [t('media.design')] : [])];
           this.error = this.store.t('media.usedIn', { where: where.join(', ') });
           return;
         }
