@@ -109,6 +109,7 @@ require_once dirname(__DIR__) . '/src/Localization/Application/UpdateTranslation
 // ── Presentation Layer ───────────────────────────────────────────────────────
 require_once dirname(__DIR__) . '/src/Menu/Presentation/CeibaMenuRenderer.php';
 require_once dirname(__DIR__) . '/src/Menu/Presentation/CeibaMenuCache.php';
+require_once dirname(__DIR__) . '/src/Menu/Presentation/MenuCacheFactory.php';
 require_once dirname(__DIR__) . '/src/Menu/Presentation/CeibaMenuBuilder.php';
 require_once dirname(__DIR__) . '/src/Menu/Presentation/BannerRenderer.php';
 require_once dirname(__DIR__) . '/src/Menu/Presentation/BreadcrumbBuilder.php';

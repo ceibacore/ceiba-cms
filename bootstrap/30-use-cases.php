@@ -4,7 +4,12 @@ declare(strict_types=1);
 // Use cases and render engine. Loaded in order by bootstrap.php (shared scope).
 
 // ── Create Use Cases ─────────────────────────────────────────────────────────
-$menuCache             = new \CeibaCms\Menu\Presentation\CeibaMenuCache(dirname(__DIR__));
+$menuCache = \CeibaCms\Menu\Presentation\MenuCacheFactory::create(
+    dirname(__DIR__),
+    \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('CMS_MENU_CACHE_BASE', ''),
+    (string) \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('CMS_SITE_ID',
+        \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('DB_NAME', 'default'))
+);
 $menuRenderer          = new \CeibaCms\Menu\Presentation\CeibaMenuRenderer();
 $bannerRenderer        = new \CeibaCms\Menu\Presentation\BannerRenderer($menuRepository);
 $breadcrumbBuilder     = new \CeibaCms\Menu\Presentation\BreadcrumbBuilder();
