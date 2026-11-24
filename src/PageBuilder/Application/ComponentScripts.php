@@ -10,7 +10,7 @@ namespace CeibaCms\PageBuilder\Application;
  */
 final class ComponentScripts
 {
-    /** Component (type or view name) => script file under Frameworks/Bootstrap5/scripts. */
+    /** Component (type or view name) => script file under Frameworks/Bootstrap5/behaviors ("scripts/" is git-ignored at the root). */
     public const SCRIPTS = ['video' => 'video.js'];
 
     /** @param list<mixed> $tree @return string the scripts the tree needs, in a stable order */
@@ -21,7 +21,7 @@ final class ComponentScripts
         $code = [];
         foreach (self::SCRIPTS as $component => $file) {
             if (isset($used[$component])) {
-                $code[] = trim((string) file_get_contents(dirname(__DIR__) . '/Frameworks/Bootstrap5/scripts/' . $file));
+                $code[] = trim((string) file_get_contents(dirname(__DIR__) . '/Frameworks/Bootstrap5/behaviors/' . $file));
             }
         }
         return implode("\n", $code);

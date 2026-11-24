@@ -2,7 +2,7 @@
 .agents/
 .ia/
 tests/_output/
-scripts/
+/scripts/
 vendor/
 docs/
 .env

@@ -1,5 +1,5 @@
 <?php
-// Video (plan 05 D-2): YouTube (no-cookie) or Vimeo, loaded only when the visitor presses play (scripts/video.js).
+// Video (plan 05 D-2): YouTube (no-cookie) or Vimeo, loaded only when the visitor presses play (behaviors/video.js).
 // Without JavaScript the caption links to the video on its site. Nothing is drawn for other URLs.
 use CeibaCms\Media\Domain\VideoEmbed;
 use CeibaCms\PageBuilder\Frameworks\Bootstrap5\Html;
