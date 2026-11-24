@@ -24,10 +24,14 @@
     {t('toolbar.save')}
   </button>
   {#if store.canPublish}
-    <button type="button" class="primary" onclick={() => store.publish()}
-      disabled={store.publishing || store.status !== 'ready' || !store.unpublished}>
+    <!-- A site part publishes its document and rules together (plan 06-C). -->
+    <button type="button" class="primary" onclick={() => (store.part ? store.part.publish() : store.publish())}
+      disabled={store.publishing || store.status !== 'ready' || !(store.unpublished || store.part?.rulesUnpublished)}>
       {store.publishing ? t('toolbar.publishing') : t('toolbar.publish')}
     </button>
+  {/if}
+  {#if store.part}
+    <button type="button" aria-pressed={store.part.open} onclick={() => { store.part!.open = !store.part!.open; }}>{t('parts.open')}</button>
   {/if}
   {#if store.designAvailable}
     <button type="button" aria-pressed={store.designOpen} onclick={() => { store.designOpen = !store.designOpen; }}>{t('design.open')}</button>

@@ -65,6 +65,7 @@ require_once dirname(__DIR__) . '/src/Page/Application/UpdatePage.php';
 require_once dirname(__DIR__) . '/src/Page/Application/SavePageDraft.php';
 require_once dirname(__DIR__) . '/src/Page/Application/PageRevisionConflict.php';
 require_once dirname(__DIR__) . '/src/Page/Application/PagePublicationKeyConflict.php';
+require_once dirname(__DIR__) . '/src/Support/Infrastructure/TransactionScope.php';
 require_once dirname(__DIR__) . '/src/Page/Application/PublishPageRevision.php';
 require_once dirname(__DIR__) . '/src/Page/Application/RestorePageRevision.php';
 require_once dirname(__DIR__) . '/src/Page/Application/PublishPage.php';

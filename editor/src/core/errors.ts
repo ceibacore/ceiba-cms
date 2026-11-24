@@ -19,6 +19,7 @@ export type EditorErrorCode =
   | 'VALIDATION_FAILED'
   | 'AUTHORIZATION_DENIED'
   | 'MEDIA_IN_USE'
+  | 'SITE_PART_CONFLICT'
   | 'NETWORK'
   | 'SERVER';
 

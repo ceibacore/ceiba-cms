@@ -9,6 +9,7 @@ use CeibaCms\PageBuilder\Domain\Contract\Clock;
 use CeibaCms\PageBuilder\Infrastructure\SystemClock;
 use CeibaCms\Support\Helpers\UuidHelper;
 use RuntimeException;
+use CeibaCms\Support\Infrastructure\TransactionScope;
 
 /**
  * Publishes the requested draft and records cache invalidation in one transaction.
@@ -35,7 +36,7 @@ final class PublishPageRevision
         }
         $pdo = $this->db->pdo();
         $prefix = $this->db->getPrefix();
-        return $this->db->transaction(function () use ($pdo, $prefix, $pageId, $revisionNumber, $idempotencyKey, $actorId): string {
+        return TransactionScope::run($this->db, function () use ($pdo, $prefix, $pageId, $revisionNumber, $idempotencyKey, $actorId): string {
             $outbox = $prefix . 'page_publication_outbox';
             $heads = $prefix . 'page_revision_heads';
             $pages = $prefix . 'pages';

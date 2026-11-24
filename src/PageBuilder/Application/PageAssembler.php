@@ -35,13 +35,14 @@ final class PageAssembler
      * @param array<string, mixed> $page page row (custom code columns)
      * @param array<string, mixed>|null $design design to use; the published one when null
      * @param array<string, mixed> $context renderer context (loops, variables)
-     * @param list<mixed> $footer the layout's footer tree, drawn with the same design, media and component scripts
-     * @return array{html: string, footer: string, css: string, js: string, diagnostics: list<array{path: string, code: string}>}
+     * @param list<mixed> $footer the footer tree (site part or layout), drawn with the same design, media and scripts
+     * @param list<mixed> $header the header tree (site part, plan 06), drawn the same way
+     * @return array{html: string, header: string, footer: string, css: string, js: string, diagnostics: list<array{path: string, code: string}>}
      */
-    public function assemble(array $tree, array $page, bool $hasSession, ?array $design = null, array $context = [], array $footer = []): array
+    public function assemble(array $tree, array $page, bool $hasSession, ?array $design = null, array $context = [], array $footer = [], array $header = []): array
     {
         $design ??= $this->designs->published();
-        $all = [...$tree, ...$footer];
+        $all = [...$header, ...$tree, ...$footer];
         $resolved = $this->media?->resolve([...MediaReferences::collect($all), ...MediaReferences::inValues($design)]) ?? [];
         $assets = array_map(fn ($media) => $media->url, $resolved);
         $compiled = StyleCompiler::compile($design, StyledNodes::collect($all), $assets);
@@ -59,6 +60,7 @@ final class PageAssembler
             : $this->renderer->renderPage((new MediaPropsDecorator($resolved))->apply(StyleClassDecorator::apply($nodes, $design)), $context);
         return [
             'html' => $draw($tree),
+            'header' => $draw($header),
             'footer' => $draw($footer),
             'css' => implode("\n", $css),
             'js' => implode(";\n", $js),

@@ -2,6 +2,7 @@ import type { Catalogue, Command, DesignDocument, EditorSession, SessionStatus, 
 import { EditorError, SiteDesignSession, defaultDesign } from '../../core';
 import type { MessageKey, Translate } from '../i18n';
 import { MediaState } from '../media/media.svelte';
+import type { SitePartState } from '../site-parts/state.svelte';
 
 /**
  * Reactive view of an EditorSession for the Svelte components. Every change goes through the session;
@@ -24,6 +25,8 @@ export class EditorStore {
   readonly designSession: SiteDesignSession;
   /** Media library (plan 05-A): resolved asset URLs and the media dialog request. */
   readonly media: MediaState;
+  /** The site part being edited (plan 06), or null for a page. */
+  part: SitePartState | null = null;
   design = $state.raw<DesignDocument>(defaultDesign());
   designDirty = $state(false);
   /** Breakpoint id the canvas shows and the style controls edit; null = base (smallest screens). */

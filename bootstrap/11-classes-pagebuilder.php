@@ -153,6 +153,7 @@ require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/ComponentCata
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/CoreComponents.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/ContentComponents.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/InteractiveComponents.php';
+require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/SiteComponents.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Presentation/Api/EditorError.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Presentation/Api/NegotiatedCapabilities.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Presentation/Api/EditorAccessDenied.php';

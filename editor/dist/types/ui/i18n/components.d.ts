@@ -1,6 +1,7 @@
 /** Texts of the content components (plan 05-B), merged into es.ts and en.ts. */
 export declare const componentsEs: {
     readonly 'canvas.empty': "{type}: nada que mostrar todavía";
+    readonly 'canvas.menu': "Menú «{slug}» (los enlaces se ven en la página publicada)";
     readonly 'gallery.add': "Añadir imagen";
     readonly 'gallery.empty': "Sin imágenes.";
     readonly 'gallery.item': "Imagen {n}";

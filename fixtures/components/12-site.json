@@ -1,0 +1,121 @@
+{
+  "name": "12-site",
+  "media": {
+    "m1": {
+      "url": "/m/1600.webp",
+      "width": 1600,
+      "height": 800,
+      "alt": "Sea",
+      "variants": [
+        {
+          "url": "/m/480.webp",
+          "width": 480
+        },
+        {
+          "url": "/m/1600.webp",
+          "width": 1600
+        }
+      ]
+    },
+    "m2": {
+      "url": "/m/b.jpg",
+      "width": 800,
+      "height": 600,
+      "alt": "B",
+      "variants": []
+    }
+  },
+  "cases": [
+    {
+      "node": {
+        "id": "t1",
+        "type": "site_title",
+        "props": {
+          "text": "Ceiba <Academy>"
+        },
+        "children": []
+      },
+      "html": "<a href=\"/\" class=\"cms-site-title navbar-brand\">Ceiba &lt;Academy&gt;</a>"
+    },
+    {
+      "node": {
+        "id": "t2",
+        "type": "site_title",
+        "props": {
+          "href": "javascript:alert(1)"
+        },
+        "children": []
+      },
+      "html": "<a href=\"/\" class=\"cms-site-title navbar-brand\">Site</a>"
+    },
+    {
+      "node": {
+        "id": "l1",
+        "type": "site_logo",
+        "props": {
+          "image": {
+            "asset": "m2"
+          },
+          "name": "Ceiba",
+          "height": 48
+        },
+        "children": []
+      },
+      "html": "<a href=\"/\" class=\"cms-site-logo navbar-brand\"><img style=\"height:48px;width:auto\" src=\"/m/b.jpg\" alt=\"Ceiba\" class=\"d-block\" loading=\"lazy\" decoding=\"async\"></a>"
+    },
+    {
+      "node": {
+        "id": "l2",
+        "type": "site_logo",
+        "props": {},
+        "children": []
+      },
+      "html": "<a href=\"/\" class=\"cms-site-logo navbar-brand\">Home</a>"
+    },
+    {
+      "node": {
+        "id": "s1",
+        "type": "search_form",
+        "props": {},
+        "children": []
+      },
+      "html": "<form class=\"cms-search d-flex gap-2\" role=\"search\" action=\"/buscar\" method=\"get\"><label class=\"visually-hidden\" for=\"cms-search-q\">Search</label><input id=\"cms-search-q\" class=\"form-control\" type=\"search\" name=\"q\"><button type=\"submit\" class=\"btn btn-outline-primary\">Search</button></form>"
+    },
+    {
+      "node": {
+        "id": "s2",
+        "type": "search_form",
+        "props": {
+          "action": "/cursos/buscar",
+          "label": "Buscar",
+          "placeholder": "¿Qué quieres aprender?"
+        },
+        "children": []
+      },
+      "html": "<form class=\"cms-search d-flex gap-2\" role=\"search\" action=\"/cursos/buscar\" method=\"get\"><label class=\"visually-hidden\" for=\"cms-search-q\">Buscar</label><input id=\"cms-search-q\" class=\"form-control\" type=\"search\" name=\"q\" placeholder=\"¿Qué quieres aprender?\"><button type=\"submit\" class=\"btn btn-outline-primary\">Buscar</button></form>"
+    },
+    {
+      "node": {
+        "id": "m1",
+        "type": "site_menu",
+        "props": {
+          "slug": "main"
+        },
+        "children": []
+      },
+      "html": "<nav class=\"cms-site-menu\" aria-label=\"Main\" data-cms-menu=\"main\"></nav>"
+    },
+    {
+      "node": {
+        "id": "m2",
+        "type": "site_menu",
+        "props": {
+          "slug": "bad slug!",
+          "label": "Cursos"
+        },
+        "children": []
+      },
+      "html": "<nav class=\"cms-site-menu\" aria-label=\"Cursos\"></nav>"
+    }
+  ]
+}

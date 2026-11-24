@@ -57,7 +57,7 @@ final class ComponentCatalogue
     }
 
     /**
-     * Factory creating a catalogue populated with the standard components (Defaults/: core, content, interactive).
+     * Factory creating a catalogue populated with the standard components (Defaults/: core, content, interactive, site).
      */
     public static function createDefault(): self
     {
@@ -65,6 +65,7 @@ final class ComponentCatalogue
         Defaults\CoreComponents::register($catalogue);
         Defaults\ContentComponents::register($catalogue);
         Defaults\InteractiveComponents::register($catalogue);
+        Defaults\SiteComponents::register($catalogue);
 
         return $catalogue;
     }

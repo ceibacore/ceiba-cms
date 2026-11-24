@@ -1,10 +1,12 @@
 import { componentsEs } from './components';
 import { mediaEs } from './media';
+import { partsEs } from './parts';
 
 /** Spanish texts of the editor UI. Error codes come from the core (EditorErrorCode). */
 export const es = {
   ...mediaEs,
   ...componentsEs,
+  ...partsEs,
   'editor.label': 'Editor de página',
   'toolbar.undo': 'Deshacer',
   'toolbar.redo': 'Rehacer',

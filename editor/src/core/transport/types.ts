@@ -2,6 +2,7 @@ import type { ComponentDescriptorDto, HtmlTagRuleDto } from '../catalogue/types'
 import type { PageDocument, RawNode } from '../document/types';
 import type { DesignDocument } from '../styles/types';
 import type { MediaMethods } from './media-types';
+import type { SitePartMethods } from './site-part-types';
 
 export type SaveReason = 'edit' | 'autosave';
 
@@ -15,7 +16,7 @@ export interface LoadedDraft {
  * What the editor needs from the host (plan 03). Credentials stay inside the adapter: they never reach the
  * document, the session or the events. Errors are EditorError with a stable code.
  */
-export interface Transport extends MediaMethods {
+export interface Transport extends MediaMethods, SitePartMethods {
   load(pageId: string): Promise<LoadedDraft>;
   /** Creates revision baseRevision + 1; REVISION_CONFLICT (details.currentRevision) when the base is stale. */
   save(document: PageDocument, baseRevision: number, reason: SaveReason): Promise<{ revision: number }>;
