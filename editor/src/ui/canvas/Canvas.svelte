@@ -116,6 +116,7 @@
       html: t('canvas.html'),
       emptyImage: t('canvas.emptyImage'),
       empty: (type) => t('canvas.empty', { type }),
+      menu: (slug) => t('canvas.menu', { slug: slug || '—' }),
     }, design, media);
     applyStyles(doc);
     if (selection) doc.querySelector(`[data-ceiba-id="${CSS.escape(selection)}"]`)?.scrollIntoView({ block: 'nearest' });

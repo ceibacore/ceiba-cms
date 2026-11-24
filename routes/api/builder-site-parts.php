@@ -24,6 +24,10 @@ if ($sitePartApiController !== null) {
     $router->put("{$builderPrefix}/site-parts/{id}/rules", fn (string $id) => $sendSitePartJson(
         $sitePartApiController->saveRules($id, $sitePartBody(), $_SERVER['HTTP_IF_MATCH'] ?? null)
     ), 'builder.site-parts.rules')->middleware('auth', 'csrf');
+    $router->get("{$builderPrefix}/site-parts/{id}/preview", fn (string $id) => $sendSitePartJson($sitePartApiController->preview(
+        $id, (int) ($_GET['revision'] ?? 0), is_string($_GET['page'] ?? null) && $_GET['page'] !== '' ? $_GET['page'] : null,
+        ($_GET['session'] ?? '') === '1'
+    )), 'builder.site-parts.preview')->middleware('auth');
     $router->post("{$builderPrefix}/site-parts/impact", fn () => $sendSitePartJson($sitePartApiController->impact($sitePartBody())),
         'builder.site-parts.impact')->middleware('auth', 'csrf');
     $router->post("{$builderPrefix}/site-parts/publish", fn () => $sendSitePartJson(

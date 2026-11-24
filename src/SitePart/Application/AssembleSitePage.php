@@ -18,7 +18,12 @@ use CeibaCms\SitePart\Infrastructure\SitePartStore;
  */
 final class AssembleSitePage
 {
-    public function __construct(private readonly PageAssembler $assembler, private readonly SitePartStore $store) {}
+    /** @param (\Closure(string): string)|null $siteMenu menu slug => navigation markup, for the site_menu component */
+    public function __construct(
+        private readonly PageAssembler $assembler,
+        private readonly SitePartStore $store,
+        private readonly ?\Closure $siteMenu = null,
+    ) {}
 
     /**
      * @param list<mixed> $tree page content
@@ -34,6 +39,8 @@ final class AssembleSitePage
         $resolution = SitePartResolver::resolve($parts ?? $this->store->published(), $request);
         $header = $resolution->part(SitePartKind::HEADER);
         $footer = $resolution->part(SitePartKind::FOOTER);
+        // Views get the menu renderer through the context, never through props (a document cannot inject markup).
+        $context = $this->siteMenu === null ? $context : ['siteMenu' => $this->siteMenu] + $context;
         $assembled = $this->assembler->assemble($tree, $page, $request->hasSession, $design, $context,
             $footer !== null ? $footer->tree : $layoutFooter, $header?->tree ?? []);
         return ['html' => $assembled['html'], 'header' => $header === null ? null : $assembled['header'],

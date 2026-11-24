@@ -16,6 +16,8 @@ export interface CanvasLabels {
   readonly emptyImage: string;
   /** A component with nothing to draw yet (no items, a link that is not a video…). */
   readonly empty: (type: string) => string;
+  /** The site menu's links come from the host; the canvas names the menu instead. */
+  readonly menu: (slug: string) => string;
 }
 
 /** Where each element's children go (a card's body); the element itself when absent. */
@@ -45,6 +47,7 @@ const element = (doc: Document, node: NodeRecord, labels: CanvasLabels, known: b
     if (slot.parent !== el || slot.before !== null) slots.set(el, slot);
     // Editing only: every accordion item stays open so its content can be selected (the page keeps `open` as set).
     if (el.tagName === 'DETAILS') el.setAttribute('open', '');
+    if (el.classList.contains('cms-site-menu')) el.textContent = labels.menu(el.dataset.cmsMenu ?? '');
     return el;
   }
   const make = (tag: string, className = ''): HTMLElement => {

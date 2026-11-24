@@ -13,6 +13,7 @@ use CeibaCms\SitePart\Application\ManageSiteParts;
 use CeibaCms\SitePart\Application\PublishSiteParts;
 use CeibaCms\SitePart\Application\RulesConflict;
 use CeibaCms\SitePart\Application\SitePartImpact;
+use CeibaCms\SitePart\Application\SitePartPreview;
 use CeibaCms\SitePart\Application\SitePartsInConflict;
 use CeibaCms\SitePart\Domain\InvalidRules;
 use CeibaCms\SitePart\Domain\RuleContextMatrix;
@@ -38,6 +39,7 @@ final class SitePartApiController
         private readonly PublishedPageContexts $pages,
         private readonly PublishSiteParts $publish,
         private readonly HostRoutes $routes,
+        private readonly ?SitePartPreview $preview = null,
     ) {
         $this->contextResolver = $contextResolver;
     }
@@ -69,6 +71,15 @@ final class SitePartApiController
         return $this->guarded('pages.update', fn (HostContext $context) => $this->ok(['version' => $this->manage->saveRules(
             $id, json_decode($json, true), (int) $match[1], $context->actorId
         )]));
+    }
+
+    /** GET {prefix}/site-parts/{id}/preview?revision=n&page=<id> (no page: the 404) — as if this revision were published. */
+    public function preview(string $id, int $revision, ?string $pageId, bool $hasSession): array
+    {
+        if ($this->preview === null || $revision < 1) {
+            return $this->error('VALIDATION_FAILED', 'A revision is required', 422);
+        }
+        return $this->guarded('pages.read', fn () => $this->ok($this->preview->render($id, $revision, $pageId, $hasSession)));
     }
 
     /** POST {prefix}/site-parts/impact {"ids": [...], "offset", "limit"} — what would change if they were published. */

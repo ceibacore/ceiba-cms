@@ -9,7 +9,7 @@ export interface VNode {
 /** Where the node's children go (a card's body, before its link), like `$slot` in the server view. */
 export const SLOT: VNode = { tag: '#slot', attrs: [], children: [] };
 
-const VOID = new Set(['img', 'hr', 'br']);
+const VOID = new Set(['img', 'hr', 'br', 'input']);
 
 /** Like PHP htmlspecialchars(ENT_QUOTES): the server views escape the same way. */
 export const escape = (value: string): string =>
