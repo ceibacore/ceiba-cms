@@ -1,4 +1,5 @@
 import type { ComponentDescriptorDto, HtmlTagRuleDto } from '../src/core';
+import { CONTENT_COMPONENTS } from './catalogue-content';
 
 /** Same descriptors as ComponentCatalogue::createDefault() in the module. */
 export const COMPONENTS: ComponentDescriptorDto[] = [
@@ -23,6 +24,7 @@ export const COMPONENTS: ComponentDescriptorDto[] = [
   { name: 'button', version: 1, label: 'Button', category: 'basic',
     propsSchema: { label: { type: 'string', default: 'Click Me' }, url: { type: 'string', default: '#' } },
     editorControls: { label: { type: 'text' }, url: { type: 'url' } } },
+  ...CONTENT_COMPONENTS,
 ];
 
 export const HTML_TAGS: HtmlTagRuleDto[] = [

@@ -1,0 +1,73 @@
+{
+  "name": "07-gallery",
+  "media": {
+    "m1": {
+      "url": "/m/1600.webp",
+      "width": 1600,
+      "height": 800,
+      "alt": "Sea",
+      "variants": [
+        {
+          "url": "/m/480.webp",
+          "width": 480
+        },
+        {
+          "url": "/m/1600.webp",
+          "width": 1600
+        }
+      ]
+    },
+    "m2": {
+      "url": "/m/b.jpg",
+      "width": 800,
+      "height": 600,
+      "alt": "B",
+      "variants": []
+    }
+  },
+  "cases": [
+    {
+      "node": {
+        "id": "n1",
+        "type": "gallery",
+        "props": {
+          "columns": 2,
+          "items": [
+            {
+              "image": {
+                "asset": "m1"
+              },
+              "caption": "One"
+            },
+            {
+              "image": {
+                "asset": "m2",
+                "alt": ""
+              }
+            },
+            {
+              "image": {
+                "asset": "gone"
+              }
+            },
+            "junk"
+          ]
+        },
+        "children": []
+      },
+      "html": "<div class=\"cms-gallery row g-3\"><figure class=\"col-6 col-md-6 m-0\"><img src=\"/m/1600.webp\" alt=\"Sea\" srcset=\"/m/480.webp 480w, /m/1600.webp 1600w\" sizes=\"(min-width: 768px) 50vw, 50vw\" class=\"img-fluid rounded\" width=\"1600\" height=\"800\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"small text-muted mt-1\">One</figcaption></figure><figure class=\"col-6 col-md-6 m-0\"><img src=\"/m/b.jpg\" alt=\"\" class=\"img-fluid rounded\" width=\"800\" height=\"600\" loading=\"lazy\" decoding=\"async\"></figure></div>"
+    },
+    {
+      "node": {
+        "id": "n2",
+        "type": "gallery",
+        "props": {
+          "columns": 7,
+          "items": []
+        },
+        "children": []
+      },
+      "html": "<div class=\"cms-gallery row g-3\"></div>"
+    }
+  ]
+}

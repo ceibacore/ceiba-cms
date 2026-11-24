@@ -1,0 +1,72 @@
+{
+  "name": "04-list",
+  "media": {
+    "m1": {
+      "url": "/m/1600.webp",
+      "width": 1600,
+      "height": 800,
+      "alt": "Sea",
+      "variants": [
+        {
+          "url": "/m/480.webp",
+          "width": 480
+        },
+        {
+          "url": "/m/1600.webp",
+          "width": 1600
+        }
+      ]
+    },
+    "m2": {
+      "url": "/m/b.jpg",
+      "width": 800,
+      "height": 600,
+      "alt": "B",
+      "variants": []
+    }
+  },
+  "cases": [
+    {
+      "node": {
+        "id": "n1",
+        "type": "list",
+        "props": {
+          "items": [
+            "A",
+            "<b>B</b>"
+          ]
+        },
+        "children": []
+      },
+      "html": "<ul class=\"cms-list\"><li>A</li><li>&lt;b&gt;B&lt;/b&gt;</li></ul>"
+    },
+    {
+      "node": {
+        "id": "n2",
+        "type": "list",
+        "props": {
+          "items": [
+            "One",
+            "Two"
+          ],
+          "ordered": true,
+          "variant": "inline"
+        },
+        "children": []
+      },
+      "html": "<ol class=\"cms-list list-inline\"><li class=\"list-inline-item\">One</li><li class=\"list-inline-item\">Two</li></ol>"
+    },
+    {
+      "node": {
+        "id": "n3",
+        "type": "list",
+        "props": {
+          "items": "x",
+          "variant": "unstyled"
+        },
+        "children": []
+      },
+      "html": "<ul class=\"cms-list list-unstyled\"></ul>"
+    }
+  ]
+}

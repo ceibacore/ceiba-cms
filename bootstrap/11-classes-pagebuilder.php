@@ -119,6 +119,7 @@ require_once dirname(__DIR__) . '/src/PageBuilder/Import/HtmlImporter.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Contract/UiFrameworkModuleInterface.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/UiFrameworkRegistry.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Frameworks/Bootstrap5/Bootstrap5Module.php';
+require_once dirname(__DIR__) . '/src/PageBuilder/Frameworks/Bootstrap5/Html.php';
 
 // ── Integration Ports & Adapters ─────────────────────────────────────────────
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Document/HostContext.php';
@@ -149,6 +150,8 @@ require_once dirname(__DIR__) . '/src/PageBuilder/Application/ValidatePageDocume
 require_once dirname(__DIR__) . '/src/PageBuilder/Application/MigratePageDocument.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/ComponentDescriptor.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/ComponentCatalogue.php';
+require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/CoreComponents.php';
+require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/ContentComponents.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Presentation/Api/EditorError.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Presentation/Api/NegotiatedCapabilities.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Presentation/Api/EditorAccessDenied.php';

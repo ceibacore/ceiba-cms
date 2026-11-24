@@ -38,7 +38,7 @@ test('a style set on base and overridden at md shows at each canvas width; remov
 test('unsafe values are refused; tokens and site classes apply', async ({ page }) => {
   const b = page.locator('#editor-b');
   await b.getByRole('treeitem', { name: 'Heading' }).click();
-  await b.getByText('Typography').click();
+  await b.getByText('Typography', { exact: true }).click();
   const color = b.getByLabel('Color', { exact: true });
   await color.fill('red;}body{display:none');
   await color.press('Tab');

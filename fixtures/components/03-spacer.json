@@ -1,0 +1,72 @@
+{
+  "name": "03-spacer",
+  "media": {
+    "m1": {
+      "url": "/m/1600.webp",
+      "width": 1600,
+      "height": 800,
+      "alt": "Sea",
+      "variants": [
+        {
+          "url": "/m/480.webp",
+          "width": 480
+        },
+        {
+          "url": "/m/1600.webp",
+          "width": 1600
+        }
+      ]
+    },
+    "m2": {
+      "url": "/m/b.jpg",
+      "width": 800,
+      "height": 600,
+      "alt": "B",
+      "variants": []
+    }
+  },
+  "cases": [
+    {
+      "node": {
+        "id": "n1",
+        "type": "spacer",
+        "props": {},
+        "children": []
+      },
+      "html": "<div class=\"cms-spacer\" style=\"height:32px\" aria-hidden=\"true\"></div>"
+    },
+    {
+      "node": {
+        "id": "n2",
+        "type": "spacer",
+        "props": {
+          "size": 9999
+        },
+        "children": []
+      },
+      "html": "<div class=\"cms-spacer\" style=\"height:400px\" aria-hidden=\"true\"></div>"
+    },
+    {
+      "node": {
+        "id": "n3",
+        "type": "spacer",
+        "props": {
+          "size": "12px"
+        },
+        "children": []
+      },
+      "html": "<div class=\"cms-spacer\" style=\"height:32px\" aria-hidden=\"true\"></div>"
+    },
+    {
+      "node": {
+        "id": "n4",
+        "type": "spacer",
+        "props": {
+          "size": "48"
+        },
+        "children": []
+      },
+      "html": "<div class=\"cms-spacer\" style=\"height:48px\" aria-hidden=\"true\"></div>"
+    }
+  ]
+}

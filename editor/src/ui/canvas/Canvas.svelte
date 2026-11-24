@@ -113,6 +113,7 @@
       unknown: (type) => t('canvas.unknown', { type }),
       html: t('canvas.html'),
       emptyImage: t('canvas.emptyImage'),
+      empty: (type) => t('canvas.empty', { type }),
     }, design, media);
     applyStyles(doc);
     if (selection) doc.querySelector(`[data-ceiba-id="${CSS.escape(selection)}"]`)?.scrollIntoView({ block: 'nearest' });

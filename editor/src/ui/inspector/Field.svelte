@@ -7,7 +7,8 @@
     field: FieldSpec; value: unknown; id: string; t: Translate; onChange: (value: unknown) => void;
   } = $props();
   let error = $state<string | null>(null);
-  const shown = $derived(value === null || value === undefined || typeof value === 'object' ? '' : String(value));
+  const shown = $derived(Array.isArray(value) ? value.filter((v) => typeof v === 'string').join('\n')
+    : value === null || value === undefined || typeof value === 'object' ? '' : String(value));
 
   function change(input: string | boolean): void {
     const parsed = parseField(field, input);
@@ -25,8 +26,10 @@
     <label><input {id} type="checkbox" checked={value === true} onchange={(e) => change(e.currentTarget.checked)} /> {field.label}</label>
   {:else}
     <label for={id}>{field.label}</label>
-    {#if field.control === 'textarea'}
-      <textarea {id} rows="3" value={shown} oninput={(e) => change(e.currentTarget.value)}
+    {#if field.control === 'textarea' || field.control === 'lines'}
+      <!-- Lists are committed on change: dropping empty lines while typing would eat the new line. -->
+      <textarea {id} rows="3" value={shown} oninput={(e) => { if (field.control !== 'lines') change(e.currentTarget.value); }}
+        onchange={(e) => { if (field.control === 'lines') change(e.currentTarget.value); }}
         aria-invalid={error !== null} aria-describedby={error ? `${id}-error` : undefined}></textarea>
     {:else if field.control === 'select'}
       <select {id} value={shown} onchange={(e) => change(e.currentTarget.value)}>

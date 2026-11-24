@@ -4,7 +4,7 @@ declare(strict_types=1);
 // Media library, image variants and asset resolution (plan 05-A). Loaded in order by bootstrap.php (shared scope).
 
 foreach ([
-    'Media/Domain/MediaReferences.php', 'Media/Domain/MediaTypes.php', 'Media/Domain/MediaSettings.php',
+    'Media/Domain/MediaReferences.php', 'Media/Domain/VideoEmbed.php', 'PageBuilder/Application/ComponentScripts.php', 'Media/Domain/MediaTypes.php', 'Media/Domain/MediaSettings.php',
     'Media/Domain/Resolver/ResolvedMedia.php', 'Media/Domain/Resolver/MediaResolver.php', 'Media/Domain/Resolver/MediaPropsDecorator.php',
     'Media/Infrastructure/CeibaDbMediaResolver.php', 'Media/Infrastructure/Images/VariantRequest.php',
     'Media/Infrastructure/Images/GdImageVariants.php', 'Media/Application/Library/InvalidUpload.php',

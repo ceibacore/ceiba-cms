@@ -1,0 +1,54 @@
+{
+  "name": "05-quote",
+  "media": {
+    "m1": {
+      "url": "/m/1600.webp",
+      "width": 1600,
+      "height": 800,
+      "alt": "Sea",
+      "variants": [
+        {
+          "url": "/m/480.webp",
+          "width": 480
+        },
+        {
+          "url": "/m/1600.webp",
+          "width": 1600
+        }
+      ]
+    },
+    "m2": {
+      "url": "/m/b.jpg",
+      "width": 800,
+      "height": 600,
+      "alt": "B",
+      "variants": []
+    }
+  },
+  "cases": [
+    {
+      "node": {
+        "id": "n1",
+        "type": "quote",
+        "props": {
+          "text": "Line 1\nLine \"2\"",
+          "cite": "Ana & Co"
+        },
+        "children": []
+      },
+      "html": "<figure class=\"cms-quote\"><blockquote class=\"blockquote\"><p>Line 1<br>Line &quot;2&quot;</p></blockquote><figcaption class=\"blockquote-footer\">Ana &amp; Co</figcaption></figure>"
+    },
+    {
+      "node": {
+        "id": "n2",
+        "type": "quote",
+        "props": {
+          "text": "Solo",
+          "cite": "  "
+        },
+        "children": []
+      },
+      "html": "<figure class=\"cms-quote\"><blockquote class=\"blockquote\"><p>Solo</p></blockquote></figure>"
+    }
+  ]
+}

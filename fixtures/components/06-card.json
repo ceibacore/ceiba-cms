@@ -1,0 +1,60 @@
+{
+  "name": "06-card",
+  "media": {
+    "m1": {
+      "url": "/m/1600.webp",
+      "width": 1600,
+      "height": 800,
+      "alt": "Sea",
+      "variants": [
+        {
+          "url": "/m/480.webp",
+          "width": 480
+        },
+        {
+          "url": "/m/1600.webp",
+          "width": 1600
+        }
+      ]
+    },
+    "m2": {
+      "url": "/m/b.jpg",
+      "width": 800,
+      "height": 600,
+      "alt": "B",
+      "variants": []
+    }
+  },
+  "cases": [
+    {
+      "node": {
+        "id": "n1",
+        "type": "card",
+        "props": {
+          "image": {
+            "asset": "m1"
+          },
+          "title": "T <1>",
+          "text": "Body",
+          "linkLabel": "More",
+          "linkUrl": "/more"
+        },
+        "children": []
+      },
+      "html": "<div class=\"card\"><img src=\"/m/1600.webp\" alt=\"Sea\" srcset=\"/m/480.webp 480w, /m/1600.webp 1600w\" sizes=\"(min-width: 768px) 33vw, 100vw\" class=\"card-img-top\" width=\"1600\" height=\"800\" loading=\"lazy\" decoding=\"async\"><div class=\"card-body\"><h3 class=\"card-title h5\">T &lt;1&gt;</h3><p class=\"card-text\">Body</p><a href=\"/more\" class=\"btn btn-primary\">More</a></div></div>"
+    },
+    {
+      "node": {
+        "id": "n2",
+        "type": "card",
+        "props": {
+          "title": "",
+          "linkLabel": "Bad",
+          "linkUrl": "javascript:alert(1)"
+        },
+        "children": []
+      },
+      "html": "<div class=\"card\"><div class=\"card-body\"></div></div>"
+    }
+  ]
+}

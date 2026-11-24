@@ -165,6 +165,14 @@ export declare const es: {
     readonly 'error.AUTHORIZATION_DENIED': "No tienes permiso para esta acción.";
     readonly 'error.NETWORK': "Sin conexión. Tus cambios siguen aquí.";
     readonly 'error.SERVER': "Error del servidor. Tus cambios siguen aquí.";
+    readonly 'canvas.empty': "{type}: nada que mostrar todavía";
+    readonly 'gallery.add': "Añadir imagen";
+    readonly 'gallery.empty': "Sin imágenes.";
+    readonly 'gallery.item': "Imagen {n}";
+    readonly 'gallery.caption': "Pie de foto";
+    readonly 'gallery.up': "Subir imagen {n}";
+    readonly 'gallery.down': "Bajar imagen {n}";
+    readonly 'gallery.remove': "Quitar imagen {n}";
     readonly 'media.title': "Biblioteca de medios";
     readonly 'media.library': "Biblioteca";
     readonly 'media.upload': "Subir archivo";
