@@ -36,6 +36,11 @@ return [
     'services' => [
         'pageAssembler'        => $pageAssembler,
         'assembleSitePage'     => $assembleSitePage,
+        'sitePartStore'        => $sitePartStore,
+        'manageSiteParts'      => $manageSiteParts,
+        'publishSiteParts'     => $publishSiteParts,
+        'sitePartApiController' => $sitePartApiController,
+        'hostRoutes'           => $hostRoutes,
         'customCode'           => $customCode,
         'designApiController'  => $designApiController,
         'mediaApiController'   => $mediaApiController,

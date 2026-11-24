@@ -23,10 +23,6 @@ final class PublishSitePartsTest extends TestCase
     protected function setUp(): void
     {
         $this->db = RevisionSchema::create();
-        $p = $this->db->getPrefix();
-        $this->db->pdo()->exec("CREATE TABLE {$p}site_part_publication_locks (site_id TEXT PRIMARY KEY)");
-        $this->db->pdo()->exec("CREATE TABLE {$p}site_part_publication_batches (id TEXT PRIMARY KEY, site_id TEXT, idempotency_key TEXT,
-            request_hash TEXT, result TEXT, UNIQUE(site_id, idempotency_key))");
         $this->store = new SitePartStore($this->db, 'site-1');
         $create = new CreatePage($this->db, 'site-1');
         foreach (['header', 'footer'] as $kind) {

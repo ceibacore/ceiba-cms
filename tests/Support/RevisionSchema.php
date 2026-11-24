@@ -33,6 +33,9 @@ final class RevisionSchema
             width INTEGER, height INTEGER, alt_text TEXT, title TEXT, conversions TEXT, created_at TEXT, updated_at TEXT)");
         $pdo->exec("CREATE TABLE {$p}site_part_rules (part_id TEXT PRIMARY KEY REFERENCES {$p}pages(id) ON DELETE CASCADE,
             draft_rules TEXT NOT NULL, published_rules TEXT, version INTEGER NOT NULL DEFAULT 1, updated_by TEXT, updated_at TEXT NOT NULL)");
+        $pdo->exec("CREATE TABLE {$p}site_part_publication_locks (site_id TEXT PRIMARY KEY)");
+        $pdo->exec("CREATE TABLE {$p}site_part_publication_batches (id TEXT PRIMARY KEY, site_id TEXT, idempotency_key TEXT,
+            request_hash TEXT, result TEXT, UNIQUE(site_id, idempotency_key))");
         $pdo->exec("CREATE TABLE {$p}page_layouts (id TEXT PRIMARY KEY, name TEXT, footer_tree TEXT)");
         $pdo->exec("CREATE TABLE {$p}page_revisions (id TEXT PRIMARY KEY, page_id TEXT NOT NULL, site_id TEXT NOT NULL,
             revision INTEGER NOT NULL, schema_version INTEGER NOT NULL, snapshot TEXT NOT NULL, content_hash TEXT NOT NULL,
