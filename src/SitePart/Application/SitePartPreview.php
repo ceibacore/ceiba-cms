@@ -29,8 +29,14 @@ final class SitePartPreview
         private readonly GetLayoutById $layouts,
         private readonly GetDefaultLayout $defaultLayout,
         private readonly HostRoutes $routes = new HostRoutes(),
-        private readonly string $locale = 'es',
+        /** The site language, or a closure that reads it when a preview is drawn (never at bootstrap). */
+        private readonly \Closure|string $locale = 'es',
     ) {}
+
+    private function locale(): string
+    {
+        return is_string($this->locale) ? $this->locale : (string) ($this->locale)();
+    }
 
     /** @return array{html: string, css: string, parts: array<string, mixed>, applies: bool} */
     public function render(string $partId, int $revision, ?string $pageId, bool $hasSession = false): array
@@ -44,7 +50,7 @@ final class SitePartPreview
         $parts = [...array_values(array_filter($this->store->published(), fn (SitePart $p) => $p->id !== $partId)), $part];
         if ($pageId === null) {
             $layout = $this->defaultLayout->execute();
-            $assembled = $this->sitePage->notFound(RenderContext::notFound('/preview-404', $this->locale, $hasSession), $layout?->footerTree ?? [], $parts)
+            $assembled = $this->sitePage->notFound(RenderContext::notFound('/preview-404', $this->locale(), $hasSession), $layout?->footerTree ?? [], $parts)
                 ?? ['html' => '', 'header' => null, 'footer' => '', 'css' => '', 'parts' => ['parts' => [], 'conflicts' => []]];
         } else {
             $page = $this->pages->findById($pageId);
@@ -53,7 +59,7 @@ final class SitePartPreview
             }
             $layout = (!empty($page['layout_id']) ? $this->layouts->execute((string) $page['layout_id']) : null) ?? $this->defaultLayout->execute();
             $slug = (string) ($page['slug'] ?? '');
-            $context = RenderContext::forPage([...$page, 'layout_id' => $layout?->id], '/' . $slug, $this->locale, $hasSession,
+            $context = RenderContext::forPage([...$page, 'layout_id' => $layout?->id], '/' . $slug, $this->locale(), $hasSession,
                 in_array($slug, HomeController::HOME_SLUGS, true));
             $content = is_array($page['content'] ?? null) ? $page['content'] : [];
             $assembled = $this->sitePage->page($content, $page, $context, $layout?->footerTree ?? [], [], $parts);

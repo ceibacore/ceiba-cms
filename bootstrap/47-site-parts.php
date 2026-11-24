@@ -36,6 +36,8 @@ $publishSiteParts      = new \CeibaCms\SitePart\Application\PublishSiteParts($db
 $sitePartApiController = new \CeibaCms\SitePart\Presentation\SitePartApiController(
     $siteId, $builderContextResolver, $manageSiteParts, $sitePartCandidates, $publishedPageContexts, $publishSiteParts, $hostRoutes,
     new \CeibaCms\SitePart\Application\SitePartPreview($db, $siteId, $sitePartStore, $assembleSitePage, $pageRepository,
-        $getLayoutById, $getDefaultLayout, $hostRoutes, (string) ($settingsRepository?->get('site_language', 'es') ?? 'es'))
+        $getLayoutById, $getDefaultLayout, $hostRoutes,
+        // Read when a preview is drawn: bootstrap must not query a database that may not be migrated yet.
+        static fn (): string => (string) ($settingsRepository?->get('site_language', 'es') ?? 'es'))
 );
 $migrateLayoutsToParts = new \CeibaCms\SitePart\Application\MigrateLayoutsToParts($manageSiteParts, $sitePartStore, $publishSiteParts);
