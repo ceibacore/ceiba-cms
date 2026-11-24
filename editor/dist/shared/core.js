@@ -852,6 +852,7 @@ var e = class extends Error {
 			let r = await t(`${n(e)}/usages`);
 			return {
 				pages: Array.isArray(r.pages) ? r.pages : [],
+				layouts: Array.isArray(r.layouts) ? r.layouts : [],
 				design: r.design === !0
 			};
 		},

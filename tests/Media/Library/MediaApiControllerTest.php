@@ -50,7 +50,7 @@ final class MediaApiControllerTest extends TestCase
         self::assertStringContainsString(' 480w, ', $resolved[$id]['srcset']);
         self::assertSame([480, 960, 1600], $api->settings()['data']['widths']);
         self::assertSame('Mar', $api->update($id, '{"alt":"Mar"}')['data']['alt']);
-        self::assertSame(['pages' => [], 'design' => false], $api->usages($id)['data']);
+        self::assertSame(['pages' => [], 'layouts' => [], 'design' => false], $api->usages($id)['data']);
         self::assertSame(['deleted' => $id], $api->destroy($id)['data']);
         self::assertSame(404, $api->destroy($id)['status']);
     }

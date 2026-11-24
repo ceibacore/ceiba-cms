@@ -82,14 +82,11 @@ class PageRenderController extends BaseController
 
             // 4. Content, design CSS and custom code (global + page, session-aware).
             $hasSession = $this->authManager !== null && $this->authManager->check();
-            [$contentHtml, $css, $js] = $this->content(is_array($tree) ? $tree : [], $page, $hasSession, $context);
+            $footerTree = $layout !== null && is_array($layout->footerTree) ? array_values($layout->footerTree) : [];
+            [$contentHtml, $css, $js, $footerHtml] = $this->content(is_array($tree) ? $tree : [], $page, $hasSession, $context, $footerTree);
 
-            $footerHtml = '';
             $navbarHtml = '';
             if ($layout !== null) {
-                if (!empty($layout->footerTree)) {
-                    $footerHtml = $this->bladeRenderer->renderPage($layout->footerTree, $context);
-                }
                 if ($layout->menuSlug !== null && $layout->menuSlug !== '' && $this->getNavbar !== null) {
                     try {
                         $navbarHtml = $this->getNavbar->execute($layout->menuSlug);
@@ -119,11 +116,12 @@ class PageRenderController extends BaseController
     }
 
     /** @return array{0: string, 1: string, 2: string} html, css, js */
-    private function content(array $tree, array $page, bool $hasSession, array $context): array
+    /** @param list<mixed> $footer @return array{string, string, string, string} html, css, js, footer html */
+    private function content(array $tree, array $page, bool $hasSession, array $context, array $footer): array
     {
         if ($this->assembler !== null) {
-            $assembled = $this->assembler->assemble($tree, $page, $hasSession, null, $context);
-            return [$assembled['html'], $assembled['css'], $assembled['js']];
+            $assembled = $this->assembler->assemble($tree, $page, $hasSession, null, $context, $footer);
+            return [$assembled['html'], $assembled['css'], $assembled['js'], $assembled['footer']];
         }
         // Without the assembler (hosts wiring the controller by hand): no design CSS, custom code still applied.
         $code = (new CustomCode($this->settingsRepository))->resolve($page, $hasSession);
@@ -131,6 +129,7 @@ class PageRenderController extends BaseController
             $this->bladeRenderer->renderPage($tree, $context),
             trim($code['globalCss'] . "\n" . $code['pageCss']),
             trim($code['globalJs'] . ";\n" . $code['pageJs'], ";\n"),
+            $footer === [] ? '' : $this->bladeRenderer->renderPage($footer, $context),
         ];
     }
 }

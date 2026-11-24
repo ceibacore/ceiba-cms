@@ -86,6 +86,17 @@ final class MediaLibraryTest extends TestCase
         $this->media->library->remove($this->media->context, $id);
     }
 
+    public function testALayoutFooterThatShowsTheFileAlsoBlocksDeletion(): void
+    {
+        $id = $this->upload('logo.jpg');
+        $this->media->db->pdo()->prepare("INSERT INTO {$this->media->db->getPrefix()}page_layouts (id, name, footer_tree) VALUES (?, ?, ?)")->execute(['l1', 'Main', json_encode([
+            ['id' => 'f', 'type' => 'container', 'children' => [['id' => 'i', 'type' => 'image', 'props' => ['src' => ['asset' => $id]], 'children' => []]]],
+        ])]);
+        self::assertSame([['layoutId' => 'l1', 'name' => 'Main']], $this->media->usages->execute($id)['layouts']);
+        $this->expectException(MediaInUse::class);
+        $this->media->library->remove($this->media->context, $id);
+    }
+
     public function testADesignWithAnUnknownAssetIsRefused(): void
     {
         $design = array_replace(SiteDesign::defaults(), ['classes' => ['banner' => ['styles' => ['base' => ['backgroundImage' => ['asset' => 'ghost']]]]]]);

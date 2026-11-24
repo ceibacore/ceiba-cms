@@ -62,16 +62,15 @@ final class MediaLibrary
         return $this->find($id);
     }
 
-    /** Deletes the row and every stored file; refuses with MediaInUse while a page or the design uses it. */
+    /** Deletes the row and every stored file; refuses with MediaInUse while a page, a layout or the design uses it. */
     public function remove(HostContext $context, string $id): bool
     {
         $row = $this->row($id);
         if ($row === null) {
             return false;
         }
-        $usages = $this->usages->execute($id);
-        if ($usages['pages'] !== [] || $usages['design']) {
-            throw new MediaInUse($usages);
+        if ($this->usages->isUsed($id)) {
+            throw new MediaInUse($this->usages->execute($id));
         }
         $this->db->query('media')->where(['id' => $id])->delete();
         $conversions = is_string($row['conversions'] ?? null) ? json_decode($row['conversions'], true) : null;

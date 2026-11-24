@@ -10,7 +10,7 @@ use CeibaCms\PageBuilder\Application\Design\GetSiteDesign;
 
 /**
  * Where an asset is used (plan 05-A), so it cannot be deleted while something still draws it: pages (working
- * revision or public content) and the site design (working or published).
+ * revision or public content), layout footers and the site design (working or published).
  */
 final class FindMediaUsages
 {
@@ -20,7 +20,7 @@ final class FindMediaUsages
         private readonly ?GetSiteDesign $designs = null,
     ) {}
 
-    /** @return array{pages: list<array{pageId: string, title: string}>, design: bool} */
+    /** @return array{pages: list<array{pageId: string, title: string}>, layouts: list<array{layoutId: string, name: string}>, design: bool} */
     public function execute(string $assetId): array
     {
         $pages = [];
@@ -36,13 +36,27 @@ final class FindMediaUsages
                 }
             }
         }
-        return ['pages' => $pages, 'design' => $this->inDesign($assetId)];
+        return ['pages' => $pages, 'layouts' => $this->inLayouts($assetId), 'design' => $this->inDesign($assetId)];
     }
 
     public function isUsed(string $assetId): bool
     {
         $usages = $this->execute($assetId);
-        return $usages['pages'] !== [] || $usages['design'];
+        return $usages['pages'] !== [] || $usages['layouts'] !== [] || $usages['design'];
+    }
+
+    /** @return list<array{layoutId: string, name: string}> */
+    private function inLayouts(string $assetId): array
+    {
+        $layouts = [];
+        $rows = $this->db->pdo()->query("SELECT id, name, footer_tree FROM {$this->db->getPrefix()}page_layouts")->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($rows as $row) {
+            $tree = is_string($row['footer_tree']) ? json_decode($row['footer_tree'], true) : null;
+            if (is_array($tree) && in_array($assetId, MediaReferences::collect(array_values($tree)), true)) {
+                $layouts[] = ['layoutId' => (string) $row['id'], 'name' => (string) $row['name']];
+            }
+        }
+        return $layouts;
     }
 
     private function inDesign(string $assetId): bool
