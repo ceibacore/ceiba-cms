@@ -17,10 +17,12 @@ use CeibaCms\PageBuilder\Domain\Service\LayoutRenderer;
 use CeibaCms\PageBuilder\Domain\Service\QueryEngine;
 use CeibaCms\Seo\Domain\Repository\SeoRepositoryInterface;
 use CeibaCms\Settings\Domain\Repository\SettingsRepositoryInterface;
+use CeibaCms\SitePart\Application\AssembleSitePage;
+use CeibaCms\SitePart\Domain\RenderContext;
 
 /**
  * Public page of the module's own HTTP adapter. Content, design CSS and custom code come from PageAssembler
- * (plan 04-B), the same pieces every host uses.
+ * (plan 04-B); with AssembleSitePage, the header, footer and 404 page come from the site parts (plan 06).
  */
 class PageRenderController extends BaseController
 {
@@ -38,14 +40,15 @@ class PageRenderController extends BaseController
         private readonly ?SettingsRepositoryInterface     $settingsRepository = null,
         private readonly ?SeoRepositoryInterface          $seoRepository      = null,
         private readonly ?PageAssembler                   $assembler          = null,
+        private readonly ?AssembleSitePage                $sitePage           = null,
     ) {}
 
-    public function show(string $slug): void
+    public function show(string $slug, bool $isHome = false): void
     {
         try {
             $page = $this->getPageBySlug->execute($slug);
             if ($page === null || ($page['status'] ?? '') !== 'published') {
-                PublicPageResponses::notFound();
+                $this->notFound($slug);
                 return;
             }
 
@@ -82,32 +85,16 @@ class PageRenderController extends BaseController
 
             // 4. Content, design CSS and custom code (global + page, session-aware).
             $hasSession = $this->authManager !== null && $this->authManager->check();
-            $footerTree = $layout !== null && is_array($layout->footerTree) ? array_values($layout->footerTree) : [];
-            [$contentHtml, $css, $js, $footerHtml] = $this->content(is_array($tree) ? $tree : [], $page, $hasSession, $context, $footerTree);
-
-            $navbarHtml = '';
-            if ($layout !== null) {
-                if ($layout->menuSlug !== null && $layout->menuSlug !== '' && $this->getNavbar !== null) {
-                    try {
-                        $navbarHtml = $this->getNavbar->execute($layout->menuSlug);
-                    } catch (\Exception) {
-                        $navbarHtml = '';
-                    }
-                }
-            }
+            $lang = $this->settingsRepository?->get('site_language', 'es') ?? 'es';
+            $requestPage = $page;
+            $requestPage['layout_id'] = $layout?->id;
+            $request = RenderContext::forPage($requestPage, $isHome ? '/' : '/' . $slug, $lang, $hasSession, $isHome);
+            $assembled = $this->content(is_array($tree) ? $tree : [], $page, $request, $context, $this->footerTree($layout));
 
             $seo = ($this->seoRepository !== null && isset($page['id']))
                 ? $this->seoRepository->findByEntity('page', (string) $page['id']) : null;
-            $lang = $this->settingsRepository?->get('site_language', 'es') ?? 'es';
-            [$headCdn, $bodyCdn] = PublicPageResponses::cdns($layout, $this->settingsRepository);
-
-            $fullHtml = $this->layoutRenderer === null ? $contentHtml : $this->layoutRenderer->render(
-                $contentHtml, $navbarHtml, $footerHtml, $layout?->palette ?? [], PublicPageResponses::meta($page, $seo, $slug),
-                $layout?->useSystemPalette ?? true, $css, $js, $lang, $headCdn, $bodyCdn,
-            );
-
             header('Content-Type: text/html; charset=UTF-8');
-            echo $fullHtml;
+            echo $this->document($assembled, $layout, PublicPageResponses::meta($page, $seo, $slug), $lang);
         } catch (\Exception $e) {
             http_response_code(500);
             header('Content-Type: text/html; charset=UTF-8');
@@ -115,21 +102,63 @@ class PageRenderController extends BaseController
         }
     }
 
-    /** @return array{0: string, 1: string, 2: string} html, css, js */
-    /** @param list<mixed> $footer @return array{string, string, string, string} html, css, js, footer html */
-    private function content(array $tree, array $page, bool $hasSession, array $context, array $footer): array
+    /** The 404 of the site part that applies (with the default layout), else the plain one. */
+    private function notFound(string $slug): void
     {
+        $lang = $this->settingsRepository?->get('site_language', 'es') ?? 'es';
+        $layout = $this->getDefaultLayout?->execute();
+        $hasSession = $this->authManager !== null && $this->authManager->check();
+        $assembled = $this->sitePage?->notFound(RenderContext::notFound('/' . $slug, $lang, $hasSession, $layout?->id), $this->footerTree($layout));
+        if ($assembled === null || $this->layoutRenderer === null) {
+            PublicPageResponses::notFound();
+            return;
+        }
+        http_response_code(404);
+        header('Content-Type: text/html; charset=UTF-8');
+        echo $this->document($assembled, $layout, PublicPageResponses::meta(['title' => '404'], null, $slug), $lang);
+    }
+
+    /** @return list<mixed> */
+    private function footerTree(?object $layout): array
+    {
+        return $layout !== null && is_array($layout->footerTree ?? null) ? array_values($layout->footerTree) : [];
+    }
+
+    /** Full document: the header part, or the layout's menu when no header part applies. @param array<string, mixed> $assembled */
+    private function document(array $assembled, ?object $layout, array $meta, string $lang): string
+    {
+        if ($this->layoutRenderer === null) {
+            return $assembled['html'];
+        }
+        $navbarHtml = $assembled['header'] ?? '';
+        if (($assembled['header'] ?? null) === null && $layout !== null && ($layout->menuSlug ?? '') !== '' && $this->getNavbar !== null) {
+            try {
+                $navbarHtml = $this->getNavbar->execute($layout->menuSlug);
+            } catch (\Exception) {
+                $navbarHtml = '';
+            }
+        }
+        [$headCdn, $bodyCdn] = PublicPageResponses::cdns($layout, $this->settingsRepository);
+        return $this->layoutRenderer->render($assembled['html'], $navbarHtml, $assembled['footer'], $layout?->palette ?? [], $meta,
+            $layout?->useSystemPalette ?? true, $assembled['css'], $assembled['js'], $lang, $headCdn, $bodyCdn);
+    }
+
+    /** @param list<mixed> $footer @return array{html: string, header: ?string, footer: string, css: string, js: string} */
+    private function content(array $tree, array $page, RenderContext $request, array $context, array $footer): array
+    {
+        if ($this->sitePage !== null) {
+            return $this->sitePage->page($tree, $page, $request, $footer, $context);
+        }
         if ($this->assembler !== null) {
-            $assembled = $this->assembler->assemble($tree, $page, $hasSession, null, $context, $footer);
-            return [$assembled['html'], $assembled['css'], $assembled['js'], $assembled['footer']];
+            return ['header' => null] + $this->assembler->assemble($tree, $page, $request->hasSession, null, $context, $footer);
         }
         // Without the assembler (hosts wiring the controller by hand): no design CSS, custom code still applied.
-        $code = (new CustomCode($this->settingsRepository))->resolve($page, $hasSession);
+        $code = (new CustomCode($this->settingsRepository))->resolve($page, $request->hasSession);
         return [
-            $this->bladeRenderer->renderPage($tree, $context),
-            trim($code['globalCss'] . "\n" . $code['pageCss']),
-            trim($code['globalJs'] . ";\n" . $code['pageJs'], ";\n"),
-            $footer === [] ? '' : $this->bladeRenderer->renderPage($footer, $context),
+            'html' => $this->bladeRenderer->renderPage($tree, $context), 'header' => null,
+            'css' => trim($code['globalCss'] . "\n" . $code['pageCss']),
+            'js' => trim($code['globalJs'] . ";\n" . $code['pageJs'], ";\n"),
+            'footer' => $footer === [] ? '' : $this->bladeRenderer->renderPage($footer, $context),
         ];
     }
 }

@@ -35,6 +35,7 @@ return [
     ],
     'services' => [
         'pageAssembler'        => $pageAssembler,
+        'assembleSitePage'     => $assembleSitePage,
         'customCode'           => $customCode,
         'designApiController'  => $designApiController,
         'mediaApiController'   => $mediaApiController,

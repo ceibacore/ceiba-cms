@@ -19,6 +19,11 @@ if ($revisionApiController !== null && isset($container['useCases']['getPageWork
         $container['bladeRenderer'],
         $container['services']['pageAssembler'] ?? null,
         $container['repositories']['page'] ?? null,
+        $container['services']['assembleSitePage'] ?? null,
+        $container['useCases']['getLayoutById'] ?? null,
+        $container['useCases']['getDefaultLayout'] ?? null,
+        $container['useCases']['getNavbar'] ?? null,
+        $container['repositories']['settings'] ?? null,
     );
     $sendPreviewJson = static function (array $response): void {
         header('Content-Type: application/json');

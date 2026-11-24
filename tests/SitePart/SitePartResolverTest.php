@@ -59,6 +59,12 @@ final class SitePartResolverTest extends TestCase
             self::chosen(RenderContext::notFound('/nope', 'es', false)));
     }
 
+    public function testNotFoundCanSelectTheHeaderOfItsEffectiveLayout(): void
+    {
+        $context = RenderContext::notFound('/missing', 'es', false, 'l-land');
+        self::assertSame('h-campaign', self::chosen($context)['header']);
+    }
+
     public function testAnExactTieChoosesNothingAndIsReported(): void
     {
         $parts = [...self::parts(), self::part('h-site-2', 'header', [['type' => 'site']])];

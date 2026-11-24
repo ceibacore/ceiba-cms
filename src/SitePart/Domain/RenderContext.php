@@ -32,8 +32,8 @@ final class RenderContext
             isset($page['layout_id']) && $page['layout_id'] !== '' ? (string) $page['layout_id'] : null, $locale, $hasSession);
     }
 
-    public static function notFound(string $path, string $locale, bool $hasSession): self
+    public static function notFound(string $path, string $locale, bool $hasSession, ?string $layoutId = null): self
     {
-        return new self($path, null, false, null, $locale, $hasSession, null, true);
+        return new self($path, null, false, $layoutId, $locale, $hasSession, null, true);
     }
 }

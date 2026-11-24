@@ -8,7 +8,7 @@ use CeibaCms\Page\Application\GetPageBySlug;
 class HomeController extends BaseController
 {
     /** Slug candidates tried in order for the home page. */
-    private const HOME_SLUGS = ['home', 'inicio', 'index'];
+    public const HOME_SLUGS = ['home', 'inicio', 'index'];
 
     public function __construct(
         private readonly GetPageBySlug        $getPageBySlug,
@@ -20,7 +20,7 @@ class HomeController extends BaseController
         foreach (self::HOME_SLUGS as $slug) {
             $page = $this->getPageBySlug->execute($slug);
             if ($page !== null && ($page['status'] ?? '') === 'published') {
-                $this->pageRender->show($slug);
+                $this->pageRender->show($slug, true);
                 return;
             }
         }
