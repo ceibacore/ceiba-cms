@@ -1838,7 +1838,23 @@ var e = class extends Error {
 	let n = /* @__PURE__ */ new Set();
 	for (let t of Object.values(e.nodes)) $(t.fields.props, n, 0), $(t.fields.styles, n, 0);
 	return t && $(t.classes, n, 0), [...n];
-}, Lt = (e) => new Fe(e);
-export { S as $, Te as A, M as B, We as C, Fe as D, Ie as E, N as F, ae as G, O as H, fe as I, w as J, E as K, pe as L, L as M, me as N, De as O, de as P, x as Q, j as R, Ke as S, ze as T, C as U, A as V, D as W, re as X, ie as Y, ne as Z, ut as _, e as _t, Mt as a, c as at, z as b, kt as c, u as ct, Dt as d, r as dt, ee as et, Ct as f, n as ft, W as g, o as gt, gt as h, a as ht, Nt as i, d as it, R as j, Oe as k, Ot as l, m as lt, q as m, i as mt, It as n, y as nt, X as o, f as ot, K as p, s as pt, T as q, Ft as r, v as rt, jt as s, p as st, Lt as t, _ as tt, Tt as u, l as ut, U as v, t as vt, Ue as w, qe as x, Je as y, ue as z };
+}, Lt = /^https?:\/\/(?:(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})(?:[?&#/].*)?$/, Rt = /^https?:\/\/(?:www\.)?(?:vimeo\.com\/|player\.vimeo\.com\/video\/)([0-9]{6,12})(?:[?#/].*)?$/, zt = (e) => {
+	if (typeof e != "string" || e.length > 300) return null;
+	let t = e.replace(/^[ \t\n\r\0\x0B]+|[ \t\n\r\0\x0B]+$/g, ""), n = Lt.exec(t)?.[1];
+	if (n) return {
+		provider: "youtube",
+		id: n,
+		embed: `https://www.youtube-nocookie.com/embed/${n}?autoplay=1&rel=0`,
+		watch: `https://www.youtube.com/watch?v=${n}`
+	};
+	let r = Rt.exec(t)?.[1];
+	return r ? {
+		provider: "vimeo",
+		id: r,
+		embed: `https://player.vimeo.com/video/${r}?autoplay=1&dnt=1`,
+		watch: `https://vimeo.com/${r}`
+	} : null;
+}, Bt = (e) => new Fe(e);
+export { ne as $, De as A, j as B, qe as C, ze as D, Ue as E, me as F, C as G, M as H, de as I, E as J, D as K, N as L, Te as M, R as N, Ie as O, L as P, re as Q, fe as R, z as S, We as T, A as U, ue as V, O as W, w as X, T as Y, ie as Z, W as _, a as _t, Nt as a, v as at, U as b, t as bt, jt as c, f as ct, Tt as d, m as dt, x as et, Dt as f, l as ft, gt as g, i as gt, q as h, s as ht, Ft as i, y as it, Oe as j, Fe as k, kt as l, p as lt, K as m, n as mt, zt as n, ee as nt, Mt as o, d as ot, Ct as p, r as pt, ae as q, It as r, _ as rt, X as s, c as st, Bt as t, S as tt, Ot as u, u as ut, ut as v, o as vt, Ke as w, Je as x, lt as y, e as yt, pe as z };
 
 //# sourceMappingURL=core.js.map

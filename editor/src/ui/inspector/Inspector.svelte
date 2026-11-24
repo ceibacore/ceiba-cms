@@ -6,6 +6,7 @@
   import Advanced from './advanced/Advanced.svelte';
   import Field from './Field.svelte';
   import AssetPicker from '../media/AssetPicker.svelte';
+  import GalleryField from '../media/GalleryField.svelte';
   import { fieldsFor } from './fields';
 
   let { store, uid, canTemplates = false, onRemoved, onSaveTemplate }: {
@@ -63,6 +64,11 @@
           {#if field.control === 'media' && store.media.available}
             <AssetPicker {store} id={`${uid}-prop-${field.key}`} label={field.label} value={values[field.key]}
               withAlt={field.key === 'src' || field.key === 'image'} onChange={(value) => setProp(field.key, value)} />
+          {:else if field.control === 'media_list'}
+            {#if store.media.available}
+              <GalleryField {store} id={`${uid}-prop-${field.key}`} label={field.label} value={values[field.key]}
+                onChange={(value) => setProp(field.key, value)} />
+            {/if}
           {:else}
             <Field {field} {t} id={`${uid}-prop-${field.key}`} value={values[field.key]}
               onChange={(value) => setProp(field.key, value)} />

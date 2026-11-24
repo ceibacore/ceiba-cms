@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 test('a token change shows on the canvas at once, then is saved and published', async ({ page }) => {
   const b = page.locator('#editor-b');
   await b.getByRole('treeitem', { name: 'Heading' }).click();
-  await b.getByText('Typography').click();
+  await b.getByText('Typography', { exact: true }).click();
   await b.getByLabel('Token · Color').selectOption('color.brand');
   const heading = b.frameLocator('iframe[title="Page canvas"]').locator('h1');
   await expect.poll(() => heading.evaluate((el) => getComputedStyle(el).color)).toBe('rgb(185, 28, 28)');
@@ -36,7 +36,7 @@ test('a token change shows on the canvas at once, then is saved and published', 
 test('a token used by the page cannot be deleted; a new class gets styles and unordered breakpoints are refused', async ({ page }) => {
   const b = page.locator('#editor-b');
   await b.getByRole('treeitem', { name: 'Heading' }).click();
-  await b.getByText('Typography').click();
+  await b.getByText('Typography', { exact: true }).click();
   await b.getByLabel('Token · Color').selectOption('color.brand');
   await b.getByRole('button', { name: 'Save', exact: true }).click();
 

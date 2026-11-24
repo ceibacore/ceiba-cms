@@ -17,7 +17,7 @@ use CeibaCms\PageBuilder\Domain\Style\StyledNodes;
  * What a published page carries (plan 04-B), the same for every host and preview:
  * - html: the tree with its style classes and its {asset} references resolved by the host (plan 05-A);
  * - css: site design (compiled), then global custom CSS, then the page's own CSS (each may override the previous);
- * - js: global custom JS, then the page's own JS.
+ * - js: scripts of the components used (plan 05-B), global custom JS, then the page's own JS.
  */
 final class PageAssembler
 {
@@ -47,7 +47,8 @@ final class PageAssembler
             $code['globalCss'] === '' ? '' : "/* cms:global */\n" . $code['globalCss'],
             $code['pageCss'] === '' ? '' : "/* cms:page */\n" . $code['pageCss'],
         ]);
-        $js = array_filter([$code['globalJs'], $code['pageJs']]);
+        // The module's component scripts first, so the site's and the page's own code can build on them.
+        $js = array_filter([ComponentScripts::for($tree), $code['globalJs'], $code['pageJs']]);
         return [
             'html' => $this->renderer->renderPage(
                 (new MediaPropsDecorator($resolved))->apply(StyleClassDecorator::apply($tree, $design)), $context

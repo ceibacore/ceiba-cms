@@ -1,5 +1,5 @@
 import type { ElementRule } from '../../core';
-export type Control = 'text' | 'textarea' | 'number' | 'checkbox' | 'select' | 'url' | 'media';
+export type Control = 'text' | 'textarea' | 'number' | 'checkbox' | 'select' | 'url' | 'media' | 'lines' | 'media_list';
 export interface FieldSpec {
     readonly key: string;
     readonly label: string;

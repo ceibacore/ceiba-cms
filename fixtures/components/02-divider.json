@@ -1,0 +1,64 @@
+{
+  "name": "02-divider",
+  "media": {
+    "m1": {
+      "url": "/m/1600.webp",
+      "width": 1600,
+      "height": 800,
+      "alt": "Sea",
+      "variants": [
+        {
+          "url": "/m/480.webp",
+          "width": 480
+        },
+        {
+          "url": "/m/1600.webp",
+          "width": 1600
+        }
+      ]
+    },
+    "m2": {
+      "url": "/m/b.jpg",
+      "width": 800,
+      "height": 600,
+      "alt": "B",
+      "variants": []
+    }
+  },
+  "cases": [
+    {
+      "node": {
+        "id": "n1",
+        "type": "divider",
+        "props": {},
+        "children": []
+      },
+      "html": "<hr class=\"cms-divider my-4\">"
+    },
+    {
+      "node": {
+        "id": "n2",
+        "type": "divider",
+        "props": {
+          "style": "dashed",
+          "spacing": 2,
+          "class": "w-50"
+        },
+        "children": []
+      },
+      "html": "<hr class=\"cms-divider my-2 w-50\" style=\"border-top-style:dashed\">"
+    },
+    {
+      "node": {
+        "id": "n3",
+        "type": "divider",
+        "props": {
+          "style": "red;x",
+          "spacing": 9
+        },
+        "children": []
+      },
+      "html": "<hr class=\"cms-divider my-5\">"
+    }
+  ]
+}

@@ -1,5 +1,7 @@
-import type { Catalogue, DesignDocument, NodeRecord, NodeStyles, ResolvedMedia, TreeState } from '../../core';
-import { isAssetRef, styleClassNames } from '../../core';
+import type { Catalogue, DesignDocument, NodeRecord, NodeStyles, TreeState } from '../../core';
+import { styleClassNames } from '../../core';
+import type { MediaMap, Slot } from './components';
+import { COMPONENT_VIEWS, resolveProps, toDom } from './components';
 import { isMultiline } from './inline-edit';
 import { safeClass, safeUrl, text } from './sanitize';
 
@@ -12,7 +14,12 @@ export interface CanvasLabels {
   readonly unknown: (type: string) => string;
   readonly html: string;
   readonly emptyImage: string;
+  /** A component with nothing to draw yet (no items, a link that is not a video…). */
+  readonly empty: (type: string) => string;
 }
+
+/** Where each element's children go (a card's body); the element itself when absent. */
+const slots = new WeakMap<HTMLElement, Slot>();
 
 const propsOf = (node: NodeRecord): Record<string, unknown> => {
   const props = node.fields.props;
@@ -26,20 +33,18 @@ const placeholder = (doc: Document, label: string): HTMLElement => {
   return box;
 };
 
-type MediaMap = Readonly<Record<string, ResolvedMedia>>;
-
-/** src and alt of an image prop: a library asset (resolved URL, per-use alt, else node alt, else library alt) or a URL. */
-const image = (p: Record<string, unknown>, media: MediaMap): { src: string; alt: string } => {
-  const ref = p.src;
-  if (!isAssetRef(ref)) return { src: safeUrl(ref), alt: text(p.alt) };
-  const found = media[ref.asset];
-  const alt = ref.alt !== undefined ? ref.alt : text(p.alt) !== '' ? text(p.alt) : found?.alt ?? '';
-  return { src: found ? safeUrl(found.url) : '', alt };
-};
-
 /** One node as an element (without children); null children slot means the element takes no children. */
 const element = (doc: Document, node: NodeRecord, labels: CanvasLabels, known: boolean, media: MediaMap): HTMLElement => {
-  const p = propsOf(node);
+  const p = resolveProps(propsOf(node), media);
+  const view = known ? COMPONENT_VIEWS[node.type] : undefined;
+  if (view) {
+    // Same markup as the server view (fixtures/components); placeholders only where the server draws nothing.
+    const vnode = view(p);
+    if (vnode === null) return placeholder(doc, node.type === 'image' ? labels.emptyImage : labels.empty(node.type));
+    const { el, slot } = toDom(doc, vnode);
+    if (slot.parent !== el || slot.before !== null) slots.set(el, slot);
+    return el;
+  }
   const make = (tag: string, className = ''): HTMLElement => {
     const el = doc.createElement(tag);
     const classes = `${className} ${safeClass(p.class)}`.trim();
@@ -69,12 +74,12 @@ const element = (doc: Document, node: NodeRecord, labels: CanvasLabels, known: b
       el.textContent = text(p.content);
       return el;
     }
-    case 'image': case 'img': {
-      const { src, alt } = image(p, media);
+    case 'img': {
+      const src = safeUrl(p.src);
       if (src === '') return placeholder(doc, labels.emptyImage);
-      const img = make('img', node.type === 'image' ? 'img-fluid' : '') as HTMLImageElement;
+      const img = make('img') as HTMLImageElement;
       img.src = src;
-      img.alt = alt;
+      img.alt = text(p.alt);
       return img;
     }
     case 'button': {
@@ -113,10 +118,11 @@ export const renderCanvas = (
     }
     if (id === selection) el.dataset.ceibaSelected = '';
     if (isMultiline(node.type)) el.dataset.ceibaMultiline = '';
-    if (el.className !== 'ceiba-placeholder' && el.tagName !== 'IMG') {
+    if (el.className !== 'ceiba-placeholder' && !['IMG', 'HR'].includes(el.tagName)) {
+      const slot = slots.get(el) ?? { parent: el, before: null };
       for (const child of node.children) {
         const built = build(child);
-        if (built) el.append(built);
+        if (built) slot.parent.insertBefore(built, slot.before);
       }
     }
     return el;

@@ -1,37 +1,16 @@
 <?php
-$title = $props['title'] ?? '';
-$subtitle = $props['subtitle'] ?? '';
-$text = $props['text'] ?? '';
-$imageSrc = $props['image_src'] ?? '';
-$imageAlt = $props['image_alt'] ?? '';
-$footer = $props['footer'] ?? '';
-$class = $props['class'] ?? '';
+// Card (plan 05-B): optional library image, title, text, the nodes placed inside, and an optional link.
+use CeibaCms\PageBuilder\Frameworks\Bootstrap5\Html;
 
-$cardClasses = ['card'];
-if ($class !== '') {
-    $cardClasses[] = $class;
-}
-$cardClassStr = implode(' ', array_map(fn($c) => htmlspecialchars((string) $c, ENT_QUOTES, 'UTF-8'), $cardClasses));
-?>
-<div class="<?php echo $cardClassStr; ?>">
-    <?php if ($imageSrc !== ''): ?>
-        <img src="<?php echo htmlspecialchars((string) $imageSrc, ENT_QUOTES, 'UTF-8'); ?>" class="card-img-top" alt="<?php echo htmlspecialchars((string) $imageAlt, ENT_QUOTES, 'UTF-8'); ?>">
-    <?php endif; ?>
-    <div class="card-body">
-        <?php if ($title !== ''): ?>
-            <h5 class="card-title"><?php echo htmlspecialchars((string) $title, ENT_QUOTES, 'UTF-8'); ?></h5>
-        <?php endif; ?>
-        <?php if ($subtitle !== ''): ?>
-            <h6 class="card-subtitle mb-2 text-muted"><?php echo htmlspecialchars((string) $subtitle, ENT_QUOTES, 'UTF-8'); ?></h6>
-        <?php endif; ?>
-        <?php if ($text !== ''): ?>
-            <p class="card-text"><?php echo nl2br(htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8')); ?></p>
-        <?php endif; ?>
-        <?php echo $slot; ?>
-    </div>
-    <?php if ($footer !== ''): ?>
-        <div class="card-footer text-muted">
-            <?php echo htmlspecialchars((string) $footer, ENT_QUOTES, 'UTF-8'); ?>
-        </div>
-    <?php endif; ?>
-</div>
+$title = is_string($props['title'] ?? null) ? trim($props['title']) : '';
+$text = is_string($props['text'] ?? null) ? trim($props['text']) : '';
+$label = is_string($props['linkLabel'] ?? null) ? trim($props['linkLabel']) : '';
+$href = Html::url($props['linkUrl'] ?? null);
+$class = trim('card ' . (is_string($props['class'] ?? null) ? $props['class'] : ''));
+echo '<div' . Html::attrs(['class' => $class]) . '>' . Html::img($props, 'image', 'card-img-top', '(min-width: 768px) 33vw, 100vw');
+echo '<div class="card-body">';
+echo $title === '' ? '' : '<h3 class="card-title h5">' . Html::e($title) . '</h3>';
+echo $text === '' ? '' : '<p class="card-text">' . Html::lines($text) . '</p>';
+echo $slot ?? '';
+echo $label === '' || $href === '' ? '' : '<a' . Html::attrs(['href' => $href, 'class' => 'btn btn-primary']) . '>' . Html::e($label) . '</a>';
+echo '</div></div>';

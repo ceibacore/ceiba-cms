@@ -1,0 +1,90 @@
+{
+  "name": "08-video",
+  "media": {
+    "m1": {
+      "url": "/m/1600.webp",
+      "width": 1600,
+      "height": 800,
+      "alt": "Sea",
+      "variants": [
+        {
+          "url": "/m/480.webp",
+          "width": 480
+        },
+        {
+          "url": "/m/1600.webp",
+          "width": 1600
+        }
+      ]
+    },
+    "m2": {
+      "url": "/m/b.jpg",
+      "width": 800,
+      "height": 600,
+      "alt": "B",
+      "variants": []
+    }
+  },
+  "cases": [
+    {
+      "node": {
+        "id": "n1",
+        "type": "video",
+        "props": {
+          "url": "https://youtu.be/dQw4w9WgXcQ?t=5",
+          "title": "Demo \"1\"",
+          "poster": {
+            "asset": "m2"
+          }
+        },
+        "children": []
+      },
+      "html": "<figure class=\"cms-video\"><div class=\"ratio ratio-16x9 cms-video-frame\" data-cms-video=\"https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&amp;rel=0\" data-cms-video-title=\"Demo &quot;1&quot;\" style=\"background-image:url(&quot;/m/b.jpg&quot;)\"><button type=\"button\" class=\"cms-video-play btn btn-dark\">Play video<span class=\"visually-hidden\">: Demo &quot;1&quot;</span></button></div><figcaption class=\"small mt-1\"><a href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\" rel=\"noopener\" target=\"_blank\">Demo &quot;1&quot;</a></figcaption></figure>"
+    },
+    {
+      "node": {
+        "id": "n2",
+        "type": "video",
+        "props": {
+          "url": "https://vimeo.com/123456789",
+          "playLabel": "Reproducir"
+        },
+        "children": []
+      },
+      "html": "<figure class=\"cms-video\"><div class=\"ratio ratio-16x9 cms-video-frame\" data-cms-video=\"https://player.vimeo.com/video/123456789?autoplay=1&amp;dnt=1\" data-cms-video-title=\"Video\"><button type=\"button\" class=\"cms-video-play btn btn-dark\">Reproducir<span class=\"visually-hidden\">: Video</span></button></div><figcaption class=\"small mt-1\"><a href=\"https://vimeo.com/123456789\" rel=\"noopener\" target=\"_blank\">Video</a></figcaption></figure>"
+    },
+    {
+      "node": {
+        "id": "n3",
+        "type": "video",
+        "props": {
+          "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=x"
+        },
+        "children": []
+      },
+      "html": "<figure class=\"cms-video\"><div class=\"ratio ratio-16x9 cms-video-frame\" data-cms-video=\"https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&amp;rel=0\" data-cms-video-title=\"Video\"><button type=\"button\" class=\"cms-video-play btn btn-dark\">Play video<span class=\"visually-hidden\">: Video</span></button></div><figcaption class=\"small mt-1\"><a href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\" rel=\"noopener\" target=\"_blank\">Video</a></figcaption></figure>"
+    },
+    {
+      "node": {
+        "id": "n4",
+        "type": "video",
+        "props": {
+          "url": "https://evil.test/embed/dQw4w9WgXcQ"
+        },
+        "children": []
+      },
+      "html": ""
+    },
+    {
+      "node": {
+        "id": "n5",
+        "type": "video",
+        "props": {
+          "url": "https://www.youtube.com/watch?v=short"
+        },
+        "children": []
+      },
+      "html": ""
+    }
+  ]
+}

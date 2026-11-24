@@ -1,0 +1,94 @@
+{
+  "name": "01-image",
+  "media": {
+    "m1": {
+      "url": "/m/1600.webp",
+      "width": 1600,
+      "height": 800,
+      "alt": "Sea",
+      "variants": [
+        {
+          "url": "/m/480.webp",
+          "width": 480
+        },
+        {
+          "url": "/m/1600.webp",
+          "width": 1600
+        }
+      ]
+    },
+    "m2": {
+      "url": "/m/b.jpg",
+      "width": 800,
+      "height": 600,
+      "alt": "B",
+      "variants": []
+    }
+  },
+  "cases": [
+    {
+      "node": {
+        "id": "n1",
+        "type": "image",
+        "props": {
+          "src": {
+            "asset": "m1"
+          }
+        },
+        "children": []
+      },
+      "html": "<img src=\"/m/1600.webp\" alt=\"Sea\" srcset=\"/m/480.webp 480w, /m/1600.webp 1600w\" sizes=\"100vw\" class=\"img-fluid\" width=\"1600\" height=\"800\" loading=\"lazy\" decoding=\"async\">"
+    },
+    {
+      "node": {
+        "id": "n2",
+        "type": "image",
+        "props": {
+          "src": "/legacy.png",
+          "alt": "Old",
+          "rounded": true
+        },
+        "children": []
+      },
+      "html": "<img src=\"/legacy.png\" alt=\"Old\" class=\"img-fluid rounded\" loading=\"lazy\" decoding=\"async\">"
+    },
+    {
+      "node": {
+        "id": "n3",
+        "type": "image",
+        "props": {
+          "src": {
+            "asset": "m2",
+            "alt": ""
+          }
+        },
+        "children": []
+      },
+      "html": "<img src=\"/m/b.jpg\" alt=\"\" class=\"img-fluid\" width=\"800\" height=\"600\" loading=\"lazy\" decoding=\"async\">"
+    },
+    {
+      "node": {
+        "id": "n4",
+        "type": "image",
+        "props": {
+          "src": "javascript:alert(1)"
+        },
+        "children": []
+      },
+      "html": ""
+    },
+    {
+      "node": {
+        "id": "n5",
+        "type": "image",
+        "props": {
+          "src": {
+            "asset": "gone"
+          }
+        },
+        "children": []
+      },
+      "html": ""
+    }
+  ]
+}

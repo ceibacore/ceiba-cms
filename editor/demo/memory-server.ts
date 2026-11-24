@@ -4,14 +4,22 @@ import { COMPONENTS, HTML_TAGS } from './catalogue';
 import { importHtml, TemplateStore } from './content';
 import { DesignStore } from './design';
 import { MediaStore } from './media';
+import type { MediaMap } from '../src/ui/canvas/components';
+import { COMPONENT_VIEWS, resolveProps, toHtml } from '../src/ui/canvas/components';
 
 const escape = (value: unknown): string =>
   String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 /** Rough stand-in for the server renderer; it also emits the page's own script, which the preview must not run. */
-const renderNode = (node: RawNode): string => {
+const renderNode = (node: RawNode, media: MediaMap = {}): string => {
   const p = (node.props ?? {}) as Record<string, unknown>;
-  const inner = (node.children ?? []).map(renderNode).join('');
+  const inner = (node.children ?? []).map((child) => renderNode(child, media)).join('');
+  // The module's components draw the markup the Bootstrap 5 views give (fixtures/components).
+  const view = COMPONENT_VIEWS[node.type];
+  if (view) {
+    const vnode = view(resolveProps(p, media));
+    return vnode === null ? '' : toHtml(vnode);
+  }
   switch (node.type) {
     case 'container': return `<div class="container">${inner}</div>`;
     case 'heading': return `<h${Number(p.level) || 2}>${escape(p.text)}</h${Number(p.level) || 2}>`;
@@ -93,7 +101,10 @@ export class MemoryServer {
       saveTemplate: async (template) => this.templates.save(structuredClone(template)),
       importHtml: async (html) => importHtml(html),
       ...this.mediaTransport(),
-      render: async (_id, revision) => ({ html: (this.revisions.get(revision)?.root ?? []).map(renderNode).join(''), css: '' }),
+      render: async (_id, revision) => {
+        const media = Object.fromEntries(this.media.items.map((i) => [i.id, i]));
+        return { html: (this.revisions.get(revision)?.root ?? []).map((n) => renderNode(n, media)).join(''), css: '' };
+      },
     };
   }
 }

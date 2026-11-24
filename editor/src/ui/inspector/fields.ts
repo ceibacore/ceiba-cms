@@ -1,7 +1,7 @@
 import type { ElementRule } from '../../core';
 import { safeUrl } from '../canvas/sanitize';
 
-export type Control = 'text' | 'textarea' | 'number' | 'checkbox' | 'select' | 'url' | 'media';
+export type Control = 'text' | 'textarea' | 'number' | 'checkbox' | 'select' | 'url' | 'media' | 'lines' | 'media_list';
 
 export interface FieldSpec {
   readonly key: string;
@@ -12,7 +12,7 @@ export interface FieldSpec {
 
 const CONTROL_ALIASES: Record<string, Control> = {
   text: 'text', string: 'text', textarea: 'textarea', richtext: 'textarea', number: 'number', integer: 'number',
-  switch: 'checkbox', boolean: 'checkbox', checkbox: 'checkbox', select: 'select', url: 'url', media_picker: 'media', media: 'media',
+  switch: 'checkbox', boolean: 'checkbox', checkbox: 'checkbox', select: 'select', url: 'url', media_picker: 'media', media: 'media', lines: 'lines', media_list: 'media_list',
 };
 
 const TEXT_TAGS = new Set(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'a', 'li', 'blockquote', 'strong', 'em',
@@ -54,6 +54,8 @@ export const fieldsFor = (rule: ElementRule): FieldSpec[] => {
 /** Value to store for an input, or an error key (translated by the UI) when it is invalid. */
 export const parseField = (field: FieldSpec, input: string | boolean): { value: unknown } | { error: string } => {
   if (field.control === 'checkbox') return { value: input === true };
+  // One item per line; empty lines are dropped (plan 05-B list).
+  if (field.control === 'lines') return { value: String(input).replace(/\r/g, '').split('\n').filter((line) => line.trim() !== '').slice(0, 100) };
   const value = String(input);
   if (field.control === 'number') {
     if (value.trim() === '') return { value: null };
