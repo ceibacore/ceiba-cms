@@ -9,6 +9,9 @@ export declare const partsEs: {
     readonly 'parts.kind.archive': "Listado de una fuente";
     readonly 'parts.kind.search': "Resultados de búsqueda";
     readonly 'parts.target.sources': "Fuentes de datos";
+    readonly 'parts.previewSource': "Fuente de la vista previa";
+    readonly 'parts.previewRecord': "Registro de muestra";
+    readonly 'parts.previewWords': "Palabras a buscar";
     readonly 'parts.include': "Se usa en";
     readonly 'parts.exclude': "Excepto en";
     readonly 'parts.add': "Añadir";

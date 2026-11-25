@@ -5334,35 +5334,116 @@ function _u(e, t) {
 	}), U("click", g, () => t.store.media.close()), U("click", v, c), K(e, l), j();
 }
 W(["click"]);
-// src/ui/site-parts/PartPreview.svelte
-var vu = /* @__PURE__ */ G("<option> </option>"), yu = /* @__PURE__ */ G("<option> </option>"), bu = /* @__PURE__ */ G("<p class=\"note svelte-1fs2bjy\" role=\"status\"> </p>"), xu = /* @__PURE__ */ G("<!> <iframe class=\"svelte-1fs2bjy\"></iframe>", 1), Su = /* @__PURE__ */ G("<div class=\"preview svelte-1fs2bjy\"><label class=\"svelte-1fs2bjy\"> </label> <div class=\"row svelte-1fs2bjy\"><select class=\"svelte-1fs2bjy\"><!><!></select> <button type=\"button\" class=\"svelte-1fs2bjy\"> </button></div> <!></div>"), Cu = {
-	hash: "svelte-1fs2bjy",
-	code: ".preview.svelte-1fs2bjy {display:grid;gap:.3rem;border-top:1px solid var(--cpb-border);padding-top:.5rem;}label.svelte-1fs2bjy {font-size:.8rem;font-weight:600;}.row.svelte-1fs2bjy {display:flex;gap:.25rem;}select.svelte-1fs2bjy, button.svelte-1fs2bjy {font:inherit;font-size:.8rem;padding:.25rem .4rem;border:1px solid var(--cpb-border);border-radius:6px;background:var(--cpb-surface);color:inherit;min-width:0;}select.svelte-1fs2bjy {flex:1;}button.svelte-1fs2bjy {cursor:pointer;}.note.svelte-1fs2bjy {margin:0;font-size:.75rem;color:var(--cpb-danger);}iframe.svelte-1fs2bjy {width:100%;height:260px;border:1px solid var(--cpb-border);border-radius:6px;background:#fff;}"
+// src/ui/site-parts/ContentContext.svelte
+var vu = /* @__PURE__ */ G("<input class=\"svelte-fxqakb\"/>"), yu = /* @__PURE__ */ G("<option> </option>"), bu = /* @__PURE__ */ G("<option> </option>"), xu = /* @__PURE__ */ G("<select class=\"svelte-fxqakb\"><option> </option><!></select>"), Su = /* @__PURE__ */ G("<select class=\"svelte-fxqakb\"><option> </option><!></select> <!>", 1), Cu = {
+	hash: "svelte-fxqakb",
+	code: "select.svelte-fxqakb, input.svelte-fxqakb {font:inherit;font-size:.8rem;padding:.25rem .4rem;border:1px solid var(--cpb-border);border-radius:6px;background:var(--cpb-surface);color:inherit;min-width:0;flex:1;}"
 };
 function wu(e, t) {
 	A(t, !0), X(e, Cu);
-	let n = /* @__PURE__ */ N(() => t.store.t), r = /* @__PURE__ */ N(() => t.store.part), i = /* @__PURE__ */ N(() => H(r).part?.kind === "not_found"), a = /* @__PURE__ */ P(""), o = (e) => e.replace(/<\/style/gi, "<\\/style"), s = /* @__PURE__ */ N(() => H(r).preview ? `<!doctype html><html><head><meta charset="utf-8"><style>${o(H(r).preview.css)}</style></head><body>${H(r).preview.html}</body></html>` : "");
-	var c = Su(), l = I(c), u = I(l, !0);
-	k(l);
-	var d = R(l, 2), f = I(d), p = I(f), m = (e) => {
-		var t = vu(), r = I(t, !0);
-		k(t), t.value = t.__value = "", z((e) => q(r, e), [() => H(n)("parts.preview404")]), K(e, t);
+	let n = Ga(t, "value", 15, ""), r = /* @__PURE__ */ N(() => t.store.t), i = /* @__PURE__ */ P(""), a = /* @__PURE__ */ P(""), o = /* @__PURE__ */ P(""), s = /* @__PURE__ */ P(Sr([]));
+	qr(() => {
+		t.store.data.loadSources();
+	}), qr(() => {
+		let e = H(i);
+		F(s, [], !0), F(a, ""), t.kind === "single" && e !== "" && t.store.session.transport.dataSourceRecords && t.store.session.transport.dataSourceRecords(e, "").then((t) => {
+			H(i) === e && F(s, t, !0);
+		}).catch(() => {
+			F(s, [], !0);
+		});
+	}), qr(() => {
+		n(t.kind === "search" ? `content|search||${H(o).replaceAll("|", " ")}` : H(i) === "" ? "" : t.kind === "archive" ? `content|archive|${H(i)}` : H(a) === "" ? "" : `content|record|${H(i)}|${H(a)}`);
+	});
+	var c = ta(), l = L(c), u = (e) => {
+		var n = vu();
+		Z(n), z((e, r) => {
+			Q(n, "id", `${t.uid}-part-words`), Q(n, "aria-label", e), Q(n, "placeholder", r);
+		}, [() => H(r)("parts.previewWords"), () => H(r)("parts.previewWords")]), za(n, () => H(o), (e) => F(o, e)), K(e, n);
+	}, d = (e) => {
+		var n = Su(), o = L(n), c = I(o), l = I(c, !0);
+		k(c), c.value = c.__value = "", Y(R(c), 17, () => t.store.data.sources ?? [], (e) => e.id, (e, t) => {
+			var n = yu(), r = I(n, !0);
+			k(n);
+			var i = {};
+			z(() => {
+				q(r, H(t).label), i !== (i = H(t).id) && (n.value = (n.__value = H(t).id) ?? "");
+			}), K(e, n);
+		}), k(o);
+		var u = R(o, 2), d = (e) => {
+			var n = xu(), i = I(n), o = I(i, !0);
+			k(i), i.value = i.__value = "", Y(R(i), 17, () => H(s), (e) => e.slug, (e, t) => {
+				var n = bu(), r = I(n, !0);
+				k(n);
+				var i = {};
+				z(() => {
+					q(r, H(t).label), i !== (i = H(t).slug) && (n.value = (n.__value = H(t).slug) ?? "");
+				}), K(e, n);
+			}), k(n), z((e, r) => {
+				Q(n, "id", `${t.uid}-part-record`), Q(n, "aria-label", e), n.disabled = H(s).length === 0, q(o, r);
+			}, [() => H(r)("parts.previewRecord"), () => H(r)("parts.previewRecord")]), Da(n, () => H(a), (e) => F(a, e)), K(e, n);
+		};
+		J(u, (e) => {
+			t.kind === "single" && e(d);
+		}), z((e, n) => {
+			Q(o, "id", `${t.uid}-part-source`), Q(o, "aria-label", e), q(l, n);
+		}, [() => H(r)("parts.previewSource"), () => H(r)("data.chooseSource")]), Da(o, () => H(i), (e) => F(i, e)), K(e, n);
 	};
-	J(p, (e) => {
-		H(i) && e(m);
-	}), Y(R(p), 17, () => H(r).pages, (e) => e.id, (e, t) => {
-		var n = yu(), r = I(n, !0);
-		k(n);
-		var i = {};
-		z(() => {
-			q(r, H(t).path), i !== (i = H(t).id) && (n.value = (n.__value = H(t).id) ?? "");
-		}), K(e, n);
-	}), k(f);
-	var h = R(f, 2), g = I(h, !0);
-	k(h), k(d);
-	var _ = R(d, 2), v = (e) => {
-		var t = xu(), i = L(t), a = (e) => {
-			var t = bu(), r = I(t, !0);
+	J(l, (e) => {
+		t.kind === "search" ? e(u) : e(d, -1);
+	}), K(e, c), j();
+}
+// src/ui/site-parts/PartPreview.svelte
+var Tu = /* @__PURE__ */ G("<option> </option>"), Eu = /* @__PURE__ */ G("<option> </option>"), Du = /* @__PURE__ */ G("<select class=\"svelte-1fs2bjy\"><!><!></select>"), Ou = /* @__PURE__ */ G("<p class=\"note svelte-1fs2bjy\" role=\"status\"> </p>"), ku = /* @__PURE__ */ G("<!> <iframe class=\"svelte-1fs2bjy\"></iframe>", 1), Au = /* @__PURE__ */ G("<div class=\"preview svelte-1fs2bjy\"><label class=\"svelte-1fs2bjy\"> </label> <div class=\"row svelte-1fs2bjy\"><!> <button type=\"button\" class=\"svelte-1fs2bjy\"> </button></div> <!></div>"), ju = {
+	hash: "svelte-1fs2bjy",
+	code: ".preview.svelte-1fs2bjy {display:grid;gap:.3rem;border-top:1px solid var(--cpb-border);padding-top:.5rem;}label.svelte-1fs2bjy {font-size:.8rem;font-weight:600;}.row.svelte-1fs2bjy {display:flex;gap:.25rem;}select.svelte-1fs2bjy, button.svelte-1fs2bjy {font:inherit;font-size:.8rem;padding:.25rem .4rem;border:1px solid var(--cpb-border);border-radius:6px;background:var(--cpb-surface);color:inherit;min-width:0;}select.svelte-1fs2bjy {flex:1;}button.svelte-1fs2bjy {cursor:pointer;}.note.svelte-1fs2bjy {margin:0;font-size:.75rem;color:var(--cpb-danger);}iframe.svelte-1fs2bjy {width:100%;height:260px;border:1px solid var(--cpb-border);border-radius:6px;background:#fff;}"
+};
+function Mu(e, t) {
+	A(t, !0), X(e, ju);
+	let n = /* @__PURE__ */ N(() => t.store.t), r = /* @__PURE__ */ N(() => t.store.part), i = /* @__PURE__ */ N(() => H(r).part?.kind === "not_found"), a = /* @__PURE__ */ N(() => H(r).part?.kind), o = /* @__PURE__ */ N(() => H(a) === "single" || H(a) === "archive" || H(a) === "search" ? H(a) : null), s = /* @__PURE__ */ P(""), c = (e) => e.replace(/<\/style/gi, "<\\/style"), l = /* @__PURE__ */ N(() => H(r).preview ? `<!doctype html><html><head><meta charset="utf-8"><style>${c(H(r).preview.css)}</style></head><body>${H(r).preview.html}</body></html>` : "");
+	var u = Au(), d = I(u), f = I(d, !0);
+	k(d);
+	var p = R(d, 2), m = I(p), h = (e) => {
+		wu(e, {
+			get store() {
+				return t.store;
+			},
+			get uid() {
+				return t.uid;
+			},
+			get kind() {
+				return H(o);
+			},
+			get value() {
+				return H(s);
+			},
+			set value(e) {
+				F(s, e, !0);
+			}
+		});
+	}, g = (e) => {
+		var a = Du(), o = I(a), c = (e) => {
+			var t = Tu(), r = I(t, !0);
+			k(t), t.value = t.__value = "", z((e) => q(r, e), [() => H(n)("parts.preview404")]), K(e, t);
+		};
+		J(o, (e) => {
+			H(i) && e(c);
+		}), Y(R(o), 17, () => H(r).pages, (e) => e.id, (e, t) => {
+			var n = Eu(), r = I(n, !0);
+			k(n);
+			var i = {};
+			z(() => {
+				q(r, H(t).path), i !== (i = H(t).id) && (n.value = (n.__value = H(t).id) ?? "");
+			}), K(e, n);
+		}), k(a), z(() => Q(a, "id", `${t.uid}-part-context`)), Da(a, () => H(s), (e) => F(s, e)), K(e, a);
+	};
+	J(m, (e) => {
+		H(o) ? e(h) : e(g, -1);
+	});
+	var _ = R(m, 2), v = I(_, !0);
+	k(_), k(p);
+	var y = R(p, 2), b = (e) => {
+		var t = ku(), i = L(t), a = (e) => {
+			var t = Ou(), r = I(t, !0);
 			k(t), z((e) => q(r, e), [() => H(n)("parts.notApplied")]), K(e, t);
 		};
 		J(i, (e) => {
@@ -5370,18 +5451,18 @@ function wu(e, t) {
 		});
 		var o = R(i, 2);
 		z((e) => {
-			Q(o, "title", e), Q(o, "sandbox", Qa), Q(o, "srcdoc", H(s));
+			Q(o, "title", e), Q(o, "sandbox", Qa), Q(o, "srcdoc", H(l));
 		}, [() => H(n)("parts.previewFrame")]), K(e, t);
 	};
-	J(_, (e) => {
-		H(r).preview && e(v);
-	}), k(c), z((e, n) => {
-		Q(l, "for", `${t.uid}-part-context`), q(u, e), Q(f, "id", `${t.uid}-part-context`), h.disabled = H(r).busy || !H(i) && H(a) === "", q(g, n);
-	}, [() => H(n)("parts.preview"), () => H(n)("parts.previewShow")]), Da(f, () => H(a), (e) => F(a, e)), U("click", h, () => void H(r).showPreview(H(a) === "" ? null : H(a))), K(e, c), j();
+	J(y, (e) => {
+		H(r).preview && e(b);
+	}), k(u), z((e, n) => {
+		Q(d, "for", `${t.uid}-part-context`), q(f, e), _.disabled = H(r).busy || !H(i) && H(s) === "", q(v, n);
+	}, [() => H(n)("parts.preview"), () => H(n)("parts.previewShow")]), U("click", _, () => void H(r).showPreview(H(s) === "" ? null : H(s))), K(e, u), j();
 }
 W(["click"]);
 // src/ui/site-parts/targets.ts
-var Tu = [
+var Nu = [
 	"site",
 	"home",
 	"pages",
@@ -5389,11 +5470,11 @@ var Tu = [
 	"layouts",
 	"routes",
 	"sources"
-], Eu = [
+], Pu = [
 	"home",
 	"pages",
 	"layouts"
-], Du = (e) => {
+], Fu = (e) => {
 	switch (e) {
 		case "pages":
 		case "layouts":
@@ -5411,25 +5492,25 @@ var Tu = [
 		};
 		default: return { type: e };
 	}
-}, Ou = (e) => e.split(",").map((e) => e.trim()).filter((e) => e !== ""), ku = /* @__PURE__ */ G("<option class=\"svelte-1hg9bbe\"> </option>"), Au = /* @__PURE__ */ G("<option class=\"svelte-1hg9bbe\"> </option>"), ju = /* @__PURE__ */ G("<select multiple=\"\" class=\"svelte-1hg9bbe\"></select>"), Mu = /* @__PURE__ */ G("<option class=\"svelte-1hg9bbe\"> </option>"), Nu = /* @__PURE__ */ G("<select multiple=\"\" class=\"svelte-1hg9bbe\"></select>"), Pu = /* @__PURE__ */ G("<option class=\"svelte-1hg9bbe\"> </option>"), Fu = /* @__PURE__ */ G("<select multiple=\"\" class=\"svelte-1hg9bbe\"></select>"), Iu = /* @__PURE__ */ G("<input class=\"svelte-1hg9bbe\"/>"), Lu = /* @__PURE__ */ G("<input placeholder=\"/cursos\" class=\"svelte-1hg9bbe\"/>"), Ru = /* @__PURE__ */ G("<div class=\"target svelte-1hg9bbe\"><select class=\"svelte-1hg9bbe\"></select> <!> <button type=\"button\" class=\"svelte-1hg9bbe\">×</button></div>"), zu = /* @__PURE__ */ G("<fieldset class=\"targets svelte-1hg9bbe\"><legend class=\"svelte-1hg9bbe\"> </legend> <!> <button type=\"button\" class=\"add svelte-1hg9bbe\"> </button></fieldset>"), Bu = {
+}, Iu = (e) => e.split(",").map((e) => e.trim()).filter((e) => e !== ""), Lu = /* @__PURE__ */ G("<option class=\"svelte-1hg9bbe\"> </option>"), Ru = /* @__PURE__ */ G("<option class=\"svelte-1hg9bbe\"> </option>"), zu = /* @__PURE__ */ G("<select multiple=\"\" class=\"svelte-1hg9bbe\"></select>"), Bu = /* @__PURE__ */ G("<option class=\"svelte-1hg9bbe\"> </option>"), Vu = /* @__PURE__ */ G("<select multiple=\"\" class=\"svelte-1hg9bbe\"></select>"), Hu = /* @__PURE__ */ G("<option class=\"svelte-1hg9bbe\"> </option>"), Uu = /* @__PURE__ */ G("<select multiple=\"\" class=\"svelte-1hg9bbe\"></select>"), Wu = /* @__PURE__ */ G("<input class=\"svelte-1hg9bbe\"/>"), Gu = /* @__PURE__ */ G("<input placeholder=\"/cursos\" class=\"svelte-1hg9bbe\"/>"), Ku = /* @__PURE__ */ G("<div class=\"target svelte-1hg9bbe\"><select class=\"svelte-1hg9bbe\"></select> <!> <button type=\"button\" class=\"svelte-1hg9bbe\">×</button></div>"), qu = /* @__PURE__ */ G("<fieldset class=\"targets svelte-1hg9bbe\"><legend class=\"svelte-1hg9bbe\"> </legend> <!> <button type=\"button\" class=\"add svelte-1hg9bbe\"> </button></fieldset>"), Ju = {
 	hash: "svelte-1hg9bbe",
 	code: ".targets.svelte-1hg9bbe {border:1px solid var(--cpb-border);border-radius:6px;padding:.4rem .5rem;margin:0 0 .6rem;display:grid;gap:.35rem;}legend.svelte-1hg9bbe {font-size:.8rem;font-weight:600;}.target.svelte-1hg9bbe {display:grid;grid-template-columns:1fr 1fr auto;gap:.25rem;align-items:start;}.target[aria-invalid='true'].svelte-1hg9bbe {outline:2px solid var(--cpb-danger);border-radius:6px;}select.svelte-1hg9bbe, input.svelte-1hg9bbe, button.svelte-1hg9bbe {font:inherit;font-size:.78rem;padding:.25rem .4rem;border:1px solid var(--cpb-border);border-radius:6px;background:var(--cpb-surface);color:inherit;min-width:0;}select[multiple].svelte-1hg9bbe {min-height:4.5rem;}button.svelte-1hg9bbe {cursor:pointer;}.add.svelte-1hg9bbe {justify-self:start;}.svelte-1hg9bbe:focus-visible {outline:2px solid var(--cpb-accent);outline-offset:1px;}"
 };
-function Vu(e, t) {
-	A(t, !0), X(e, Bu);
-	let n = /* @__PURE__ */ N(() => t.store.t), r = /* @__PURE__ */ N(() => t.store.part), i = /* @__PURE__ */ N(() => Tu.filter((e) => !t.notFound || !Eu.includes(e))), a = (e) => H(r).errorPath.startsWith(`${t.id.split("-").pop()}.${e}`);
+function Yu(e, t) {
+	A(t, !0), X(e, Ju);
+	let n = /* @__PURE__ */ N(() => t.store.t), r = /* @__PURE__ */ N(() => t.store.part), i = /* @__PURE__ */ N(() => Nu.filter((e) => !t.notFound || !Pu.includes(e))), a = (e) => H(r).errorPath.startsWith(`${t.id.split("-").pop()}.${e}`);
 	qr(() => {
 		t.store.data.loadSources();
 	});
 	let o = (e, n) => t.onChange(t.targets.map((t, r) => r === e ? n : t)), s = (e) => Array.from(e.currentTarget.selectedOptions, (e) => e.value);
-	var c = zu(), l = I(c), u = I(l, !0);
+	var c = qu(), l = I(c), u = I(l, !0);
 	k(l);
 	var d = R(l, 2);
 	Y(d, 17, () => t.targets, ua, (e, c, l) => {
 		let u = /* @__PURE__ */ N(() => l + 1);
-		var d = Ru(), f = I(d);
+		var d = Ku(), f = I(d);
 		Y(f, 20, () => H(i), (e) => e, (e, t) => {
-			var r = ku(), i = I(r, !0);
+			var r = Lu(), i = I(r, !0);
 			k(r);
 			var a = {};
 			z((e) => {
@@ -5439,9 +5520,9 @@ function Vu(e, t) {
 		var p;
 		Ea(f);
 		var m = R(f, 2), h = (e) => {
-			var t = ju();
+			var t = zu();
 			Y(t, 21, () => H(r).pages, (e) => e.id, (e, t) => {
-				var n = Au(), r = I(n, !0);
+				var n = Ru(), r = I(n, !0);
 				k(n);
 				var i = {};
 				z((e) => {
@@ -5452,11 +5533,11 @@ function Vu(e, t) {
 				ids: s(e)
 			})), K(e, t);
 		}, g = (e) => {
-			var t = Nu();
+			var t = Vu();
 			Y(t, 21, () => Object.entries(H(r).routes), ([e, t]) => e, (e, t) => {
 				var n = /* @__PURE__ */ N(() => gt(H(t), 2));
 				let r = () => H(n)[0], i = () => H(n)[1];
-				var a = Mu(), o = I(a, !0);
+				var a = Bu(), o = I(a, !0);
 				k(a);
 				var s = {};
 				z((e) => {
@@ -5467,9 +5548,9 @@ function Vu(e, t) {
 				names: s(e)
 			})), K(e, t);
 		}, _ = (e) => {
-			var r = Fu();
+			var r = Uu();
 			Y(r, 21, () => t.store.data.sources ?? [], (e) => e.id, (e, t) => {
-				var n = Pu(), r = I(n, !0);
+				var n = Hu(), r = I(n, !0);
 				k(n);
 				var i = {};
 				z((e) => {
@@ -5480,15 +5561,15 @@ function Vu(e, t) {
 				ids: s(e)
 			})), K(e, r);
 		}, v = (e) => {
-			var t = Iu();
+			var t = Wu();
 			Z(t), z((e, n) => {
 				Q(t, "aria-label", e), Na(t, n);
 			}, [() => H(n)("parts.value", { n: H(u) }), () => H(c).ids.join(", ")]), U("change", t, (e) => o(l, {
 				type: "layouts",
-				ids: Ou(e.currentTarget.value)
+				ids: Iu(e.currentTarget.value)
 			})), K(e, t);
 		}, y = (e) => {
-			var t = Lu();
+			var t = Gu();
 			Z(t), z((e) => {
 				Q(t, "aria-label", e), Na(t, H(c).value);
 			}, [() => H(n)("parts.value", { n: H(u) })]), U("change", t, (e) => o(l, {
@@ -5506,29 +5587,29 @@ function Vu(e, t) {
 			() => a(l),
 			() => H(n)("parts.type", { n: H(u) }),
 			() => H(n)("parts.remove", { n: H(u) })
-		]), U("change", f, (e) => o(l, Du(e.currentTarget.value))), U("click", b, () => t.onChange(t.targets.filter((e, t) => t !== l))), K(e, d);
+		]), U("change", f, (e) => o(l, Fu(e.currentTarget.value))), U("click", b, () => t.onChange(t.targets.filter((e, t) => t !== l))), K(e, d);
 	});
 	var f = R(d, 2), p = I(f, !0);
 	k(f), k(c), z((e) => {
 		q(u, t.legend), q(p, e);
-	}, [() => H(n)("parts.add")]), U("click", f, () => t.onChange([...t.targets, Du(t.notFound ? "path_prefix" : "pages")])), K(e, c), j();
+	}, [() => H(n)("parts.add")]), U("click", f, () => t.onChange([...t.targets, Fu(t.notFound ? "path_prefix" : "pages")])), K(e, c), j();
 }
 W(["change", "click"]);
 // src/ui/site-parts/RulesPanel.svelte
-var Hu = /* @__PURE__ */ G("<p class=\"kind svelte-uncu60\"> <!></p>"), Uu = /* @__PURE__ */ G("<option class=\"svelte-uncu60\"> </option>"), Wu = /* @__PURE__ */ G("<p class=\"error svelte-uncu60\" role=\"alert\"> </p>"), Gu = /* @__PURE__ */ G("<li class=\"svelte-uncu60\"> </li>"), Ku = /* @__PURE__ */ G("<li class=\"svelte-uncu60\"> </li>"), qu = /* @__PURE__ */ G("<p class=\"error svelte-uncu60\"> </p> <ul class=\"svelte-uncu60\"></ul>", 1), Ju = /* @__PURE__ */ G("<div class=\"impact svelte-uncu60\" role=\"status\"><p class=\"svelte-uncu60\"> </p> <ul class=\"svelte-uncu60\"></ul> <!></div>"), Yu = /* @__PURE__ */ G("<section class=\"panel svelte-uncu60\"><h2 class=\"svelte-uncu60\"> </h2> <!> <!> <!> <label class=\"svelte-uncu60\"> </label> <input class=\"svelte-uncu60\"/> <label class=\"svelte-uncu60\"> </label> <select class=\"svelte-uncu60\"></select> <p class=\"help svelte-uncu60\"> </p> <label class=\"svelte-uncu60\"> </label> <input type=\"number\" min=\"-100\" max=\"100\" class=\"svelte-uncu60\"/> <div class=\"actions svelte-uncu60\"><button type=\"button\" class=\"primary svelte-uncu60\"> </button> <button type=\"button\" class=\"svelte-uncu60\"> </button></div> <!> <!> <!></section>"), Xu = {
+var Xu = /* @__PURE__ */ G("<p class=\"kind svelte-uncu60\"> <!></p>"), Zu = /* @__PURE__ */ G("<option class=\"svelte-uncu60\"> </option>"), Qu = /* @__PURE__ */ G("<p class=\"error svelte-uncu60\" role=\"alert\"> </p>"), $u = /* @__PURE__ */ G("<li class=\"svelte-uncu60\"> </li>"), ed = /* @__PURE__ */ G("<li class=\"svelte-uncu60\"> </li>"), td = /* @__PURE__ */ G("<p class=\"error svelte-uncu60\"> </p> <ul class=\"svelte-uncu60\"></ul>", 1), nd = /* @__PURE__ */ G("<div class=\"impact svelte-uncu60\" role=\"status\"><p class=\"svelte-uncu60\"> </p> <ul class=\"svelte-uncu60\"></ul> <!></div>"), rd = /* @__PURE__ */ G("<section class=\"panel svelte-uncu60\"><h2 class=\"svelte-uncu60\"> </h2> <!> <!> <!> <label class=\"svelte-uncu60\"> </label> <input class=\"svelte-uncu60\"/> <label class=\"svelte-uncu60\"> </label> <select class=\"svelte-uncu60\"></select> <p class=\"help svelte-uncu60\"> </p> <label class=\"svelte-uncu60\"> </label> <input type=\"number\" min=\"-100\" max=\"100\" class=\"svelte-uncu60\"/> <div class=\"actions svelte-uncu60\"><button type=\"button\" class=\"primary svelte-uncu60\"> </button> <button type=\"button\" class=\"svelte-uncu60\"> </button></div> <!> <!> <!></section>"), id = {
 	hash: "svelte-uncu60",
 	code: ".panel.svelte-uncu60 {padding:.5rem .75rem;overflow:auto;border-left:1px solid var(--cpb-border);display:grid;gap:.3rem;align-content:start;}h2.svelte-uncu60 {font-size:.85rem;margin:0;}.kind.svelte-uncu60, .help.svelte-uncu60 {margin:0;font-size:.75rem;color:var(--cpb-muted);}label.svelte-uncu60 {font-size:.8rem;font-weight:600;}input.svelte-uncu60, select.svelte-uncu60, button.svelte-uncu60 {font:inherit;font-size:.8rem;padding:.3rem .45rem;border:1px solid var(--cpb-border);border-radius:6px;background:var(--cpb-surface);color:inherit;}.actions.svelte-uncu60 {display:flex;gap:.35rem;margin-top:.3rem;}button.svelte-uncu60 {cursor:pointer;}button.primary.svelte-uncu60 {background:var(--cpb-accent);border-color:var(--cpb-accent);color:#fff;}button.svelte-uncu60:disabled {opacity:.5;}.error.svelte-uncu60 {color:var(--cpb-danger);font-size:.75rem;margin:0;}.impact.svelte-uncu60 {font-size:.75rem;border:1px solid var(--cpb-border);border-radius:6px;padding:.3rem .5rem;}.impact.svelte-uncu60 p:where(.svelte-uncu60) {margin:0 0 .2rem;}.impact.svelte-uncu60 ul:where(.svelte-uncu60) {margin:0;padding-left:1rem;max-height:8rem;overflow:auto;}.svelte-uncu60:focus-visible {outline:2px solid var(--cpb-accent);outline-offset:1px;}"
 };
-function Zu(e, t) {
-	A(t, !0), X(e, Xu);
+function ad(e, t) {
+	A(t, !0), X(e, id);
 	let n = /* @__PURE__ */ N(() => t.store.t), r = /* @__PURE__ */ N(() => t.store.part), i = /* @__PURE__ */ N(() => H(r).rules), a = /* @__PURE__ */ N(() => H(r).part?.kind === "not_found"), o = (e) => H(r).setRules({
 		...H(i),
 		...e
 	}), s = (e) => e.join(", "), c = (e) => Object.entries(e).map(([e, t]) => `${e}: ${t ?? H(n)("parts.nothing")}`).join(" · ");
-	var l = Yu(), u = I(l), d = I(u, !0);
+	var l = rd(), u = I(l), d = I(u, !0);
 	k(u);
 	var f = R(u, 2), p = (e) => {
-		var t = Hu(), i = I(t, !0), a = R(i), o = (e) => {
+		var t = Xu(), i = I(t, !0), a = R(i), o = (e) => {
 			var t = ea();
 			z((e) => q(t, `· ${e ?? ""}`), [() => H(n)("parts.unpublishedRules")]), K(e, t);
 		};
@@ -5542,7 +5623,7 @@ function Zu(e, t) {
 	var m = R(f, 2);
 	{
 		let e = /* @__PURE__ */ N(() => `${t.uid}-include`), r = /* @__PURE__ */ N(() => H(n)("parts.include"));
-		Vu(m, {
+		Yu(m, {
 			get store() {
 				return t.store;
 			},
@@ -5564,7 +5645,7 @@ function Zu(e, t) {
 	var h = R(m, 2);
 	{
 		let e = /* @__PURE__ */ N(() => `${t.uid}-exclude`), r = /* @__PURE__ */ N(() => H(n)("parts.exclude")), s = /* @__PURE__ */ N(() => H(i).exclude ?? []);
-		Vu(h, {
+		Yu(h, {
 			get store() {
 				return t.store;
 			},
@@ -5595,7 +5676,7 @@ function Zu(e, t) {
 		"with",
 		"without"
 	], (e) => e, (e, t) => {
-		var r = Uu(), i = I(r, !0);
+		var r = Zu(), i = I(r, !0);
 		k(r);
 		var a = {};
 		z((e) => {
@@ -5615,18 +5696,18 @@ function Zu(e, t) {
 	var ie = R(ne, 2), ae = I(ie, !0);
 	k(ie), k(E);
 	var oe = R(E, 2), se = (e) => {
-		var t = Wu(), n = I(t, !0);
+		var t = Qu(), n = I(t, !0);
 		k(t), z(() => q(n, H(r).error)), K(e, t);
 	};
 	J(oe, (e) => {
 		H(r).error && e(se);
 	});
 	var ce = R(oe, 2), le = (e) => {
-		var t = Ju(), i = I(t), a = I(i, !0);
+		var t = nd(), i = I(t), a = I(i, !0);
 		k(i);
 		var o = R(i, 2);
 		Y(o, 21, () => H(r).impact.changes, ua, (e, t) => {
-			var r = Gu(), i = I(r, !0);
+			var r = $u(), i = I(r, !0);
 			k(r), z((e) => q(i, e), [() => H(n)("parts.change", {
 				path: H(t).context.path,
 				before: c(H(t).before.parts),
@@ -5634,11 +5715,11 @@ function Zu(e, t) {
 			})]), K(e, r);
 		}), k(o);
 		var l = R(o, 2), u = (e) => {
-			var t = qu(), i = L(t), a = I(i, !0);
+			var t = td(), i = L(t), a = I(i, !0);
 			k(i);
 			var o = R(i, 2);
 			Y(o, 21, () => H(r).impact.conflicts, ua, (e, t) => {
-				var r = Ku(), i = I(r, !0);
+				var r = ed(), i = I(r, !0);
 				k(r), z((e) => q(i, e), [() => H(n)("parts.conflictAt", {
 					path: H(t).context.path,
 					parts: Object.values(H(t).parts).map(s).join(" / ")
@@ -5651,7 +5732,7 @@ function Zu(e, t) {
 	};
 	J(ce, (e) => {
 		H(r).impact && e(le);
-	}), wu(R(ce, 2), {
+	}), Mu(R(ce, 2), {
 		get store() {
 			return t.store;
 		},
@@ -5669,16 +5750,16 @@ function Zu(e, t) {
 		() => H(n)("parts.priority"),
 		() => H(n)("parts.save"),
 		() => H(n)("parts.impact")
-	]), U("change", v, (e) => o({ locales: Ou(e.currentTarget.value) })), U("change", x, (e) => o({ session: e.currentTarget.value })), U("change", te, (e) => o({ priority: Math.trunc(Number(e.currentTarget.value) || 0) })), U("click", ne, () => void H(r).saveRules()), U("click", ie, () => void H(r).loadImpact()), K(e, l), j();
+	]), U("change", v, (e) => o({ locales: Iu(e.currentTarget.value) })), U("change", x, (e) => o({ session: e.currentTarget.value })), U("change", te, (e) => o({ priority: Math.trunc(Number(e.currentTarget.value) || 0) })), U("click", ne, () => void H(r).saveRules()), U("click", ie, () => void H(r).loadImpact()), K(e, l), j();
 }
 W(["change", "click"]);
 // src/ui/palette/Palette.svelte
-var Qu = /* @__PURE__ */ G("<button type=\"button\" class=\"wide svelte-om8jxl\"> </button>"), $u = /* @__PURE__ */ G("<li><button type=\"button\" class=\"svelte-om8jxl\"> </button></li>"), ed = /* @__PURE__ */ G("<h3 class=\"svelte-om8jxl\"> </h3> <ul class=\"svelte-om8jxl\"></ul>", 1), td = /* @__PURE__ */ G("<li><button type=\"button\" class=\"svelte-om8jxl\"> </button></li>"), nd = /* @__PURE__ */ G("<h3 class=\"svelte-om8jxl\"> </h3> <ul class=\"svelte-om8jxl\"></ul>", 1), rd = /* @__PURE__ */ G("<section class=\"palette svelte-om8jxl\" aria-labelledby=\"cpb-palette-title\"><h2 id=\"cpb-palette-title\" class=\"svelte-om8jxl\"> </h2> <!> <!> <!></section>"), id = {
+var od = /* @__PURE__ */ G("<button type=\"button\" class=\"wide svelte-om8jxl\"> </button>"), sd = /* @__PURE__ */ G("<li><button type=\"button\" class=\"svelte-om8jxl\"> </button></li>"), cd = /* @__PURE__ */ G("<h3 class=\"svelte-om8jxl\"> </h3> <ul class=\"svelte-om8jxl\"></ul>", 1), ld = /* @__PURE__ */ G("<li><button type=\"button\" class=\"svelte-om8jxl\"> </button></li>"), ud = /* @__PURE__ */ G("<h3 class=\"svelte-om8jxl\"> </h3> <ul class=\"svelte-om8jxl\"></ul>", 1), dd = /* @__PURE__ */ G("<section class=\"palette svelte-om8jxl\" aria-labelledby=\"cpb-palette-title\"><h2 id=\"cpb-palette-title\" class=\"svelte-om8jxl\"> </h2> <!> <!> <!></section>"), fd = {
 	hash: "svelte-om8jxl",
 	code: ".palette.svelte-om8jxl {padding:.5rem .75rem;overflow:auto;}h2.svelte-om8jxl {font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;margin:0 0 .5rem;color:var(--cpb-muted);}h3.svelte-om8jxl {font-size:.75rem;margin:.5rem 0 .25rem;color:var(--cpb-muted);text-transform:capitalize;}ul.svelte-om8jxl {list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2, 1fr);gap:.25rem;}button.svelte-om8jxl {touch-action:none;width:100%;font:inherit;font-size:.8rem;padding:.35rem;border:1px solid var(--cpb-border);border-radius:6px;background:var(--cpb-surface);color:inherit;cursor:pointer;text-align:left;}button.svelte-om8jxl:hover {border-color:var(--cpb-accent);}.wide.svelte-om8jxl {margin-bottom:.5rem;text-align:center;}button.svelte-om8jxl:focus-visible {outline:2px solid var(--cpb-accent);outline-offset:1px;}"
 };
-function ad(e, t) {
-	A(t, !0), X(e, id);
+function pd(e, t) {
+	A(t, !0), X(e, fd);
 	let n = /* @__PURE__ */ N(() => t.store.t), r = [
 		"div",
 		"section",
@@ -5707,10 +5788,10 @@ function ad(e, t) {
 			node: Yo(n, e.type)
 		}, ["announce.inserted", { label: e.label }]) && t.store.selection && t.onInserted(t.store.selection);
 	}
-	var o = rd(), s = I(o), c = I(s, !0);
+	var o = dd(), s = I(o), c = I(s, !0);
 	k(s);
 	var l = R(s, 2), u = (e) => {
-		var r = Qu(), i = I(r, !0);
+		var r = od(), i = I(r, !0);
 		k(r), z((e) => q(i, e), [() => H(n)("palette.import")]), U("click", r, function(...e) {
 			t.onImport?.apply(this, e);
 		}), K(e, r);
@@ -5719,11 +5800,11 @@ function ad(e, t) {
 		t.content.canImport && e(u);
 	});
 	var d = R(l, 2), f = (e) => {
-		var r = ed(), i = L(r), a = I(i, !0);
+		var r = cd(), i = L(r), a = I(i, !0);
 		k(i);
 		var o = R(i, 2);
 		Y(o, 21, () => t.content.templates, (e) => e.id, (e, r) => {
-			var i = $u(), a = I(i), o = I(a, !0);
+			var i = sd(), a = I(i), o = I(a, !0);
 			k(a), k(i), z((e) => {
 				Q(a, "aria-label", e), q(o, H(r).name);
 			}, [() => H(n)("palette.insertTemplate", { name: H(r).name })]), U("click", a, () => {
@@ -5736,11 +5817,11 @@ function ad(e, t) {
 	}), Y(R(d, 2), 17, () => H(i), ([e, t]) => e, (e, r) => {
 		var i = /* @__PURE__ */ N(() => gt(H(r), 2));
 		let o = () => H(i)[0], s = () => H(i)[1];
-		var c = nd(), l = L(c), u = I(l, !0);
+		var c = ud(), l = L(c), u = I(l, !0);
 		k(l);
 		var d = R(l, 2);
 		Y(d, 21, s, (e) => e.type, (e, r) => {
-			var i = td(), o = I(i), s = I(o, !0);
+			var i = ld(), o = I(i), s = I(o, !0);
 			k(o), k(i), z((e) => {
 				Q(o, "aria-label", e), Q(o, "data-type", H(r).type), q(s, H(r).label);
 			}, [() => H(n)("palette.insert", { label: H(r).label })]), U("click", o, () => a(H(r))), U("pointerdown", o, (e) => t.store.catalogue && t.drag.pressNew(e, {
@@ -5752,18 +5833,18 @@ function ad(e, t) {
 }
 W(["click", "pointerdown"]);
 // src/ui/publish/ConflictBanner.svelte
-var od = /* @__PURE__ */ G("<button type=\"button\" class=\"svelte-1ti6kqq\"> </button>"), sd = /* @__PURE__ */ G("<div class=\"conflict svelte-1ti6kqq\" role=\"alertdialog\" aria-modal=\"false\" tabindex=\"-1\"><strong> </strong> <p class=\"svelte-1ti6kqq\"> </p> <div class=\"actions svelte-1ti6kqq\"><button type=\"button\" class=\"primary svelte-1ti6kqq\"> </button> <button type=\"button\" class=\"svelte-1ti6kqq\"> </button> <!></div></div>"), cd = {
+var md = /* @__PURE__ */ G("<button type=\"button\" class=\"svelte-1ti6kqq\"> </button>"), hd = /* @__PURE__ */ G("<div class=\"conflict svelte-1ti6kqq\" role=\"alertdialog\" aria-modal=\"false\" tabindex=\"-1\"><strong> </strong> <p class=\"svelte-1ti6kqq\"> </p> <div class=\"actions svelte-1ti6kqq\"><button type=\"button\" class=\"primary svelte-1ti6kqq\"> </button> <button type=\"button\" class=\"svelte-1ti6kqq\"> </button> <!></div></div>"), gd = {
 	hash: "svelte-1ti6kqq",
 	code: ".conflict.svelte-1ti6kqq {margin:.5rem .75rem 0;padding:.75rem;border:2px solid var(--cpb-danger);border-radius:8px;background:#fef2f2;}.conflict.svelte-1ti6kqq:focus-visible {outline:2px solid var(--cpb-danger);outline-offset:2px;}p.svelte-1ti6kqq {margin:.25rem 0 .5rem;font-size:.875rem;}.actions.svelte-1ti6kqq {display:flex;flex-wrap:wrap;gap:.5rem;}button.svelte-1ti6kqq {font:inherit;font-size:.85rem;padding:.35rem .75rem;border:1px solid var(--cpb-border);border-radius:6px;background:var(--cpb-surface);color:inherit;cursor:pointer;}button.primary.svelte-1ti6kqq {background:var(--cpb-danger);border-color:var(--cpb-danger);color:#fff;}button.svelte-1ti6kqq:focus-visible {outline:2px solid var(--cpb-accent);outline-offset:2px;}"
 };
-function ld(e, t) {
-	A(t, !0), X(e, cd);
+function _d(e, t) {
+	A(t, !0), X(e, gd);
 	let n = /* @__PURE__ */ N(() => t.store.t), r = /* @__PURE__ */ P(void 0);
 	qr(() => {
 		t.store.status === "conflict" && Ii().then(() => H(r)?.focus());
 	});
 	var i = ta(), a = L(i), o = (e) => {
-		var i = sd(), a = I(i), o = I(a, !0);
+		var i = hd(), a = I(i), o = I(a, !0);
 		k(a);
 		var s = R(a, 2), c = I(s, !0);
 		k(s);
@@ -5772,7 +5853,7 @@ function ld(e, t) {
 		var f = R(u, 2), p = I(f, !0);
 		k(f);
 		var m = R(f, 2), h = (e) => {
-			var r = od(), i = I(r, !0);
+			var r = md(), i = I(r, !0);
 			k(r), z((e) => q(i, e), [() => H(n)("conflict.view")]), U("click", r, () => t.onView?.(t.store.conflictRevision)), K(e, r);
 		};
 		J(m, (e) => {
@@ -5795,12 +5876,12 @@ function ld(e, t) {
 }
 W(["click"]);
 // src/ui/publish/ServerView.svelte
-var ud = /* @__PURE__ */ G("<p class=\"note svelte-ztrun4\"> </p>"), dd = /* @__PURE__ */ G("<p class=\"note svelte-ztrun4\" role=\"status\"> </p>"), fd = /* @__PURE__ */ G("<iframe sandbox=\"\" class=\"svelte-ztrun4\"></iframe>"), pd = /* @__PURE__ */ G("<div class=\"server svelte-ztrun4\"><div class=\"bar svelte-ztrun4\"><strong> </strong> <button type=\"button\" class=\"svelte-ztrun4\"> </button></div> <!> <!></div>"), md = {
+var vd = /* @__PURE__ */ G("<p class=\"note svelte-ztrun4\"> </p>"), yd = /* @__PURE__ */ G("<p class=\"note svelte-ztrun4\" role=\"status\"> </p>"), bd = /* @__PURE__ */ G("<iframe sandbox=\"\" class=\"svelte-ztrun4\"></iframe>"), xd = /* @__PURE__ */ G("<div class=\"server svelte-ztrun4\"><div class=\"bar svelte-ztrun4\"><strong> </strong> <button type=\"button\" class=\"svelte-ztrun4\"> </button></div> <!> <!></div>"), Sd = {
 	hash: "svelte-ztrun4",
 	code: ".server.svelte-ztrun4 {background:var(--cpb-canvas);padding:.5rem 1rem 1rem;min-height:0;display:flex;flex-direction:column;gap:.5rem;}.bar.svelte-ztrun4 {display:flex;align-items:center;gap:.75rem;}.note.svelte-ztrun4 {margin:0;font-size:.8rem;color:var(--cpb-muted);}button.svelte-ztrun4 {margin-left:auto;font:inherit;font-size:.8rem;padding:.3rem .7rem;border:1px solid var(--cpb-border);border-radius:6px;background:var(--cpb-surface);color:inherit;cursor:pointer;}iframe.svelte-ztrun4 {flex:1;width:100%;min-height:480px;border:1px solid var(--cpb-border);border-radius:8px;background:#fff;}"
 };
-function hd(e, t) {
-	A(t, !0), X(e, md);
+function Cd(e, t) {
+	A(t, !0), X(e, Sd);
 	let n = Ga(t, "stylesheets", 19, () => []), r = /* @__PURE__ */ N(() => t.store.t), i = /* @__PURE__ */ P(null);
 	qr(() => {
 		let e = t.store.session.transport.render, n = t.revision;
@@ -5809,22 +5890,22 @@ function hd(e, t) {
 		}).catch((e) => t.store.fail(e));
 	});
 	let a = /* @__PURE__ */ N(() => H(i) === null ? "" : $a(n()).replace("</head>", `<style data-cms-page>${H(i).css.replace(/<\/style/gi, "<\\/style")}</style></head>`).replace("<body></body>", `<body>${H(i).html}</body>`));
-	var o = pd(), s = I(o), c = I(s), l = I(c, !0);
+	var o = xd(), s = I(o), c = I(s), l = I(c, !0);
 	k(c);
 	var u = R(c, 2), d = I(u, !0);
 	k(u), k(s);
 	var f = R(s, 2), p = (e) => {
-		var t = ud(), n = I(t, !0);
+		var t = vd(), n = I(t, !0);
 		k(t), z((e) => q(n, e), [() => H(r)("server.dirty")]), K(e, t);
 	};
 	J(f, (e) => {
 		t.store.dirty && e(p);
 	});
 	var m = R(f, 2), h = (e) => {
-		var t = dd(), n = I(t, !0);
+		var t = yd(), n = I(t, !0);
 		k(t), z((e) => q(n, e), [() => H(r)("server.loading")]), K(e, t);
 	}, g = (e) => {
-		var t = fd();
+		var t = bd();
 		z((e) => {
 			Q(t, "title", e), Q(t, "srcdoc", H(a));
 		}, [() => H(r)("server.frame")]), K(e, t);
@@ -5839,7 +5920,7 @@ function hd(e, t) {
 }
 W(["click"]);
 // src/ui/model/flatten.ts
-var gd = (e) => {
+var wd = (e) => {
 	let t = [], n = (r, i, a) => {
 		r.forEach((o, s) => {
 			t.push({
@@ -5852,12 +5933,12 @@ var gd = (e) => {
 		});
 	};
 	return n(e.rootIds, null, 1), t;
-}, _d = (e) => {
+}, Td = (e) => {
 	if (!(e.ctrlKey || e.metaKey) || e.altKey) return null;
 	let t = e.key.toLowerCase();
 	return t === "z" ? e.shiftKey ? { type: "redo" } : { type: "undo" } : t === "y" ? { type: "redo" } : null;
-}, vd = (e, t, n) => {
-	let r = gd(e), i = r[0];
+}, Ed = (e, t, n) => {
+	let r = wd(e), i = r[0];
 	if (!i) return null;
 	let a = t === null ? -1 : r.findIndex((e) => e.id === t), o = r[a];
 	if (!o) return n.key === "ArrowDown" || n.key === "Home" ? {
@@ -5866,16 +5947,16 @@ var gd = (e) => {
 	} : null;
 	let s = e.nodes[o.id], c = w(e, o.parent), l = n.ctrlKey || n.metaKey;
 	if (n.altKey && !l) switch (n.key) {
-		case "ArrowUp": return o.index > 0 ? yd(o.id, o.parent, o.index - 1) : null;
-		case "ArrowDown": return o.index < c.length - 1 ? yd(o.id, o.parent, o.index + 2) : null;
+		case "ArrowUp": return o.index > 0 ? Dd(o.id, o.parent, o.index - 1) : null;
+		case "ArrowDown": return o.index < c.length - 1 ? Dd(o.id, o.parent, o.index + 2) : null;
 		case "ArrowRight": {
 			let t = c[o.index - 1];
-			return t ? yd(o.id, t, e.nodes[t]?.children.length ?? 0) : null;
+			return t ? Dd(o.id, t, e.nodes[t]?.children.length ?? 0) : null;
 		}
 		case "ArrowLeft": {
 			if (o.parent === null) return null;
 			let t = e.nodes[o.parent], n = w(e, t?.parent ?? null);
-			return yd(o.id, t?.parent ?? null, n.indexOf(o.parent) + 1);
+			return Dd(o.id, t?.parent ?? null, n.indexOf(o.parent) + 1);
 		}
 		default: return null;
 	}
@@ -5886,14 +5967,14 @@ var gd = (e) => {
 			id: o.id
 		}
 	};
-	if (l || n.altKey) return _d(n);
+	if (l || n.altKey) return Td(n);
 	switch (n.key) {
-		case "ArrowDown": return bd(r[a + 1]?.id);
-		case "ArrowUp": return bd(r[a - 1]?.id);
-		case "Home": return bd(i.id);
-		case "End": return bd(r[r.length - 1]?.id);
-		case "ArrowRight": return bd(s?.children[0]);
-		case "ArrowLeft": return bd(o.parent ?? void 0);
+		case "ArrowDown": return Od(r[a + 1]?.id);
+		case "ArrowUp": return Od(r[a - 1]?.id);
+		case "Home": return Od(i.id);
+		case "End": return Od(r[r.length - 1]?.id);
+		case "ArrowRight": return Od(s?.children[0]);
+		case "ArrowLeft": return Od(o.parent ?? void 0);
 		case "Delete":
 		case "Backspace": return {
 			type: "command",
@@ -5904,7 +5985,7 @@ var gd = (e) => {
 		};
 		default: return null;
 	}
-}, yd = (e, t, n) => ({
+}, Dd = (e, t, n) => ({
 	type: "command",
 	command: {
 		kind: "move",
@@ -5912,16 +5993,16 @@ var gd = (e) => {
 		parent: t,
 		index: n
 	}
-}), bd = (e) => e ? {
+}), Od = (e) => e ? {
 	type: "select",
 	id: e
-} : null, xd = /* @__PURE__ */ G("<p class=\"empty svelte-y2i8n1\"> </p>"), Sd = /* @__PURE__ */ G("<li role=\"treeitem\" class=\"svelte-y2i8n1\"> </li>"), Cd = /* @__PURE__ */ G("<ul role=\"tree\" aria-labelledby=\"cpb-structure-title\" aria-describedby=\"cpb-structure-help\" class=\"svelte-y2i8n1\"></ul>"), wd = /* @__PURE__ */ G("<section class=\"structure svelte-y2i8n1\" aria-labelledby=\"cpb-structure-title\"><h2 id=\"cpb-structure-title\" class=\"svelte-y2i8n1\"> </h2> <p class=\"help svelte-y2i8n1\" id=\"cpb-structure-help\"> </p> <!></section>"), Td = {
+} : null, kd = /* @__PURE__ */ G("<p class=\"empty svelte-y2i8n1\"> </p>"), Ad = /* @__PURE__ */ G("<li role=\"treeitem\" class=\"svelte-y2i8n1\"> </li>"), jd = /* @__PURE__ */ G("<ul role=\"tree\" aria-labelledby=\"cpb-structure-title\" aria-describedby=\"cpb-structure-help\" class=\"svelte-y2i8n1\"></ul>"), Md = /* @__PURE__ */ G("<section class=\"structure svelte-y2i8n1\" aria-labelledby=\"cpb-structure-title\"><h2 id=\"cpb-structure-title\" class=\"svelte-y2i8n1\"> </h2> <p class=\"help svelte-y2i8n1\" id=\"cpb-structure-help\"> </p> <!></section>"), Nd = {
 	hash: "svelte-y2i8n1",
 	code: ".structure.svelte-y2i8n1 {padding:.5rem .75rem;overflow:auto;border-top:1px solid var(--cpb-border);}h2.svelte-y2i8n1 {font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;margin:0;color:var(--cpb-muted);}.help.svelte-y2i8n1, .empty.svelte-y2i8n1 {font-size:.75rem;color:var(--cpb-muted);margin:.25rem 0 .5rem;}ul.svelte-y2i8n1 {list-style:none;margin:0;padding:0;outline:none;}li.svelte-y2i8n1 {font-size:.85rem;padding:.25rem .375rem;border-radius:4px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}li[aria-selected='true'].svelte-y2i8n1 {background:var(--cpb-accent-soft);color:var(--cpb-accent-strong);font-weight:600;}li.svelte-y2i8n1:focus-visible, ul.svelte-y2i8n1:focus-visible {outline:2px solid var(--cpb-accent);outline-offset:-2px;}"
 };
-function Ed(e, t) {
-	A(t, !0), X(e, Td);
-	let n = /* @__PURE__ */ N(() => t.store.t), r = /* @__PURE__ */ N(() => gd(t.store.tree)), i = /* @__PURE__ */ P(void 0), a = (e) => {
+function Pd(e, t) {
+	A(t, !0), X(e, Nd);
+	let n = /* @__PURE__ */ N(() => t.store.t), r = /* @__PURE__ */ N(() => wd(t.store.tree)), i = /* @__PURE__ */ P(void 0), a = (e) => {
 		let n = t.store.tree.nodes[e];
 		if (!n) return e;
 		let r = typeof n.fields.label == "string" && n.fields.label !== "" ? n.fields.label : null, i = t.store.catalogue?.get(n.type);
@@ -5935,7 +6016,7 @@ function Ed(e, t) {
 			t.onEdit(t.store.selection) && e.preventDefault();
 			return;
 		}
-		let n = vd(t.store.tree, t.store.selection, e);
+		let n = Ed(t.store.tree, t.store.selection, e);
 		if (n) {
 			if (e.preventDefault(), n.type === "select") t.store.select(n.id);
 			else if (n.type === "undo") t.store.undo();
@@ -5947,17 +6028,17 @@ function Ed(e, t) {
 			await o(t.store.selection);
 		}
 	}
-	var c = { focusItem: o }, l = wd(), u = I(l), d = I(u, !0);
+	var c = { focusItem: o }, l = Md(), u = I(l), d = I(u, !0);
 	k(u);
 	var f = R(u, 2), p = I(f, !0);
 	k(f);
 	var m = R(f, 2), h = (e) => {
-		var t = xd(), r = I(t, !0);
+		var t = kd(), r = I(t, !0);
 		k(t), z((e) => q(r, e), [() => H(n)("structure.empty")]), K(e, t);
 	}, g = (e) => {
-		var n = Cd();
+		var n = jd();
 		Y(n, 21, () => H(r), (e) => e.id, (e, n) => {
-			var r = Sd();
+			var r = Ad();
 			let i;
 			var o = I(r, !0);
 			k(r), z((e) => {
@@ -5973,21 +6054,21 @@ function Ed(e, t) {
 }
 W(["keydown", "click"]);
 // src/ui/toolbar/Toolbar.svelte
-var Dd = /* @__PURE__ */ G("<button type=\"button\" class=\"primary svelte-ouhh5d\"> </button>"), Od = /* @__PURE__ */ G("<button type=\"button\" class=\"svelte-ouhh5d\"> </button>"), kd = /* @__PURE__ */ G("<button type=\"button\" class=\"svelte-ouhh5d\"> </button>"), Ad = /* @__PURE__ */ G("<button type=\"button\" class=\"svelte-ouhh5d\"> </button>"), jd = /* @__PURE__ */ G("<span class=\"revision svelte-ouhh5d\"> <span data-publication=\"\"> </span></span>"), Md = /* @__PURE__ */ G("<div class=\"toolbar svelte-ouhh5d\" role=\"toolbar\"><button type=\"button\" aria-keyshortcuts=\"Control+Z\" class=\"svelte-ouhh5d\"> </button> <button type=\"button\" aria-keyshortcuts=\"Control+Shift+Z\" class=\"svelte-ouhh5d\"> </button> <button type=\"button\" aria-keyshortcuts=\"Control+S\" class=\"svelte-ouhh5d\"> </button> <!> <!> <!> <!> <span class=\"status svelte-ouhh5d\"> </span> <!></div>"), Nd = {
+var Fd = /* @__PURE__ */ G("<button type=\"button\" class=\"primary svelte-ouhh5d\"> </button>"), Id = /* @__PURE__ */ G("<button type=\"button\" class=\"svelte-ouhh5d\"> </button>"), Ld = /* @__PURE__ */ G("<button type=\"button\" class=\"svelte-ouhh5d\"> </button>"), Rd = /* @__PURE__ */ G("<button type=\"button\" class=\"svelte-ouhh5d\"> </button>"), zd = /* @__PURE__ */ G("<span class=\"revision svelte-ouhh5d\"> <span data-publication=\"\"> </span></span>"), Bd = /* @__PURE__ */ G("<div class=\"toolbar svelte-ouhh5d\" role=\"toolbar\"><button type=\"button\" aria-keyshortcuts=\"Control+Z\" class=\"svelte-ouhh5d\"> </button> <button type=\"button\" aria-keyshortcuts=\"Control+Shift+Z\" class=\"svelte-ouhh5d\"> </button> <button type=\"button\" aria-keyshortcuts=\"Control+S\" class=\"svelte-ouhh5d\"> </button> <!> <!> <!> <!> <span class=\"status svelte-ouhh5d\"> </span> <!></div>"), Vd = {
 	hash: "svelte-ouhh5d",
 	code: ".toolbar.svelte-ouhh5d {display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding:.5rem .75rem;border-bottom:1px solid var(--cpb-border);}button.svelte-ouhh5d {font:inherit;padding:.35rem .75rem;border:1px solid var(--cpb-border);border-radius:6px;background:var(--cpb-surface);color:inherit;cursor:pointer;}button.svelte-ouhh5d:disabled {opacity:.5;cursor:not-allowed;}button.primary.svelte-ouhh5d {background:var(--cpb-accent);border-color:var(--cpb-accent);color:#fff;}button[aria-pressed='true'].svelte-ouhh5d {background:var(--cpb-accent-soft);border-color:var(--cpb-accent);}button.svelte-ouhh5d:focus-visible {outline:2px solid var(--cpb-accent);outline-offset:2px;}.status.svelte-ouhh5d {margin-left:auto;font-size:.875rem;}.status[data-status='conflict'].svelte-ouhh5d, .status[data-status='offline'].svelte-ouhh5d, .status[data-status='load-error'].svelte-ouhh5d {color:var(--cpb-danger);font-weight:600;}.revision.svelte-ouhh5d {font-size:.75rem;color:var(--cpb-muted);}"
 };
-function Pd(e, t) {
-	A(t, !0), X(e, Nd);
+function Hd(e, t) {
+	A(t, !0), X(e, Vd);
 	let n = Ga(t, "store", 7), r = /* @__PURE__ */ N(() => n().t), i = /* @__PURE__ */ N(() => n().publishedRevision === null ? H(r)("publication.none") : n().unpublished ? H(r)("publication.pending", { revision: n().publishedRevision }) : H(r)("publication.current"));
-	var a = Md(), o = I(a), s = I(o, !0);
+	var a = Bd(), o = I(a), s = I(o, !0);
 	k(o);
 	var c = R(o, 2), l = I(c, !0);
 	k(c);
 	var u = R(c, 2), d = I(u, !0);
 	k(u);
 	var f = R(u, 2), p = (e) => {
-		var t = Dd(), i = I(t, !0);
+		var t = Fd(), i = I(t, !0);
 		k(t), z((e) => {
 			t.disabled = n().publishing || n().status !== "ready" || !(n().unpublished || n().part?.rulesUnpublished), q(i, e);
 		}, [() => n().publishing ? H(r)("toolbar.publishing") : H(r)("toolbar.publish")]), U("click", t, () => n().part ? n().part.publish() : n().publish()), K(e, t);
@@ -5996,7 +6077,7 @@ function Pd(e, t) {
 		n().canPublish && e(p);
 	});
 	var m = R(f, 2), h = (e) => {
-		var t = Od(), i = I(t, !0);
+		var t = Id(), i = I(t, !0);
 		k(t), z((e) => {
 			Q(t, "aria-pressed", n().part.open), q(i, e);
 		}, [() => H(r)("parts.open")]), U("click", t, () => {
@@ -6007,7 +6088,7 @@ function Pd(e, t) {
 		n().part && e(h);
 	});
 	var g = R(m, 2), _ = (e) => {
-		var t = kd(), i = I(t, !0);
+		var t = Ld(), i = I(t, !0);
 		k(t), z((e) => {
 			Q(t, "aria-pressed", n().designOpen), q(i, e);
 		}, [() => H(r)("design.open")]), U("click", t, () => {
@@ -6018,7 +6099,7 @@ function Pd(e, t) {
 		n().designAvailable && e(_);
 	});
 	var v = R(g, 2), y = (e) => {
-		var n = Ad(), i = I(n, !0);
+		var n = Rd(), i = I(n, !0);
 		k(n), z((e) => {
 			Q(n, "aria-pressed", t.serverView), q(i, e);
 		}, [() => H(r)("toolbar.serverView")]), U("click", n, function(...e) {
@@ -6031,7 +6112,7 @@ function Pd(e, t) {
 	var b = R(v, 2), x = I(b, !0);
 	k(b);
 	var S = R(b, 2), C = (e) => {
-		var t = jd(), a = I(t), o = R(a), s = I(o, !0);
+		var t = zd(), a = I(t), o = R(a), s = I(o, !0);
 		k(o), k(t), z((e) => {
 			q(a, `${e ?? ""} · `), q(s, H(i));
 		}, [() => H(r)("toolbar.revision", { revision: n().revision })]), K(e, t);
@@ -6050,12 +6131,12 @@ function Pd(e, t) {
 }
 W(["click"]);
 // src/ui/Editor.svelte
-var Fd = /* @__PURE__ */ G("<div class=\"editor svelte-b7je3p\" role=\"application\"><!> <!> <div class=\"body svelte-b7je3p\"><aside class=\"left svelte-b7je3p\"><!> <!></aside> <!> <!></div> <!> <!> <!> <div class=\"sr-only svelte-b7je3p\" aria-live=\"polite\"> </div> <div class=\"sr-only svelte-b7je3p\" aria-live=\"assertive\" role=\"alert\"> </div></div>"), Id = {
+var Ud = /* @__PURE__ */ G("<div class=\"editor svelte-b7je3p\" role=\"application\"><!> <!> <div class=\"body svelte-b7je3p\"><aside class=\"left svelte-b7je3p\"><!> <!></aside> <!> <!></div> <!> <!> <!> <div class=\"sr-only svelte-b7je3p\" aria-live=\"polite\"> </div> <div class=\"sr-only svelte-b7je3p\" aria-live=\"assertive\" role=\"alert\"> </div></div>"), Wd = {
 	hash: "svelte-b7je3p",
 	code: ".editor.svelte-b7je3p {--cpb-border: #d4d4d8;--cpb-surface: #fff;--cpb-canvas: #f1f5f9;--cpb-muted: #52525b;--cpb-accent: #2563eb;--cpb-accent-soft: #dbeafe;--cpb-accent-strong: #1e3a8a;--cpb-danger: #b91c1c;font:14px/1.4 system-ui, sans-serif;color:#18181b;background:var(--cpb-surface);display:flex;flex-direction:column;height:100%;min-height:600px;border:1px solid var(--cpb-border);}.body.svelte-b7je3p {flex:1;display:grid;grid-template-columns:240px 1fr 280px;min-height:0;}.left.svelte-b7je3p {display:grid;grid-template-rows:minmax(0, 45%) minmax(0, 1fr);min-height:0;border-right:1px solid var(--cpb-border);}.sr-only.svelte-b7je3p {position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}\n  @media (max-width: 900px) {.body.svelte-b7je3p {grid-template-columns:1fr;} }"
 };
-function Ld(e, t) {
-	A(t, !0), X(e, Id);
+function Gd(e, t) {
+	A(t, !0), X(e, Wd);
 	let n = Ga(t, "stylesheets", 19, () => []), r = /* @__PURE__ */ P(void 0), i = /* @__PURE__ */ P(void 0), a = /* @__PURE__ */ N(() => new Dc(t.store)), o = /* @__PURE__ */ N(() => new $o(t.store)), s = /* @__PURE__ */ P(!1), c = /* @__PURE__ */ P(!1), l = !1;
 	qr(() => {
 		t.store.status === "ready" && !l && (l = !0, H(o).loadTemplates());
@@ -6067,15 +6148,15 @@ function Ld(e, t) {
 			return;
 		}
 		if (e.target?.closest("input, textarea, select, [contenteditable=\"true\"], [role=\"tree\"]")) return;
-		let n = _d(e);
+		let n = Td(e);
 		n && (e.preventDefault(), n.type === "undo" ? t.store.undo() : n.type === "redo" && t.store.redo());
 	}
-	var p = Fd(), m = I(p);
+	var p = Ud(), m = I(p);
 	{
 		let e = /* @__PURE__ */ N(() => H(u) !== null), n = /* @__PURE__ */ N(() => H(d) ? () => {
 			F(u, H(u) === null ? t.store.revision : null, !0);
 		} : null);
-		Pd(m, {
+		Hd(m, {
 			get store() {
 				return t.store;
 			},
@@ -6092,7 +6173,7 @@ function Ld(e, t) {
 		let e = /* @__PURE__ */ N(() => H(d) ? (e) => {
 			F(u, e, !0);
 		} : null);
-		ld(h, {
+		_d(h, {
 			get store() {
 				return t.store;
 			},
@@ -6105,7 +6186,7 @@ function Ld(e, t) {
 		});
 	}
 	var g = R(h, 2), _ = I(g), v = I(_);
-	ad(v, {
+	pd(v, {
 		get store() {
 			return t.store;
 		},
@@ -6119,14 +6200,14 @@ function Ld(e, t) {
 		onImport: () => {
 			F(s, !0);
 		}
-	}), Wa(Ed(R(v, 2), {
+	}), Wa(Pd(R(v, 2), {
 		get store() {
 			return t.store;
 		},
 		onEdit: (e) => H(i)?.startEditing(e) ?? !1
 	}), (e) => F(r, e, !0), () => H(r)), k(_);
 	var y = R(_, 2), b = (e) => {
-		hd(e, {
+		Cd(e, {
 			get store() {
 				return t.store;
 			},
@@ -6163,7 +6244,7 @@ function Ld(e, t) {
 		H(u) === null ? e(x, -1) : e(b);
 	});
 	var S = R(y, 2), C = (e) => {
-		Zu(e, {
+		ad(e, {
 			get store() {
 				return t.store;
 			},
@@ -6261,7 +6342,7 @@ function Ld(e, t) {
 }
 W(["keydown"]);
 // src/ui/i18n/components.ts
-var Rd = {
+var Kd = {
 	"canvas.empty": "{type}: nada que mostrar todavía",
 	"canvas.menu": "Menú «{slug}» (los enlaces se ven en la página publicada)",
 	"gallery.add": "Añadir imagen",
@@ -6271,7 +6352,7 @@ var Rd = {
 	"gallery.up": "Subir imagen {n}",
 	"gallery.down": "Bajar imagen {n}",
 	"gallery.remove": "Quitar imagen {n}"
-}, zd = {
+}, qd = {
 	"canvas.empty": "{type}: nothing to show yet",
 	"canvas.menu": "Menu «{slug}» (links show on the published page)",
 	"gallery.add": "Add image",
@@ -6281,7 +6362,7 @@ var Rd = {
 	"gallery.up": "Move image {n} up",
 	"gallery.down": "Move image {n} down",
 	"gallery.remove": "Remove image {n}"
-}, Bd = {
+}, Jd = {
 	"media.title": "Biblioteca de medios",
 	"media.library": "Biblioteca",
 	"media.upload": "Subir archivo",
@@ -6319,7 +6400,7 @@ var Rd = {
 	"media.dimensions": "{width} × {height} px",
 	"media.selected": "Seleccionada: {name}",
 	"error.MEDIA_IN_USE": "El archivo está en uso; quítalo de las páginas primero."
-}, Vd = {
+}, Yd = {
 	"media.title": "Media library",
 	"media.library": "Library",
 	"media.upload": "Upload file",
@@ -6357,7 +6438,7 @@ var Rd = {
 	"media.dimensions": "{width} × {height} px",
 	"media.selected": "Selected: {name}",
 	"error.MEDIA_IN_USE": "The file is in use; remove it from the pages first."
-}, Hd = {
+}, Xd = {
 	"parts.open": "Reglas",
 	"parts.title": "Dónde se usa «{name}»",
 	"parts.kind.header": "Cabecera",
@@ -6367,6 +6448,9 @@ var Rd = {
 	"parts.kind.archive": "Listado de una fuente",
 	"parts.kind.search": "Resultados de búsqueda",
 	"parts.target.sources": "Fuentes de datos",
+	"parts.previewSource": "Fuente de la vista previa",
+	"parts.previewRecord": "Registro de muestra",
+	"parts.previewWords": "Palabras a buscar",
 	"parts.include": "Se usa en",
 	"parts.exclude": "Excepto en",
 	"parts.add": "Añadir",
@@ -6404,7 +6488,7 @@ var Rd = {
 	"parts.invalid": "Regla no válida en {path} ({reason}).",
 	"parts.unpublishedRules": "Hay reglas sin publicar.",
 	"error.SITE_PART_CONFLICT": "Hay partes del mismo tipo empatadas; cambia su prioridad o sus reglas."
-}, Ud = {
+}, Zd = {
 	"parts.open": "Rules",
 	"parts.title": "Where «{name}» is used",
 	"parts.kind.header": "Header",
@@ -6414,6 +6498,9 @@ var Rd = {
 	"parts.kind.archive": "Source listing",
 	"parts.kind.search": "Search results",
 	"parts.target.sources": "Data sources",
+	"parts.previewSource": "Preview source",
+	"parts.previewRecord": "Sample record",
+	"parts.previewWords": "Words to search",
 	"parts.include": "Used on",
 	"parts.exclude": "Except on",
 	"parts.add": "Add",
@@ -6451,7 +6538,7 @@ var Rd = {
 	"parts.invalid": "Invalid rule at {path} ({reason}).",
 	"parts.unpublishedRules": "There are unpublished rules.",
 	"error.SITE_PART_CONFLICT": "Parts of the same kind tie; change their priority or their rules."
-}, Wd = {
+}, Qd = {
 	"data.title": "Consulta",
 	"data.unavailable": "Este sitio no tiene fuentes de datos.",
 	"data.id": "Nombre de la consulta",
@@ -6492,7 +6579,7 @@ var Rd = {
 	"query.operator": "Condición no válida para el campo en la fila {row}.",
 	"query.param": "Parámetro de URL no válido o repetido.",
 	"advanced.query": "Los resultados de la consulta"
-}, Gd = {
+}, $d = {
 	"data.title": "Query",
 	"data.unavailable": "This site has no data sources.",
 	"data.id": "Query name",
@@ -6533,11 +6620,11 @@ var Rd = {
 	"query.operator": "Condition not valid for the field in row {row}.",
 	"query.param": "Invalid or repeated URL parameter.",
 	"advanced.query": "The results of the query"
-}, Kd = {
-	...Vd,
-	...zd,
-	...Ud,
-	...Gd,
+}, ef = {
+	...Yd,
+	...qd,
+	...Zd,
+	...$d,
 	"editor.label": "Page editor",
 	"toolbar.undo": "Undo",
 	"toolbar.redo": "Redo",
@@ -6703,11 +6790,11 @@ var Rd = {
 	"error.AUTHORIZATION_DENIED": "You do not have permission for this action.",
 	"error.NETWORK": "Offline. Your changes are still here.",
 	"error.SERVER": "Server error. Your changes are still here."
-}, qd = {
-	...Bd,
-	...Rd,
-	...Hd,
-	...Wd,
+}, tf = {
+	...Jd,
+	...Kd,
+	...Xd,
+	...Qd,
 	"editor.label": "Editor de página",
 	"toolbar.undo": "Deshacer",
 	"toolbar.redo": "Rehacer",
@@ -6873,13 +6960,13 @@ var Rd = {
 	"error.AUTHORIZATION_DENIED": "No tienes permiso para esta acción.",
 	"error.NETWORK": "Sin conexión. Tus cambios siguen aquí.",
 	"error.SERVER": "Error del servidor. Tus cambios siguen aquí."
-}, Jd = {
-	es: qd,
-	en: Kd
-}, Yd = (e) => {
-	let t = Jd[e.toLowerCase().split("-")[0] ?? "es"] ?? qd;
+}, nf = {
+	es: tf,
+	en: ef
+}, rf = (e) => {
+	let t = nf[e.toLowerCase().split("-")[0] ?? "es"] ?? tf;
 	return (e, n = {}) => t[e].replace(/\{(\w+)\}/g, (e, t) => String(n[t] ?? `{${t}}`));
-}, Xd = class {
+}, af = class {
 	transport;
 	#e = /* @__PURE__ */ P({});
 	get resolved() {
@@ -6954,7 +7041,7 @@ var Rd = {
 	get assetUrls() {
 		return Object.fromEntries(Object.entries(this.resolved).map(([e, t]) => [e, t.url]));
 	}
-}, Zd = class {
+}, of = class {
 	transport;
 	#e = /* @__PURE__ */ P(null);
 	get sources() {
@@ -7054,7 +7141,7 @@ var Rd = {
 			};
 		}
 	}
-}, Qd = class {
+}, sf = class {
 	session;
 	t;
 	#e = /* @__PURE__ */ P({
@@ -7220,7 +7307,7 @@ var Rd = {
 	}
 	stops = [];
 	constructor(e, t) {
-		this.session = e, this.t = t, this.designSession = new Ae(e.transport), this.media = new Xd(e.transport), this.data = new Zd(e.transport), this.stops.push(this.designSession.events.on("change", () => {
+		this.session = e, this.t = t, this.designSession = new Ae(e.transport), this.media = new af(e.transport), this.data = new of(e.transport), this.stops.push(this.designSession.events.on("change", () => {
 			this.design = this.designSession.design, this.designDirty = this.designSession.dirty, this.designRevision = this.designSession.revision, this.designPublished = this.designSession.publishedRevision, this.designAvailable = this.designSession.available;
 		}));
 		for (let t of [
@@ -7312,7 +7399,7 @@ var Rd = {
 		}
 		this.sync();
 	}
-}, $d = (e, t) => JSON.stringify(e) === JSON.stringify(t), ef = () => Array.from(globalThis.crypto.getRandomValues(/* @__PURE__ */ new Uint8Array(16)), (e) => e.toString(16).padStart(2, "0")).join(""), tf = class {
+}, cf = (e, t) => JSON.stringify(e) === JSON.stringify(t), lf = () => Array.from(globalThis.crypto.getRandomValues(/* @__PURE__ */ new Uint8Array(16)), (e) => e.toString(16).padStart(2, "0")).join(""), uf = class {
 	transport;
 	id;
 	#e = /* @__PURE__ */ P(!1);
@@ -7404,7 +7491,7 @@ var Rd = {
 		this.transport = e, this.id = t;
 	}
 	get rulesUnpublished() {
-		return this.dirty || !$d(this.part?.rules, this.part?.publishedRules);
+		return this.dirty || !cf(this.part?.rules, this.part?.publishedRules);
 	}
 	async load() {
 		if (!this.transport.listSiteParts) return;
@@ -7441,7 +7528,7 @@ var Rd = {
 	async publish() {
 		let e = this.store;
 		e && (e.dirty && await e.save(), e.unpublished ? await e.publish() : await this.act(async () => {
-			await this.publishDocument(e.revision, ef()), e.announce("parts.published");
+			await this.publishDocument(e.revision, lf()), e.announce("parts.published");
 		}));
 	}
 	async act(e) {
@@ -7465,10 +7552,10 @@ var Rd = {
 			this.busy = !1;
 		}
 	}
-}, nf = (e, t) => ({
+}, df = (e, t) => ({
 	...e,
 	publish: (e, n, r) => t.publishDocument(n, r)
-}), rf = [
+}), ff = [
 	"ready",
 	"selection-change",
 	"dirty-change",
@@ -7478,13 +7565,13 @@ var Rd = {
 	"conflict",
 	"publish-success",
 	"publish-error"
-], af = 0, of = class extends HTMLElement {
+], pf = 0, mf = class extends HTMLElement {
 	#e = null;
 	#t = null;
 	#n = null;
 	#r = null;
 	#i = null;
-	#a = `cpb${++af}`;
+	#a = `cpb${++pf}`;
 	get config() {
 		return this.#e;
 	}
@@ -7504,11 +7591,11 @@ var Rd = {
 		this.#s();
 		let e = this.#e;
 		if (!e) return;
-		let t = this.shadowRoot ?? this.attachShadow({ mode: "open" }), n = e.sitePart && e.transport.publishSiteParts ? new tf(e.transport, e.pageId) : null, r = new S(n ? {
+		let t = this.shadowRoot ?? this.attachShadow({ mode: "open" }), n = e.sitePart && e.transport.publishSiteParts ? new uf(e.transport, e.pageId) : null, r = new S(n ? {
 			...e,
-			transport: nf(e.transport, n)
+			transport: df(e.transport, n)
 		} : e);
-		for (let e of rf) r.events.on(e, (t) => {
+		for (let e of ff) r.events.on(e, (t) => {
 			let n = e === "save-error" || e === "publish-error" ? { code: t.error.code } : t;
 			this.dispatchEvent(new CustomEvent(e, {
 				detail: n,
@@ -7516,8 +7603,8 @@ var Rd = {
 				composed: !0
 			}));
 		});
-		let i = new Qd(r, Yd(e.locale ?? "es"));
-		n && (n.store = i, i.part = n, n.load().catch((e) => i.fail(e))), this.#n = r, this.#r = i, this.#t = na(Ld, {
+		let i = new sf(r, rf(e.locale ?? "es"));
+		n && (n.store = i, i.part = n, n.load().catch((e) => i.fail(e))), this.#n = r, this.#r = i, this.#t = na(Gd, {
 			target: t,
 			props: {
 				store: i,
@@ -7536,11 +7623,11 @@ var Rd = {
 	#s() {
 		this.#i?.stop(), this.#i = null, this.#t && oa(this.#t), this.#r?.destroy(), this.#n?.destroy(), this.#t = null, this.#r = null, this.#n = null, this.shadowRoot?.replaceChildren();
 	}
-}, sf = (e = "ceiba-page-builder") => {
-	customElements.get(e) || customElements.define(e, of);
+}, hf = (e = "ceiba-page-builder") => {
+	customElements.get(e) || customElements.define(e, mf);
 };
 // src/ui/index.ts
-sf();
-export { _ as Autosave, ye as BASE, of as CeibaPageBuilder, b as DEFAULT_AUTOSAVE, g as DEFAULT_BREAKPOINTS, ge as DEFAULT_HISTORY, te as EDITABLE_FIELDS, y as EditorError, S as EditorSession, t as PROPERTY_BY_NAME, rf as PUBLIC_EVENTS, ne as REFERENCE_PROPS, he as SCHEMA_VERSION, u as SERVER_LIMITS, Te as STYLE_MATRIX, Ae as SiteDesignSession, ce as TRANSFORMS, a as acceptedTokenType, We as afterRedo, Ne as afterUndo, d as applyCommand, ze as applyTransform, m as assertDepth, ie as assertEditable, re as assertKnown, ae as assertNewContent, Re as assertNodeCount, x as assertPlacement, p as assertSize, v as assetUrl, ve as attachRaw, Pe as bindableProps, Be as canRedo, we as canUndo, h as checkTree, w as childrenOf, _e as collectAssetIds, ue as collectStyledNodes, C as compileStyles, e as createCatalogue, E as createCommands, Ue as createEditor, l as createHttpTransport, xe as defaultDesign, sf as defineElement, Se as depthOf, oe as effectiveValue, le as emptyHistory, i as emptyTree, f as errorFromResponse, De as fail, Oe as formToQuery, pe as fromDocument, be as getNode, He as groupKeyOf, se as heightOf, Je as indexInParent, Xe as insertAt, Ie as isAssetRef, et as isSelfOrDescendant, Ee as literal, Le as measureRaw, r as nodeClass, de as nodeCount, ke as parseDocument, me as parseVideo, Me as previewProps, Ge as queryToForm, tt as randomIds, Ve as readBindings, Fe as record, n as sequentialIds, qe as setClasses, $e as setDeclaration, Ye as siteClass, Ce as stripTags, Ze as styleClassNames, Qe as subtreeIds, Ke as toDocument, je as toRaw, ee as tokenLiteral, s as tokenVariable, fe as withBinding, T as withChildren, c as withNode, o as withoutNodes };
+hf();
+export { _ as Autosave, ye as BASE, mf as CeibaPageBuilder, b as DEFAULT_AUTOSAVE, g as DEFAULT_BREAKPOINTS, ge as DEFAULT_HISTORY, te as EDITABLE_FIELDS, y as EditorError, S as EditorSession, t as PROPERTY_BY_NAME, ff as PUBLIC_EVENTS, ne as REFERENCE_PROPS, he as SCHEMA_VERSION, u as SERVER_LIMITS, Te as STYLE_MATRIX, Ae as SiteDesignSession, ce as TRANSFORMS, a as acceptedTokenType, We as afterRedo, Ne as afterUndo, d as applyCommand, ze as applyTransform, m as assertDepth, ie as assertEditable, re as assertKnown, ae as assertNewContent, Re as assertNodeCount, x as assertPlacement, p as assertSize, v as assetUrl, ve as attachRaw, Pe as bindableProps, Be as canRedo, we as canUndo, h as checkTree, w as childrenOf, _e as collectAssetIds, ue as collectStyledNodes, C as compileStyles, e as createCatalogue, E as createCommands, Ue as createEditor, l as createHttpTransport, xe as defaultDesign, hf as defineElement, Se as depthOf, oe as effectiveValue, le as emptyHistory, i as emptyTree, f as errorFromResponse, De as fail, Oe as formToQuery, pe as fromDocument, be as getNode, He as groupKeyOf, se as heightOf, Je as indexInParent, Xe as insertAt, Ie as isAssetRef, et as isSelfOrDescendant, Ee as literal, Le as measureRaw, r as nodeClass, de as nodeCount, ke as parseDocument, me as parseVideo, Me as previewProps, Ge as queryToForm, tt as randomIds, Ve as readBindings, Fe as record, n as sequentialIds, qe as setClasses, $e as setDeclaration, Ye as siteClass, Ce as stripTags, Ze as styleClassNames, Qe as subtreeIds, Ke as toDocument, je as toRaw, ee as tokenLiteral, s as tokenVariable, fe as withBinding, T as withChildren, c as withNode, o as withoutNodes };
 
 //# sourceMappingURL=ceiba-page-builder.js.map

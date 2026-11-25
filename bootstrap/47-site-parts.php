@@ -38,6 +38,8 @@ $sitePartApiController = new \CeibaCms\SitePart\Presentation\SitePartApiControll
     new \CeibaCms\SitePart\Application\SitePartPreview($db, $siteId, $sitePartStore, $assembleSitePage, $pageRepository,
         $getLayoutById, $getDefaultLayout, $hostRoutes,
         // Read when a preview is drawn: bootstrap must not query a database that may not be migrated yet.
-        static fn (): string => (string) ($settingsRepository?->get('site_language', 'es') ?? 'es'))
+        static fn (): string => (string) ($settingsRepository?->get('site_language', 'es') ?? 'es'),
+        // Content pages are built in 48-data-sources.php; the preview asks for them when it draws one (plan 07-D).
+        static function () use (&$assembleContentPage) { return $assembleContentPage ?? null; })
 );
 $migrateLayoutsToParts = new \CeibaCms\SitePart\Application\MigrateLayoutsToParts($manageSiteParts, $sitePartStore, $publishSiteParts);

@@ -40,9 +40,20 @@ final class AssembleContentPage
     public function render(string $path, array $query, string $locale, bool $hasSession, array $layoutFooter = [], ?string $layoutId = null): ?array
     {
         $match = $this->routes->match($path);
-        if ($match === null) {
-            return null;
-        }
+
+        return $match === null ? null : $this->renderMatch($match, $path, $query, $locale, $hasSession, $layoutFooter, $layoutId);
+    }
+
+    /**
+     * A content page already identified (also the editor's preview of a part, with `$parts` and no public URL needed).
+     *
+     * @param array{content: 'record'|'archive'|'search', source: ?string, slug: ?string} $match
+     * @param list<\CeibaCms\SitePart\Domain\SitePart>|null $parts
+     * @return array<string, mixed>
+     */
+    public function renderMatch(array $match, string $path, array $query, string $locale, bool $hasSession, array $layoutFooter = [],
+        ?string $layoutId = null, ?array $parts = null): array
+    {
         $context = ($this->queryContext)();
         try {
             $source = $match['source'] !== null ? $this->registry->descriptor($match['source'], $context) : null;
@@ -60,7 +71,7 @@ final class AssembleContentPage
             $vars['record'] = $record;
             $title = (string) ($record[$this->labelField($source)] ?? $title);
         }
-        $parts = $this->store->published();
+        $parts ??= $this->store->published();
         $part = SitePartResolver::resolve($parts, $request)->part(SitePartKind::FOR_CONTENT[$match['content']]);
         $tree = $part?->tree ?? match ($match['content']) {
             'record' => $this->defaults->record($source),
