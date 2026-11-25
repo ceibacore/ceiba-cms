@@ -44,6 +44,7 @@
         <select id={`${uid}-bind-${prop}`} value={b?.field ?? ''} onchange={(e) => set(prop, { field: e.currentTarget.value })}>
           <option value="">{t('data.noBinding')}</option>
           {#each schema.fields as f (f.name)}<option value={f.name}>{f.label}</option>{/each}
+          <option value="_url">{t('data.recordUrl')}</option>
         </select>
         {#if b}
           <select aria-label={t('data.transform')} value={b.transform ?? ''}

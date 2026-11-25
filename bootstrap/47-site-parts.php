@@ -10,7 +10,7 @@ foreach ([
     'Application/HostRoutes.php', 'Application/RulesConflict.php', 'Application/SitePartsInConflict.php',
     'Application/ManageSiteParts.php', 'Application/BuildPublicationCandidates.php', 'Application/PublicationGuard.php',
     'Application/ContextConflictGuard.php', 'Application/PublishSiteParts.php', 'Application/SitePartImpact.php',
-    'Application/AssembleSitePage.php', 'Application/SitePartPreview.php', 'Application/MigrateLayoutsToParts.php', 'Presentation/SitePartApiController.php',
+    'Application/AssembleSitePage.php', 'Application/AssembleContentPage.php', 'Application/SitePartPreview.php', 'Application/MigrateLayoutsToParts.php', 'Presentation/SitePartApiController.php',
 ] as $classFile) {
     require_once dirname(__DIR__) . '/src/SitePart/' . $classFile;
 }

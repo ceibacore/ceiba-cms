@@ -170,6 +170,8 @@ export declare const es: {
     readonly 'data.id': "Nombre de la consulta";
     readonly 'data.source': "Fuente";
     readonly 'data.chooseSource': "Elige una fuente…";
+    readonly 'data.currentSource': "La fuente de esta página (listado o registro)";
+    readonly 'data.recordUrl': "Dirección del registro";
     readonly 'data.pageSize': "Elementos por página";
     readonly 'data.pagination': "Dividir en páginas";
     readonly 'data.pageParam': "Parámetro de página en la URL";
@@ -208,6 +210,10 @@ export declare const es: {
     readonly 'parts.kind.header': "Cabecera";
     readonly 'parts.kind.footer': "Pie";
     readonly 'parts.kind.not_found': "Página 404";
+    readonly 'parts.kind.single': "Página de un registro";
+    readonly 'parts.kind.archive': "Listado de una fuente";
+    readonly 'parts.kind.search': "Resultados de búsqueda";
+    readonly 'parts.target.sources': "Fuentes de datos";
     readonly 'parts.include': "Se usa en";
     readonly 'parts.exclude': "Excepto en";
     readonly 'parts.add': "Añadir";

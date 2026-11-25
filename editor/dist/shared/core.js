@@ -1938,7 +1938,7 @@ var e = class extends Error {
 	};
 }, $t = (e, t) => {
 	if (!Xt.test(e.id.trim())) return { error: "query.id" };
-	if (!/^(module|host):[a-z0-9][a-z0-9_.-]{0,80}$/.test(e.source.trim())) return { error: "query.source" };
+	if (e.source.trim() !== "@current" && !/^(module|host):[a-z0-9][a-z0-9_.-]{0,80}$/.test(e.source.trim())) return { error: "query.source" };
 	let n = Number(e.pageSize), r = t?.max_page_size ?? 50;
 	if (!Number.isInteger(n) || n < 1 || n > r) return { error: "query.pageSize" };
 	let i = (e) => t?.fields.find((t) => t.name === e);

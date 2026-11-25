@@ -198,4 +198,7 @@ require_once dirname(__DIR__) . '/src/DataSource/Domain/Binding/ValueTransforms.
 require_once dirname(__DIR__) . '/src/DataSource/Domain/Binding/SafeHtml.php';
 require_once dirname(__DIR__) . '/src/DataSource/Domain/Binding/BindingResolver.php';
 require_once dirname(__DIR__) . '/src/DataSource/Application/TreeExpander.php';
+require_once dirname(__DIR__) . '/src/DataSource/Application/ContentRoutes.php';
+require_once dirname(__DIR__) . '/src/DataSource/Application/DefaultContentTrees.php';
+require_once dirname(__DIR__) . '/src/DataSource/Application/ContentSitemap.php';
 require_once dirname(__DIR__) . '/src/DataSource/Application/DynamicContent.php';

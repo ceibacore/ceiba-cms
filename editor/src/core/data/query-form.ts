@@ -44,7 +44,8 @@ export const queryToForm = (props: unknown): QueryForm => {
 /** The props to store, or the first problem. With a schema, fields and operators are checked against it too. */
 export const formToQuery = (form: QueryForm, schema: DataSourceSchema | null): { props: Record<string, unknown> } | { error: QueryFormError; index?: number } => {
   if (!ID.test(form.id.trim())) return { error: 'query.id' };
-  if (!/^(module|host):[a-z0-9][a-z0-9_.-]{0,80}$/.test(form.source.trim())) return { error: 'query.source' };
+  // '@current': the source of the record or archive page the part draws (plan 07-D).
+  if (form.source.trim() !== '@current' && !/^(module|host):[a-z0-9][a-z0-9_.-]{0,80}$/.test(form.source.trim())) return { error: 'query.source' };
   const size = Number(form.pageSize);
   const max = schema?.max_page_size ?? 50;
   if (!Number.isInteger(size) || size < 1 || size > max) return { error: 'query.pageSize' };

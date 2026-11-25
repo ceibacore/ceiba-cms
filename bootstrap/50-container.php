@@ -36,6 +36,9 @@ return [
     'services' => [
         'pageAssembler'        => $pageAssembler,
         'assembleSitePage'     => $assembleSitePage,
+        'assembleContentPage'  => $assembleContentPage,
+        'contentRoutes'        => $contentRoutes,
+        'contentSitemap'       => new \CeibaCms\DataSource\Application\ContentSitemap($dataSources, $contentRoutes),
         'sitePartStore'        => $sitePartStore,
         'manageSiteParts'      => $manageSiteParts,
         'publishSiteParts'     => $publishSiteParts,

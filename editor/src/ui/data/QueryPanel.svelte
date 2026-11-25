@@ -44,6 +44,7 @@
       <label for={id('source')}>{t('data.source')}</label>
       <select id={id('source')} bind:value={form.source}>
         <option value="">{t('data.chooseSource')}</option>
+        <option value="@current">{t('data.currentSource')}</option>
         {#each store.data.sources ?? [] as source (source.id)}<option value={source.id}>{source.label}</option>{/each}
       </select>
     </div>

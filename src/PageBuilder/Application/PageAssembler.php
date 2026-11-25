@@ -51,7 +51,8 @@ final class PageAssembler
         $design ??= $this->designs->published();
         if ($this->dynamic !== null && $this->queryContext !== null) {
             // Plan 07-B: run the queries of header, page and footer together and expand loops, states and bindings.
-            $vars = is_array($context['record'] ?? null) ? ['record' => $context['record']] : [];
+            $vars = (is_array($context['record'] ?? null) ? ['record' => $context['record']] : [])
+                + (is_string($context['source'] ?? null) ? ['_source' => $context['source']] : []);
             [$header, $tree, $footer] = $this->dynamic->expand([$header, $tree, $footer],
                 is_array($context['request_query'] ?? null) ? $context['request_query'] : [], ($this->queryContext)(), $vars);
             unset($context['request_query']);

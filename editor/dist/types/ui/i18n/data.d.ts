@@ -5,6 +5,8 @@ export declare const dataEs: {
     readonly 'data.id': "Nombre de la consulta";
     readonly 'data.source': "Fuente";
     readonly 'data.chooseSource': "Elige una fuente…";
+    readonly 'data.currentSource': "La fuente de esta página (listado o registro)";
+    readonly 'data.recordUrl': "Dirección del registro";
     readonly 'data.pageSize': "Elementos por página";
     readonly 'data.pagination': "Dividir en páginas";
     readonly 'data.pageParam': "Parámetro de página en la URL";

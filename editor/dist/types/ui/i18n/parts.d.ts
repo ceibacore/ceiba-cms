@@ -5,6 +5,10 @@ export declare const partsEs: {
     readonly 'parts.kind.header': "Cabecera";
     readonly 'parts.kind.footer': "Pie";
     readonly 'parts.kind.not_found': "Página 404";
+    readonly 'parts.kind.single': "Página de un registro";
+    readonly 'parts.kind.archive': "Listado de una fuente";
+    readonly 'parts.kind.search': "Resultados de búsqueda";
+    readonly 'parts.target.sources': "Fuentes de datos";
     readonly 'parts.include': "Se usa en";
     readonly 'parts.exclude': "Excepto en";
     readonly 'parts.add': "Añadir";

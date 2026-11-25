@@ -28,6 +28,9 @@ $mediaApiController = new \CeibaCms\Media\Presentation\MediaApiController(
 );
 $localMediaFiles    = str_starts_with($mediaPublicUrl, '/')
     ? ['prefix' => $mediaPublicUrl, 'storage' => $localMediaStorage, 'siteId' => $siteId] : null;
-$dynamicContent     = new \CeibaCms\DataSource\Application\DynamicContent($dataSources, log: static fn (string $m, array $c) => error_log('[cms:data] ' . $m . ' ' . json_encode($c)));
+// Public URLs of data sources (plan 07-D), read from the settings when a page is drawn.
+$contentRoutes      = new \CeibaCms\DataSource\Application\ContentRoutes($settingsRepository, $reservedPathChecker);
+$dynamicContent     = new \CeibaCms\DataSource\Application\DynamicContent($dataSources, log: static fn (string $m, array $c) => error_log('[cms:data] ' . $m . ' ' . json_encode($c)),
+    routes: $contentRoutes);
 $pageAssembler      = new \CeibaCms\PageBuilder\Application\PageAssembler($bladeRenderer, $getSiteDesign, $customCode, $mediaResolver,
     $dynamicContent, \Closure::fromCallable($dataSourceContext));
