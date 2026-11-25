@@ -97,6 +97,6 @@ final class SitePartApiControllerTest extends TestCase
         self::assertSame(403, $reader->publish('{"changes":[]}', 'k')['status']);
         self::assertSame(403, $this->api([])->index()['status']);
         self::assertSame(404, $this->api()->saveRules('missing', '{"include":[{"type":"site"}]}', '"1"')['status']);
-        self::assertSame(422, $this->api()->store('{"kind":"single","name":"X"}')['status']);
+        self::assertSame(422, $this->api()->store('{"kind":"sidebar","name":"X"}')['status']);
     }
 }

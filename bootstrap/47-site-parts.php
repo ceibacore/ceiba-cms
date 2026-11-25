@@ -10,7 +10,7 @@ foreach ([
     'Application/HostRoutes.php', 'Application/RulesConflict.php', 'Application/SitePartsInConflict.php',
     'Application/ManageSiteParts.php', 'Application/BuildPublicationCandidates.php', 'Application/PublicationGuard.php',
     'Application/ContextConflictGuard.php', 'Application/PublishSiteParts.php', 'Application/SitePartImpact.php',
-    'Application/AssembleSitePage.php', 'Application/SitePartPreview.php', 'Application/MigrateLayoutsToParts.php', 'Presentation/SitePartApiController.php',
+    'Application/AssembleSitePage.php', 'Application/AssembleContentPage.php', 'Application/SitePartPreview.php', 'Application/MigrateLayoutsToParts.php', 'Presentation/SitePartApiController.php',
 ] as $classFile) {
     require_once dirname(__DIR__) . '/src/SitePart/' . $classFile;
 }
@@ -38,6 +38,8 @@ $sitePartApiController = new \CeibaCms\SitePart\Presentation\SitePartApiControll
     new \CeibaCms\SitePart\Application\SitePartPreview($db, $siteId, $sitePartStore, $assembleSitePage, $pageRepository,
         $getLayoutById, $getDefaultLayout, $hostRoutes,
         // Read when a preview is drawn: bootstrap must not query a database that may not be migrated yet.
-        static fn (): string => (string) ($settingsRepository?->get('site_language', 'es') ?? 'es'))
+        static fn (): string => (string) ($settingsRepository?->get('site_language', 'es') ?? 'es'),
+        // Content pages are built in 48-data-sources.php; the preview asks for them when it draws one (plan 07-D).
+        static function () use (&$assembleContentPage) { return $assembleContentPage ?? null; })
 );
 $migrateLayoutsToParts = new \CeibaCms\SitePart\Application\MigrateLayoutsToParts($manageSiteParts, $sitePartStore, $publishSiteParts);

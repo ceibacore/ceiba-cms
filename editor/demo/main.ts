@@ -16,6 +16,20 @@ const servers = {
     ] },
   ], publisher),
 };
+// ?dynamic=1 gives editor b a query block (plan 07-C): a card per course, pages and a visitor filter.
+if (new URLSearchParams(location.search).get('dynamic') === '1') {
+  const b = servers.b.revisions.get(1)!;
+  b.root = [{ id: 'list', type: 'query', props: { id: 'courses', source: 'host:courses', page_size: 2, pagination: true,
+    url_params: [{ param: 'level', target: 'filter', field: 'level', op: 'eq' }] }, children: [
+    { id: 'filter', type: 'query_filter', props: { param: 'level', kind: 'select', label: 'Level' }, children: [] },
+    { id: 'item', type: 'container', props: { fluid: false }, loop: { query: '', variable: 'course' }, children: [
+      { id: 'name', type: 'heading', props: { text: 'Course', level: 3 }, bindings: { text: { field: 'title' } }, children: [] },
+      { id: 'go', type: 'button', props: { label: 'From {{ course.price }}', url: '#' }, bindings: { url: { field: 'url', fallback: '/courses' } }, children: [] },
+    ] },
+    { id: 'none', type: 'query_state', props: { show: 'empty' }, children: [{ id: 'none-text', type: 'text', props: { content: 'No courses' }, children: [] }] },
+    { id: 'pages', type: 'pagination', props: {}, children: [] },
+  ] }];
+}
 // ?autosave=ms turns autosave on with that quiet time (off by default so the other tests stay deterministic).
 const autosaveMs = Number(new URLSearchParams(location.search).get('autosave'));
 // ?sitePart=1 opens editor b as a site part (plan 06-C).

@@ -4,6 +4,8 @@
   import ClassPicker from '../styles/ClassPicker.svelte';
   import StylesPanel from '../styles/StylesPanel.svelte';
   import Advanced from './advanced/Advanced.svelte';
+  import BindingsPanel from '../data/BindingsPanel.svelte';
+  import QueryPanel from '../data/QueryPanel.svelte';
   import Field from './Field.svelte';
   import AssetPicker from '../media/AssetPicker.svelte';
   import GalleryField from '../media/GalleryField.svelte';
@@ -59,6 +61,8 @@
       </div>
       {#if !rule}
         <p class="locked" role="note">{t('inspector.locked')}</p>
+      {:else if node.type === 'query'}
+        <QueryPanel {store} {node} {uid} />
       {:else}
         {#each fields as field (field.key)}
           {#if field.control === 'media' && store.media.available}
@@ -79,6 +83,7 @@
         <StylesPanel {store} {uid} styles={node.fields.styles as NodeStyles | undefined} onSet={(next) => setStyles(next)}>
           <ClassPicker {store} {node} {uid} />
         </StylesPanel>
+        <BindingsPanel {store} {node} {uid} />
         <Advanced {store} {node} {uid} />
       {/if}
       <div class="actions">

@@ -1,12 +1,14 @@
 import { componentsEs } from './components';
 import { mediaEs } from './media';
 import { partsEs } from './parts';
+import { dataEs } from './data';
 
 /** Spanish texts of the editor UI. Error codes come from the core (EditorErrorCode). */
 export const es = {
   ...mediaEs,
   ...componentsEs,
   ...partsEs,
+  ...dataEs,
   'editor.label': 'Editor de página',
   'toolbar.undo': 'Deshacer',
   'toolbar.redo': 'Rehacer',
@@ -115,9 +117,9 @@ export const es = {
   'advanced.source': 'Repetir con datos de',
   'advanced.none': 'Nada (elemento fijo)',
   'advanced.module': 'Un módulo dinámico',
-  'advanced.api': 'Una API externa',
+  'advanced.host': 'Una fuente del sitio',
   'advanced.moduleSlug': 'Módulo (slug)',
-  'advanced.apiUrl': 'URL de la API (https)',
+  'advanced.hostSource': 'Fuente (nombre)',
   'advanced.variable': 'Nombre de cada elemento',
   'advanced.key': 'Clave única',
   'advanced.limit': 'Límite',

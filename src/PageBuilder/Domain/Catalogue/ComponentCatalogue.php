@@ -66,6 +66,7 @@ final class ComponentCatalogue
         Defaults\ContentComponents::register($catalogue);
         Defaults\InteractiveComponents::register($catalogue);
         Defaults\SiteComponents::register($catalogue);
+        Defaults\DynamicComponents::register($catalogue);
 
         return $catalogue;
     }

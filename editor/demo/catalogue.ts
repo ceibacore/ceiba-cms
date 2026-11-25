@@ -1,5 +1,6 @@
 import type { ComponentDescriptorDto, HtmlTagRuleDto } from '../src/core';
 import { CONTENT_COMPONENTS } from './catalogue-content';
+import { DYNAMIC_COMPONENTS } from './catalogue-dynamic';
 
 /** Same descriptors as ComponentCatalogue::createDefault() in the module. */
 export const COMPONENTS: ComponentDescriptorDto[] = [
@@ -25,6 +26,7 @@ export const COMPONENTS: ComponentDescriptorDto[] = [
     propsSchema: { label: { type: 'string', default: 'Click Me' }, url: { type: 'string', default: '#' } },
     editorControls: { label: { type: 'text' }, url: { type: 'url' } } },
   ...CONTENT_COMPONENTS,
+  ...DYNAMIC_COMPONENTS,
 ];
 
 export const HTML_TAGS: HtmlTagRuleDto[] = [

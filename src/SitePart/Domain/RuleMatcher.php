@@ -11,7 +11,7 @@ namespace CeibaCms\SitePart\Domain;
  */
 final class RuleMatcher
 {
-    private const WEIGHT = ['pages' => 50_000, 'routes' => 40_000, 'path_prefix' => 30_000, 'layouts' => 20_000, 'home' => 10_000, 'site' => 0];
+    private const WEIGHT = ['pages' => 50_000, 'sources' => 50_000, 'routes' => 40_000, 'path_prefix' => 30_000, 'layouts' => 20_000, 'home' => 10_000, 'site' => 0];
     private const FILTER = 1_000;
 
     /** Specificity of the best matching inclusion, or null when the rules do not apply. */
@@ -47,6 +47,7 @@ final class RuleMatcher
             'pages' => $context->pageId !== null && in_array($context->pageId, $target['ids'], true),
             'layouts' => $context->layoutId !== null && in_array($context->layoutId, $target['ids'], true),
             'routes' => $context->routeName !== null && in_array($context->routeName, $target['names'], true),
+            'sources' => $context->sourceId !== null && in_array($context->sourceId, $target['ids'], true),
             'path_prefix' => $target['value'] === '/' || $context->path === $target['value'] || str_starts_with($context->path, $target['value'] . '/'),
             default => false,
         };

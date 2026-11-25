@@ -168,7 +168,7 @@ final class TreeValidator
 
         // loop validation
         if (isset($data['loop']) && $data['loop'] !== null) {
-            $this->validateLoop($data['loop'], $data['id'] ?? '?');
+            array_push($this->errors, ...LoopValidator::errors($data['loop'], (string) ($data['id'] ?? '?')));
         }
 
         // children
@@ -189,26 +189,6 @@ final class TreeValidator
                     $this->validateNode($child, $depth + 1);
                 }
             }
-        }
-    }
-
-    private function validateLoop(mixed $loop, string $nodeId): void
-    {
-        if (!is_array($loop)) {
-            $this->errors[] = "Node '{$nodeId}' loop must be an object";
-            return;
-        }
-
-        if (empty($loop['source']) || !is_string($loop['source'])) {
-            $this->errors[] = "Node '{$nodeId}' loop missing 'source'";
-        }
-
-        if (empty($loop['variable']) || !is_string($loop['variable'])) {
-            $this->errors[] = "Node '{$nodeId}' loop missing 'variable'";
-        }
-
-        if (isset($loop['limit']) && $loop['limit'] !== null && !is_int($loop['limit'])) {
-            $this->errors[] = "Node '{$nodeId}' loop.limit must be integer or null";
         }
     }
 }

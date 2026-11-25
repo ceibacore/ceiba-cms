@@ -1,11 +1,12 @@
 /**
- * Loop of a node (ceiba-cms LoopConfig: source "module:<slug>" or "api:<url>", variable, key, limit, offset,
- * filters, sort) as the fields of the inspector, and back. Kept pure so it can be tested without a browser.
+ * Loop of a node (ceiba-cms LoopConfig: source "module:<slug>" or "host:<name>" from the data source registry,
+ * variable, key, limit, offset, filters, sort) as the fields of the inspector, and back. Free URLs are not sources
+ * (plan 07, D-3). Kept pure so it can be tested without a browser.
  */
 export interface LoopForm {
-    sourceType: 'none' | 'module' | 'api';
+    sourceType: 'none' | 'query' | 'module' | 'host';
     module: string;
-    api: string;
+    host: string;
     variable: string;
     key: string;
     limit: string;

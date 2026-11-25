@@ -16,7 +16,7 @@ final class RuleContextMatrix
      */
     public static function generate(array $parts, array $pages): iterable
     {
-        [$paths, $layouts, $routes, $locales] = self::dimensions($parts);
+        [$paths, $layouts, $routes, $locales, $sources] = self::dimensions($parts);
         $count = 0;
         foreach ($pages as $page) {
             foreach (self::variants($page['path'], $page['pageId'], $page['layoutId'], $page['isHome'], false, $routes, $locales) as $context) {
@@ -24,6 +24,17 @@ final class RuleContextMatrix
                     throw new \LengthException('Too many contexts to validate safely');
                 }
                 yield $context;
+            }
+        }
+        // Content pages of the sources the rules name (plan 07-D): record, archive and search, on every sampled path.
+        foreach ($sources as $source) {
+            foreach (['record', 'archive', 'search'] as $content) {
+                foreach ($paths as $path) foreach ($locales as $locale) foreach ([false, true] as $session) {
+                    if (++$count > self::MAX_CONTEXTS) {
+                        throw new \LengthException('Too many contexts to validate safely');
+                    }
+                    yield RenderContext::forContent($content, $source, $path, $locale, $session);
+                }
             }
         }
         // Host routes and future paths may use any layout. Include 404 requests independently of page requests.
@@ -46,12 +57,14 @@ final class RuleContextMatrix
         $prefixes = ['/'];
         $layouts = [];
         $routes = [];
+        $sources = [null];
         $locales = ['und'];
         foreach ($parts as $part) {
             foreach ([...$part->rules->include, ...$part->rules->exclude] as $target) {
                 if ($target['type'] === 'path_prefix') $prefixes[] = $target['value'];
                 if ($target['type'] === 'layouts') array_push($layouts, ...$target['ids']);
                 if ($target['type'] === 'routes') array_push($routes, ...$target['names']);
+                if ($target['type'] === 'sources') array_push($sources, ...$target['ids']);
             }
             array_push($locales, ...$part->rules->locales);
         }
@@ -73,7 +86,7 @@ final class RuleContextMatrix
             $locales[] = self::otherRegion($language, $locales);
         }
         return [array_values(array_unique($paths)), [null, ...array_values(array_unique($layouts))],
-            [null, ...array_values(array_unique($routes))], array_values(array_unique($locales))];
+            [null, ...array_values(array_unique($routes))], array_values(array_unique($locales)), array_values(array_unique($sources, SORT_REGULAR))];
     }
 
     private static function otherRegion(string $language, array $locales): string

@@ -20,6 +20,10 @@ final class SitePartResolver
             if ($kind === SitePartKind::NOT_FOUND && !$context->notFound) {
                 continue;
             }
+            // single, archive and search only draw their kind of content page (plan 07-D).
+            if (in_array($kind, SitePartKind::FOR_CONTENT, true) && (SitePartKind::FOR_CONTENT[$context->content] ?? null) !== $kind) {
+                continue;
+            }
             $ranked = [];
             foreach ($parts as $part) {
                 $score = $part->kind === $kind ? RuleMatcher::score($part->rules, $context) : null;

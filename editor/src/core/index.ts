@@ -19,3 +19,4 @@ export * from './session';
 export * from './styles';
 export * from './design';
 export * from './media';
+export * from './data';

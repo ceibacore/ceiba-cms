@@ -1,0 +1,181 @@
+{
+    "name": "13-dynamic",
+    "media": {},
+    "cases": [
+        {
+            "node": {
+                "type": "query",
+                "props": {
+                    "id": "courses",
+                    "_state": "results",
+                    "class": "row"
+                },
+                "children": [
+                    {
+                        "type": "divider",
+                        "props": []
+                    }
+                ]
+            },
+            "html": "<div class=\"cms-query row\" data-cms-query=\"courses\" data-cms-state=\"results\" aria-live=\"polite\"><hr class=\"cms-divider my-4\"></div>"
+        },
+        {
+            "node": {
+                "type": "query",
+                "props": {
+                    "id": "courses"
+                },
+                "children": []
+            },
+            "html": "<div class=\"cms-query\" data-cms-query=\"courses\" data-cms-state=\"error\" aria-live=\"polite\"></div>"
+        },
+        {
+            "node": {
+                "type": "query_state",
+                "props": {
+                    "show": "empty"
+                },
+                "children": [
+                    {
+                        "type": "spacer",
+                        "props": {
+                            "size": 8
+                        }
+                    }
+                ]
+            },
+            "html": "<div class=\"cms-query-empty\"><div class=\"cms-spacer\" style=\"height:8px\" aria-hidden=\"true\"></div></div>"
+        },
+        {
+            "node": {
+                "type": "query_state",
+                "props": {
+                    "show": "error",
+                    "class": "alert alert-warning"
+                },
+                "children": []
+            },
+            "html": "<div class=\"cms-query-error alert alert-warning\" role=\"status\"></div>"
+        },
+        {
+            "node": {
+                "type": "query_state",
+                "props": {
+                    "show": "other"
+                },
+                "children": []
+            },
+            "html": "<div class=\"cms-query-empty\"></div>"
+        },
+        {
+            "node": {
+                "type": "pagination",
+                "props": {
+                    "_pages": {
+                        "current": 2,
+                        "pages": 3,
+                        "prev": "?q=php",
+                        "next": "?q=php&page=3",
+                        "links": [
+                            {
+                                "label": "1",
+                                "href": "?q=php",
+                                "current": false
+                            },
+                            {
+                                "label": "2",
+                                "href": "?q=php&page=2",
+                                "current": true
+                            },
+                            {
+                                "label": "3",
+                                "href": "?q=php&page=3",
+                                "current": false
+                            }
+                        ]
+                    },
+                    "label": "Páginas"
+                }
+            },
+            "html": "<nav aria-label=\"Páginas\"><ul class=\"pagination\"><li class=\"page-item\"><a class=\"page-link\" href=\"?q=php\" aria-label=\"Previous\">«</a></li><li class=\"page-item\"><a class=\"page-link\" href=\"?q=php\">1</a></li><li class=\"page-item active\"><span class=\"page-link\" aria-current=\"page\">2</span></li><li class=\"page-item\"><a class=\"page-link\" href=\"?q=php&amp;page=3\">3</a></li><li class=\"page-item\"><a class=\"page-link\" href=\"?q=php&amp;page=3\" aria-label=\"Next\">»</a></li></ul></nav>"
+        },
+        {
+            "node": {
+                "type": "pagination",
+                "props": {
+                    "_pages": {
+                        "current": 1,
+                        "pages": null,
+                        "prev": null,
+                        "next": "?page=2",
+                        "links": []
+                    },
+                    "prev": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            "html": "<nav aria-label=\"Pages\"><ul class=\"pagination\"><li class=\"page-item disabled\"><span class=\"page-link\">Anterior</span></li><li class=\"page-item\"><a class=\"page-link\" href=\"?page=2\" aria-label=\"Next\">Siguiente</a></li></ul></nav>"
+        },
+        {
+            "node": {
+                "type": "pagination",
+                "props": []
+            },
+            "html": ""
+        },
+        {
+            "node": {
+                "type": "query_filter",
+                "props": {
+                    "label": "Nivel",
+                    "all": "Todos",
+                    "_filter": {
+                        "name": "nivel",
+                        "kind": "select",
+                        "value": "basic",
+                        "options": [
+                            {
+                                "value": "basic",
+                                "label": "Básico"
+                            },
+                            {
+                                "value": "advanced",
+                                "label": "Avanzado & más"
+                            }
+                        ],
+                        "hidden": {
+                            "q": "php \"x\""
+                        }
+                    }
+                }
+            },
+            "html": "<form class=\"cms-query-filter d-flex gap-2 align-items-end\" method=\"get\"><input type=\"hidden\" name=\"q\" value=\"php &quot;x&quot;\"><div><label class=\"form-label\" for=\"cms-filter-nivel\">Nivel</label><select id=\"cms-filter-nivel\" name=\"nivel\" class=\"form-select\"><option value=\"\">Todos</option><option value=\"basic\" selected>Básico</option><option value=\"advanced\">Avanzado &amp; más</option></select></div><button type=\"submit\" class=\"btn btn-outline-primary\">OK</button></form>"
+        },
+        {
+            "node": {
+                "type": "query_filter",
+                "props": {
+                    "placeholder": "Buscar…",
+                    "button": "Buscar",
+                    "_filter": {
+                        "name": "q",
+                        "kind": "search",
+                        "value": "<b>",
+                        "options": [],
+                        "hidden": []
+                    }
+                }
+            },
+            "html": "<form class=\"cms-query-filter d-flex gap-2 align-items-end\" method=\"get\"><div><label class=\"form-label\" for=\"cms-filter-q\">q</label><input id=\"cms-filter-q\" type=\"search\" name=\"q\" class=\"form-control\" value=\"&lt;b&gt;\" placeholder=\"Buscar…\"></div><button type=\"submit\" class=\"btn btn-outline-primary\">Buscar</button></form>"
+        },
+        {
+            "node": {
+                "type": "query_filter",
+                "props": {
+                    "param": "q"
+                }
+            },
+            "html": ""
+        }
+    ]
+}

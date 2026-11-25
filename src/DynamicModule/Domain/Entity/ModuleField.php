@@ -15,6 +15,8 @@ final class ModuleField
         public readonly array   $options = [],
         public readonly ?string $relationTarget = null,
         public readonly bool    $isSearchable = true,
+        /** Plan 07: a private field never reaches the site (catalogue, queries, bindings). */
+        public readonly bool    $isPublic = true,
     ) {
         if (!preg_match('/^[a-z0-9_]+$/', $name)) {
             throw new \InvalidArgumentException("Field name '{$name}' must be snake_case (lowercase letters, numbers, and underscores).");
@@ -42,6 +44,7 @@ final class ModuleField
             options:        $data['options'] ?? [],
             relationTarget: $data['relationTarget'] ?? null,
             isSearchable:   (bool) ($data['isSearchable'] ?? true),
+            isPublic:       (bool) ($data['isPublic'] ?? true),
         );
     }
 
@@ -57,6 +60,7 @@ final class ModuleField
             'options'        => $this->options,
             'relationTarget' => $this->relationTarget,
             'isSearchable'   => $this->isSearchable,
+            'isPublic'       => $this->isPublic,
         ];
     }
 

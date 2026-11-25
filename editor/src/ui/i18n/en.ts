@@ -2,12 +2,14 @@ import type { MessageKey } from './es';
 import { componentsEn } from './components';
 import { mediaEn } from './media';
 import { partsEn } from './parts';
+import { dataEn } from './data';
 
 /** English texts of the editor UI. */
 export const en: Record<MessageKey, string> = {
   ...mediaEn,
   ...componentsEn,
   ...partsEn,
+  ...dataEn,
   'editor.label': 'Page editor',
   'toolbar.undo': 'Undo',
   'toolbar.redo': 'Redo',
@@ -116,9 +118,9 @@ export const en: Record<MessageKey, string> = {
   'advanced.source': 'Repeat with data from',
   'advanced.none': 'Nothing (fixed element)',
   'advanced.module': 'A dynamic module',
-  'advanced.api': 'An external API',
+  'advanced.host': 'A source of the site',
   'advanced.moduleSlug': 'Module (slug)',
-  'advanced.apiUrl': 'API URL (https)',
+  'advanced.hostSource': 'Source (name)',
   'advanced.variable': 'Name of each item',
   'advanced.key': 'Unique key',
   'advanced.limit': 'Limit',

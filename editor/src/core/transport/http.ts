@@ -5,6 +5,7 @@ import { errorFromResponse, networkError } from './errors';
 import { designMethods } from './http-design';
 import { mediaMethods } from './http-media';
 import { sitePartMethods } from './http-site-parts';
+import { dataSourceMethods } from './http-data-sources';
 import type { RawNode } from '../document/types';
 import type { TemplateSummary, Transport } from './types';
 
@@ -48,6 +49,7 @@ export const createHttpTransport = (options: HttpTransportOptions): Transport =>
     ...designMethods(base, request),
     ...mediaMethods(base, request),
     ...sitePartMethods(base, request),
+    ...dataSourceMethods(base, request),
     async load(pageId) {
       const data = await request(`${page(pageId)}/draft`);
       return { revision: Number(data.revision), document: parseDocument(data.snapshot) };
