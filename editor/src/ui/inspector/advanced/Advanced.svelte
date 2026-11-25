@@ -35,6 +35,7 @@
     <label for={id('source')}>{t('advanced.source')}</label>
     <select id={id('source')} bind:value={form.sourceType}>
       <option value="none">{t('advanced.none')}</option>
+      <option value="query">{t('advanced.query')}</option>
       <option value="module">{t('advanced.module')}</option>
       <option value="host">{t('advanced.host')}</option>
     </select>
@@ -47,6 +48,7 @@
   {#if form.sourceType !== 'none'}
     <div class="grid">
       <div class="field"><label for={id('variable')}>{t('advanced.variable')}</label><input id={id('variable')} bind:value={form.variable} /></div>
+      {#if form.sourceType !== 'query'}
       <div class="field"><label for={id('key')}>{t('advanced.key')}</label><input id={id('key')} bind:value={form.key} /></div>
       <div class="field"><label for={id('limit')}>{t('advanced.limit')}</label><input id={id('limit')} inputmode="numeric" bind:value={form.limit} /></div>
       <div class="field"><label for={id('offset')}>{t('advanced.offset')}</label><input id={id('offset')} inputmode="numeric" bind:value={form.offset} /></div>
@@ -55,8 +57,11 @@
         <label for={id('direction')}>{t('advanced.direction')}</label>
         <select id={id('direction')} bind:value={form.sortDirection}><option value="ASC">ASC</option><option value="DESC">DESC</option></select>
       </div>
+      {/if}
     </div>
-    <div class="field"><label for={id('filters')}>{t('advanced.filters')}</label><textarea id={id('filters')} rows="3" bind:value={form.filters}></textarea></div>
+    {#if form.sourceType !== 'query'}
+      <div class="field"><label for={id('filters')}>{t('advanced.filters')}</label><textarea id={id('filters')} rows="3" bind:value={form.filters}></textarea></div>
+    {/if}
   {/if}
   <div class="field"><label for={id('condition')}>{t('advanced.condition')}</label><input id={id('condition')} bind:value={condition} /></div>
   {#if error}<p class="error" role="alert">{error}</p>{/if}

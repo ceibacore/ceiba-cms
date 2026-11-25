@@ -4,7 +4,7 @@
  * (plan 07, D-3). Kept pure so it can be tested without a browser.
  */
 export interface LoopForm {
-  sourceType: 'none' | 'module' | 'host';
+  sourceType: 'none' | 'query' | 'module' | 'host';
   module: string;
   host: string;
   variable: string;
@@ -25,7 +25,7 @@ export const loopToForm = (loop: unknown): LoopForm => {
   const source = typeof l.source === 'string' ? l.source : '';
   const sort = record(l.sort);
   return {
-    sourceType: source.startsWith('module:') ? 'module' : source.startsWith('host:') ? 'host' : 'none',
+    sourceType: 'query' in l ? 'query' : source.startsWith('module:') ? 'module' : source.startsWith('host:') ? 'host' : 'none',
     module: source.startsWith('module:') ? source.slice(7) : '',
     host: source.startsWith('host:') ? source.slice(5) : '',
     variable: typeof l.variable === 'string' ? l.variable : 'item',
@@ -49,6 +49,11 @@ const count = (value: string): number | null | undefined => {
 /** The loop to store, null to remove it, or the error key of the first invalid field. */
 export const formToLoop = (form: LoopForm): LoopResult => {
   if (form.sourceType === 'none') return { loop: null };
+  if (form.sourceType === 'query') {
+    // Plan 07-B: repeat over the results of the enclosing query block.
+    if (!/^[A-Za-z_][A-Za-z0-9_]{0,40}$/.test(form.variable.trim())) return { error: 'loop.variable' };
+    return { loop: { query: '', variable: form.variable.trim() } };
+  }
   const target = (form.sourceType === 'module' ? form.module : form.host).trim();
   if (!/^[a-z0-9][a-z0-9_.-]{0,80}$/.test(target)) return { error: 'loop.source' };
   if (!/^[A-Za-z_][A-Za-z0-9_]{0,40}$/.test(form.variable.trim())) return { error: 'loop.variable' };

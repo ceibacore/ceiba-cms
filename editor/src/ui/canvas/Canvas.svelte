@@ -3,7 +3,7 @@
   import type { EditorStore } from '../model/store.svelte';
   import { CANVAS_SANDBOX, canvasDocument } from './frame';
   import { caretAtEnd, cleanText, isMultiline, textKey } from './inline-edit';
-  import { collectAssetIds, collectStyledNodes, compileStyles } from '../../core';
+  import { collectAssetIds, collectStyledNodes, compileStyles, previewProps } from '../../core';
   import { renderCanvas } from './render';
   import { COMPONENT_CSS } from './components';
   import Viewport from './Viewport.svelte';
@@ -109,15 +109,18 @@
     const selection = store.selection;
     const design = store.design;
     const media = store.media.resolved;
+    const previews = store.data.previews;
+    const schemas = store.data.schemas;
     if (!ready || !doc || !catalogue || editing !== null) return;
     void store.media.ensure(collectAssetIds(tree, design));
+    store.data.ensure(tree);
     renderCanvas(doc, tree, catalogue, selection, {
       unknown: (type) => t('canvas.unknown', { type }),
       html: t('canvas.html'),
       emptyImage: t('canvas.emptyImage'),
       empty: (type) => t('canvas.empty', { type }),
       menu: (slug) => t('canvas.menu', { slug: slug || '—' }),
-    }, design, media);
+    }, design, media, previewProps(tree, previews, schemas));
     applyStyles(doc);
     if (selection) doc.querySelector(`[data-ceiba-id="${CSS.escape(selection)}"]`)?.scrollIntoView({ block: 'nearest' });
   });

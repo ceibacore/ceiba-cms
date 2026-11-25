@@ -2,6 +2,7 @@ import type { Catalogue, Command, DesignDocument, EditorSession, SessionStatus, 
 import { EditorError, SiteDesignSession, defaultDesign } from '../../core';
 import type { MessageKey, Translate } from '../i18n';
 import { MediaState } from '../media/media.svelte';
+import { DataState } from '../data/data.svelte';
 import type { SitePartState } from '../site-parts/state.svelte';
 
 /**
@@ -25,6 +26,8 @@ export class EditorStore {
   readonly designSession: SiteDesignSession;
   /** Media library (plan 05-A): resolved asset URLs and the media dialog request. */
   readonly media: MediaState;
+  /** Data sources and query block previews (plan 07-C). */
+  readonly data: DataState;
   /** The site part being edited (plan 06), or null for a page. */
   part: SitePartState | null = null;
   design = $state.raw<DesignDocument>(defaultDesign());
@@ -45,6 +48,7 @@ export class EditorStore {
   constructor(readonly session: EditorSession, readonly t: Translate) {
     this.designSession = new SiteDesignSession(session.transport);
     this.media = new MediaState(session.transport);
+    this.data = new DataState(session.transport);
     this.stops.push(this.designSession.events.on('change', () => {
       this.design = this.designSession.design;
       this.designDirty = this.designSession.dirty;

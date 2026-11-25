@@ -23,4 +23,11 @@ describe('loop fields', () => {
     expect(formToLoop({ ...base, limit: '-1' })).toEqual({ error: 'loop.number' });
     expect(formToLoop({ ...base, limit: '' })).toEqual({ loop: { source: 'host:marketplace.products', variable: 'item', key: 'id' } });
   });
+
+  it('repeat over the enclosing query block (plan 07-B)', () => {
+    const form = loopToForm({ query: '', variable: 'course' });
+    expect(form.sourceType).toBe('query');
+    expect(formToLoop(form)).toEqual({ loop: { query: '', variable: 'course' } });
+    expect(formToLoop({ ...form, variable: '1x' })).toEqual({ error: 'loop.variable' });
+  });
 });

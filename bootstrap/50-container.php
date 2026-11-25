@@ -41,6 +41,7 @@ return [
         'publishSiteParts'     => $publishSiteParts,
         'migrateLayoutsToParts' => $migrateLayoutsToParts,
         'sitePartApiController' => $sitePartApiController,
+        'dataSourceApiController' => $dataSourceApiController,
         'hostRoutes'           => $hostRoutes,
         'customCode'           => $customCode,
         'designApiController'  => $designApiController,

@@ -36,8 +36,8 @@ const placeholder = (doc: Document, label: string): HTMLElement => {
 };
 
 /** One node as an element (without children); null children slot means the element takes no children. */
-const element = (doc: Document, node: NodeRecord, labels: CanvasLabels, known: boolean, media: MediaMap): HTMLElement => {
-  const p = resolveProps(propsOf(node), media);
+const element = (doc: Document, node: NodeRecord, labels: CanvasLabels, known: boolean, media: MediaMap, extra: Record<string, unknown> = {}): HTMLElement => {
+  const p = resolveProps({ ...propsOf(node), ...extra }, media);
   const view = known ? COMPONENT_VIEWS[node.type] : undefined;
   if (view) {
     // Same markup as the server view (fixtures/components); placeholders only where the server draws nothing.
@@ -111,11 +111,13 @@ export const renderCanvas = (
   labels: CanvasLabels,
   design?: DesignDocument,
   media: MediaMap = {},
+  /** Props to show over each node's own (plan 07-C: a query block's preview data). */
+  overrides: Readonly<Record<string, Record<string, unknown>>> = {},
 ): void => {
   const build = (id: string): HTMLElement | null => {
     const node = tree.nodes[id];
     if (!node) return null;
-    const el = element(doc, node, labels, catalogue.has(node.type), media);
+    const el = element(doc, node, labels, catalogue.has(node.type), media, overrides[id]);
     el.dataset.ceibaId = id;
     const styles = node.fields.styles;
     if (design && typeof styles === 'object' && styles !== null && !Array.isArray(styles)) {

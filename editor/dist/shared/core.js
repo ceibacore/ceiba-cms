@@ -194,7 +194,7 @@ var e = class extends Error {
 			group: null
 		}]
 	} : e;
-}, D = (e, t) => {
+}, oe = (e, t) => {
 	let n = e.future[e.future.length - 1];
 	return n ? {
 		past: [...e.past, {
@@ -204,7 +204,7 @@ var e = class extends Error {
 		}],
 		future: e.future.slice(0, -1)
 	} : e;
-}, oe = (e) => ({
+}, se = (e) => ({
 	type: e.name,
 	label: e.label,
 	category: e.category,
@@ -215,7 +215,7 @@ var e = class extends Error {
 	propsSchema: e.propsSchema ?? {},
 	editorControls: e.editorControls ?? {},
 	version: e.version
-}), se = (e) => ({
+}), ce = (e) => ({
 	type: e.tag,
 	label: e.tag,
 	category: e.category ?? "html",
@@ -226,16 +226,16 @@ var e = class extends Error {
 	propsSchema: {},
 	editorControls: {},
 	version: 1
-}), O = (e, t = []) => {
+}), D = (e, t = []) => {
 	let n = /* @__PURE__ */ new Map();
-	for (let e of t) n.set(e.tag, se(e));
-	for (let t of e) n.set(t.name, oe(t));
+	for (let e of t) n.set(e.tag, ce(e));
+	for (let t of e) n.set(t.name, se(t));
 	return {
 		rules: n,
 		get: (e) => n.get(e),
 		has: (e) => n.has(e)
 	};
-}, ce = class {
+}, le = class {
 	listeners = /* @__PURE__ */ new Map();
 	on(e, t) {
 		let n = this.listeners.get(e) ?? /* @__PURE__ */ new Set();
@@ -247,9 +247,9 @@ var e = class extends Error {
 	clear() {
 		this.listeners.clear();
 	}
-}, le = class {
+}, ue = class {
 	options;
-	events = new ce();
+	events = new le();
 	status = "loading";
 	tree = n();
 	savedTree = n();
@@ -261,7 +261,7 @@ var e = class extends Error {
 	baseRevision = 0;
 	history = w();
 	selection = null;
-	catalogue = O([]);
+	catalogue = D([]);
 	commands = null;
 	lastError = null;
 	conflictRevision = null;
@@ -295,68 +295,68 @@ var e = class extends Error {
 			canRedo: E(e)
 		});
 	}
-}, k = (e, t) => e.includes("*") || e.includes(t), A = (e, n, r, i) => {
+}, O = (e, t) => e.includes("*") || e.includes(t), k = (e, n, r, i) => {
 	let a = i === null ? null : e.nodes[i]?.type ?? null, o = n.get(r);
-	if (o && a !== null && !k(o.allowedParents, a) && t("PLACEMENT_NOT_ALLOWED", `${r} cannot be placed inside ${a}`, {
+	if (o && a !== null && !O(o.allowedParents, a) && t("PLACEMENT_NOT_ALLOWED", `${r} cannot be placed inside ${a}`, {
 		type: r,
 		parent: a
-	}), o && a === null && !k(o.allowedParents, "*") && !o.allowedParents.includes("root") && t("PLACEMENT_NOT_ALLOWED", `${r} cannot be placed at the root`, {
+	}), o && a === null && !O(o.allowedParents, "*") && !o.allowedParents.includes("root") && t("PLACEMENT_NOT_ALLOWED", `${r} cannot be placed at the root`, {
 		type: r,
 		parent: "root"
 	}), a === null) return;
 	let s = n.get(a);
-	s && (s.isContainer && k(s.allowedChildren, r) && !s.disallowedChildren.includes(r) || t("PLACEMENT_NOT_ALLOWED", `${a} does not accept ${r}`, {
+	s && (s.isContainer && O(s.allowedChildren, r) && !s.disallowedChildren.includes(r) || t("PLACEMENT_NOT_ALLOWED", `${a} does not accept ${r}`, {
 		type: r,
 		parent: a
 	}));
-}, ue = (e, n) => {
+}, de = (e, n) => {
 	e.has(n) || t("UNKNOWN_COMPONENT", `Unknown component ${n}`, { type: n });
-}, j = (e, n) => {
+}, A = (e, n) => {
 	e.has(n) || t("LOCKED_COMPONENT", `${n} is not in the catalogue and cannot be edited`, { type: n });
-}, M = (e, n) => {
-	ue(e, n.type);
+}, j = (e, n) => {
+	de(e, n.type);
 	let r = e.get(n.type);
-	for (let i of n.children ?? []) r && (!r.isContainer || !k(r.allowedChildren, i.type) || r.disallowedChildren.includes(i.type)) && t("PLACEMENT_NOT_ALLOWED", `${n.type} does not accept ${i.type}`, {
+	for (let i of n.children ?? []) r && (!r.isContainer || !O(r.allowedChildren, i.type) || r.disallowedChildren.includes(i.type)) && t("PLACEMENT_NOT_ALLOWED", `${n.type} does not accept ${i.type}`, {
 		type: i.type,
 		parent: n.type
-	}), M(e, i);
-}, de = {
+	}), j(e, i);
+}, fe = {
 	maxNodes: 500,
 	maxDepth: 15,
 	maxBytes: 2e6
-}, fe = (e, n) => {
-	n > e.maxNodes && t("MAX_NODES", `A page holds at most ${e.maxNodes} nodes`, { limit: String(e.maxNodes) });
-}, N = (e, n) => {
-	n > e.maxDepth && t("MAX_DEPTH", `Nodes can be nested ${e.maxDepth} levels at most`, { limit: String(e.maxDepth) });
 }, pe = (e, n) => {
+	n > e.maxNodes && t("MAX_NODES", `A page holds at most ${e.maxNodes} nodes`, { limit: String(e.maxNodes) });
+}, M = (e, n) => {
+	n > e.maxDepth && t("MAX_DEPTH", `Nodes can be nested ${e.maxDepth} levels at most`, { limit: String(e.maxDepth) });
+}, me = (e, n) => {
 	let r = new TextEncoder().encode(n).length;
 	r > e.maxBytes && t("DOCUMENT_TOO_LARGE", `The page is ${r} bytes; the limit is ${e.maxBytes}`, {
 		bytes: String(r),
 		limit: String(e.maxBytes)
 	});
-}, P = (e, n, a, o, c, l, u = 0) => {
+}, N = (e, n, a, o, c, l, u = 0) => {
 	a !== null && !e.nodes[a] && t("NODE_NOT_FOUND", `Node ${a} does not exist`, { id: a });
 	let f = y(n);
-	fe(c.limits, m(e) - u + f.count), N(c.limits, d(e, a) + f.height), A(e, c.catalogue, n.type, a);
+	pe(c.limits, m(e) - u + f.count), M(c.limits, d(e, a) + f.height), k(e, c.catalogue, n.type, a);
 	let p = _(e, n, a, c.ids, l);
 	return {
 		state: i(p.state, a, s(r(p.state, a), o, p.id)),
 		id: p.id,
 		renamed: p.renamed
 	};
-}, me = [
+}, he = [
 	"targetId",
 	"for",
 	"aria-controls",
 	"aria-labelledby",
 	"aria-describedby"
-], he = (e, t, n) => {
+], ge = (e, t, n) => {
 	let r = e;
 	for (let i of l(e, t)) {
 		let e = r.nodes[i], t = e?.fields.props;
 		if (!e || typeof t != "object" || !t || Array.isArray(t)) continue;
 		let o = !1, s = { ...t };
-		for (let e of me) {
+		for (let e of he) {
 			let t = s[e];
 			typeof t == "string" && n.has(t) && (s[e] = n.get(t), o = !0);
 		}
@@ -369,29 +369,19 @@ var e = class extends Error {
 		}));
 	}
 	return r;
-}, ge = (e, t, n) => {
-	let r = c(e, t.id), i = P(e, v(e, t.id), r.parent, p(e, t.id) + 1, n, "fresh");
+}, _e = (e, t, n) => {
+	let r = c(e, t.id), i = N(e, v(e, t.id), r.parent, p(e, t.id) + 1, n, "fresh");
 	return {
-		state: he(i.state, i.id, i.renamed),
+		state: ge(i.state, i.id, i.renamed),
 		inverse: {
 			kind: "remove",
 			id: i.id
 		},
 		focus: i.id
 	};
-}, _e = (e, t, n) => {
-	M(n.catalogue, t.node);
-	let r = P(e, t.node, t.parent, t.index, n, "fresh");
-	return {
-		state: r.state,
-		inverse: {
-			kind: "remove",
-			id: r.id
-		},
-		focus: r.id
-	};
 }, ve = (e, t, n) => {
-	let r = P(e, t.node, t.parent, t.index, n, "keep");
+	j(n.catalogue, t.node);
+	let r = N(e, t.node, t.parent, t.index, n, "fresh");
 	return {
 		state: r.state,
 		inverse: {
@@ -400,9 +390,19 @@ var e = class extends Error {
 		},
 		focus: r.id
 	};
-}, ye = (e, n, o) => {
+}, ye = (e, t, n) => {
+	let r = N(e, t.node, t.parent, t.index, n, "keep");
+	return {
+		state: r.state,
+		inverse: {
+			kind: "remove",
+			id: r.id
+		},
+		focus: r.id
+	};
+}, be = (e, n, o) => {
 	let l = c(e, n.id);
-	n.parent !== null && c(e, n.parent), n.parent !== null && u(e, n.id, n.parent) && t("CYCLE", "A node cannot be moved inside itself", { id: n.id }), N(o.limits, d(e, n.parent) + f(e, n.id)), n.parent !== l.parent && A(e, o.catalogue, l.type, n.parent);
+	n.parent !== null && c(e, n.parent), n.parent !== null && u(e, n.id, n.parent) && t("CYCLE", "A node cannot be moved inside itself", { id: n.id }), M(o.limits, d(e, n.parent) + f(e, n.id)), n.parent !== l.parent && k(e, o.catalogue, l.type, n.parent);
 	let m = p(e, n.id), h = i(e, l.parent, r(e, l.parent).filter((e) => e !== n.id)), g = n.parent === l.parent, _ = g && n.index > m ? n.index - 1 : n.index, v = i(h, n.parent, s(r(h, n.parent), _, n.id)), y = a(v, {
 		...c(v, n.id),
 		parent: n.parent
@@ -417,7 +417,7 @@ var e = class extends Error {
 		},
 		focus: n.id
 	};
-}, F = (e, t) => {
+}, xe = (e, t) => {
 	let n = c(e, t.id), a = p(e, t.id), s = r(e, n.parent).filter((e) => e !== t.id), u = v(e, t.id), d = o(i(e, n.parent, s), l(e, t.id)), f = s[a] ?? s[a - 1] ?? n.parent;
 	return {
 		state: d,
@@ -429,7 +429,7 @@ var e = class extends Error {
 		},
 		focus: f
 	};
-}, I = (e) => typeof e == "string" ? e : null, be = (e, t) => {
+}, Se = (e) => typeof e == "string" ? e : null, Ce = (e, t) => {
 	let n = c(e, t.id), r = { ...n.fields };
 	for (let e of ["name", "label"]) {
 		let n = t[e];
@@ -438,8 +438,8 @@ var e = class extends Error {
 	let i = {
 		kind: "rename",
 		id: t.id,
-		name: I(n.fields.name),
-		label: I(n.fields.label)
+		name: Se(n.fields.name),
+		label: Se(n.fields.label)
 	};
 	return {
 		state: a(e, {
@@ -449,13 +449,13 @@ var e = class extends Error {
 		inverse: i,
 		focus: t.id
 	};
-}, xe = (e, t, n) => {
+}, we = (e, t, n) => {
 	let r = c(e, t.id), i = p(e, t.id), a = v(e, t.id);
-	t.keepIds || M(n.catalogue, t.node);
-	let o = F(e, {
+	t.keepIds || j(n.catalogue, t.node);
+	let o = xe(e, {
 		kind: "remove",
 		id: t.id
-	}, n).state, s = P(o, t.node, r.parent, i, n, t.keepIds ? "keep" : "fresh");
+	}, n).state, s = N(o, t.node, r.parent, i, n, t.keepIds ? "keep" : "fresh");
 	return {
 		state: s.state,
 		inverse: {
@@ -466,15 +466,15 @@ var e = class extends Error {
 		},
 		focus: s.id
 	};
-}, L = [
+}, Te = [
 	"loop",
 	"condition",
 	"bindings",
 	"styles"
-], Se = (e, n, r) => {
+], Ee = (e, n, r) => {
 	let i = c(e, n.id);
-	j(r.catalogue, i.type);
-	let o = [...Object.keys(n.set), ...n.unset ?? []], s = o.find((e) => !L.includes(e));
+	A(r.catalogue, i.type);
+	let o = [...Object.keys(n.set), ...n.unset ?? []], s = o.find((e) => !Te.includes(e));
 	s !== void 0 && t("INVALID_TARGET", `${s} cannot be changed here`, { field: s });
 	let l = {
 		...i.fields,
@@ -496,16 +496,16 @@ var e = class extends Error {
 		},
 		focus: n.id
 	};
-}, Ce = (e) => typeof e == "object" && e && !Array.isArray(e) ? { ...e } : {}, we = {
-	insert: _e,
-	restore: ve,
-	remove: F,
-	move: ye,
-	duplicate: ge,
+}, De = (e) => typeof e == "object" && e && !Array.isArray(e) ? { ...e } : {}, Oe = {
+	insert: ve,
+	restore: ye,
+	remove: xe,
+	move: be,
+	duplicate: _e,
 	updateProps: (e, t, n) => {
 		let r = c(e, t.id);
-		j(n.catalogue, r.type);
-		let i = Ce(r.fields.props), o = {
+		A(n.catalogue, r.type);
+		let i = De(r.fields.props), o = {
 			...i,
 			...t.set
 		};
@@ -529,16 +529,16 @@ var e = class extends Error {
 			focus: t.id
 		};
 	},
-	updateFields: Se,
-	rename: be,
-	replace: xe
-}, R = (e, t, n) => {
-	let r = we[t.kind];
+	updateFields: Ee,
+	rename: Ce,
+	replace: we
+}, ke = (e, t, n) => {
+	let r = Oe[t.kind];
 	return r(e, t, n);
-}, Te = (e) => ({
+}, Ae = (e) => ({
 	context: e,
-	apply: (t, n) => R(t, n, e)
-}), Ee = async (t) => {
+	apply: (t, n) => ke(t, n, e)
+}), je = async (t) => {
 	let { transport: n, pageId: r, ids: i, limits: a } = t.options;
 	t.setStatus("loading");
 	try {
@@ -549,7 +549,7 @@ var e = class extends Error {
 			n.capabilities?.().catch(() => null) ?? null,
 			n.status?.(r).catch(() => null) ?? null
 		]);
-		t.capabilities = c, t.publishedRevision = l?.publishedRevision ?? null, t.catalogue = O(e, o), t.commands = Te({
+		t.capabilities = c, t.publishedRevision = l?.publishedRevision ?? null, t.catalogue = D(e, o), t.commands = Ae({
 			catalogue: t.catalogue,
 			limits: a,
 			ids: i
@@ -562,46 +562,46 @@ var e = class extends Error {
 	} catch (n) {
 		throw t.lastError = n instanceof e ? n : new e("SERVER", String(n)), t.setStatus("load-error"), t.lastError;
 	}
-}, De = () => {
+}, Me = () => {
 	let e = /* @__PURE__ */ new Uint8Array(8);
 	return globalThis.crypto.getRandomValues(e), "n" + Array.from(e, (e) => e.toString(36).padStart(2, "0")).join("").slice(0, 12);
-}, Oe = (e = "n") => {
+}, Ne = (e = "n") => {
 	let t = 0;
 	return () => `${e}${++t}`;
-}, ke = (e) => ({
+}, Pe = (e) => ({
 	pageId: e.pageId,
 	transport: e.transport,
-	ids: e.ids ?? De,
-	limits: e.limits ?? de,
+	ids: e.ids ?? Me,
+	limits: e.limits ?? fe,
 	history: {
 		...C,
 		...e.history
 	},
 	now: e.now ?? (() => Date.now())
-}), Ae = (e) => {
+}), Fe = (e) => {
 	if (!e.options.transport.publish) return !1;
 	let t = e.capabilities;
 	return t ? t.features.revisionPublish ?? t.permissions.includes("pages.publish") : !0;
-}, je = () => {
+}, Ie = () => {
 	let e = /* @__PURE__ */ new Uint8Array(16);
 	return globalThis.crypto.getRandomValues(e), Array.from(e, (e) => e.toString(16).padStart(2, "0")).join("");
-}, Me = async (t) => {
+}, Le = async (t) => {
 	let n = t.options.transport.publish;
-	if (!n || !Ae(t)) throw new e("AUTHORIZATION_DENIED", "Publishing is not allowed here");
+	if (!n || !Fe(t)) throw new e("AUTHORIZATION_DENIED", "Publishing is not allowed here");
 	if (t.status !== "ready" || t.dirty) throw new e("NOTHING_TO_PUBLISH", "Save the changes before publishing", { status: t.status });
 	if (t.publishedRevision === t.baseRevision) throw new e("NOTHING_TO_PUBLISH", "This revision is already published");
 	if (t.publishing) throw new e("SAVE_IN_PROGRESS", "Publishing is already running");
 	let r = t.baseRevision;
 	t.publishing = !0, t.events.emit("publish-start", { revision: r });
 	try {
-		return await n(t.options.pageId, r, je()), t.publishedRevision = r, t.events.emit("publish-success", { revision: r }), r;
+		return await n(t.options.pageId, r, Ie()), t.publishedRevision = r, t.events.emit("publish-success", { revision: r }), r;
 	} catch (n) {
 		let r = n instanceof e ? n : new e("SERVER", String(n));
 		throw t.lastError = r, t.events.emit("publish-error", { error: r }), r;
 	} finally {
 		t.publishing = !1;
 	}
-}, Ne = async (t, n) => {
+}, Re = async (t, n) => {
 	if (t.status === "loading" || t.status === "load-error") throw new e("INVALID_DOCUMENT", "Nothing loaded to save");
 	if (t.status === "saving") throw new e("SAVE_IN_PROGRESS", "A save is already running");
 	if (t.status === "conflict") throw new e("REVISION_CONFLICT", "Resolve the conflict before saving", { currentRevision: String(t.conflictRevision ?? "") });
@@ -610,7 +610,7 @@ var e = class extends Error {
 		throw new e("NOTHING_TO_SAVE", "There are no changes to save");
 	}
 	let r = t.tree, i = S(r, t.meta, t.baseRevision + 1);
-	pe(t.options.limits, JSON.stringify(i));
+	me(t.options.limits, JSON.stringify(i));
 	let a = t.status;
 	t.setStatus("saving"), t.events.emit("save-start", {
 		reason: n,
@@ -630,12 +630,12 @@ var e = class extends Error {
 		} else t.setStatus(r.code === "NETWORK" ? "offline" : a === "offline" ? "dirty" : a), t.events.emit("save-error", { error: r });
 		throw r;
 	}
-}, Pe = async (e, t) => {
-	e.status === "conflict" && (t === "take-theirs" ? await Ee(e) : (e.baseRevision = e.conflictRevision ?? (await e.options.transport.load(e.options.pageId)).revision, e.conflictRevision = null, e.setStatus("dirty"), await Ne(e, "edit")));
-}, Fe = class {
+}, ze = async (e, t) => {
+	e.status === "conflict" && (t === "take-theirs" ? await je(e) : (e.baseRevision = e.conflictRevision ?? (await e.options.transport.load(e.options.pageId)).revision, e.conflictRevision = null, e.setStatus("dirty"), await Re(e, "edit")));
+}, Be = class {
 	core;
 	constructor(e) {
-		this.core = new le(ke(e));
+		this.core = new ue(Pe(e));
 	}
 	get events() {
 		return this.core.events;
@@ -677,7 +677,7 @@ var e = class extends Error {
 		return this.core.publishedRevision;
 	}
 	get canPublish() {
-		return Ae(this.core);
+		return Fe(this.core);
 	}
 	get publishing() {
 		return this.core.publishing;
@@ -692,7 +692,7 @@ var e = class extends Error {
 		return this.core.options.transport;
 	}
 	load() {
-		return Ee(this.core);
+		return je(this.core);
 	}
 	dispatch(e) {
 		let t = this.editable().apply(this.core.tree, e);
@@ -708,19 +708,19 @@ var e = class extends Error {
 		let e = this.editable(), t = this.core.history.future[this.core.history.future.length - 1];
 		if (!t) return;
 		let n = e.apply(this.core.tree, t.redo);
-		this.core.commitTree(n.state, n.focus), this.core.setHistory(D(this.core.history, n.inverse));
+		this.core.commitTree(n.state, n.focus), this.core.setHistory(oe(this.core.history, n.inverse));
 	}
 	select(e) {
 		this.core.select(e);
 	}
 	save(e = "edit") {
-		return Ne(this.core, e);
+		return Re(this.core, e);
 	}
 	publish() {
-		return Me(this.core);
+		return Le(this.core);
 	}
 	resolveConflict(e) {
-		return Pe(this.core, e);
+		return ze(this.core, e);
 	}
 	toDocument() {
 		return S(this.core.tree, this.core.meta, this.core.baseRevision + 1);
@@ -732,7 +732,7 @@ var e = class extends Error {
 		if (!this.core.commands || this.core.status === "loading" || this.core.status === "load-error" || this.core.status === "saving") throw new e("INVALID_DOCUMENT", `The editor cannot change the page while ${this.core.status}`);
 		return this.core.commands;
 	}
-}, Ie = (e, t) => {
+}, Ve = (e, t) => {
 	let n = [], r = /* @__PURE__ */ new Set(), i = (a, o, s, c) => {
 		if (c.has(a)) {
 			n.push({
@@ -776,16 +776,16 @@ var e = class extends Error {
 		code: "MAX_NODES",
 		id: ""
 	}), n;
-}, Le = (e) => {
+}, He = (e) => {
 	let t = {};
 	if (typeof e == "object" && e) for (let [n, r] of Object.entries(e)) (typeof r == "string" || typeof r == "number") && (t[n] = String(r));
 	return t;
-}, Re = (e, t) => t === "PUBLIC_CONTENT_DRIFT" ? "PUBLIC_CONTENT_DRIFT" : e === 409 && t === "MEDIA_IN_USE" ? "MEDIA_IN_USE" : e === 409 && t === "SITE_PART_CONFLICT" ? "SITE_PART_CONFLICT" : e === 412 || t === "REVISION_CONFLICT" ? "REVISION_CONFLICT" : e === 403 || e === 401 ? "AUTHORIZATION_DENIED" : e === 422 || e === 400 ? "VALIDATION_FAILED" : e === 404 ? "NODE_NOT_FOUND" : "SERVER", ze = (t, n) => {
-	let r = n?.error ?? {}, i = typeof r.code == "string" ? r.code : "", a = Le(r.fieldErrors);
+}, Ue = (e, t) => t === "PUBLIC_CONTENT_DRIFT" ? "PUBLIC_CONTENT_DRIFT" : e === 409 && t === "MEDIA_IN_USE" ? "MEDIA_IN_USE" : e === 409 && t === "SITE_PART_CONFLICT" ? "SITE_PART_CONFLICT" : e === 412 || t === "REVISION_CONFLICT" ? "REVISION_CONFLICT" : e === 403 || e === 401 ? "AUTHORIZATION_DENIED" : e === 422 || e === 400 ? "VALIDATION_FAILED" : e === 404 ? "NODE_NOT_FOUND" : "SERVER", We = (t, n) => {
+	let r = n?.error ?? {}, i = typeof r.code == "string" ? r.code : "", a = He(r.fieldErrors);
 	typeof r.requestId == "string" && (a.requestId = r.requestId), i !== "" && (a.apiCode = i), a.status = String(t);
 	let o = typeof r.message == "string" ? r.message : `HTTP ${t}`;
-	return new e(Re(t, i), o, a);
-}, Be = (t) => new e("NETWORK", t instanceof Error ? t.message : "Network error"), Ve = (e, t) => ({
+	return new e(Ue(t, i), o, a);
+}, Ge = (t) => new e("NETWORK", t instanceof Error ? t.message : "Network error"), Ke = (e, t) => ({
 	async loadDesign() {
 		let n = await t(`${e}/design`), r = n.publishedRevision;
 		return {
@@ -817,7 +817,7 @@ var e = class extends Error {
 		let i = await t(`${e}/design/usages?${n}=${encodeURIComponent(r)}`);
 		return Array.isArray(i.pages) ? i.pages : [];
 	}
-}), He = (e, t) => {
+}), qe = (e, t) => {
 	let n = (t) => `${e}/media/${encodeURIComponent(t)}`;
 	return {
 		async listMedia(n, r) {
@@ -860,7 +860,7 @@ var e = class extends Error {
 			await t(n(e), { method: "DELETE" });
 		}
 	};
-}, Ue = (e, t) => {
+}, Je = (e, t) => {
 	let n = (e, t, n = {}) => ({
 		method: e,
 		headers: {
@@ -895,7 +895,27 @@ var e = class extends Error {
 			return (await t(`${e}/site-parts/publish`, n("POST", { changes: r }, { "Idempotency-Key": i }))).revisions ?? {};
 		}
 	};
-}, We = (t) => {
+}, Ye = (e, t) => ({
+	async listDataSources() {
+		return (await t(`${e}/data-sources`)).sources ?? [];
+	},
+	async dataSourceSchema(n) {
+		return (await t(`${e}/data-sources/${encodeURIComponent(n)}/schema`)).source;
+	},
+	async dataSourceRecords(n, r) {
+		return (await t(`${e}/data-sources/${encodeURIComponent(n)}/records?${new URLSearchParams({ search: r })}`)).records ?? [];
+	},
+	async previewQuery(n, r = {}) {
+		return await t(`${e}/data-sources/preview`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				query: n,
+				params: r
+			})
+		});
+	}
+}), Xe = (t) => {
 	let n = t.fetch ?? globalThis.fetch.bind(globalThis), r = t.baseUrl.replace(/\/+$/, ""), i = (e) => `${r}/pages/${encodeURIComponent(e)}`, a = async (r, i = {}) => {
 		let a;
 		try {
@@ -909,18 +929,19 @@ var e = class extends Error {
 				}
 			});
 		} catch (e) {
-			throw Be(e);
+			throw Ge(e);
 		}
 		let o = await a.json().catch(() => null);
-		if (!a.ok) throw ze(a.status, o);
+		if (!a.ok) throw We(a.status, o);
 		let s = o?.data;
 		if (typeof s != "object" || !s) throw new e("SERVER", "Unexpected response", { status: String(a.status) });
 		return s;
 	};
 	return {
-		...Ve(r, a),
-		...He(r, a),
-		...Ue(r, a),
+		...Ke(r, a),
+		...qe(r, a),
+		...Je(r, a),
+		...Ye(r, a),
 		async load(e) {
 			let t = await a(`${i(e)}/draft`);
 			return {
@@ -1006,7 +1027,7 @@ var e = class extends Error {
 			return Object.values(e.html_tags ?? {});
 		}
 	};
-}, Ge = {
+}, Ze = {
 	idleMs: 2e3,
 	maxWaitMs: 15e3,
 	retryMs: [
@@ -1015,11 +1036,11 @@ var e = class extends Error {
 		15e3,
 		3e4
 	]
-}, Ke = {
+}, Qe = {
 	set: (e, t) => setTimeout(e, t),
 	clear: (e) => clearTimeout(e),
 	now: () => Date.now()
-}, qe = class {
+}, $e = class {
 	session;
 	options;
 	timers;
@@ -1027,7 +1048,7 @@ var e = class extends Error {
 	firstChange = null;
 	retries = 0;
 	stops = [];
-	constructor(e, t = Ge, n = Ke) {
+	constructor(e, t = Ze, n = Qe) {
 		this.session = e, this.options = t, this.timers = n;
 	}
 	start() {
@@ -1068,7 +1089,7 @@ var e = class extends Error {
 	reset() {
 		this.timer !== null && this.timers.clear(this.timer), this.timer = null, this.firstChange = null, this.session.status !== "offline" && (this.retries = 0);
 	}
-}, Je = [
+}, et = [
 	{
 		id: "sm",
 		minWidth: 576
@@ -1085,7 +1106,7 @@ var e = class extends Error {
 		id: "xl",
 		minWidth: 1200
 	}
-], z = {
+], P = {
 	version: 1,
 	states: [
 		"hover",
@@ -1490,71 +1511,71 @@ var e = class extends Error {
 		minWidth: 4e3,
 		magnitude: 1e4
 	}
-}, Ye = new Map(z.properties.map((e) => [e.name, e])), B = z.limits, Xe = /[;{}\\<>"'`]|\/\*|url\(|expression|@import|!/i, Ze = /^(-?)(\d+(?:\.\d+)?|\.\d+)(px|rem|em|%|vw|vh)$/, Qe = /^(\d+(?:\.\d+)?|\.\d+)fr$/, $e = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/, et = /^(?:rgb|rgba|hsl|hsla)\([0-9.%, /]{1,60}\)$/, tt = /^(?:auto|span (?:[1-9]|1[0-2])|(?:[1-9]|1[0-3]) \/ (?:[1-9]|1[0-3]|-1))$/, nt = /^repeat\(([1-9]|1[0-2]), ?(.+)\)$/, rt = (e) => {
+}, tt = new Map(P.properties.map((e) => [e.name, e])), F = P.limits, nt = /[;{}\\<>"'`]|\/\*|url\(|expression|@import|!/i, rt = /^(-?)(\d+(?:\.\d+)?|\.\d+)(px|rem|em|%|vw|vh)$/, it = /^(\d+(?:\.\d+)?|\.\d+)fr$/, at = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/, ot = /^(?:rgb|rgba|hsl|hsla)\([0-9.%, /]{1,60}\)$/, st = /^(?:auto|span (?:[1-9]|1[0-2])|(?:[1-9]|1[0-3]) \/ (?:[1-9]|1[0-3]|-1))$/, ct = /^repeat\(([1-9]|1[0-2]), ?(.+)\)$/, lt = (e) => {
 	let t = e.replace(/^[ \t\n\r\f\v]+|[ \t\n\r\f\v]+$/g, "").replace(/[ \t\n\r\f\v]+/g, " ");
-	return t === "" || t.length > B.valueLength || Xe.test(t) ? null : t;
-}, it = (e) => Number.isInteger(e) ? String(e) : e.toFixed(4).replace(/0+$/, "").replace(/\.$/, ""), V = (e, t = !1, n = !1) => {
+	return t === "" || t.length > F.valueLength || nt.test(t) ? null : t;
+}, ut = (e) => Number.isInteger(e) ? String(e) : e.toFixed(4).replace(/0+$/, "").replace(/\.$/, ""), I = (e, t = !1, n = !1) => {
 	if (e === "0") return "0";
 	if (e === "auto") return t ? "auto" : null;
-	let r = Ze.exec(e);
-	return !r || r[1] === "-" && !n || Number(r[2]) > B.magnitude ? null : e;
-}, at = (e, t) => {
+	let r = rt.exec(e);
+	return !r || r[1] === "-" && !n || Number(r[2]) > F.magnitude ? null : e;
+}, dt = (e, t) => {
 	let n = e.split(" ");
-	return n.length > (t.parts ?? 1) ? null : n.every((e) => V(e, t.auto, t.negative) !== null) ? e : null;
-}, H = (e) => e === "transparent" || e === "currentColor" || $e.test(e) || et.test(e) ? e : null, ot = (e) => {
+	return n.length > (t.parts ?? 1) ? null : n.every((e) => I(e, t.auto, t.negative) !== null) ? e : null;
+}, ft = (e) => e === "transparent" || e === "currentColor" || at.test(e) || ot.test(e) ? e : null, pt = (e) => {
 	if (e === "auto" || e === "min-content" || e === "max-content") return !0;
-	let t = Qe.exec(e);
-	return t ? Number(t[1]) <= 100 : V(e) !== null;
-}, st = (e) => {
-	let t = nt.exec(e);
-	if (t) return ot(t[2]) ? `repeat(${t[1]}, ${t[2]})` : null;
+	let t = it.exec(e);
+	return t ? Number(t[1]) <= 100 : I(e) !== null;
+}, mt = (e) => {
+	let t = ct.exec(e);
+	if (t) return pt(t[2]) ? `repeat(${t[1]}, ${t[2]})` : null;
 	let n = e.split(" ");
-	return n.length <= 12 && n.every(ot) ? e : null;
-}, ct = (e, t) => Number.isFinite(e) && e >= (t.min ?? 0) && e <= (t.max ?? B.magnitude) ? it(e) : null, U = (e, t) => {
-	if (typeof t == "number") return e.kind === "number" || e.kind === "lineHeight" ? ct(t, e) : e.kind === "keyword" && e.name === "fontWeight" ? U(e, String(t)) : null;
-	let n = rt(t);
+	return n.length <= 12 && n.every(pt) ? e : null;
+}, ht = (e, t) => Number.isFinite(e) && e >= (t.min ?? 0) && e <= (t.max ?? F.magnitude) ? ut(e) : null, L = (e, t) => {
+	if (typeof t == "number") return e.kind === "number" || e.kind === "lineHeight" ? ht(t, e) : e.kind === "keyword" && e.name === "fontWeight" ? L(e, String(t)) : null;
+	let n = lt(t);
 	if (n === null) return null;
 	switch (e.kind) {
-		case "keyword": return z.keywords[e.name]?.includes(n) ? n : null;
-		case "length": return at(n, e);
-		case "color": return H(n);
-		case "tracks": return st(n);
-		case "gridColumn": return tt.test(n) ? n : null;
-		case "lineHeight": return at(n, {});
+		case "keyword": return P.keywords[e.name]?.includes(n) ? n : null;
+		case "length": return dt(n, e);
+		case "color": return ft(n);
+		case "tracks": return mt(n);
+		case "gridColumn": return st.test(n) ? n : null;
+		case "lineHeight": return dt(n, {});
 		default: return null;
 	}
-}, lt = /^(?:https?:\/\/[A-Za-z0-9._~:/?#[\]@!$&*+,;=%-]{1,490}|\/(?!\/)[A-Za-z0-9._~:/?#[\]@!$&*+,;=%-]{0,490})$/, ut = (e) => typeof e == "string" && lt.test(e) ? `url("${e}")` : null, dt = (e) => e.kind === "color" ? "color" : e.kind === "length" ? "length" : e.tokenType ?? null, ft = /^[a-z][a-z0-9-]*(?:\.[a-z0-9-]+)*$/, pt = /^[A-Za-z0-9 -]{1,60}$/, mt = /^\d{1,5}(?:ms|s)$/, W = (e) => `--cms-t-${e.replace(/\./g, "_")}`, ht = (e, t) => {
+}, gt = /^(?:https?:\/\/[A-Za-z0-9._~:/?#[\]@!$&*+,;=%-]{1,490}|\/(?!\/)[A-Za-z0-9._~:/?#[\]@!$&*+,;=%-]{0,490})$/, _t = (e) => typeof e == "string" && gt.test(e) ? `url("${e}")` : null, vt = (e) => e.kind === "color" ? "color" : e.kind === "length" ? "length" : e.tokenType ?? null, yt = /^[a-z][a-z0-9-]*(?:\.[a-z0-9-]+)*$/, bt = /^[A-Za-z0-9 -]{1,60}$/, xt = /^\d{1,5}(?:ms|s)$/, R = (e) => `--cms-t-${e.replace(/\./g, "_")}`, St = (e, t) => {
 	let n = [], r = 0, i = "";
 	for (let a of e) a === "(" && r++, a === ")" && r--, a === t && r === 0 ? (n.push(i.trim()), i = "") : i += a;
 	return n.push(i.trim()), n;
-}, gt = (e) => {
-	let t = ht(e, ",");
+}, Ct = (e) => {
+	let t = St(e, ",");
 	if (t.length > 3) return null;
 	for (let e of t) {
-		let t = ht(e, " ").filter((e) => e !== "");
+		let t = St(e, " ").filter((e) => e !== "");
 		t[0] === "inset" && t.shift();
-		let n = t[t.length - 1] ?? "", r = H(n) !== null && V(n, !1, !0) === null ? t.slice(0, -1) : t;
-		if (r.length < 2 || r.length > 4 || r.some((e) => e.endsWith("%") || V(e, !1, !0) === null)) return null;
+		let n = t[t.length - 1] ?? "", r = ft(n) !== null && I(n, !1, !0) === null ? t.slice(0, -1) : t;
+		if (r.length < 2 || r.length > 4 || r.some((e) => e.endsWith("%") || I(e, !1, !0) === null)) return null;
 	}
 	return e;
-}, _t = (e, t) => {
+}, wt = (e, t) => {
 	if (e === "fontFamily") {
 		let e = t.split(",").map((e) => e.replace(/^[ \t\n\r\f\v]+|[ \t\n\r\f\v]+$/g, "").replace(/[ \t\n\r\f\v]+/g, " "));
-		return e.length > 8 || !e.every((e) => pt.test(e)) ? null : e.map((e) => e.includes(" ") ? `"${e}"` : e).join(", ");
+		return e.length > 8 || !e.every((e) => bt.test(e)) ? null : e.map((e) => e.includes(" ") ? `"${e}"` : e).join(", ");
 	}
-	let n = rt(t);
+	let n = lt(t);
 	if (n === null) return null;
 	switch (e) {
-		case "color": return H(n);
-		case "length": return V(n);
-		case "fontWeight": return z.keywords.fontWeight?.includes(n) ? n : null;
-		case "shadow": return gt(n);
-		case "duration": return mt.test(n) ? n : null;
+		case "color": return ft(n);
+		case "length": return I(n);
+		case "fontWeight": return P.keywords.fontWeight?.includes(n) ? n : null;
+		case "shadow": return Ct(n);
+		case "duration": return xt.test(n) ? n : null;
 		default: return null;
 	}
-}, vt = (e, t) => {
+}, Tt = (e, t) => {
 	let n = /* @__PURE__ */ new Map(), r = Object.keys(e).sort();
-	if (r.length > z.limits.tokens) return t.push({
+	if (r.length > P.limits.tokens) return t.push({
 		path: "design.tokens",
 		code: "LIMIT"
 	}), {
@@ -1563,9 +1584,9 @@ var e = class extends Error {
 	};
 	let i = [], a = (t, n) => {
 		let r = e[t];
-		if (typeof r != "object" || !r || !ft.test(t) || t.length > 64 || typeof r.type != "string" || !z.tokenTypes.includes(r.type)) return null;
+		if (typeof r != "object" || !r || !yt.test(t) || t.length > 64 || typeof r.type != "string" || !P.tokenTypes.includes(r.type)) return null;
 		if (typeof r.value == "string") {
-			let e = _t(r.type, r.value);
+			let e = wt(r.type, r.value);
 			return e === null ? null : {
 				type: r.type,
 				css: e
@@ -1577,11 +1598,11 @@ var e = class extends Error {
 		let o = a(i, [...n, i]);
 		return o === null || o === "cycle" || o === "type" ? o : o.type === r.type ? {
 			type: r.type,
-			css: `var(${W(i)})`
+			css: `var(${R(i)})`
 		} : "type";
 	};
 	for (let e of r) {
-		if (!ft.test(e) || e.length > 64) {
+		if (!yt.test(e) || e.length > 64) {
 			t.push({
 				path: `design.tokens.${e}`,
 				code: "INVALID_ID"
@@ -1597,22 +1618,22 @@ var e = class extends Error {
 			code: "INVALID_VALUE"
 		}) : (n.set(e, {
 			type: r.type,
-			ref: `var(${W(e)})`
-		}), i.push(`${W(e)}:${r.css}`));
+			ref: `var(${R(e)})`
+		}), i.push(`${R(e)}:${r.css}`));
 	}
 	return {
 		table: n,
 		root: i.length > 0 ? `:root{${i.join(";")}}` : ""
 	};
-}, yt = /^[A-Za-z0-9_-]{1,64}$/, bt = /^[a-z][a-z0-9-]{0,40}$/, xt = new Map(z.properties.map((e, t) => [e.name, t])), G = (e) => typeof e == "object" && e ? e : {}, K = (e) => `cms-n-${e}`, q = (e) => `cms-c-${e}`, J = (e, t, n) => {
-	let r = Object.entries(G(e));
-	if (r.length > z.limits.declarations) return n.diagnostics.push({
+}, Et = /^[A-Za-z0-9_-]{1,64}$/, Dt = /^[a-z][a-z0-9-]{0,40}$/, Ot = new Map(P.properties.map((e, t) => [e.name, t])), z = (e) => typeof e == "object" && e ? e : {}, B = (e) => `cms-n-${e}`, V = (e) => `cms-c-${e}`, H = (e, t, n) => {
+	let r = Object.entries(z(e));
+	if (r.length > P.limits.declarations) return n.diagnostics.push({
 		path: t,
 		code: "LIMIT"
 	}), "";
 	let i = [];
 	for (let [e, a] of r) {
-		let r = Ye.get(e), o = `${t}.${e}`;
+		let r = tt.get(e), o = `${t}.${e}`;
 		if (!r) {
 			n.diagnostics.push({
 				path: o,
@@ -1637,7 +1658,7 @@ var e = class extends Error {
 				});
 				continue;
 			}
-			s = ut(t);
+			s = _t(t);
 		} else if (typeof a == "object" && a) {
 			let e = a.token, t = typeof e == "string" ? n.tokens.get(e) : void 0;
 			if (!t) {
@@ -1647,7 +1668,7 @@ var e = class extends Error {
 				});
 				continue;
 			}
-			if (t.type !== dt(r)) {
+			if (t.type !== vt(r)) {
 				n.diagnostics.push({
 					path: o,
 					code: "TOKEN_TYPE"
@@ -1655,27 +1676,27 @@ var e = class extends Error {
 				continue;
 			}
 			s = t.ref;
-		} else s = typeof a == "string" || typeof a == "number" ? U(r, a) : null;
+		} else s = typeof a == "string" || typeof a == "number" ? L(r, a) : null;
 		s === null ? n.diagnostics.push({
 			path: o,
 			code: "INVALID_VALUE"
-		}) : i.push([xt.get(e) ?? 0, `${r.css}:${s}`]);
+		}) : i.push([Ot.get(e) ?? 0, `${r.css}:${s}`]);
 	}
 	return i.sort((e, t) => e[0] - t[0]).map(([, e]) => e).join(";");
-}, St = (e, t, n, r, i) => {
-	let a = G(t), o = J(a.base, `${n}.base`, r);
+}, kt = (e, t, n, r, i) => {
+	let a = z(t), o = H(a.base, `${n}.base`, r);
 	o !== "" && i.rules.push(`${e}{${o}}`);
-	let s = G(a.states);
-	for (let e of Object.keys(s)) z.states.includes(e) || r.diagnostics.push({
+	let s = z(a.states);
+	for (let e of Object.keys(s)) P.states.includes(e) || r.diagnostics.push({
 		path: `${n}.states.${e}`,
 		code: "UNKNOWN_STATE"
 	});
-	for (let t of z.states) {
+	for (let t of P.states) {
 		if (!(t in s)) continue;
-		let a = J(s[t], `${n}.states.${t}`, r);
+		let a = H(s[t], `${n}.states.${t}`, r);
 		a !== "" && i.rules.push(`${e}:${t}{${a}}`);
 	}
-	let c = G(a.breakpoints);
+	let c = z(a.breakpoints);
 	for (let t of Object.keys(c)) {
 		if (!r.breakpoints.some((e) => e.id === t)) {
 			r.diagnostics.push({
@@ -1684,23 +1705,23 @@ var e = class extends Error {
 			});
 			continue;
 		}
-		let a = J(c[t], `${n}.breakpoints.${t}`, r);
+		let a = H(c[t], `${n}.breakpoints.${t}`, r);
 		a !== "" && i.media.get(t)?.push(`${e}{${a}}`);
 	}
-}, Ct = (e, t) => {
-	let n = Array.isArray(e) && e.length <= z.limits.breakpoints && e.every((t, n) => typeof t == "object" && !!t && typeof t.id == "string" && /^[a-z][a-z0-9-]{0,15}$/.test(t.id) && Number.isInteger(t.minWidth) && t.minWidth >= 1 && t.minWidth <= z.limits.minWidth && (n === 0 || t.minWidth > e[n - 1].minWidth) && e.findIndex((e) => e.id === t.id) === n);
+}, At = (e, t) => {
+	let n = Array.isArray(e) && e.length <= P.limits.breakpoints && e.every((t, n) => typeof t == "object" && !!t && typeof t.id == "string" && /^[a-z][a-z0-9-]{0,15}$/.test(t.id) && Number.isInteger(t.minWidth) && t.minWidth >= 1 && t.minWidth <= P.limits.minWidth && (n === 0 || t.minWidth > e[n - 1].minWidth) && e.findIndex((e) => e.id === t.id) === n);
 	return n || t.push({
 		path: "design.breakpoints",
 		code: "INVALID_BREAKPOINTS"
 	}), n ? e : [];
-}, wt = (e, t, n) => {
+}, jt = (e, t, n) => {
 	n.push(...e.rules);
 	for (let r of t) {
 		let t = e.media.get(r.id) ?? [];
 		t.length > 0 && n.push(`@media (min-width:${r.minWidth}px){\n${t.join("\n")}\n}`);
 	}
-}, Tt = (e, t, n = {}) => {
-	let r = [], { table: i, root: a } = vt(G(e.tokens), r), o = Ct(e.breakpoints ?? [], r), s = {
+}, Mt = (e, t, n = {}) => {
+	let r = [], { table: i, root: a } = Tt(z(e.tokens), r), o = At(e.breakpoints ?? [], r), s = {
 		tokens: i,
 		breakpoints: o,
 		diagnostics: r,
@@ -1708,67 +1729,67 @@ var e = class extends Error {
 	}, c = () => ({
 		rules: [],
 		media: new Map(o.map((e) => [e.id, []]))
-	}), l = c(), u = G(e.classes), d = Object.keys(u);
-	d.length > z.limits.classes && r.push({
+	}), l = c(), u = z(e.classes), d = Object.keys(u);
+	d.length > P.limits.classes && r.push({
 		path: "design.classes",
 		code: "LIMIT"
 	});
-	for (let e of d.length > z.limits.classes ? [] : d) bt.test(e) ? St(`.${q(e)}`, G(u[e]).styles, `design.classes.${e}.styles`, s, l) : r.push({
+	for (let e of d.length > P.limits.classes ? [] : d) Dt.test(e) ? kt(`.${V(e)}`, z(u[e]).styles, `design.classes.${e}.styles`, s, l) : r.push({
 		path: `design.classes.${e}`,
 		code: "INVALID_ID"
 	});
 	let f = c();
 	for (let e of t) {
-		if (!yt.test(e.id)) {
+		if (!Et.test(e.id)) {
 			r.push({
 				path: `nodes.${e.id}`,
 				code: "INVALID_ID"
 			});
 			continue;
 		}
-		let t = G(e.styles).classes;
+		let t = z(e.styles).classes;
 		(Array.isArray(t) ? t : []).forEach((t, n) => {
-			typeof t == "string" && d.includes(t) && bt.test(t) || r.push({
+			typeof t == "string" && d.includes(t) && Dt.test(t) || r.push({
 				path: `nodes.${e.id}.styles.classes.${n}`,
 				code: "UNKNOWN_CLASS"
 			});
-		}), St(`.${K(e.id)}.${K(e.id)}`, e.styles, `nodes.${e.id}.styles`, s, f);
+		}), kt(`.${B(e.id)}.${B(e.id)}`, e.styles, `nodes.${e.id}.styles`, s, f);
 	}
 	let p = a === "" ? [] : [a];
-	return wt(l, o, p), wt(f, o, p), {
+	return jt(l, o, p), jt(f, o, p), {
 		css: p.join("\n"),
 		diagnostics: r
 	};
-}, Et = (e) => typeof e == "object" && !!e && !Array.isArray(e), Dt = (e) => {
+}, Nt = (e) => typeof e == "object" && !!e && !Array.isArray(e), Pt = (e) => {
 	let t = [], n = (e) => {
 		for (let r of e) {
 			let e = typeof r.id == "string" ? r.id : typeof r._id == "string" ? r._id : "";
-			e !== "" && Et(r.styles) && t.push({
+			e !== "" && Nt(r.styles) && t.push({
 				id: e,
 				styles: r.styles
 			}), n(r.children ?? []);
 		}
 	};
 	return n(e), t;
-}, Ot = (e) => [
+}, Ft = (e) => [
 	e.base,
 	...Object.values(e.states ?? {}),
 	...Object.values(e.breakpoints ?? {})
-].some((e) => e !== void 0 && Object.keys(e).length > 0), kt = (e, t, n) => [...(t.classes ?? []).filter((e) => e in (n.classes ?? {})).map(q), ...Ot(t) && /^[A-Za-z0-9_-]{1,64}$/.test(e) ? [K(e)] : []], Y = {
+].some((e) => e !== void 0 && Object.keys(e).length > 0), It = (e, t, n) => [...(t.classes ?? []).filter((e) => e in (n.classes ?? {})).map(V), ...Ft(t) && /^[A-Za-z0-9_-]{1,64}$/.test(e) ? [B(e)] : []], U = {
 	breakpoint: null,
 	state: null
-}, X = (e, t) => {
+}, W = (e, t) => {
 	if (e) return t.state === null ? t.breakpoint === null ? e.base : e.breakpoints?.[t.breakpoint] : e.states?.[t.state];
-}, Z = (e) => Object.keys(e).length === 0 ? void 0 : e, At = (e, t, n, r) => {
-	let i = { ...X(e, t) ?? {} };
+}, G = (e) => Object.keys(e).length === 0 ? void 0 : e, Lt = (e, t, n, r) => {
+	let i = { ...W(e, t) ?? {} };
 	r === null ? delete i[n] : i[n] = r;
 	let a = { ...e ?? {} };
-	t.state === null ? t.breakpoint === null ? a.base = Z(i) : a.breakpoints = Z({
+	t.state === null ? t.breakpoint === null ? a.base = G(i) : a.breakpoints = G({
 		...e?.breakpoints ?? {},
-		[t.breakpoint]: Z(i)
-	}) : a.states = Z({
+		[t.breakpoint]: G(i)
+	}) : a.states = G({
 		...e?.states ?? {},
-		[t.state]: Z(i)
+		[t.state]: G(i)
 	});
 	for (let e of Object.keys(a)) {
 		let t = a[e];
@@ -1779,23 +1800,23 @@ var e = class extends Error {
 		}
 	}
 	return Array.isArray(a.classes) && a.classes.length === 0 && delete a.classes, Object.keys(a).length === 0 ? null : a;
-}, jt = (e, t) => {
+}, Rt = (e, t) => {
 	let n = {
 		...e ?? {},
 		classes: [...t]
 	};
 	return t.length === 0 && delete n.classes, Object.keys(n).length === 0 ? null : n;
-}, Mt = (e, t) => {
-	if (t.state !== null) return [t, Y];
+}, zt = (e, t) => {
+	if (t.state !== null) return [t, U];
 	let n = e.breakpoints.map((e) => e.id), r = t.breakpoint === null ? -1 : n.indexOf(t.breakpoint);
 	return [...n.slice(0, r + 1).reverse().map((e) => ({
 		breakpoint: e,
 		state: null
-	})), Y];
-}, Nt = (e, t, n, r) => {
-	let i = Mt(t, n);
+	})), U];
+}, Bt = (e, t, n, r) => {
+	let i = zt(t, n);
 	for (let [t, n] of i.entries()) {
-		let i = X(e, n)?.[r];
+		let i = W(e, n)?.[r];
 		if (i !== void 0) return {
 			value: i,
 			origin: t === 0 ? "own" : "inherited",
@@ -1805,7 +1826,7 @@ var e = class extends Error {
 	for (let n of [...e?.classes ?? []].reverse()) {
 		let e = t.classes[n]?.styles;
 		for (let t of i) {
-			let i = X(e, t)?.[r];
+			let i = W(e, t)?.[r];
 			if (i !== void 0) return {
 				value: i,
 				origin: "class",
@@ -1814,15 +1835,15 @@ var e = class extends Error {
 		}
 	}
 	return null;
-}, Q = () => ({
+}, Vt = () => ({
 	schemaVersion: 1,
-	breakpoints: Je,
+	breakpoints: et,
 	tokens: {},
 	classes: {}
-}), Pt = class {
+}), Ht = class {
 	transport;
-	events = new ce();
-	design = Q();
+	events = new le();
+	design = Vt();
 	saved = this.design;
 	revision = 0;
 	publishedRevision = null;
@@ -1837,7 +1858,7 @@ var e = class extends Error {
 		return this.available && typeof this.transport.saveDesign == "function";
 	}
 	get diagnostics() {
-		return Tt(this.design, []).diagnostics;
+		return Mt(this.design, []).diagnostics;
 	}
 	async load() {
 		let e = await this.transport.loadDesign?.().catch(() => null);
@@ -1862,36 +1883,283 @@ var e = class extends Error {
 	async reload() {
 		await this.load();
 	}
-}, Ft = /^[A-Za-z0-9_-]{1,64}$/, It = (e) => {
+}, Ut = /^[A-Za-z0-9_-]{1,64}$/, Wt = (e) => {
 	if (typeof e != "object" || !e || Array.isArray(e)) return !1;
 	let t = Object.keys(e), n = e;
-	return typeof n.asset == "string" && Ft.test(n.asset) && t.every((e) => e === "asset" || e === "alt") && (n.alt === void 0 || typeof n.alt == "string");
-}, $ = (e, t, n) => {
+	return typeof n.asset == "string" && Ut.test(n.asset) && t.every((e) => e === "asset" || e === "alt") && (n.alt === void 0 || typeof n.alt == "string");
+}, K = (e, t, n) => {
 	if (!(n > 12 || typeof e != "object" || !e)) {
-		if (It(e)) t.add(e.asset);
-		else for (let r of Object.values(e)) $(r, t, n + 1);
+		if (Wt(e)) t.add(e.asset);
+		else for (let r of Object.values(e)) K(r, t, n + 1);
 	}
-}, Lt = (e, t) => {
+}, Gt = (e, t) => {
 	let n = /* @__PURE__ */ new Set();
-	for (let t of Object.values(e.nodes)) $(t.fields.props, n, 0), $(t.fields.styles, n, 0);
-	return t && $(t.classes, n, 0), [...n];
-}, Rt = /^https?:\/\/(?:(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})(?:[?&#/].*)?$/, zt = /^https?:\/\/(?:www\.)?(?:vimeo\.com\/|player\.vimeo\.com\/video\/)([0-9]{6,12})(?:[?#/].*)?$/, Bt = (e) => {
+	for (let t of Object.values(e.nodes)) K(t.fields.props, n, 0), K(t.fields.styles, n, 0);
+	return t && K(t.classes, n, 0), [...n];
+}, Kt = /^https?:\/\/(?:(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})(?:[?&#/].*)?$/, qt = /^https?:\/\/(?:www\.)?(?:vimeo\.com\/|player\.vimeo\.com\/video\/)([0-9]{6,12})(?:[?#/].*)?$/, Jt = (e) => {
 	if (typeof e != "string" || e.length > 300) return null;
-	let t = e.replace(/^[ \t\n\r\0\x0B]+|[ \t\n\r\0\x0B]+$/g, ""), n = Rt.exec(t)?.[1];
+	let t = e.replace(/^[ \t\n\r\0\x0B]+|[ \t\n\r\0\x0B]+$/g, ""), n = Kt.exec(t)?.[1];
 	if (n) return {
 		provider: "youtube",
 		id: n,
 		embed: `https://www.youtube-nocookie.com/embed/${n}?autoplay=1&rel=0`,
 		watch: `https://www.youtube.com/watch?v=${n}`
 	};
-	let r = zt.exec(t)?.[1];
+	let r = qt.exec(t)?.[1];
 	return r ? {
 		provider: "vimeo",
 		id: r,
 		embed: `https://player.vimeo.com/video/${r}?autoplay=1&dnt=1`,
 		watch: `https://vimeo.com/${r}`
 	} : null;
-}, Vt = (e) => new Fe(e);
-export { ne as $, De as A, j as B, Je as C, ze as D, We as E, me as F, C as G, M as H, de as I, E as J, D as K, N as L, Te as M, R as N, Ie as O, L as P, re as Q, fe as R, z as S, Ge as T, A as U, ue as V, O as W, w as X, T as Y, ie as Z, W as _, a as _t, Pt as a, v as at, U as b, t as bt, Nt as c, f as ct, Dt as d, m as dt, x as et, kt as f, l as ft, _t as g, i as gt, q as h, s as ht, It as i, y as it, Oe as j, Fe as k, jt as l, p as lt, K as m, n as mt, Bt as n, ee as nt, Q as o, d as ot, Tt as p, r as pt, ae as q, Lt as r, _ as rt, Y as s, c as st, Vt as t, S as tt, At as u, u as ut, dt as v, o as vt, qe as w, Ye as x, ut as y, e as yt, pe as z };
+}, Yt = (e) => typeof e == "object" && e && !Array.isArray(e) ? e : {}, q = (e) => Array.isArray(e) ? e.map(Yt) : [], J = (e) => typeof e == "string" ? e : typeof e == "number" ? String(e) : Array.isArray(e) ? e.join(",") : "", Xt = /^[a-z][a-z0-9_]{0,40}$/, Zt = /^[a-z][a-z0-9_]{0,30}$/, Qt = (e) => {
+	let t = Yt(e);
+	return {
+		id: J(t.id) || "items",
+		source: J(t.source),
+		pageSize: t.page_size === void 0 ? "12" : J(t.page_size),
+		pagination: t.pagination === !0,
+		pageParam: J(t.page_param) || "page",
+		filters: q(t.filters).map((e) => ({
+			field: J(e.field),
+			op: J(e.op) || "eq",
+			value: J(e.value)
+		})),
+		sort: q(t.sort).map((e) => ({
+			field: J(e.field),
+			direction: e.direction === "desc" ? "desc" : "asc"
+		})),
+		urlParams: q(t.url_params).map((e) => ({
+			param: J(e.param),
+			target: e.target === "filter" ? "filter" : "search",
+			field: J(e.field),
+			op: J(e.op) || "eq"
+		}))
+	};
+}, $t = (e, t) => {
+	if (!Xt.test(e.id.trim())) return { error: "query.id" };
+	if (!/^(module|host):[a-z0-9][a-z0-9_.-]{0,80}$/.test(e.source.trim())) return { error: "query.source" };
+	let n = Number(e.pageSize), r = t?.max_page_size ?? 50;
+	if (!Number.isInteger(n) || n < 1 || n > r) return { error: "query.pageSize" };
+	let i = (e) => t?.fields.find((t) => t.name === e);
+	for (let [n, r] of e.filters.entries()) {
+		if (t && !i(r.field)) return {
+			error: "query.field",
+			index: n
+		};
+		if (t && !i(r.field).operators.includes(r.op)) return {
+			error: "query.operator",
+			index: n
+		};
+	}
+	for (let [n, r] of e.sort.entries()) if (t && !i(r.field)?.sortable) return {
+		error: "query.field",
+		index: n
+	};
+	let a = /* @__PURE__ */ new Set();
+	for (let [n, r] of e.urlParams.entries()) {
+		if (!Zt.test(r.param) || r.param === e.pageParam || a.has(r.param)) return {
+			error: "query.param",
+			index: n
+		};
+		if (a.add(r.param), r.target === "filter" && t && !i(r.field)?.operators.includes(r.op)) return {
+			error: "query.operator",
+			index: n
+		};
+	}
+	if (!Zt.test(e.pageParam)) return { error: "query.param" };
+	let o = (e) => ["is_null", "not_null"].includes(e.op) ? null : e.op === "in" ? e.value.split(",").map((e) => e.trim()).filter(Boolean) : e.value;
+	return { props: {
+		id: e.id.trim(),
+		source: e.source.trim(),
+		page_size: n,
+		pagination: e.pagination,
+		page_param: e.pageParam,
+		filters: e.filters.map((e) => ({
+			field: e.field,
+			op: e.op,
+			value: o(e)
+		})),
+		sort: e.sort.slice(0, 3).map((e) => ({
+			field: e.field,
+			direction: e.direction
+		})),
+		url_params: e.urlParams.map((e) => e.target === "search" ? {
+			param: e.param,
+			target: "search"
+		} : {
+			param: e.param,
+			target: "filter",
+			field: e.field,
+			op: e.op
+		})
+	} };
+}, en = [
+	"date",
+	"number",
+	"currency",
+	"upper",
+	"lower",
+	"truncate",
+	"strip"
+], Y = (e) => typeof e == "object" && e && !Array.isArray(e) ? e : {}, X = (e) => {
+	let t = {};
+	for (let [n, r] of Object.entries(Y(e))) {
+		let e = Y(r);
+		typeof e.field == "string" && e.field !== "" && (t[n] = {
+			field: e.field,
+			...typeof e.from == "string" && e.from !== "" ? { from: e.from } : {},
+			...en.includes(e.transform) ? { transform: e.transform } : {},
+			...Object.keys(Y(e.args)).length > 0 ? { args: Y(e.args) } : {},
+			...typeof e.fallback == "string" && e.fallback !== "" ? { fallback: e.fallback } : {}
+		});
+	}
+	return t;
+}, tn = (e, t, n) => {
+	let r = { ...X(e) };
+	return n === null || n.field === "" ? delete r[t] : r[t] = X({ [t]: n })[t], Object.keys(r).length === 0 ? null : r;
+}, nn = (e) => Object.entries(e).filter(([e, t]) => [
+	"text",
+	"textarea",
+	"url",
+	"string",
+	"richtext",
+	"media_picker",
+	"media"
+].includes(String(Y(t).type)) && ![
+	"class",
+	"id",
+	"tag"
+].includes(e)).map(([e]) => e), Z = (e) => String(e).padStart(2, "0"), rn = (e, t) => {
+	let n = new Date(/^\d{4}-\d{2}-\d{2}$/.test(e) ? `${e}T00:00:00` : e.replace(" ", "T"));
+	if (Number.isNaN(n.getTime())) return e;
+	let r = {
+		d: Z(n.getDate()),
+		j: String(n.getDate()),
+		m: Z(n.getMonth() + 1),
+		n: String(n.getMonth() + 1),
+		Y: String(n.getFullYear()),
+		y: String(n.getFullYear()).slice(-2),
+		H: Z(n.getHours()),
+		G: String(n.getHours()),
+		i: Z(n.getMinutes()),
+		s: Z(n.getSeconds())
+	};
+	return t.replace(/[a-zA-Z]/g, (e) => r[e] ?? "");
+}, an = (e, t, n) => {
+	let [r, i] = (Number(e) || 0).toFixed(t).split("."), a = n.startsWith("en"), o = r.replace(/\B(?=(\d{3})+(?!\d))/g, a ? "," : ".");
+	return i === void 0 ? o : `${o}${a ? "." : ","}${i}`;
+}, Q = (e) => {
+	let t = String(e ?? "").replace(/<[^>]*>/g, ""), n = typeof document < "u" ? document.createElement("textarea") : null;
+	return n && (n.innerHTML = t), (n ? n.value : t).replace(/\s+/g, " ").trim();
+}, on = (e, t, n, r) => {
+	if (t == null || t === "") return t;
+	let i = (e, t, n, r) => {
+		let i = Math.trunc(Number(e ?? t));
+		return Math.max(n, Math.min(r, Number.isNaN(i) ? t : i));
+	};
+	switch (e) {
+		case "date": return rn(String(t), String(n.format ?? "d/m/Y"));
+		case "number": return an(t, i(n.decimals, 0, 0, 6), r);
+		case "currency": return `${an(t, i(n.decimals, 2, 0, 4), r)} ${String(n.code ?? "").toUpperCase().replace(/[^A-Z]/g, "")}`.trim();
+		case "upper": return String(t).toUpperCase();
+		case "lower": return String(t).toLowerCase();
+		case "truncate": {
+			let e = Q(t), r = i(n.length, 120, 1, 1e3);
+			return e.length <= r ? e : `${e.slice(0, r).trimEnd()}…`;
+		}
+		case "strip": return Q(t);
+	}
+}, $ = (e) => typeof e == "object" && e && !Array.isArray(e) ? e : {}, sn = /* @__PURE__ */ new Set([
+	"href",
+	"src",
+	"url",
+	"link",
+	"image_url"
+]), cn = (e) => /^(\/(?!\/)|\.\.?\/|\?|#)/.test(e) || /^(https?|mailto|tel):/i.test(e) ? e : null, ln = (e, t, n, r = "es") => {
+	let i = {}, a = (o, s, c, l) => {
+		let u = e.nodes[o];
+		if (!u) return;
+		let d = $(u.fields.props), f = s;
+		u.type === "query" && (f = d, i[o] = { _state: t[String(d.id ?? "")]?.state ?? "results" });
+		let p = () => typeof d.query == "string" && d.query !== "" ? un(e, d.query) : f, m = (e) => e ? t[String(e.id ?? "")] : void 0;
+		if (u.type === "pagination") {
+			let e = p();
+			e?.pagination === !0 && (i[o] = { _pages: fn(m(e)) });
+		} else if (u.type === "query_filter") {
+			let e = p(), t = e ? pn(e, String(d.param ?? ""), String(d.kind ?? "search"), n[String(e.source ?? "")]) : null;
+			t && (i[o] = { _filter: t });
+		}
+		let h = c, g = l, _ = $(u.fields.loop);
+		if ("query" in _) {
+			let t = _.query === "" || _.query === null ? f : un(e, String(_.query)), n = typeof _.variable == "string" && /^[A-Za-z_]\w{0,40}$/.test(_.variable) ? _.variable : "item", r = m(t)?.items[0];
+			r && (h = {
+				...c,
+				[n]: r,
+				loop: {
+					index: 1,
+					first: !0,
+					last: (m(t)?.items.length ?? 1) === 1
+				}
+			}, g = n);
+		}
+		if (h !== c || Object.keys(h).length > 0) {
+			let e = dn(u.type, d, u.fields.bindings, h, g, r);
+			Object.keys(e).length > 0 && (i[o] = {
+				...i[o] ?? {},
+				...e
+			});
+		}
+		for (let e of u.children) a(e, f, h, g);
+	};
+	for (let t of e.rootIds) a(t, null, {}, null);
+	return i;
+}, un = (e, t) => {
+	for (let n of Object.values(e.nodes)) if (n.type === "query" && $(n.fields.props).id === t) return $(n.fields.props);
+	return null;
+}, dn = (e, t, n, r, i, a) => {
+	let o = {};
+	for (let [t, s] of Object.entries(X(n))) {
+		let n = $(r[s.from ?? i ?? ""])[s.field];
+		s.transform && (n = on(s.transform, n, s.args ?? {}, a));
+		let c = s.fallback ?? "";
+		o[t] = n == null || n === "" ? c : sn.has(t) ? cn(String(n)) ?? c : e === "html" && t === "content" ? String(n) : String(n).includes("<") ? Q(n) : String(n);
+	}
+	for (let [e, n] of Object.entries(t)) e in o || typeof n != "string" || !n.includes("{{") || (o[e] = n.replace(/\{\{\s*([A-Za-z_]\w*)((?:\.\w+){0,3})\s*\}\}/g, (e, t, n) => {
+		if (!(t in r)) return e;
+		let i = r[t];
+		for (let e of n.split(".").filter(Boolean)) i = $(i)[e];
+		return typeof i == "string" || typeof i == "number" || typeof i == "boolean" ? String(i) : "";
+	}));
+	return o;
+}, fn = (e) => {
+	let t = e?.pagination.pages ?? 1, n = Array.from({ length: Math.min(t ?? 1, 5) }, (e, t) => ({
+		label: String(t + 1),
+		href: t === 0 ? "?" : `?page=${t + 1}`,
+		current: t === 0
+	}));
+	return {
+		current: 1,
+		pages: t,
+		prev: null,
+		next: e?.pagination.has_more ? "?page=2" : null,
+		links: n
+	};
+}, pn = (e, t, n, r) => {
+	let i = (Array.isArray(e.url_params) ? e.url_params : []).map($).find((e) => e.param === t);
+	if (!i) return null;
+	let a = i.target === "filter" ? (r?.fields.find((e) => e.name === i.field)?.options ?? []).map((e) => ({
+		value: e,
+		label: e
+	})) : [];
+	return {
+		name: t,
+		kind: n === "select" && a.length > 0 ? "select" : "search",
+		value: "",
+		options: a,
+		hidden: {}
+	};
+}, mn = (e) => new Be(e);
+export { D as $, tt as A, Ne as B, B as C, n as Ct, vt as D, o as Dt, R as E, a as Et, Xe as F, fe as G, ke as H, We as I, me as J, M as K, Ve as L, et as M, $e as N, _t as O, e as Ot, Ze as P, k as Q, Be as R, Mt as S, r as St, wt as T, i as Tt, Te as U, Ae as V, he as W, de as X, A as Y, j as Z, Bt as _, f as _t, en as a, w as at, Pt as b, m as bt, tn as c, ne as ct, Jt as d, ee as dt, C as et, Gt as f, _ as ft, U as g, c as gt, Vt as h, d as ht, Q as i, T as it, P as j, L as k, t as kt, $t as l, x as lt, Ht as m, v as mt, ln as n, ae as nt, nn as o, ie as ot, Wt as p, y as pt, pe as q, on as r, E as rt, X as s, re as st, mn as t, oe as tt, Qt as u, S as ut, Rt as v, p as vt, V as w, s as wt, It as x, l as xt, Lt as y, u as yt, Me as z };
 
 //# sourceMappingURL=core.js.map

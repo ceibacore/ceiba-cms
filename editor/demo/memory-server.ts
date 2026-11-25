@@ -5,6 +5,7 @@ import { importHtml, TemplateStore } from './content';
 import { DesignStore } from './design';
 import { MediaStore } from './media';
 import { SitePartsStore } from './site-parts';
+import { DataSourcesStore } from './data-sources';
 import type { MediaMap } from '../src/ui/canvas/components';
 import { COMPONENT_VIEWS, resolveProps, toHtml } from '../src/ui/canvas/components';
 
@@ -40,6 +41,7 @@ export class MemoryServer {
   readonly design = new DesignStore();
   readonly media = new MediaStore();
   readonly siteParts: SitePartsStore;
+  readonly data = new DataSourcesStore();
 
   constructor(pageId: string, root: PageDocument['root'], readonly permissions: string[]) {
     this.revisions.set(1, { schemaVersion: 1, documentId: pageId, revision: 1, root, settings: {}, resources: [] });
@@ -104,6 +106,10 @@ export class MemoryServer {
       saveTemplate: async (template) => this.templates.save(structuredClone(template)),
       importHtml: async (html) => importHtml(html),
       ...this.mediaTransport(),
+      listDataSources: async () => [{ id: this.data.schema.id, label: this.data.schema.label, capabilities: this.data.schema.capabilities }],
+      dataSourceSchema: async () => structuredClone(this.data.schema),
+      dataSourceRecords: async () => this.data.rows.map((r) => ({ slug: r.id, label: r.title })),
+      previewQuery: async (query) => this.data.preview(query),
       listSiteParts: async () => this.siteParts.catalog(),
       saveSitePartRules: async (id, rules, version) => this.siteParts.save(id, rules, version),
       sitePartImpact: async (ids) => this.siteParts.impact(ids),

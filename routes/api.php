@@ -14,7 +14,7 @@ $router->aliasMiddleware('auth', fn() => new \CeibaCms\Http\Middleware\AuthMiddl
 $router->aliasMiddleware('csrf', fn() => new \CeibaCms\Http\Middleware\CsrfMiddleware());
 $router->aliasMiddleware('permission', fn() => new \CeibaCms\Http\Middleware\PermissionMiddleware($container['auth'], $container['db']));
 
-foreach (['menus', 'pages', 'catalogue', 'builder', 'builder-revisions', 'builder-preview', 'builder-design', 'builder-media', 'builder-site-parts', 'admin', 'public'] as $group) {
+foreach (['menus', 'pages', 'catalogue', 'builder', 'builder-revisions', 'builder-preview', 'builder-design', 'builder-media', 'builder-site-parts', 'builder-data-sources', 'admin', 'public'] as $group) {
     require __DIR__ . "/api/{$group}.php";
 }
 
