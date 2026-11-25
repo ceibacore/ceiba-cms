@@ -52,7 +52,6 @@ return [
         'bladeRenderer'        => $bladeRenderer,
         'layoutRenderer'       => $layoutRenderer,
         'conditionEngine'      => $conditionEngine,
-        'contextResolver'      => $contextResolver,
         'dataSources'          => $dataSources,
         'dataSourceContext'    => $dataSourceContext,
         'pageBuilderMetadata'  => $pageBuilderMetadataService,

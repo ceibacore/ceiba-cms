@@ -9,6 +9,7 @@ require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Entity/Node.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Entity/ComponentDefinition.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Repository/TemplateRepositoryInterface.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Repository/ComponentDefinitionRepositoryInterface.php';
+require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/LoopValidator.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/TreeValidator.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/TreeNormalizer.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/VariableInterpolator.php';
@@ -152,6 +153,7 @@ require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/Core
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/ContentComponents.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/InteractiveComponents.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/SiteComponents.php';
+require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/DynamicComponents.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Presentation/Api/EditorError.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Presentation/Api/NegotiatedCapabilities.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Presentation/Api/EditorAccessDenied.php';
@@ -188,3 +190,12 @@ require_once dirname(__DIR__) . '/src/DataSource/Infrastructure/ModuleRelationLa
 require_once dirname(__DIR__) . '/src/DataSource/Infrastructure/ModuleSourceAdapter.php';
 require_once dirname(__DIR__) . '/src/DataSource/Infrastructure/ModuleDataSources.php';
 require_once dirname(__DIR__) . '/src/DataSource/Infrastructure/DataSourceLoopResolver.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/QueryNodeConfig.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/QueryOutcome.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/QueryControls.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/Binding/UrlGuard.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/Binding/ValueTransforms.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/Binding/SafeHtml.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/Binding/BindingResolver.php';
+require_once dirname(__DIR__) . '/src/DataSource/Application/TreeExpander.php';
+require_once dirname(__DIR__) . '/src/DataSource/Application/DynamicContent.php';

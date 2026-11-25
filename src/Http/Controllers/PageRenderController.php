@@ -59,8 +59,8 @@ class PageRenderController extends BaseController
                 }
             }
 
-            // 2. Context for loops and bindings (queries of the document arrive with plan 07-B).
-            $context = [];
+            // 2. Context: the query string feeds the declared URL parameters of the page's queries (plan 07-B).
+            $context = ['request_query' => $_GET];
 
             $layout = null;
             if ($this->getLayoutById !== null && $this->getDefaultLayout !== null) {
