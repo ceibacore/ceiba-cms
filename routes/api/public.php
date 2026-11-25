@@ -20,7 +20,6 @@ $pageRenderController = new PageRenderController(
     $container['useCases']['getNavbar'],
     $container['useCases']['getPageTemplateById'],
     $container['conditionEngine'],
-    $container['queryEngine'],
     $container['auth'],
     $container['repositories']['settings'],
     $container['repositories']['seo'],

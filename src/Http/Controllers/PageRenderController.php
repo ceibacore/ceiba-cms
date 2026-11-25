@@ -14,7 +14,6 @@ use CeibaCms\PageBuilder\Application\PageAssembler;
 use CeibaCms\PageBuilder\Domain\Service\BladeRendererInterface;
 use CeibaCms\PageBuilder\Domain\Service\ConditionEngine;
 use CeibaCms\PageBuilder\Domain\Service\LayoutRenderer;
-use CeibaCms\PageBuilder\Domain\Service\QueryEngine;
 use CeibaCms\Seo\Domain\Repository\SeoRepositoryInterface;
 use CeibaCms\Settings\Domain\Repository\SettingsRepositoryInterface;
 use CeibaCms\SitePart\Application\AssembleSitePage;
@@ -35,7 +34,6 @@ class PageRenderController extends BaseController
         private readonly ?GetNavbar           $getNavbar = null,
         private readonly ?GetPageTemplateById $getPageTemplateById = null,
         private readonly ?ConditionEngine     $conditionEngine = null,
-        private readonly ?QueryEngine         $queryEngine = null,
         private readonly ?AuthManager                     $authManager        = null,
         private readonly ?SettingsRepositoryInterface     $settingsRepository = null,
         private readonly ?SeoRepositoryInterface          $seoRepository      = null,
@@ -61,11 +59,8 @@ class PageRenderController extends BaseController
                 }
             }
 
-            // 2. Dynamic queries and context.
+            // 2. Context for loops and bindings (queries of the document arrive with plan 07-B).
             $context = [];
-            if ($this->queryEngine !== null && !empty($page['query_config'])) {
-                $context = $this->queryEngine->executeQueries($page['query_config'], ['slug' => $slug]);
-            }
 
             $layout = null;
             if ($this->getLayoutById !== null && $this->getDefaultLayout !== null) {

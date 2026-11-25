@@ -17,11 +17,6 @@ class LoopResolver implements LoopResolverInterface
     {
         $provider = $this->providers[$source] ?? null;
 
-        if ($provider === null && str_starts_with($source, 'api:')) {
-            $provider = $this->providers['api'] ?? null;
-            $options['url'] = substr($source, 4);
-        }
-
         if ($provider === null) {
             return [];
         }

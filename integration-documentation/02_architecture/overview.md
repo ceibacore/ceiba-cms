@@ -867,7 +867,7 @@ CeibaCms\Migration\Dialect\PostgreSQLDialect
 
 ### Responsabilidad
 
-Gestiona la composición visual de las páginas mediante un **Virtual DOM (VDOM) agnóstico de framework de UI**, resolviendo en caliente o compilando a disco páginas con layouts y slots (`PageTemplate`), consultas a base de datos declarativas y seguras (`QueryEngine`), y guardias de condiciones de acceso (`ConditionEngine`).
+Gestiona la composición visual de las páginas mediante un **Virtual DOM (VDOM) agnóstico de framework de UI**, resolviendo en caliente o compilando a disco páginas con layouts y slots (`PageTemplate`), consultas declarativas sobre el registro de fuentes (`DataSourceRegistry`, ver [Fuentes de datos](data_sources.md); el antiguo `QueryEngine` se retiró en el plan 07), y guardias de condiciones de acceso (`ConditionEngine`).
 
 ### Flujo de Ejecución V2 (Petición HTTP)
 

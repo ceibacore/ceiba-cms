@@ -1,5 +1,8 @@
 # Dynamic Module Builder — Plan de Desarrollo
 
+> **Retirado en el plan 07 (ceiba-cms 3.15):** `QueryEngine`, `ContextResolver`, `pages.query_config` y `ApiDataProvider` ya no existen. Véase [Fuentes de datos](../02_architecture/data_sources.md).
+
+
 Sistema para crear módulos de datos en tiempo de ejecución, con CRUD auto-generado, data binding en el Page Builder y gestión de permisos automática.
 
 ---

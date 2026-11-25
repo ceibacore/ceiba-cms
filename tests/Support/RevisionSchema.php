@@ -27,7 +27,7 @@ final class RevisionSchema
         $pdo->exec("CREATE TABLE {$p}pages (id TEXT PRIMARY KEY, title TEXT, slug TEXT UNIQUE, content TEXT,
             status TEXT NOT NULL DEFAULT 'draft', template TEXT, sort_order INTEGER NOT NULL DEFAULT 0,
             published_at TEXT, deleted_at TEXT, created_at TEXT, updated_at TEXT, layout_id TEXT, template_id TEXT,
-            query_config TEXT, conditions TEXT, custom_css_with_session TEXT, custom_css_without_session TEXT,
+            conditions TEXT, custom_css_with_session TEXT, custom_css_without_session TEXT,
             custom_js_with_session TEXT, custom_js_without_session TEXT, kind TEXT NOT NULL DEFAULT 'page')");
         $pdo->exec("CREATE TABLE {$p}media (id TEXT PRIMARY KEY, disk TEXT, filename TEXT, path TEXT, mime_type TEXT, size INTEGER,
             width INTEGER, height INTEGER, alt_text TEXT, title TEXT, conversions TEXT, created_at TEXT, updated_at TEXT)");

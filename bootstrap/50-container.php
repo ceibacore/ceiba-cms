@@ -53,7 +53,8 @@ return [
         'layoutRenderer'       => $layoutRenderer,
         'conditionEngine'      => $conditionEngine,
         'contextResolver'      => $contextResolver,
-        'queryEngine'          => $queryEngine,
+        'dataSources'          => $dataSources,
+        'dataSourceContext'    => $dataSourceContext,
         'pageBuilderMetadata'  => $pageBuilderMetadataService,
         'clock'                => $systemClock,
         'authorization'        => $cmsDocumentAuthorization,
@@ -82,7 +83,7 @@ return [
     'uiFrameworkRegistry' => $uiFrameworkRegistry,
     'reservedPathChecker' => $reservedPathChecker,
     'conditionEngine'     => $conditionEngine,
-    'queryEngine'         => $queryEngine,
+    'dataSources'         => $dataSources,
     'pageBuilderMetadataService' => $pageBuilderMetadataService,
     'useCases' => [
         'getSiteDesign' => $getSiteDesign,

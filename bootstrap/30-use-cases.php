@@ -61,8 +61,6 @@ $htmlSemanticRulesProvider = new \CeibaCms\PageBuilder\Domain\Service\HtmlSemant
 // V2 Engine Services
 $authManager              = new \CeibaCms\Auth\AuthManager(new \CeibaCms\Auth\Drivers\SessionDriver($db));
 $conditionEngine          = new \CeibaCms\PageBuilder\Domain\Service\ConditionEngine($authManager, $db);
-$contextResolver          = new \CeibaCms\PageBuilder\Domain\Service\ContextResolver($authManager);
-$queryEngine              = new \CeibaCms\PageBuilder\Domain\Service\QueryEngine($db, $contextResolver);
 
 $listLayouts      = new \CeibaCms\PageBuilder\Application\ListLayouts($pageLayoutRepository);
 $getLayoutById    = new \CeibaCms\PageBuilder\Application\GetLayoutById($pageLayoutRepository);
@@ -72,21 +70,11 @@ $updateLayout     = new \CeibaCms\PageBuilder\Application\UpdateLayout($pageLayo
 $deleteLayout     = new \CeibaCms\PageBuilder\Application\DeleteLayout($pageLayoutRepository);
 
 // ── Render Engine services ───────────────────────────────────────────────────
-$loopResolver         = new \CeibaCms\PageBuilder\Domain\Service\LoopResolver();
-
-// Register Data Providers
-$loopResolver->register('api', new \CeibaCms\DynamicModule\Infrastructure\ApiDataProvider());
-try {
-    $activeModules = $moduleDefinitionRepository->listAll();
-    foreach ($activeModules as $moduleDef) {
-        $loopResolver->register(
-            'module:' . $moduleDef->moduleSlug,
-            new \CeibaCms\DynamicModule\Infrastructure\DynamicModuleDataProvider(
-                $moduleDef->tableName(),
-                $genericModuleRepository
-            )
-        );
-    }
-} catch (\Throwable $e) {
-    // Avoid blocking bootstrap if DB is not migrated or connection is pending
-}
+// Data sources (plan 07): dynamic modules plus whatever the host registers; resolved when a loop or query runs,
+// never here (the bootstrap must not query the database).
+$dataSources = new \CeibaCms\DataSource\Application\DataSourceRegistry();
+$dataSources->addProvider(new \CeibaCms\DataSource\Infrastructure\ModuleDataSources($db, $moduleDefinitionRepository));
+$dataSourceContext = static fn (): \CeibaCms\DataSource\Domain\QueryContext => new \CeibaCms\DataSource\Domain\QueryContext(
+    (string) \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('CMS_SITE_ID', \CeibaCms\Support\Infrastructure\EnvironmentGuard::get('DB_NAME', 'default')),
+);
+$loopResolver = new \CeibaCms\DataSource\Infrastructure\DataSourceLoopResolver($dataSources, \Closure::fromCallable($dataSourceContext));

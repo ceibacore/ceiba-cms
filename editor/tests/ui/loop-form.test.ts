@@ -13,12 +13,14 @@ describe('loop fields', () => {
     expect(formToLoop(loopToForm(undefined))).toEqual({ loop: null });
   });
 
-  it('refuse invalid sources, variables and numbers', () => {
-    const base = loopToForm({ source: 'api:https://api.test/items' });
-    expect(formToLoop({ ...base, api: 'javascript:alert(1)' })).toEqual({ error: 'loop.source' });
+  it('refuse free URLs, invalid sources, variables and numbers', () => {
+    const base = loopToForm({ source: 'host:marketplace.products' });
+    expect(base).toMatchObject({ sourceType: 'host', host: 'marketplace.products' });
+    expect(loopToForm({ source: 'api:https://api.test/items' }).sourceType).toBe('none');
+    expect(formToLoop({ ...base, host: 'https://evil.test' })).toEqual({ error: 'loop.source' });
     expect(formToLoop({ ...base, sourceType: 'module', module: ' ' })).toEqual({ error: 'loop.source' });
     expect(formToLoop({ ...base, variable: 'a-b' })).toEqual({ error: 'loop.variable' });
     expect(formToLoop({ ...base, limit: '-1' })).toEqual({ error: 'loop.number' });
-    expect(formToLoop({ ...base, limit: '' })).toEqual({ loop: { source: 'api:https://api.test/items', variable: 'item', key: 'id' } });
+    expect(formToLoop({ ...base, limit: '' })).toEqual({ loop: { source: 'host:marketplace.products', variable: 'item', key: 'id' } });
   });
 });

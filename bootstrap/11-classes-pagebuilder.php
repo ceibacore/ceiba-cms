@@ -43,8 +43,6 @@ require_once dirname(__DIR__) . '/src/Support/Exceptions/SecurityException.php';
 
 // V2 Engine Services
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/ConditionEngine.php';
-require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/ContextResolver.php';
-require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/QueryEngine.php';
 require_once dirname(__DIR__) . '/src/Http/Middleware/MiddlewareInterface.php';
 require_once dirname(__DIR__) . '/src/Http/Middleware/AuthMiddleware.php';
 require_once dirname(__DIR__) . '/src/Http/Middleware/EvaluatePageConditions.php';
@@ -174,5 +172,19 @@ require_once dirname(__DIR__) . '/src/DynamicModule/Application/UpdateDynamicMod
 require_once dirname(__DIR__) . '/src/DynamicModule/Application/DeleteDynamicModule.php';
 require_once dirname(__DIR__) . '/src/DynamicModule/Application/GetModuleDefinition.php';
 require_once dirname(__DIR__) . '/src/DynamicModule/Application/ListDynamicModules.php';
-require_once dirname(__DIR__) . '/src/DynamicModule/Infrastructure/DynamicModuleDataProvider.php';
-require_once dirname(__DIR__) . '/src/DynamicModule/Infrastructure/ApiDataProvider.php';
+// Data sources (plan 07): registry, validated queries, dynamic modules as sources.
+require_once dirname(__DIR__) . '/src/DataSource/Domain/FieldDescriptor.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/DataSourceDescriptor.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/InvalidDataQuery.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/DataQuery.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/QueryContext.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/QueryResult.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/QueryValidator.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/DataSourceAdapter.php';
+require_once dirname(__DIR__) . '/src/DataSource/Domain/DataSourceProvider.php';
+require_once dirname(__DIR__) . '/src/DataSource/Application/DataSourceRegistry.php';
+require_once dirname(__DIR__) . '/src/DataSource/Infrastructure/ModuleQueryRunner.php';
+require_once dirname(__DIR__) . '/src/DataSource/Infrastructure/ModuleRelationLabels.php';
+require_once dirname(__DIR__) . '/src/DataSource/Infrastructure/ModuleSourceAdapter.php';
+require_once dirname(__DIR__) . '/src/DataSource/Infrastructure/ModuleDataSources.php';
+require_once dirname(__DIR__) . '/src/DataSource/Infrastructure/DataSourceLoopResolver.php';
