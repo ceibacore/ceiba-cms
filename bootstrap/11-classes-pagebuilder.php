@@ -9,6 +9,7 @@ require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Entity/Node.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Entity/ComponentDefinition.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Repository/TemplateRepositoryInterface.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Repository/ComponentDefinitionRepositoryInterface.php';
+require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/LoopValidator.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/TreeValidator.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/TreeNormalizer.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/VariableInterpolator.php';
@@ -43,8 +44,6 @@ require_once dirname(__DIR__) . '/src/Support/Exceptions/SecurityException.php';
 
 // V2 Engine Services
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/ConditionEngine.php';
-require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/ContextResolver.php';
-require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Service/QueryEngine.php';
 require_once dirname(__DIR__) . '/src/Http/Middleware/MiddlewareInterface.php';
 require_once dirname(__DIR__) . '/src/Http/Middleware/AuthMiddleware.php';
 require_once dirname(__DIR__) . '/src/Http/Middleware/EvaluatePageConditions.php';
@@ -154,6 +153,7 @@ require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/Core
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/ContentComponents.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/InteractiveComponents.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/SiteComponents.php';
+require_once dirname(__DIR__) . '/src/PageBuilder/Domain/Catalogue/Defaults/DynamicComponents.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Presentation/Api/EditorError.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Presentation/Api/NegotiatedCapabilities.php';
 require_once dirname(__DIR__) . '/src/PageBuilder/Presentation/Api/EditorAccessDenied.php';
@@ -174,5 +174,3 @@ require_once dirname(__DIR__) . '/src/DynamicModule/Application/UpdateDynamicMod
 require_once dirname(__DIR__) . '/src/DynamicModule/Application/DeleteDynamicModule.php';
 require_once dirname(__DIR__) . '/src/DynamicModule/Application/GetModuleDefinition.php';
 require_once dirname(__DIR__) . '/src/DynamicModule/Application/ListDynamicModules.php';
-require_once dirname(__DIR__) . '/src/DynamicModule/Infrastructure/DynamicModuleDataProvider.php';
-require_once dirname(__DIR__) . '/src/DynamicModule/Infrastructure/ApiDataProvider.php';

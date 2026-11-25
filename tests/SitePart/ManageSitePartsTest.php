@@ -77,7 +77,7 @@ final class ManageSitePartsTest extends TestCase
 
     public function testUnknownKindsAndEmptyNamesAreRefused(): void
     {
-        foreach ([['single', 'x'], ['header', '  ']] as [$kind, $name]) {
+        foreach ([['sidebar', 'x'], ['header', '  ']] as [$kind, $name]) {
             try {
                 $this->parts->create($kind, $name, 'admin');
                 self::fail('Accepted');

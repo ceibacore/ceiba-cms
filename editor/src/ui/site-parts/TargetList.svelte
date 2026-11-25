@@ -14,6 +14,8 @@
   const types = $derived(TARGET_TYPES.filter((type) => !notFound || !PAGE_TARGETS.includes(type)));
   const invalid = (index: number): boolean => part.errorPath.startsWith(`${id.split('-').pop()}.${index}`);
 
+  $effect(() => { void store.data.loadSources(); });
+
   const replace = (index: number, target: SitePartTarget): void => onChange(targets.map((t0, i) => (i === index ? target : t0)));
   const selected = (event: Event): string[] => Array.from((event.currentTarget as HTMLSelectElement).selectedOptions, (o) => o.value);
 </script>
@@ -34,6 +36,10 @@
       {:else if target.type === 'routes'}
         <select multiple aria-label={t('parts.value', { n })} onchange={(e) => replace(index, { type: 'routes', names: selected(e) })}>
           {#each Object.entries(part.routes) as [name, label] (name)}<option value={name} selected={target.names.includes(name)}>{label}</option>{/each}
+        </select>
+      {:else if target.type === 'sources'}
+        <select multiple aria-label={t('parts.value', { n })} onchange={(e) => replace(index, { type: 'sources', ids: selected(e) })}>
+          {#each store.data.sources ?? [] as source (source.id)}<option value={source.id} selected={target.ids.includes(source.id)}>{source.label}</option>{/each}
         </select>
       {:else if target.type === 'layouts'}
         <input aria-label={t('parts.value', { n })} value={target.ids.join(', ')}

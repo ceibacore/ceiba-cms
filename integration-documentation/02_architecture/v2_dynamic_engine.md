@@ -1,5 +1,8 @@
 # 08. Plan de Implementación de Arquitectura Dinámica V2
 
+> **Retirado en el plan 07 (ceiba-cms 3.15):** `QueryEngine`, `ContextResolver`, `pages.query_config` y `ApiDataProvider` ya no existen. Véase [Fuentes de datos](data_sources.md).
+
+
 > **Módulo:** `PageBuilder`  
 > **Propósito:** Especificar el diseño y la secuencia de desarrollo para la integración de Layouts Envolventes (Templates con Slots), Motor de Consultas Declarativas (Query Engine) y Motor de Reglas de Acceso (Condition Engine).  
 > **Estado:** Aprobado para implementación en Versión 2.

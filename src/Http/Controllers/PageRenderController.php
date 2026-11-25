@@ -14,9 +14,9 @@ use CeibaCms\PageBuilder\Application\PageAssembler;
 use CeibaCms\PageBuilder\Domain\Service\BladeRendererInterface;
 use CeibaCms\PageBuilder\Domain\Service\ConditionEngine;
 use CeibaCms\PageBuilder\Domain\Service\LayoutRenderer;
-use CeibaCms\PageBuilder\Domain\Service\QueryEngine;
 use CeibaCms\Seo\Domain\Repository\SeoRepositoryInterface;
 use CeibaCms\Settings\Domain\Repository\SettingsRepositoryInterface;
+use CeibaCms\SitePart\Application\AssembleContentPage;
 use CeibaCms\SitePart\Application\AssembleSitePage;
 use CeibaCms\SitePart\Domain\RenderContext;
 
@@ -35,12 +35,12 @@ class PageRenderController extends BaseController
         private readonly ?GetNavbar           $getNavbar = null,
         private readonly ?GetPageTemplateById $getPageTemplateById = null,
         private readonly ?ConditionEngine     $conditionEngine = null,
-        private readonly ?QueryEngine         $queryEngine = null,
         private readonly ?AuthManager                     $authManager        = null,
         private readonly ?SettingsRepositoryInterface     $settingsRepository = null,
         private readonly ?SeoRepositoryInterface          $seoRepository      = null,
         private readonly ?PageAssembler                   $assembler          = null,
         private readonly ?AssembleSitePage                $sitePage           = null,
+        private readonly ?AssembleContentPage             $contentPage        = null,
     ) {}
 
     public function show(string $slug, bool $isHome = false): void
@@ -48,7 +48,9 @@ class PageRenderController extends BaseController
         try {
             $page = $this->getPageBySlug->execute($slug);
             if ($page === null || ($page['status'] ?? '') !== 'published') {
-                $this->notFound($slug);
+                if (!$this->contentPage($slug)) {
+                    $this->notFound($slug);
+                }
                 return;
             }
 
@@ -61,11 +63,8 @@ class PageRenderController extends BaseController
                 }
             }
 
-            // 2. Dynamic queries and context.
-            $context = [];
-            if ($this->queryEngine !== null && !empty($page['query_config'])) {
-                $context = $this->queryEngine->executeQueries($page['query_config'], ['slug' => $slug]);
-            }
+            // 2. Context: the query string feeds the declared URL parameters of the page's queries (plan 07-B).
+            $context = ['request_query' => $_GET];
 
             $layout = null;
             if ($this->getLayoutById !== null && $this->getDefaultLayout !== null) {
@@ -100,6 +99,28 @@ class PageRenderController extends BaseController
             header('Content-Type: text/html; charset=UTF-8');
             echo '<h1>Error rendering page</h1><p>' . htmlspecialchars($e->getMessage()) . '</p>';
         }
+    }
+
+    /** A record, archive or search page of a data source (plan 07-D); false when the path is not content. */
+    private function contentPage(string $slug): bool
+    {
+        if ($this->contentPage === null) {
+            return false;
+        }
+        $lang = $this->settingsRepository?->get('site_language', 'es') ?? 'es';
+        $layout = $this->getDefaultLayout?->execute();
+        $hasSession = $this->authManager !== null && $this->authManager->check();
+        $assembled = $this->contentPage->render('/' . $slug, $_GET, $lang, $hasSession, $this->footerTree($layout), $layout?->id);
+        if ($assembled === null) {
+            return false;
+        }
+        if ($assembled['status'] === 404) {
+            $this->notFound($slug);
+            return true;
+        }
+        header('Content-Type: text/html; charset=UTF-8');
+        echo $this->document($assembled, $layout, PublicPageResponses::meta(['title' => $assembled['title']], null, $slug), $lang);
+        return true;
     }
 
     /** The 404 of the site part that applies (with the default layout), else the plain one. */

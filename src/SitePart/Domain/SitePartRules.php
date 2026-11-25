@@ -14,13 +14,15 @@ namespace CeibaCms\SitePart\Domain;
  */
 final class SitePartRules
 {
-    public const TARGETS = ['site', 'home', 'pages', 'path_prefix', 'layouts', 'routes'];
+    public const TARGETS = ['site', 'home', 'pages', 'path_prefix', 'layouts', 'routes', 'sources'];
     /** Targets that only make sense when a page is drawn (not for the 404 part). */
     private const PAGE_TARGETS = ['home', 'pages', 'layouts'];
     private const MAX_TARGETS = 20;
     private const MAX_IDS = 200;
     private const ID = '/^[A-Za-z0-9-]{1,36}$/';
     private const ROUTE = '/^[A-Za-z0-9._-]{1,100}$/';
+    /** A data source id (plan 07-D): its records, archive or search. */
+    private const SOURCE = '/^(module|host):[a-z0-9][a-z0-9_.-]{0,80}$/';
     private const PREFIX = '~^/[A-Za-z0-9/_.-]{0,200}$~';
     private const LOCALE = '/^[a-z]{2}(-[A-Z]{2})?$/';
 
@@ -105,7 +107,7 @@ final class SitePartRules
     private static function target(string $type, array $target, string $at, array $routes): array
     {
         $keys = match ($type) {
-            'site', 'home' => [], 'pages', 'layouts' => ['ids'], 'path_prefix' => ['value'], 'routes' => ['names'],
+            'site', 'home' => [], 'pages', 'layouts', 'sources' => ['ids'], 'path_prefix' => ['value'], 'routes' => ['names'],
         };
         if (array_diff(array_keys($target), ['type', ...$keys]) !== [] || array_diff($keys, array_keys($target)) !== []) {
             throw new InvalidRules($at, 'SHAPE');
@@ -125,7 +127,7 @@ final class SitePartRules
             throw new InvalidRules("{$at}.{$key}", 'SHAPE');
         }
         foreach ($values as $j => $value) {
-            $valid = is_string($value) && preg_match($type === 'routes' ? self::ROUTE : self::ID, $value) === 1;
+            $valid = is_string($value) && preg_match(match ($type) { 'routes' => self::ROUTE, 'sources' => self::SOURCE, default => self::ID }, $value) === 1;
             if (!$valid || ($type === 'routes' && !in_array($value, $routes, true))) {
                 throw new InvalidRules("{$at}.{$key}.{$j}", $valid ? 'UNKNOWN_ROUTE' : 'INVALID_VALUE');
             }

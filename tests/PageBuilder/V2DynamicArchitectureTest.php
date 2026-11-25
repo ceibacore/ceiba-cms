@@ -5,9 +5,7 @@ namespace CeibaCms\Tests\PageBuilder;
 
 use CeibaCms\PageBuilder\Domain\Entity\PageTemplate;
 use CeibaCms\PageBuilder\Infrastructure\CeibaDbPageTemplateRepository;
-use CeibaCms\PageBuilder\Domain\Service\ContextResolver;
 use CeibaCms\PageBuilder\Domain\Service\ConditionEngine;
-use CeibaCms\PageBuilder\Domain\Service\QueryEngine;
 use CeibaCms\PageBuilder\Domain\Service\BladeRenderer;
 use CeibaCms\PageBuilder\Domain\Service\VariableInterpolator;
 use CeibaCms\PageBuilder\Domain\Service\LoopResolverInterface;
@@ -15,7 +13,6 @@ use CeibaCms\Http\Controllers\PageRenderController;
 use CeibaCms\Page\Application\GetPageBySlug;
 use CeibaCms\PageBuilder\Application\GetPageTemplateById;
 use CeibaCms\Auth\AuthManager;
-use CeibaCms\Support\Exceptions\SecurityException;
 use CeibaCms\Tests\TestCase;
 
 class V2DynamicArchitectureTest extends TestCase
@@ -61,30 +58,6 @@ class V2DynamicArchitectureTest extends TestCase
         $this->assertNull($this->templateRepo->findById($id));
     }
 
-    // ── 2. Context Resolver ──────────────────────────────────────────────────
-    public function testContextResolver(): void
-    {
-        $this->authMock->method('user')->willReturn([
-            'id' => 'user-123',
-            'email' => 'test@user.com'
-        ]);
-
-        $resolver = new ContextResolver($this->authMock);
-
-        $_GET['category'] = 'tech';
-        $routeParams = ['slug' => 'welcome-post'];
-
-        // Request parameters
-        $this->assertSame('tech', $resolver->resolve('{{ request.query.category }}', $routeParams));
-        $this->assertSame('welcome-post', $resolver->resolve('{{ request.route.slug }}', $routeParams));
-
-        // Auth parameters
-        $this->assertSame('test@user.com', $resolver->resolve('{{ auth.user.email }}', $routeParams));
-
-        // Constants
-        $this->assertSame(date('Y-m-d'), $resolver->resolve('{{ date.today }}'));
-    }
-
     // ── 3. Condition Engine ──────────────────────────────────────────────────
     public function testConditionEngineAuthGuest(): void
     {
@@ -115,22 +88,6 @@ class V2DynamicArchitectureTest extends TestCase
             'params' => []
         ];
         $this->assertTrue($engine->evaluateCondition($cond));
-    }
-
-    // ── 4. Query Engine ──────────────────────────────────────────────────────
-    public function testQueryEngineSafetyWhitelist(): void
-    {
-        $resolver = new ContextResolver($this->authMock);
-        $engine = new QueryEngine($this->db, $resolver, ['Article' => 'articles']);
-
-        $config = [
-            'id' => 'q1',
-            'context_key' => 'users',
-            'model' => 'User' // Not whitelisted
-        ];
-
-        $this->expectException(SecurityException::class);
-        $engine->executeQuery($config);
     }
 
     // ── 5. Blade Renderer (Slots Merging) ────────────────────────────────────
@@ -213,8 +170,7 @@ class V2DynamicArchitectureTest extends TestCase
             layoutRenderer:       null,
             getNavbar:            null,
             getPageTemplateById:  null,
-            conditionEngine:      $conditionEngine,
-            queryEngine:          null
+            conditionEngine:      $conditionEngine
         );
 
         // Capture output/headers

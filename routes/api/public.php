@@ -20,12 +20,12 @@ $pageRenderController = new PageRenderController(
     $container['useCases']['getNavbar'],
     $container['useCases']['getPageTemplateById'],
     $container['conditionEngine'],
-    $container['queryEngine'],
     $container['auth'],
     $container['repositories']['settings'],
     $container['repositories']['seo'],
     $container['services']['pageAssembler'] ?? null,
     $container['services']['assembleSitePage'] ?? null,
+    $container['services']['assembleContentPage'] ?? null,
 );
 
 $homeController = new HomeController(

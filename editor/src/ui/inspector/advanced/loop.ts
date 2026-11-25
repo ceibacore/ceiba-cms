@@ -1,11 +1,12 @@
 /**
- * Loop of a node (ceiba-cms LoopConfig: source "module:<slug>" or "api:<url>", variable, key, limit, offset,
- * filters, sort) as the fields of the inspector, and back. Kept pure so it can be tested without a browser.
+ * Loop of a node (ceiba-cms LoopConfig: source "module:<slug>" or "host:<name>" from the data source registry,
+ * variable, key, limit, offset, filters, sort) as the fields of the inspector, and back. Free URLs are not sources
+ * (plan 07, D-3). Kept pure so it can be tested without a browser.
  */
 export interface LoopForm {
-  sourceType: 'none' | 'module' | 'api';
+  sourceType: 'none' | 'query' | 'module' | 'host';
   module: string;
-  api: string;
+  host: string;
   variable: string;
   key: string;
   limit: string;
@@ -24,9 +25,9 @@ export const loopToForm = (loop: unknown): LoopForm => {
   const source = typeof l.source === 'string' ? l.source : '';
   const sort = record(l.sort);
   return {
-    sourceType: source.startsWith('module:') ? 'module' : source.startsWith('api:') ? 'api' : 'none',
+    sourceType: 'query' in l ? 'query' : source.startsWith('module:') ? 'module' : source.startsWith('host:') ? 'host' : 'none',
     module: source.startsWith('module:') ? source.slice(7) : '',
-    api: source.startsWith('api:') ? source.slice(4) : '',
+    host: source.startsWith('host:') ? source.slice(5) : '',
     variable: typeof l.variable === 'string' ? l.variable : 'item',
     key: typeof l.key === 'string' ? l.key : 'id',
     limit: l.limit === undefined || l.limit === null ? '' : String(l.limit),
@@ -48,8 +49,13 @@ const count = (value: string): number | null | undefined => {
 /** The loop to store, null to remove it, or the error key of the first invalid field. */
 export const formToLoop = (form: LoopForm): LoopResult => {
   if (form.sourceType === 'none') return { loop: null };
-  const target = (form.sourceType === 'module' ? form.module : form.api).trim();
-  if (target === '' || (form.sourceType === 'api' && !/^https?:\/\//i.test(target))) return { error: 'loop.source' };
+  if (form.sourceType === 'query') {
+    // Plan 07-B: repeat over the results of the enclosing query block.
+    if (!/^[A-Za-z_][A-Za-z0-9_]{0,40}$/.test(form.variable.trim())) return { error: 'loop.variable' };
+    return { loop: { query: '', variable: form.variable.trim() } };
+  }
+  const target = (form.sourceType === 'module' ? form.module : form.host).trim();
+  if (!/^[a-z0-9][a-z0-9_.-]{0,80}$/.test(target)) return { error: 'loop.source' };
   if (!/^[A-Za-z_][A-Za-z0-9_]{0,40}$/.test(form.variable.trim())) return { error: 'loop.variable' };
   const loop: Record<string, unknown> = {
     source: `${form.sourceType}:${target}`,

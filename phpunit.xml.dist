@@ -41,6 +41,9 @@
         <testsuite name="Site Part Tests">
             <directory>tests/SitePart</directory>
         </testsuite>
+        <testsuite name="Data Source Tests">
+            <directory>tests/DataSource</directory>
+        </testsuite>
         <testsuite name="HTTP Tests">
             <directory>tests/Http</directory>
         </testsuite>

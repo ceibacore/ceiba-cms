@@ -13,6 +13,9 @@ export type SitePartTarget = {
     readonly type: 'routes';
     readonly names: readonly string[];
 } | {
+    readonly type: 'sources';
+    readonly ids: readonly string[];
+} | {
     readonly type: 'path_prefix';
     readonly value: string;
 };
@@ -25,7 +28,7 @@ export interface SitePartRules {
 }
 export interface SitePartSummary {
     readonly id: string;
-    readonly kind: 'header' | 'footer' | 'not_found';
+    readonly kind: 'header' | 'footer' | 'not_found' | 'single' | 'archive' | 'search';
     readonly name: string;
     readonly status: string;
     readonly rules: SitePartRules;
